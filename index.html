@@ -1,8 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>40k Crusade Campaign Tracker</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #2c5aa0;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+        
+        h2 {
+            color: #4ecdc4;
+            margin-top: 30px;
+            font-size: 1.5em;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .features {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .features ul {
+            max-width: 100%;
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .features li {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+                line-height: 1.2;
+            }
+            
+            h2 {
+                font-size: 1.3em;
+            }
+            
+            .features {
+                padding: 16px;
+                margin: 20px 0;
+            }
+            
+            .features li {
+                font-size: 15px;
+                margin-bottom: 10px;
+            }
+        }
+        
+        /* Very small screens */
+        @media (max-width: 360px) {
+            h1 {
+                font-size: 1.6em;
+            }
+            
+            .features {
+                padding: 12px;
+            }
+        }
+        
+        /* Touch-friendly spacing */
+        @media (hover: none) and (pointer: coarse) {
+            .features li {
+                margin-bottom: 14px;
+                padding: 4px 0;
+            }
+        }
+    </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
-<p>Gonna build some warhammer!</p>
+    <div class="container">
+        <h1>40k Crusade Campaign Tracker</h1>
+        
+        <p>Welcome to your digital command center for Warhammer 40,000 Crusade campaigns!</p>
+        
+        <div class="features">
+            <h2>Coming Features:</h2>
+            <ul>
+                <li>Track your army roster and unit progression</li>
+                <li>Record battle results and outcomes</li>
+                <li>Manage multiple campaigns</li>
+                <li>Monitor requisition points and battle rating</li>
+                <li>View battle honors and battle scars</li>
+            </ul>
+        </div>
+        
+        <h2>Getting Started</h2>
+        <p>This tracker will help you manage your narrative Crusade campaigns by keeping track of your units, battles, and progression through the campaign system.</p>
+        
+        <p><em>More functionality will be added as we build this together!</em></p>
+    </div>
 </body>
 </html>
