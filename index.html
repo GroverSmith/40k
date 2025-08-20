@@ -364,6 +364,7 @@
                     rowsPerPage: 50,      // rows per page when pagination is enabled
                     linkColumn: null,     // column index to convert to links (null = no links)
                     linkPattern: '{slug}.html',  // URL pattern where {slug} gets replaced
+                    cacheMinutes: 5,      // cache data for 5 minutes (0 = no cache)
                     ...options
                 };
                 this.rawData = null;
@@ -404,6 +405,16 @@
                 this.showLoading();
                 
                 try {
+                    // Check for cached data first
+                    const cachedData = this.getCachedData();
+                    if (cachedData && !this.isCacheExpired(cachedData.timestamp)) {
+                        console.log('Loading from cache:', this.appsScriptUrl);
+                        this.rawData = cachedData.data;
+                        this.displayData(cachedData.data);
+                        return;
+                    }
+                    
+                    console.log('Loading fresh data:', this.appsScriptUrl);
                     const response = await fetch(this.appsScriptUrl);
                     
                     if (!response.ok) {
@@ -411,12 +422,26 @@
                     }
                     
                     const data = await response.json();
-                    this.rawData = data; // Store raw data for sorting
+                    this.rawData = data;
+                    
+                    // Cache the fresh data
+                    this.setCachedData(data);
+                    
                     this.displayData(data);
                     
                 } catch (error) {
                     console.error('Error loading sheets data:', error);
-                    this.showError(error.message);
+                    
+                    // Try to fall back to cached data if available
+                    const cachedData = this.getCachedData();
+                    if (cachedData) {
+                        console.log('Falling back to cached data due to error');
+                        this.rawData = cachedData.data;
+                        this.displayData(cachedData.data);
+                        this.showCacheWarning();
+                    } else {
+                        this.showError(error.message);
+                    }
                 }
             }
             
@@ -521,7 +546,21 @@
                 
                 if (this.options.showStats) {
                     const displayedRows = displayRows.length - 1;
+                    const cachedData = this.getCachedData();
+                    const isFromCache = cachedData && !this.isCacheExpired(cachedData.timestamp);
+                    
                     let statsText = `⚔️ Showing ${displayedRows} of ${totalDataRows} forces, ${rows[0]?.length || 0} columns | Last updated: ${new Date().toLocaleString()}`;
+                    
+                    if (isFromCache) {
+                        const cacheAgeHours = Math.round((Date.now() - cachedData.timestamp) / 3600000);
+                        const cacheAgeMinutes = Math.round((Date.now() - cachedData.timestamp) / 60000);
+                        
+                        if (cacheAgeHours >= 1) {
+                            statsText += ` | 💾 Cached ${cacheAgeHours}h ago`;
+                        } else {
+                            statsText += ` | 💾 Cached ${cacheAgeMinutes}m ago`;
+                        }
+                    }
                     
                     if (this.sortColumn !== null) {
                         statsText += ` | Sorted by column ${this.sortColumn + 1} (${this.sortDirection})`;
@@ -637,8 +676,9 @@
                 this.displayData(sortedData);
             }
             
-            // Method to refresh data programmatically
+            // Method to refresh data programmatically (bypasses cache)
             refresh() {
+                this.clearCache(); // Clear cache before loading fresh data
                 this.loadData();
             }
             
@@ -650,6 +690,70 @@
                     .replace(/[^\w\s-]/g, '')       // Remove special characters except spaces and hyphens
                     .replace(/[\s_-]+/g, '-')       // Replace spaces, underscores, multiple hyphens with single hyphen
                     .replace(/^-+|-+$/g, '');       // Remove leading/trailing hyphens
+            }
+            
+            // Cache management methods
+            getCacheKey() {
+                // Create a unique cache key based on the Apps Script URL
+                return `sheets_cache_${btoa(this.appsScriptUrl).replace(/[^a-zA-Z0-9]/g, '').substring(0, 20)}`;
+            }
+            
+            getCachedData() {
+                if (this.options.cacheMinutes <= 0) return null;
+                
+                try {
+                    const cacheKey = this.getCacheKey();
+                    const cached = localStorage.getItem(cacheKey);
+                    return cached ? JSON.parse(cached) : null;
+                } catch (error) {
+                    console.warn('Error reading cache:', error);
+                    return null;
+                }
+            }
+            
+            setCachedData(data) {
+                if (this.options.cacheMinutes <= 0) return;
+                
+                try {
+                    const cacheKey = this.getCacheKey();
+                    const cacheData = {
+                        data: data,
+                        timestamp: Date.now(),
+                        url: this.appsScriptUrl
+                    };
+                    localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+                    console.log(`Cached data for ${this.options.cacheMinutes} minutes (${Math.round(this.options.cacheMinutes/60)} hours)`);
+                } catch (error) {
+                    console.warn('Error setting cache:', error);
+                }
+            }
+            
+            isCacheExpired(timestamp) {
+                if (this.options.cacheMinutes <= 0) return true;
+                
+                const cacheAgeMs = Date.now() - timestamp;
+                const cacheExpireMs = this.options.cacheMinutes * 60 * 1000;
+                return cacheAgeMs > cacheExpireMs;
+            }
+            
+            clearCache() {
+                try {
+                    const cacheKey = this.getCacheKey();
+                    localStorage.removeItem(cacheKey);
+                    console.log('Cache cleared');
+                } catch (error) {
+                    console.warn('Error clearing cache:', error);
+                }
+            }
+            
+            showCacheWarning() {
+                // Add a subtle indicator that we're showing cached data due to an error
+                const existingStats = this.contentDiv.querySelector('.sheets-stats');
+                if (existingStats) {
+                    existingStats.innerHTML += ' | ⚠️ <em>Showing cached data (connection issue)</em>';
+                    existingStats.style.backgroundColor = '#4a3a1e';
+                    existingStats.style.borderLeft = '3px solid #ffa500';
+                }
             }
         }
 
@@ -672,18 +776,29 @@
             static refreshAll() {
                 Object.values(this.embeds).forEach(embed => embed.refresh());
             }
+            
+            static clearCache(containerId) {
+                if (this.embeds[containerId]) {
+                    this.embeds[containerId].clearCache();
+                }
+            }
+            
+            static clearAllCaches() {
+                Object.values(this.embeds).forEach(embed => embed.clearCache());
+            }
         }
 
         // Initialize your sheets when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             
-            // Crusade Forces with enhanced features for the 40k theme
+            // Crusade Forces with enhanced features and 24-hour caching
             SheetsManager.embed('crusade-forces-sheet', 'https://script.google.com/macros/s/AKfycbxknuizxsXYBOkt3PbaTyC4o_Ldoqo6XJ8dLfh6Nc-mmQMNzpKy2G40I4g0mcbH1Ij2/exec', {
                 maxHeight: '350px',     // Good height for mobile
                 showStats: true,        // Show force statistics
                 sortable: true,         // Allow sorting by any column
                 linkColumn: 1,          // Make the second column (Force Name) into links
-                linkPattern: 'forces/{slug}.html'  // URL pattern for force pages
+                linkPattern: 'forces/{slug}.html',  // URL pattern for force pages
+                cacheMinutes: 1440      // Cache data for 24 hours (1440 minutes)
             });
             
             // Future sheets for other sections:
@@ -702,9 +817,19 @@
             // });
         });
 
-        // Global refresh function for all battle data
+        // Global functions for cache management
         function refreshAllBattleData() {
             SheetsManager.refreshAll();
+        }
+        
+        function clearAllCaches() {
+            SheetsManager.clearAllCaches();
+            console.log('All caches cleared');
+        }
+        
+        function clearSpecificCache(containerId) {
+            SheetsManager.clearCache(containerId);
+            console.log(`Cache cleared for ${containerId}`);
         }
     </script>
 </body>
