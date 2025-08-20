@@ -165,6 +165,21 @@
             color: #ffffff;
         }
 
+        .sheets-table a {
+            color: #4ecdc4;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .sheets-table a:hover {
+            color: #7fefea;
+            text-decoration: underline;
+        }
+
+        .sheets-table a:visited {
+            color: #3fb8b1;
+        }
+
         .sheets-stats {
             margin-top: 10px;
             padding: 10px;
@@ -347,6 +362,8 @@
                     maxHeight: '400px',   // max height before scrolling
                     pagination: false,    // enable pagination instead of scrolling
                     rowsPerPage: 50,      // rows per page when pagination is enabled
+                    linkColumn: null,     // column index to convert to links (null = no links)
+                    linkPattern: '{slug}.html',  // URL pattern where {slug} gets replaced
                     ...options
                 };
                 this.rawData = null;
@@ -483,9 +500,17 @@
                     // Data rows
                     for (let i = 1; i < displayRows.length; i++) {
                         html += '<tr>';
-                        displayRows[i].forEach(cell => {
+                        displayRows[i].forEach((cell, cellIndex) => {
                             const escapedCell = String(cell || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                            html += `<td>${escapedCell}</td>`;
+                            
+                            // Check if this column should be converted to links
+                            if (this.options.linkColumn === cellIndex && cell) {
+                                const slug = this.createSlug(cell);
+                                const url = this.options.linkPattern.replace('{slug}', slug);
+                                html += `<td><a href="${url}" style="color: #4ecdc4; text-decoration: none;">${escapedCell}</a></td>`;
+                            } else {
+                                html += `<td>${escapedCell}</td>`;
+                            }
                         });
                         html += '</tr>';
                     }
@@ -616,6 +641,16 @@
             refresh() {
                 this.loadData();
             }
+            
+            // Create URL-friendly slug from text
+            createSlug(text) {
+                return String(text)
+                    .toLowerCase()                    // Convert to lowercase
+                    .trim()                          // Remove leading/trailing spaces
+                    .replace(/[^\w\s-]/g, '')       // Remove special characters except spaces and hyphens
+                    .replace(/[\s_-]+/g, '-')       // Replace spaces, underscores, multiple hyphens with single hyphen
+                    .replace(/^-+|-+$/g, '');       // Remove leading/trailing hyphens
+            }
         }
 
         // Manager class for easy setup
@@ -646,7 +681,9 @@
             SheetsManager.embed('crusade-forces-sheet', 'https://script.google.com/macros/s/AKfycbxknuizxsXYBOkt3PbaTyC4o_Ldoqo6XJ8dLfh6Nc-mmQMNzpKy2G40I4g0mcbH1Ij2/exec', {
                 maxHeight: '350px',     // Good height for mobile
                 showStats: true,        // Show force statistics
-                sortable: true          // Allow sorting by any column
+                sortable: true,         // Allow sorting by any column
+                linkColumn: 1,          // Make the second column (Force Name) into links
+                linkPattern: 'forces/{slug}.html'  // URL pattern for force pages
             });
             
             // Future sheets for other sections:
