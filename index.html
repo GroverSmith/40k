@@ -112,7 +112,8 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
-            margin-bottom: 10px;
+            float: right;
+            margin-top: 10px;
         }
 
         .sheets-refresh:hover {
@@ -213,7 +214,8 @@
         
         h2 {
             color: #4ecdc4;
-            margin-top: 30px;
+            margin-top: 0;
+            margin-bottom: 20px;
             font-size: 1.5em;
         }
         
@@ -339,7 +341,8 @@
         
         <div class="features">
             <h2>Crusade Forces</h2>
-			<div id="crusade-forces-sheet"></div>            
+			<div id="crusade-forces-sheet"></div>
+			<div style="clear: both;"></div>
         </div>
         
         <div class="features">
@@ -382,6 +385,11 @@
             init() {
                 this.container.classList.add('sheets-container');
                 
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'sheets-content';
+                this.container.appendChild(contentDiv);
+                this.contentDiv = contentDiv;
+                
                 if (this.options.showRefreshButton) {
                     const refreshBtn = document.createElement('button');
                     refreshBtn.className = 'sheets-refresh';
@@ -390,11 +398,6 @@
                     this.container.appendChild(refreshBtn);
                     this.refreshBtn = refreshBtn;
                 }
-                
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'sheets-content';
-                this.container.appendChild(contentDiv);
-                this.contentDiv = contentDiv;
                 
                 if (this.options.autoLoad) {
                     this.loadData();
