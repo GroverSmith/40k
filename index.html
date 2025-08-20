@@ -13,17 +13,32 @@
             margin: 20px 0;
         }
 
+        .sheets-table-wrapper {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #4a4a4a;
+            border-radius: 4px;
+            margin-top: 10px;
+            background-color: #2a2a2a;
+        }
+
+        .sheets-table-wrapper.no-scroll {
+            max-height: none;
+            overflow: visible;
+            border: none;
+        }
+
         .sheets-loading {
             text-align: center;
-            color: #666;
+            color: #cccccc;
             font-style: italic;
             padding: 20px;
         }
 
         .sheets-error {
-            background-color: #fee;
-            border: 1px solid #fcc;
-            color: #c66;
+            background-color: #4a1e1e;
+            border: 1px solid #cc6666;
+            color: #ff9999;
             padding: 15px;
             border-radius: 5px;
             margin: 20px 0;
@@ -32,30 +47,34 @@
         .sheets-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin: 0;
+            background-color: #2a2a2a;
         }
 
         .sheets-table th,
         .sheets-table td {
             padding: 8px 12px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #4a4a4a;
             font-size: 14px;
+            color: #ffffff;
         }
 
-         .sheets-table th {
-            background-color: #f8f9fa;
+        .sheets-table th {
+            background-color: #3a3a3a;
             font-weight: bold;
-            color: #333;
-            border-bottom: 2px solid #ddd;
+            color: #4ecdc4;
+            border-bottom: 2px solid #4ecdc4;
             cursor: pointer;
             user-select: none;
-            position: relative;
+            position: sticky;
+            top: 0;
+            z-index: 10;
             padding-right: 25px;
         }
 
 		.sheets-table th:hover {
-            background-color: #e9ecef;
+            background-color: #4a4a4a;
         }
 
         .sheets-table th .sort-indicator {
@@ -64,17 +83,17 @@
             top: 50%;
             transform: translateY(-50%);
             font-size: 12px;
-            color: #666;
+            color: #cccccc;
         }
 
         .sheets-table th.sort-asc .sort-indicator::after {
             content: '▲';
-            color: #4285f4;
+            color: #4ecdc4;
         }
 
         .sheets-table th.sort-desc .sort-indicator::after {
             content: '▼';
-            color: #4285f4;
+            color: #4ecdc4;
         }
 
         .sheets-table th:not(.sort-asc):not(.sort-desc) .sort-indicator::after {
@@ -82,11 +101,11 @@
         }
 
         .sheets-table tr:hover {
-            background-color: #f8f9fa;
+            background-color: #3a3a3a;
         }
 
         .sheets-refresh {
-            background-color: #4285f4;
+            background-color: #2c5aa0;
             color: white;
             border: none;
             padding: 8px 16px;
@@ -97,20 +116,61 @@
         }
 
         .sheets-refresh:hover {
-            background-color: #3367d6;
+            background-color: #1e4080;
         }
 
         .sheets-refresh:disabled {
-            background-color: #ccc;
+            background-color: #555555;
             cursor: not-allowed;
+        }
+
+        .sheets-pagination {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .sheets-pagination button {
+            background-color: #3a3a3a;
+            border: 1px solid #4a4a4a;
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .sheets-pagination button:hover:not(:disabled) {
+            background-color: #4a4a4a;
+        }
+
+        .sheets-pagination button:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .sheets-pagination .page-info {
+            color: #cccccc;
+            font-size: 14px;
+        }
+
+        .sheets-pagination select {
+            padding: 4px 8px;
+            border: 1px solid #4a4a4a;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #3a3a3a;
+            color: #ffffff;
         }
 
         .sheets-stats {
             margin-top: 10px;
             padding: 10px;
-            background-color: #f8f9fa;
+            background-color: #3a3a3a;
             border-radius: 4px;
-            color: #666;
+            color: #cccccc;
             font-size: 12px;
         }
         
@@ -190,6 +250,20 @@
                 font-size: 15px;
                 margin-bottom: 10px;
             }
+
+            .sheets-table-wrapper {
+                max-height: 300px;
+            }
+
+            .sheets-pagination {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .sheets-pagination .page-info {
+                text-align: center;
+            }
         }
         
         /* Very small screens */
@@ -201,6 +275,16 @@
             .features {
                 padding: 12px;
             }
+
+            .sheets-table th,
+            .sheets-table td {
+                padding: 6px 8px;
+                font-size: 13px;
+            }
+
+            .sheets-table-wrapper {
+                max-height: 250px;
+            }
         }
         
         /* Touch-friendly spacing */
@@ -208,6 +292,11 @@
             .features li {
                 margin-bottom: 14px;
                 padding: 4px 0;
+            }
+
+            .sheets-table th,
+            .sheets-table td {
+                padding: 10px 12px;
             }
         }
     </style>
@@ -254,11 +343,16 @@
                     autoLoad: true,
                     showStats: true,
                     sortable: true,
+                    maxRows: null,        // null = show all rows
+                    maxHeight: '400px',   // max height before scrolling
+                    pagination: false,    // enable pagination instead of scrolling
+                    rowsPerPage: 50,      // rows per page when pagination is enabled
                     ...options
                 };
                 this.rawData = null;
                 this.sortColumn = null;
                 this.sortDirection = 'asc';
+                this.currentPage = 1;
                 
                 if (this.container) {
                     this.init();
@@ -337,12 +431,46 @@
                     return;
                 }
                 
-                let html = '<table class="sheets-table">';
+                // Apply row limit if specified
+                let displayRows = rows;
+                let totalDataRows = rows.length - 1; // Exclude header
+                
+                if (this.options.maxRows && !this.options.pagination) {
+                    // Simple row limiting with scrolling
+                    displayRows = [rows[0], ...rows.slice(1, this.options.maxRows + 1)];
+                }
+                
+                let html = '';
+                
+                // Add pagination controls if enabled
+                if (this.options.pagination && rows.length > 1) {
+                    const totalPages = Math.ceil(totalDataRows / this.options.rowsPerPage);
+                    const startRow = (this.currentPage - 1) * this.options.rowsPerPage + 1;
+                    const endRow = Math.min(startRow + this.options.rowsPerPage - 1, totalDataRows);
+                    
+                    displayRows = [
+                        rows[0], // Header
+                        ...rows.slice(startRow, endRow + 1)
+                    ];
+                    
+                    html += this.createPaginationControls(totalPages, totalDataRows);
+                }
+                
+                // Determine if we need scrolling
+                const needsScrolling = !this.options.pagination && 
+                                     (!this.options.maxRows || totalDataRows > this.options.maxRows);
+                
+                // Create table wrapper with appropriate styling
+                const wrapperClass = needsScrolling ? 'sheets-table-wrapper' : 'sheets-table-wrapper no-scroll';
+                const wrapperStyle = needsScrolling ? `max-height: ${this.options.maxHeight};` : '';
+                
+                html += `<div class="${wrapperClass}" style="${wrapperStyle}">`;
+                html += '<table class="sheets-table">';
                 
                 // Header row with sorting
-                if (rows.length > 0) {
+                if (displayRows.length > 0) {
                     html += '<tr>';
-                    rows[0].forEach((cell, index) => {
+                    displayRows[0].forEach((cell, index) => {
                         const sortClass = this.sortColumn === index ? `sort-${this.sortDirection}` : '';
                         const sortable = this.options.sortable ? 'onclick="this.closest(\'.sheets-container\').sheetsEmbed.sortBy(' + index + ')"' : '';
                         html += `<th class="${sortClass}" ${sortable}>
@@ -353,9 +481,9 @@
                     html += '</tr>';
                     
                     // Data rows
-                    for (let i = 1; i < rows.length; i++) {
+                    for (let i = 1; i < displayRows.length; i++) {
                         html += '<tr>';
-                        rows[i].forEach(cell => {
+                        displayRows[i].forEach(cell => {
                             const escapedCell = String(cell || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                             html += `<td>${escapedCell}</td>`;
                         });
@@ -364,15 +492,21 @@
                 }
                 
                 html += '</table>';
+                html += '</div>'; // Close table wrapper
                 
                 if (this.options.showStats) {
-                    html += `
-                        <div class="sheets-stats">
-                            📊 ${rows.length - 1} rows, ${rows[0]?.length || 0} columns | 
-                            Last updated: ${new Date().toLocaleString()}
-                            ${this.sortColumn !== null ? ` | Sorted by column ${this.sortColumn + 1} (${this.sortDirection})` : ''}
-                        </div>
-                    `;
+                    const displayedRows = displayRows.length - 1;
+                    let statsText = `⚔️ Showing ${displayedRows} of ${totalDataRows} forces, ${rows[0]?.length || 0} columns | Last updated: ${new Date().toLocaleString()}`;
+                    
+                    if (this.sortColumn !== null) {
+                        statsText += ` | Sorted by column ${this.sortColumn + 1} (${this.sortDirection})`;
+                    }
+                    
+                    if (this.options.pagination) {
+                        statsText += ` | Page ${this.currentPage}`;
+                    }
+                    
+                    html += `<div class="sheets-stats">${statsText}</div>`;
                 }
                 
                 this.contentDiv.innerHTML = html;
@@ -384,6 +518,53 @@
                     this.refreshBtn.disabled = false;
                     this.refreshBtn.textContent = 'Refresh Data';
                 }
+            }
+            
+            createPaginationControls(totalPages, totalRows) {
+                const startRow = (this.currentPage - 1) * this.options.rowsPerPage + 1;
+                const endRow = Math.min(startRow + this.options.rowsPerPage - 1, totalRows);
+                
+                return `
+                    <div class="sheets-pagination">
+                        <button onclick="this.closest('.sheets-container').sheetsEmbed.goToPage(1)" 
+                                ${this.currentPage === 1 ? 'disabled' : ''}>First</button>
+                        <button onclick="this.closest('.sheets-container').sheetsEmbed.goToPage(${this.currentPage - 1})" 
+                                ${this.currentPage === 1 ? 'disabled' : ''}>Previous</button>
+                        
+                        <span class="page-info">
+                            Page ${this.currentPage} of ${totalPages} 
+                            (forces ${startRow}-${endRow} of ${totalRows})
+                        </span>
+                        
+                        <button onclick="this.closest('.sheets-container').sheetsEmbed.goToPage(${this.currentPage + 1})" 
+                                ${this.currentPage === totalPages ? 'disabled' : ''}>Next</button>
+                        <button onclick="this.closest('.sheets-container').sheetsEmbed.goToPage(${totalPages})" 
+                                ${this.currentPage === totalPages ? 'disabled' : ''}>Last</button>
+                        
+                        <select onchange="this.closest('.sheets-container').sheetsEmbed.changeRowsPerPage(parseInt(this.value))">
+                            <option value="25" ${this.options.rowsPerPage === 25 ? 'selected' : ''}>25 per page</option>
+                            <option value="50" ${this.options.rowsPerPage === 50 ? 'selected' : ''}>50 per page</option>
+                            <option value="100" ${this.options.rowsPerPage === 100 ? 'selected' : ''}>100 per page</option>
+                            <option value="200" ${this.options.rowsPerPage === 200 ? 'selected' : ''}>200 per page</option>
+                        </select>
+                    </div>
+                `;
+            }
+            
+            goToPage(pageNumber) {
+                if (!this.rawData) return;
+                
+                const totalDataRows = this.rawData.length - 1;
+                const totalPages = Math.ceil(totalDataRows / this.options.rowsPerPage);
+                
+                this.currentPage = Math.max(1, Math.min(pageNumber, totalPages));
+                this.displayData(this.rawData);
+            }
+            
+            changeRowsPerPage(newRowsPerPage) {
+                this.options.rowsPerPage = newRowsPerPage;
+                this.currentPage = 1; // Reset to first page
+                this.displayData(this.rawData);
             }
             
             sortBy(columnIndex) {
@@ -461,28 +642,31 @@
         // Initialize your sheets when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             
-            SheetsManager.embed('crusade-forces-sheet', 'https://script.google.com/macros/s/AKfycbxknuizxsXYBOkt3PbaTyC4o_Ldoqo6XJ8dLfh6Nc-mmQMNzpKy2G40I4g0mcbH1Ij2/exec');
+            // Crusade Forces with enhanced features for the 40k theme
+            SheetsManager.embed('crusade-forces-sheet', 'https://script.google.com/macros/s/AKfycbxknuizxsXYBOkt3PbaTyC4o_Ldoqo6XJ8dLfh6Nc-mmQMNzpKy2G40I4g0mcbH1Ij2/exec', {
+                maxHeight: '350px',     // Good height for mobile
+                showStats: true,        // Show force statistics
+                sortable: true          // Allow sorting by any column
+            });
             
+            // Future sheets for other sections:
             
-            // Uncomment and replace URLs as you add more sheets:
-            
-            // SheetsManager.embed('future-sheet-2', 'YOUR_SECOND_APPS_SCRIPT_URL_HERE');
-            
-            // SheetsManager.embed('future-sheet-3', 'YOUR_THIRD_APPS_SCRIPT_URL_HERE', {
-            //     showRefreshButton: false,  // Custom options
-            //     showStats: false
+            // Active Crusades with pagination for battle history
+            // SheetsManager.embed('active-crusades-sheet', 'YOUR_ACTIVE_CRUSADES_URL', {
+            //     pagination: true,
+            //     rowsPerPage: 10,
+            //     showRefreshButton: false
             // });
             
-            // You can also use the class directly for more control:
-            // new GoogleSheetsEmbed('#custom-container', 'YOUR_URL', {
-            //     showRefreshButton: true,
-            //     autoLoad: true,
-            //     showStats: true
+            // Battle Reports/Stories with limited rows
+            // SheetsManager.embed('stories-sheet', 'YOUR_STORIES_URL', {
+            //     maxRows: 20,
+            //     maxHeight: '300px'
             // });
         });
 
-        // Optional: Global refresh function
-        function refreshAllSheets() {
+        // Global refresh function for all battle data
+        function refreshAllBattleData() {
             SheetsManager.refreshAll();
         }
     </script>
