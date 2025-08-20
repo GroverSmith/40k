@@ -8,6 +8,111 @@
         * {
             box-sizing: border-box;
         }
+		
+		.sheets-container {
+            margin: 20px 0;
+        }
+
+        .sheets-loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .sheets-error {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            color: #c66;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .sheets-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .sheets-table th,
+        .sheets-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+         .sheets-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            padding-right: 25px;
+        }
+
+		.sheets-table th:hover {
+            background-color: #e9ecef;
+        }
+
+        .sheets-table th .sort-indicator {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #666;
+        }
+
+        .sheets-table th.sort-asc .sort-indicator::after {
+            content: '▲';
+            color: #4285f4;
+        }
+
+        .sheets-table th.sort-desc .sort-indicator::after {
+            content: '▼';
+            color: #4285f4;
+        }
+
+        .sheets-table th:not(.sort-asc):not(.sort-desc) .sort-indicator::after {
+            content: '⇅';
+        }
+
+        .sheets-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .sheets-refresh {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .sheets-refresh:hover {
+            background-color: #3367d6;
+        }
+
+        .sheets-refresh:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .sheets-stats {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            color: #666;
+            font-size: 12px;
+        }
         
         body {
             font-family: Arial, sans-serif;
@@ -130,7 +235,7 @@
         
         <div class="features">
             <h2>Crusade Forces</h2>
-            <p>No armies registered yet.</p>
+			<div id="crusade-forces-sheet"></div>            
         </div>
         
         <div class="features">
@@ -138,5 +243,248 @@
             <p>No battle reports or narrative stories recorded.</p>
         </div>
     </div>
+	
+	<script>
+        class GoogleSheetsEmbed {
+            constructor(containerSelector, appsScriptUrl, options = {}) {
+                this.container = document.querySelector(containerSelector);
+                this.appsScriptUrl = appsScriptUrl;
+                this.options = {
+                    showRefreshButton: true,
+                    autoLoad: true,
+                    showStats: true,
+                    sortable: true,
+                    ...options
+                };
+                this.rawData = null;
+                this.sortColumn = null;
+                this.sortDirection = 'asc';
+                
+                if (this.container) {
+                    this.init();
+                } else {
+                    console.warn(`Container "${containerSelector}" not found`);
+                }
+            }
+            
+            init() {
+                this.container.classList.add('sheets-container');
+                
+                if (this.options.showRefreshButton) {
+                    const refreshBtn = document.createElement('button');
+                    refreshBtn.className = 'sheets-refresh';
+                    refreshBtn.textContent = 'Refresh Data';
+                    refreshBtn.onclick = () => this.loadData();
+                    this.container.appendChild(refreshBtn);
+                    this.refreshBtn = refreshBtn;
+                }
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'sheets-content';
+                this.container.appendChild(contentDiv);
+                this.contentDiv = contentDiv;
+                
+                if (this.options.autoLoad) {
+                    this.loadData();
+                }
+            }
+            
+            async loadData() {
+                this.showLoading();
+                
+                try {
+                    const response = await fetch(this.appsScriptUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    this.rawData = data; // Store raw data for sorting
+                    this.displayData(data);
+                    
+                } catch (error) {
+                    console.error('Error loading sheets data:', error);
+                    this.showError(error.message);
+                }
+            }
+            
+            showLoading() {
+                if (this.refreshBtn) {
+                    this.refreshBtn.disabled = true;
+                    this.refreshBtn.textContent = 'Loading...';
+                }
+                
+                this.contentDiv.innerHTML = '<div class="sheets-loading">Loading data...</div>';
+            }
+            
+            showError(message) {
+                this.contentDiv.innerHTML = `
+                    <div class="sheets-error">
+                        <strong>Error loading data:</strong> ${message}
+                    </div>
+                `;
+                
+                if (this.refreshBtn) {
+                    this.refreshBtn.disabled = false;
+                    this.refreshBtn.textContent = 'Refresh Data';
+                }
+            }
+            
+            displayData(rows) {
+                if (!rows || rows.length === 0) {
+                    this.showError('No data found');
+                    return;
+                }
+                
+                let html = '<table class="sheets-table">';
+                
+                // Header row with sorting
+                if (rows.length > 0) {
+                    html += '<tr>';
+                    rows[0].forEach((cell, index) => {
+                        const sortClass = this.sortColumn === index ? `sort-${this.sortDirection}` : '';
+                        const sortable = this.options.sortable ? 'onclick="this.closest(\'.sheets-container\').sheetsEmbed.sortBy(' + index + ')"' : '';
+                        html += `<th class="${sortClass}" ${sortable}>
+                            ${String(cell || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+                            ${this.options.sortable ? '<span class="sort-indicator"></span>' : ''}
+                        </th>`;
+                    });
+                    html += '</tr>';
+                    
+                    // Data rows
+                    for (let i = 1; i < rows.length; i++) {
+                        html += '<tr>';
+                        rows[i].forEach(cell => {
+                            const escapedCell = String(cell || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                            html += `<td>${escapedCell}</td>`;
+                        });
+                        html += '</tr>';
+                    }
+                }
+                
+                html += '</table>';
+                
+                if (this.options.showStats) {
+                    html += `
+                        <div class="sheets-stats">
+                            📊 ${rows.length - 1} rows, ${rows[0]?.length || 0} columns | 
+                            Last updated: ${new Date().toLocaleString()}
+                            ${this.sortColumn !== null ? ` | Sorted by column ${this.sortColumn + 1} (${this.sortDirection})` : ''}
+                        </div>
+                    `;
+                }
+                
+                this.contentDiv.innerHTML = html;
+                
+                // Store reference to this embed instance for sorting
+                this.container.sheetsEmbed = this;
+                
+                if (this.refreshBtn) {
+                    this.refreshBtn.disabled = false;
+                    this.refreshBtn.textContent = 'Refresh Data';
+                }
+            }
+            
+            sortBy(columnIndex) {
+                if (!this.rawData || this.rawData.length <= 1) return;
+                
+                // Toggle sort direction if clicking the same column
+                if (this.sortColumn === columnIndex) {
+                    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    this.sortColumn = columnIndex;
+                    this.sortDirection = 'asc';
+                }
+                
+                // Create a copy of the data to sort
+                const headerRow = this.rawData[0];
+                const dataRows = this.rawData.slice(1);
+                
+                // Sort the data rows
+                dataRows.sort((a, b) => {
+                    let aVal = a[columnIndex] || '';
+                    let bVal = b[columnIndex] || '';
+                    
+                    // Try to convert to numbers if possible
+                    const aNum = parseFloat(aVal);
+                    const bNum = parseFloat(bVal);
+                    
+                    if (!isNaN(aNum) && !isNaN(bNum)) {
+                        // Numeric sort
+                        return this.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
+                    } else {
+                        // String sort
+                        aVal = String(aVal).toLowerCase();
+                        bVal = String(bVal).toLowerCase();
+                        
+                        if (this.sortDirection === 'asc') {
+                            return aVal.localeCompare(bVal);
+                        } else {
+                            return bVal.localeCompare(aVal);
+                        }
+                    }
+                });
+                
+                // Rebuild the sorted data array
+                const sortedData = [headerRow, ...dataRows];
+                this.displayData(sortedData);
+            }
+            
+            // Method to refresh data programmatically
+            refresh() {
+                this.loadData();
+            }
+        }
+
+        // Manager class for easy setup
+        class SheetsManager {
+            static embeds = {};
+            
+            static embed(containerId, appsScriptUrl, options = {}) {
+                const embed = new GoogleSheetsEmbed(`#${containerId}`, appsScriptUrl, options);
+                this.embeds[containerId] = embed;
+                return embed;
+            }
+            
+            static refresh(containerId) {
+                if (this.embeds[containerId]) {
+                    this.embeds[containerId].refresh();
+                }
+            }
+            
+            static refreshAll() {
+                Object.values(this.embeds).forEach(embed => embed.refresh());
+            }
+        }
+
+        // Initialize your sheets when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            SheetsManager.embed('crusade-forces-sheet', 'https://script.google.com/macros/s/AKfycbxknuizxsXYBOkt3PbaTyC4o_Ldoqo6XJ8dLfh6Nc-mmQMNzpKy2G40I4g0mcbH1Ij2/exec');
+            
+            
+            // Uncomment and replace URLs as you add more sheets:
+            
+            // SheetsManager.embed('future-sheet-2', 'YOUR_SECOND_APPS_SCRIPT_URL_HERE');
+            
+            // SheetsManager.embed('future-sheet-3', 'YOUR_THIRD_APPS_SCRIPT_URL_HERE', {
+            //     showRefreshButton: false,  // Custom options
+            //     showStats: false
+            // });
+            
+            // You can also use the class directly for more control:
+            // new GoogleSheetsEmbed('#custom-container', 'YOUR_URL', {
+            //     showRefreshButton: true,
+            //     autoLoad: true,
+            //     showStats: true
+            // });
+        });
+
+        // Optional: Global refresh function
+        function refreshAllSheets() {
+            SheetsManager.refreshAll();
+        }
+    </script>
 </body>
 </html>
