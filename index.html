@@ -114,6 +114,8 @@
             font-size: 14px;
             float: right;
             margin-top: 10px;
+            line-height: normal;
+            box-sizing: border-box;
         }
 
         .sheets-refresh:hover {
@@ -188,6 +190,26 @@
             border-radius: 4px;
             color: #cccccc;
             font-size: 12px;
+        }
+
+        .add-force-btn {
+            display: inline-block;
+            background-color: #2c5aa0;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            float: left;
+            margin-top: 10px;
+            line-height: normal;
+            box-sizing: border-box;
+        }
+
+        .add-force-btn:hover {
+            background-color: #1e4080;
         }
         
         body {
@@ -368,6 +390,7 @@
                     linkColumn: null,     // column index to convert to links (null = no links)
                     linkPattern: '{slug}.html',  // URL pattern where {slug} gets replaced
                     cacheMinutes: 5,      // cache data for 5 minutes (0 = no cache)
+                    hideColumns: [],      // array of column indices to hide (e.g., [0, 2])
                     ...options
                 };
                 this.rawData = null;
@@ -390,14 +413,30 @@
                 this.container.appendChild(contentDiv);
                 this.contentDiv = contentDiv;
                 
+                // Create button container for both buttons
+                const buttonContainer = document.createElement('div');
+                buttonContainer.style.marginTop = '10px';
+                buttonContainer.style.overflow = 'hidden'; // Clear float
+                
+                // Add the "Add New Force" button (left-aligned)
+                const addForceBtn = document.createElement('a');
+                addForceBtn.href = 'https://docs.google.com/forms/d/e/1FAIpQLSf0CasoHdP0VuxvBaEbmAxc2Tsi0AeA1saHBa1EMfC4do4EOw/viewform?usp=dialog';
+                addForceBtn.target = '_blank';
+                addForceBtn.className = 'add-force-btn';
+                addForceBtn.textContent = '+ Add New Force';
+                buttonContainer.appendChild(addForceBtn);
+                
+                // Add refresh button if enabled (right-aligned)
                 if (this.options.showRefreshButton) {
                     const refreshBtn = document.createElement('button');
                     refreshBtn.className = 'sheets-refresh';
                     refreshBtn.textContent = 'Refresh Data';
                     refreshBtn.onclick = () => this.loadData();
-                    this.container.appendChild(refreshBtn);
+                    buttonContainer.appendChild(refreshBtn);
                     this.refreshBtn = refreshBtn;
                 }
+                
+                this.container.appendChild(buttonContainer);
                 
                 if (this.options.autoLoad) {
                     this.loadData();
@@ -516,6 +555,9 @@
                 if (displayRows.length > 0) {
                     html += '<tr>';
                     displayRows[0].forEach((cell, index) => {
+                        // Skip hidden columns
+                        if (this.options.hideColumns.includes(index)) return;
+                        
                         const sortClass = this.sortColumn === index ? `sort-${this.sortDirection}` : '';
                         const sortable = this.options.sortable ? 'onclick="this.closest(\'.sheets-container\').sheetsEmbed.sortBy(' + index + ')"' : '';
                         html += `<th class="${sortClass}" ${sortable}>
@@ -529,6 +571,9 @@
                     for (let i = 1; i < displayRows.length; i++) {
                         html += '<tr>';
                         displayRows[i].forEach((cell, cellIndex) => {
+                            // Skip hidden columns
+                            if (this.options.hideColumns.includes(cellIndex)) return;
+                            
                             const escapedCell = String(cell || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                             
                             // Check if this column should be converted to links
@@ -552,7 +597,10 @@
                     const cachedData = this.getCachedData();
                     const isFromCache = cachedData && !this.isCacheExpired(cachedData.timestamp);
                     
-                    let statsText = `⚔️ Showing ${displayedRows} of ${totalDataRows} forces, ${rows[0]?.length || 0} columns | Last updated: ${new Date().toLocaleString()}`;
+                    // Count visible columns (excluding hidden ones)
+                    const visibleColumns = rows[0]?.length ? rows[0].length - this.options.hideColumns.length : 0;
+                    
+                    let statsText = `⚔️ Showing ${displayedRows} of ${totalDataRows} forces, ${visibleColumns} columns | Last updated: ${new Date().toLocaleString()}`;
                     
                     if (isFromCache) {
                         const cacheAgeHours = Math.round((Date.now() - cachedData.timestamp) / 3600000);
@@ -794,14 +842,15 @@
         // Initialize your sheets when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             
-            // Crusade Forces with enhanced features and 24-hour caching
+            // Crusade Forces with form integration and hidden timestamp column
             SheetsManager.embed('crusade-forces-sheet', 'https://script.google.com/macros/s/AKfycbxknuizxsXYBOkt3PbaTyC4o_Ldoqo6XJ8dLfh6Nc-mmQMNzpKy2G40I4g0mcbH1Ij2/exec', {
                 maxHeight: '350px',     // Good height for mobile
                 showStats: true,        // Show force statistics
                 sortable: true,         // Allow sorting by any column
-                linkColumn: 1,          // Make the second column (Force Name) into links
+                linkColumn: 2,          // Force Name is now column 2 (after hidden Timestamp)
                 linkPattern: 'forces/{slug}.html',  // URL pattern for force pages
-                cacheMinutes: 1440      // Cache data for 24 hours (1440 minutes)
+                cacheMinutes: 1440,     // Cache data for 24 hours (1440 minutes)
+                hideColumns: [0]        // Hide the first column (Timestamp)
             });
             
             // Future sheets for other sections:
