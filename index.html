@@ -745,8 +745,9 @@
             
             // Cache management methods
             getCacheKey() {
-                // Create a unique cache key based on the Apps Script URL
-                return `sheets_cache_${btoa(this.appsScriptUrl).replace(/[^a-zA-Z0-9]/g, '').substring(0, 20)}`;
+                // Create a unique cache key based on the Apps Script URL AND container ID
+                const containerKey = this.container.id || 'unknown';
+                return `sheets_cache_${containerKey}_${btoa(this.appsScriptUrl).replace(/[^a-zA-Z0-9]/g, '').substring(0, 20)}`;
             }
             
             getCachedData() {
@@ -863,8 +864,6 @@
                 cacheMinutes: 1440,     // Cache data for 24 hours (1440 minutes)
                 hideColumns: [0]        // Hide the first column (Timestamp)
             });
-			
-			
             
             // Future sheets for other sections:
             
