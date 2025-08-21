@@ -382,6 +382,7 @@
                     linkPattern: '{slug}.html',  // URL pattern where {slug} gets replaced
                     cacheMinutes: 5,      // cache data for 5 minutes (0 = no cache)
                     hideColumns: [],      // array of column indices to hide (e.g., [0, 2])
+                    dateColumns: [],      // array of column indices to format as dates (e.g., [2, 3])
                     ...options
                 };
                 this.rawData = null;
@@ -576,13 +577,19 @@
                             
                             const escapedCell = String(cell || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                             
+                            // Format date columns
+                            let displayCell = escapedCell;
+                            if (this.options.dateColumns.includes(cellIndex) && cell) {
+                                displayCell = this.formatDate(cell);
+                            }
+                            
                             // Check if this column should be converted to links
                             if (this.options.linkColumn === cellIndex && cell) {
                                 const slug = this.createSlug(cell);
                                 const url = this.options.linkPattern.replace('{slug}', slug);
-                                html += `<td><a href="${url}" style="color: #4ecdc4; text-decoration: none;">${escapedCell}</a></td>`;
+                                html += `<td><a href="${url}" style="color: #4ecdc4; text-decoration: none;">${displayCell}</a></td>`;
                             } else {
-                                html += `<td>${escapedCell}</td>`;
+                                html += `<td>${displayCell}</td>`;
                             }
                         });
                         html += '</tr>';
@@ -743,6 +750,41 @@
                     .replace(/^-+|-+$/g, '');       // Remove leading/trailing hyphens
             }
             
+            // Format date to yyyy-MM-dd
+            formatDate(dateValue) {
+                try {
+                    // Handle various date formats
+                    let date;
+                    
+                    if (dateValue instanceof Date) {
+                        date = dateValue;
+                    } else if (typeof dateValue === 'string') {
+                        // Try parsing the string
+                        date = new Date(dateValue);
+                    } else if (typeof dateValue === 'number') {
+                        // Excel/Google Sheets serial date number
+                        date = new Date((dateValue - 25569) * 86400 * 1000);
+                    } else {
+                        return String(dateValue);
+                    }
+                    
+                    // Check if date is valid
+                    if (isNaN(date.getTime())) {
+                        return String(dateValue);
+                    }
+                    
+                    // Format as yyyy-MM-dd
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    
+                    return `${year}-${month}-${day}`;
+                } catch (error) {
+                    console.warn('Date formatting error:', error);
+                    return String(dateValue);
+                }
+            }
+            
             // Cache management methods
             getCacheKey() {
                 // Create a unique cache key based on the Apps Script URL AND container ID
@@ -851,7 +893,8 @@
                 linkColumn: 1,          // Force Name is now column 2 (after hidden Timestamp)
                 linkPattern: 'crusades/{slug}.html',  // URL pattern for crusades pages
                 cacheMinutes: 1440,     // Cache data for 24 hours (1440 minutes)
-                hideColumns: []        // Hide the first column (Timestamp)
+                hideColumns: [],      // Hide the first column (Timestamp)
+				dateColumns: [3,4]
             });
             
             // Crusade Forces with form integration and hidden timestamp column
