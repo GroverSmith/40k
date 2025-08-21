@@ -347,18 +347,9 @@
         <p>Welcome to your digital command center for Warhammer 40,000 Crusade campaigns!</p>
         
         <div class="features">
-            <h2>Active Crusades</h2>
-            <p>No active crusades currently running.</p>
-        </div>
-        
-        <div class="features">
-            <h2>Upcoming Crusades</h2>
-            <p>No upcoming crusades planned.</p>
-        </div>
-        
-        <div class="features">
-            <h2>Past Crusades</h2>
-            <p>No completed crusades to display.</p>
+            <h2>Crusades</h2>
+			<div id="crusades-sheet"></div>
+			<div style="clear: both;"></div>
         </div>
         
         <div class="features">
@@ -413,30 +404,39 @@
                 this.container.appendChild(contentDiv);
                 this.contentDiv = contentDiv;
                 
-                // Create button container for both buttons
+                // Create button container
                 const buttonContainer = document.createElement('div');
                 buttonContainer.style.marginTop = '10px';
                 buttonContainer.style.overflow = 'hidden'; // Clear float
                 
-                // Add the "Add New Force" button (left-aligned)
-                const addForceBtn = document.createElement('a');
-                addForceBtn.href = 'https://docs.google.com/forms/d/e/1FAIpQLSf0CasoHdP0VuxvBaEbmAxc2Tsi0AeA1saHBa1EMfC4do4EOw/viewform?usp=dialog';
-                addForceBtn.target = '_blank';
-                addForceBtn.className = 'add-force-btn';
-                addForceBtn.textContent = '+ Add New Force';
-                buttonContainer.appendChild(addForceBtn);
+                let hasButtons = false;
+                
+                // Add the "Add New Force" button (left-aligned) - only for Crusade Forces
+                if (this.container.id === 'crusade-forces-sheet') {
+                    const addForceBtn = document.createElement('a');
+                    addForceBtn.href = 'https://docs.google.com/forms/d/e/1FAIpQLSf0CasoHdP0VuxvBaEbmAxc2Tsi0AeA1saHBa1EMfC4do4EOw/viewform?usp=dialog';
+                    addForceBtn.target = '_blank';
+                    addForceBtn.className = 'add-force-btn';
+                    addForceBtn.textContent = '+ Add New Force';
+                    buttonContainer.appendChild(addForceBtn);
+                    hasButtons = true;
+                }
                 
                 // Add refresh button if enabled (right-aligned)
                 if (this.options.showRefreshButton) {
                     const refreshBtn = document.createElement('button');
                     refreshBtn.className = 'sheets-refresh';
                     refreshBtn.textContent = 'Refresh Data';
-                    refreshBtn.onclick = () => this.refresh(); // Use refresh() instead of loadData()
+                    refreshBtn.onclick = () => this.refresh();
                     buttonContainer.appendChild(refreshBtn);
                     this.refreshBtn = refreshBtn;
+                    hasButtons = true;
                 }
                 
-                this.container.appendChild(buttonContainer);
+                // Only append button container if we have buttons
+                if (hasButtons) {
+                    this.container.appendChild(buttonContainer);
+                }
                 
                 if (this.options.autoLoad) {
                     this.loadData();
@@ -841,6 +841,17 @@
 
         // Initialize your sheets when the page loads
         document.addEventListener('DOMContentLoaded', function() {
+		
+		
+		SheetsManager.embed('crusades-sheet', 'https://script.google.com/macros/s/AKfycbyYInudtrcqZvk4BYepzUxEGSLRPkIUuQknOtUOL-I0Rl4LVDGqyD0QMso3ds_Cu_BqZw/exec', {
+                maxHeight: '350px',     // Good height for mobile
+                showStats: true,        // Show force statistics
+                sortable: true,         // Allow sorting by any column
+                linkColumn: 1,          // Force Name is now column 2 (after hidden Timestamp)
+                linkPattern: 'crusades/{slug}.html',  // URL pattern for crusades pages
+                cacheMinutes: 1440,     // Cache data for 24 hours (1440 minutes)
+                hideColumns: []        // Hide the first column (Timestamp)
+            });
             
             // Crusade Forces with form integration and hidden timestamp column
             SheetsManager.embed('crusade-forces-sheet', 'https://script.google.com/macros/s/AKfycbw81ZEFEAzOrfvOxWBHHT17kGqLrk3g-VpXuDeUbK_8YehP1dNe8FEUMf6PuDzZ4JnH/exec', {
@@ -852,6 +863,8 @@
                 cacheMinutes: 1440,     // Cache data for 24 hours (1440 minutes)
                 hideColumns: [0]        // Hide the first column (Timestamp)
             });
+			
+			
             
             // Future sheets for other sections:
             
