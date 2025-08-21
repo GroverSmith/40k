@@ -431,7 +431,7 @@
                     const refreshBtn = document.createElement('button');
                     refreshBtn.className = 'sheets-refresh';
                     refreshBtn.textContent = 'Refresh Data';
-                    refreshBtn.onclick = () => this.loadData();
+                    refreshBtn.onclick = () => this.refresh(); // Use refresh() instead of loadData()
                     buttonContainer.appendChild(refreshBtn);
                     this.refreshBtn = refreshBtn;
                 }
@@ -843,7 +843,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             
             // Crusade Forces with form integration and hidden timestamp column
-            SheetsManager.embed('crusade-forces-sheet', 'https://script.google.com/macros/s/AKfycbw81ZEFEAzOrfvOxWBHHT17kGqLrk3g-VpXuDeUbK_8YehP1dNe8FEUMf6PuDzZ4JnH/exec', {
+            SheetsManager.embed('crusade-forces-sheet', 'https://script.google.com/macros/s/AKfycbxknuizxsXYBOkt3PbaTyC4o_Ldoqo6XJ8dLfh6Nc-mmQMNzpKy2G40I4g0mcbH1Ij2/exec', {
                 maxHeight: '350px',     // Good height for mobile
                 showStats: true,        // Show force statistics
                 sortable: true,         // Allow sorting by any column
