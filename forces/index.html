@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crusade Force - 40k Crusade Campaign Tracker</title>
+    <meta name="description" content="Detailed view of Crusade Force - battle history, roster, and campaign progress.">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-button">← Back to Campaign Tracker</a>
+        
+        <!-- Force Header -->
+        <div class="force-header" id="force-header">
+            <div class="loading-spinner"></div>
+            <span>Loading force data...</span>
+        </div>
+        
+        <!-- Force Stats -->
+        <div class="force-stats" id="force-stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-value" id="crusade-points">-</div>
+                <div class="stat-label">Crusade Points</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="power-level">-</div>
+                <div class="stat-label">Power Level</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="battles-fought">-</div>
+                <div class="stat-label">Battles Fought</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="victories">-</div>
+                <div class="stat-label">Victories</div>
+            </div>
+        </div>
+        
+        <!-- Force Details -->
+        <div class="data-section" id="force-details-section" style="display: none;">
+            <div class="section-header">
+                <h3>📋 Force Details</h3>
+            </div>
+            <div class="section-content">
+                <div class="force-details-grid" id="force-details">
+                    <!-- Details will be populated here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Battle History -->
+        <div class="data-section" id="battle-history-section" style="display: none;">
+            <div class="section-header">
+                <h3>⚔️ Battle History</h3>
+            </div>
+            <div class="section-content">
+                <div id="battle-history-sheet"></div>
+            </div>
+        </div>
+        
+        <!-- Unit Roster -->
+        <div class="data-section" id="roster-section" style="display: none;">
+            <div class="section-header">
+                <h3>🛡️ Unit Roster</h3>
+            </div>
+            <div class="section-content">
+                <div id="roster-sheet"></div>
+            </div>
+        </div>
+        
+        <!-- Campaign Progress -->
+        <div class="data-section" id="progress-section" style="display: none;">
+            <div class="section-header">
+                <h3>📈 Campaign Progress</h3>
+            </div>
+            <div class="section-content">
+                <div id="progress-sheet"></div>
+            </div>
+        </div>
+        
+        <!-- Error Display -->
+        <div class="error-message" id="error-message" style="display: none;">
+            <strong>Error:</strong> <span id="error-text"></span>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="../js/google-sheets-embed.js"></script>
+    <script src="../js/sheets-manager.js"></script>
+    <script src="../js/crusade-force.js"></script>
+</body>
+</html>

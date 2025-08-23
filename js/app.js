@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     );
     
-    // Initialize Crusade Forces sheet with form integration
+    // Initialize Crusade Forces sheet with form integration - Updated to use query parameter
     SheetsManager.embed('crusade-forces-sheet', 
         'https://script.google.com/macros/s/AKfycbw81ZEFEAzOrfvOxWBHHT17kGqLrk3g-VpXuDeUbK_8YehP1dNe8FEUMf6PuDzZ4JnH/exec', 
         {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showStats: true,
             sortable: true,
             linkColumn: 2,          // Force Name column (after hiding timestamp)
-            linkPattern: 'forces/{slug}.html',
+            linkPattern: 'forces/index.html?force={slug}',  // Updated to use query parameter
             cacheMinutes: 1440,     // Cache for 24 hours
             hideColumns: [0]        // Hide timestamp column
         }
@@ -74,6 +74,28 @@ const CrusadeApp = {
     clearAllCaches() {
         console.log('Clearing all application caches...');
         SheetsManager.clearAllCaches();
+    },
+    
+    // Navigate to a specific crusade force page
+    viewForce(forceName) {
+        const encodedName = encodeURIComponent(forceName);
+        window.location.href = `forces/?force=${encodedName}`;
+    },
+    
+    // Navigate to a specific crusade page
+    viewCrusade(crusadeName) {
+        const slug = this.createSlug(crusadeName);
+        window.location.href = `crusades/${slug}.html`;
+    },
+    
+    // Create URL-friendly slug from text
+    createSlug(text) {
+        return String(text)
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
     }
 };
 
