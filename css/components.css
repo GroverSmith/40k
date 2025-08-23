@@ -206,3 +206,84 @@
     font-size: 12px;
 }
 
+
+
+/* Army List Button Styles - Add to components.css */
+
+.add-army-list-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #4ecdc4 0%, #44b3ac 100%);
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+}
+
+.add-army-list-btn:hover {
+    background: linear-gradient(135deg, #44b3ac 0%, #3a9d96 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(78, 205, 196, 0.4);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.section-action-btn {
+    display: inline-block;
+    background-color: #2c5aa0;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: normal;
+    float: right;
+    margin-top: -2px;
+    transition: background-color 0.3s ease;
+}
+
+.section-action-btn:hover {
+    background-color: #1e4080;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* Update section header to accommodate the button */
+.section-header {
+    background-color: #3a3a3a;
+    padding: 15px 20px;
+    border-bottom: 2px solid #4ecdc4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #4ecdc4;
+    font-size: 1.3em;
+    flex: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .add-army-list-btn {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .section-action-btn {
+        float: none;
+        margin-top: 0;
+        align-self: flex-end;
+    }
+}
