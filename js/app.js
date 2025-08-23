@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showStats: true,
             sortable: true,
             linkColumn: 2,          // Force Name column (after hiding timestamp)
-            linkPattern: 'forces/index.html?force={slug}',  // Updated to use query parameter
+            linkPattern: 'forces/index.html?force={slug}',  // Use {slug} but it will contain the URL-encoded name
             cacheMinutes: 1440,     // Cache for 24 hours
             hideColumns: [0]        // Hide timestamp column
         }

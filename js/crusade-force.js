@@ -92,16 +92,19 @@ class CrusadeForceApp {
             }
         });
         
-        // Find the force by name (case-insensitive, checking the Force Name column which is index 2)
+        // Find the force by name - the force name comes URL-encoded, so decode it for matching
+        const decodedForceName = decodeURIComponent(this.forceName);
+        console.log('Decoded force name for matching:', decodedForceName);
+        
         const forceRow = data.find(row => 
-            row[2] && row[2].toString().toLowerCase().trim() === this.forceName.toLowerCase().trim()
+            row[2] && row[2].toString().toLowerCase().trim() === decodedForceName.toLowerCase().trim()
         );
         
         if (!forceRow) {
             // Show more helpful error message with available forces
             const availableForces = data.slice(1).map(row => row[2]).filter(name => name);
             console.log('Available forces:', availableForces);
-            throw new Error(`Force "${this.forceName}" not found in the database. Available forces: ${availableForces.join(', ')}`);
+            throw new Error(`Force "${decodedForceName}" not found in the database. Available forces: ${availableForces.join(', ')}`);
         }
         
         // Map the actual columns from your Crusade Forces sheet
@@ -376,7 +379,6 @@ class CrusadeForceApp {
         return this.forceData;
     }
     
-    // Method to update configuration (useful for testing different sheet URLs)
     updateConfig(newConfig) {
         this.config = { ...this.config, ...newConfig };
         console.log('Configuration updated:', this.config);

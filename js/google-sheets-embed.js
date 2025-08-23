@@ -217,8 +217,9 @@ class GoogleSheetsEmbed {
                     
                     // Check if this column should be converted to links
                     if (this.options.linkColumn === cellIndex && cell) {
-                        const slug = this.createSlug(cell);
-                        const url = this.options.linkPattern.replace('{slug}', slug);
+                        // Use URL-encoded actual name instead of slug for better matching
+                        const encodedName = encodeURIComponent(cell);
+                        const url = this.options.linkPattern.replace('{slug}', encodedName);
                         html += '<td><a href="' + url + '" style="color: #4ecdc4; text-decoration: none;">' + displayCell + '</a></td>';
                     } else {
                         html += '<td>' + displayCell + '</td>';
