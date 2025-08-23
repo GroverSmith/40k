@@ -8,9 +8,11 @@ class CrusadeForceApp {
         this.config = {
             // Google Sheets URLs - you can easily update these
             forceSheetUrl: 'https://script.google.com/macros/s/AKfycbw81ZEFEAzOrfvOxWBHHT17kGqLrk3g-VpXuDeUbK_8YehP1dNe8FEUMf6PuDzZ4JnH/exec',
-            battleHistoryUrl: null, // Add your battle history sheet URL here
-            rosterUrl: null,        // Add your roster sheet URL here
-            progressUrl: null       // Add your progress tracking sheet URL here
+            battleHistoryUrl: null,     // Add your battle history sheet URL here
+            armyListsUrl: null,         // Add your army lists sheet URL here
+            charactersUnitsUrl: null,   // Add your characters and units sheet URL here
+            storiesUrl: null,           // Add your stories sheet URL here
+            forceLogsUrl: null          // Add your force logs sheet URL here
         };
         this.init();
     }
@@ -34,16 +36,38 @@ class CrusadeForceApp {
     
     async loadForceData() {
         try {
-            // Load main force data from the Crusade Forces sheet
-            await this.loadMainForceData();
+            console.log('Starting loadForceData...');
             
-            // Load additional data sheets
+            // Load main force data from the Crusade Forces sheet
+            console.log('Loading main force data...');
+            await this.loadMainForceData();
+            console.log('Main force data loaded successfully');
+            
+            // Load additional data sheets in the new order
+            console.log('Loading battle history...');
             await this.loadBattleHistory();
-            await this.loadRosterData();
-            await this.loadProgressData();
+            console.log('Battle history loaded');
+            
+            console.log('Loading army lists...');
+            await this.loadArmyLists();
+            console.log('Army lists loaded');
+            
+            console.log('Loading characters and units...');
+            await this.loadCharactersUnits();
+            console.log('Characters and units loaded');
+            
+            console.log('Loading stories...');
+            await this.loadStories();
+            console.log('Stories loaded');
+            
+            console.log('Loading force logs...');
+            await this.loadForceLogs();
+            console.log('Force logs loaded');
+            
+            console.log('All data loading complete!');
             
         } catch (error) {
-            console.error('Error loading force data:', error);
+            console.error('Error in loadForceData:', error);
             this.showError('Failed to load force data: ' + error.message);
         }
     }
@@ -56,48 +80,72 @@ class CrusadeForceApp {
         
         const data = await response.json();
         
-        // Find the force by name (case-insensitive)
+        // Debug logging to see what data we're working with
+        console.log('Raw sheet data:', data);
+        console.log('Looking for force name:', this.forceName);
+        console.log('Available force names in sheet:');
+        data.forEach((row, index) => {
+            if (index === 0) {
+                console.log('Header row:', row);
+            } else {
+                console.log(`Row ${index}: Force name in column 2 =`, row[2]);
+            }
+        });
+        
+        // Find the force by name (case-insensitive, checking the Force Name column which is index 2)
         const forceRow = data.find(row => 
-            row[1] && row[1].toString().toLowerCase() === this.forceName.toLowerCase()
+            row[2] && row[2].toString().toLowerCase().trim() === this.forceName.toLowerCase().trim()
         );
         
         if (!forceRow) {
-            throw new Error(`Force "${this.forceName}" not found in the database`);
+            // Show more helpful error message with available forces
+            const availableForces = data.slice(1).map(row => row[2]).filter(name => name);
+            console.log('Available forces:', availableForces);
+            throw new Error(`Force "${this.forceName}" not found in the database. Available forces: ${availableForces.join(', ')}`);
         }
         
+        // Map the actual columns from your Crusade Forces sheet
+        // Corrected column mapping: Force Name is in column 2 (index 2)
         this.forceData = {
-            name: forceRow[1],
-            player: forceRow[2],
-            faction: forceRow[3],
-            crusadePoints: forceRow[4] || 0,
-            powerLevel: forceRow[5] || 0,
-            battlesWon: forceRow[6] || 0,
-            battlesLost: forceRow[7] || 0,
-            battlesTied: forceRow[8] || 0,
-            notes: forceRow[9] || '',
-            created: forceRow[10] || ''
+            timestamp: forceRow[0] || '',    // Timestamp (usually hidden)
+            playerName: forceRow[1] || '',   // Player Name (column 1)
+            forceName: forceRow[2] || '',    // Force Name (column 2) - THIS is what we match on
+            faction: forceRow[3] || '',      // Faction (column 3)
+            detachment: forceRow[4] || '',   // Detachment (column 4)
+            // Additional columns if they exist in your sheet
+            crusadePoints: forceRow[5] || 0,
+            powerLevel: forceRow[6] || 0,
+            battlesWon: forceRow[7] || 0,
+            battlesLost: forceRow[8] || 0,
+            battlesTied: forceRow[9] || 0,
+            notes: forceRow[10] || '',
+            // Use timestamp as created date if no other date column exists
+            created: forceRow[0] || ''
         };
+        
+        console.log('Successfully found and loaded force data:', this.forceData);
         
         this.updateForceHeader();
         this.updateForceStats();
-        this.updateForceDetails();
         
         // Show the sections now that we have data
         document.getElementById('force-stats').style.display = 'grid';
-        document.getElementById('force-details-section').style.display = 'block';
     }
     
     updateForceHeader() {
         const header = document.getElementById('force-header');
+        const launchDate = this.formatLaunchDate(this.forceData.timestamp);
+        
         header.innerHTML = `
-            <h1>${this.forceData.name}</h1>
+            <h1>${this.forceData.forceName}</h1>
             <div class="force-subtitle">
-                ${this.forceData.faction} • Commanded by ${this.forceData.player}
+                ${this.forceData.faction}${this.forceData.detachment ? ` - ${this.forceData.detachment}` : ''} • Commanded by ${this.forceData.playerName}
             </div>
+            ${launchDate ? `<div class="force-launch-date">Crusade Force Launched on ${launchDate}</div>` : ''}
         `;
         
         // Update page title
-        document.title = `${this.forceData.name} - Crusade Force`;
+        document.title = `${this.forceData.forceName} - Crusade Force`;
     }
     
     updateForceStats() {
@@ -105,32 +153,11 @@ class CrusadeForceApp {
                           (this.forceData.battlesLost || 0) + 
                           (this.forceData.battlesTied || 0);
         
-        document.getElementById('crusade-points').textContent = this.forceData.crusadePoints;
-        document.getElementById('power-level').textContent = this.forceData.powerLevel;
-        document.getElementById('battles-fought').textContent = totalBattles;
+        // Display battle statistics
+        document.getElementById('battles-fought').textContent = totalBattles || 0;
         document.getElementById('victories').textContent = this.forceData.battlesWon || 0;
-    }
-    
-    updateForceDetails() {
-        const detailsContainer = document.getElementById('force-details');
-        
-        const details = [
-            { label: 'Force Name', value: this.forceData.name },
-            { label: 'Commander', value: this.forceData.player },
-            { label: 'Faction', value: this.forceData.faction },
-            { label: 'Battles Won', value: this.forceData.battlesWon || 0 },
-            { label: 'Battles Lost', value: this.forceData.battlesLost || 0 },
-            { label: 'Battles Tied', value: this.forceData.battlesTied || 0 },
-            { label: 'Force Created', value: this.formatDate(this.forceData.created) },
-            { label: 'Notes', value: this.forceData.notes || 'No additional notes' }
-        ];
-        
-        detailsContainer.innerHTML = details.map(detail => `
-            <div class="detail-item">
-                <span class="detail-label">${detail.label}:</span>
-                <span class="detail-value">${detail.value}</span>
-            </div>
-        `).join('');
+        document.getElementById('battle-losses').textContent = this.forceData.battlesLost || 0;
+        document.getElementById('battle-ties').textContent = this.forceData.battlesTied || 0;
     }
     
     async loadBattleHistory() {
@@ -138,25 +165,20 @@ class CrusadeForceApp {
             document.getElementById('battle-history-section').style.display = 'block';
             
             if (this.config.battleHistoryUrl) {
-                // Example of how to integrate with a battle history sheet
                 SheetsManager.embed('battle-history-sheet', 
                     this.config.battleHistoryUrl, 
                     {
                         maxHeight: '300px',
                         showStats: true,
                         sortable: true,
-                        cacheMinutes: 60,
-                        hideColumns: [], // Adjust based on your sheet structure
-                        // You might want to filter battles for this specific force
-                        // This would require modifying the GoogleSheetsEmbed class to support filtering
+                        cacheMinutes: 60
                     }
                 );
             } else {
-                // Show placeholder
                 document.getElementById('battle-history-sheet').innerHTML = `
                     <div class="no-data-message">
                         <p>📊 Battle history tracking will be implemented here.</p>
-                        <p>This would show detailed battle reports, outcomes, and experience gained for <strong>${this.forceData.name}</strong>.</p>
+                        <p>This would show detailed battle reports, outcomes, and experience gained for <strong>${this.forceData.forceName}</strong>.</p>
                         <p><em>Configure battleHistoryUrl in crusade-force.js to enable this feature.</em></p>
                     </div>
                 `;
@@ -167,13 +189,13 @@ class CrusadeForceApp {
         }
     }
     
-    async loadRosterData() {
+    async loadArmyLists() {
         try {
-            document.getElementById('roster-section').style.display = 'block';
+            document.getElementById('army-lists-section').style.display = 'block';
             
-            if (this.config.rosterUrl) {
-                SheetsManager.embed('roster-sheet', 
-                    this.config.rosterUrl, 
+            if (this.config.armyListsUrl) {
+                SheetsManager.embed('army-lists-sheet', 
+                    this.config.armyListsUrl, 
                     {
                         maxHeight: '400px',
                         showStats: true,
@@ -182,46 +204,104 @@ class CrusadeForceApp {
                     }
                 );
             } else {
-                document.getElementById('roster-sheet').innerHTML = `
+                document.getElementById('army-lists-sheet').innerHTML = `
                     <div class="no-data-message">
-                        <p>🛡️ Unit roster management will be implemented here.</p>
-                        <p>This would show the current units, their experience, battle honors, and battle scars for <strong>${this.forceData.name}</strong>.</p>
-                        <p><em>Configure rosterUrl in crusade-force.js to enable this feature.</em></p>
+                        <p>📋 Army lists will be displayed here.</p>
+                        <p>This would show different army list configurations and loadouts for <strong>${this.forceData.forceName}</strong>.</p>
+                        <p><em>Configure armyListsUrl in crusade-force.js to enable this feature.</em></p>
                     </div>
                 `;
             }
         } catch (error) {
-            console.error('Error loading roster data:', error);
-            this.showDataError('roster-sheet', 'Failed to load roster data');
+            console.error('Error loading army lists:', error);
+            this.showDataError('army-lists-sheet', 'Failed to load army lists');
         }
     }
     
-    async loadProgressData() {
+    async loadCharactersUnits() {
         try {
-            document.getElementById('progress-section').style.display = 'block';
+            document.getElementById('characters-units-section').style.display = 'block';
             
-            if (this.config.progressUrl) {
-                SheetsManager.embed('progress-sheet', 
-                    this.config.progressUrl, 
+            if (this.config.charactersUnitsUrl) {
+                SheetsManager.embed('characters-units-sheet', 
+                    this.config.charactersUnitsUrl, 
                     {
-                        maxHeight: '300px',
+                        maxHeight: '400px',
                         showStats: true,
                         sortable: true,
                         cacheMinutes: 60
                     }
                 );
             } else {
-                document.getElementById('progress-sheet').innerHTML = `
+                document.getElementById('characters-units-sheet').innerHTML = `
                     <div class="no-data-message">
-                        <p>📈 Campaign progress tracking will be implemented here.</p>
-                        <p>This would show agendas, requisitions earned, and campaign milestones for <strong>${this.forceData.name}</strong>.</p>
-                        <p><em>Configure progressUrl in crusade-force.js to enable this feature.</em></p>
+                        <p>🛡️ Characters and units will be displayed here.</p>
+                        <p>This would show individual characters, units, their experience, battle honors, and battle scars for <strong>${this.forceData.forceName}</strong>.</p>
+                        <p><em>Configure charactersUnitsUrl in crusade-force.js to enable this feature.</em></p>
                     </div>
                 `;
             }
         } catch (error) {
-            console.error('Error loading progress data:', error);
-            this.showDataError('progress-sheet', 'Failed to load progress tracking data');
+            console.error('Error loading characters and units:', error);
+            this.showDataError('characters-units-sheet', 'Failed to load characters and units');
+        }
+    }
+    
+    async loadStories() {
+        try {
+            document.getElementById('stories-section').style.display = 'block';
+            
+            if (this.config.storiesUrl) {
+                SheetsManager.embed('stories-sheet', 
+                    this.config.storiesUrl, 
+                    {
+                        maxHeight: '400px',
+                        showStats: true,
+                        sortable: true,
+                        cacheMinutes: 60
+                    }
+                );
+            } else {
+                document.getElementById('stories-sheet').innerHTML = `
+                    <div class="no-data-message">
+                        <p>📖 Force stories and narratives will be displayed here.</p>
+                        <p>This would show battle reports, character development, and campaign narratives for <strong>${this.forceData.forceName}</strong>.</p>
+                        <p><em>Configure storiesUrl in crusade-force.js to enable this feature.</em></p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error loading stories:', error);
+            this.showDataError('stories-sheet', 'Failed to load stories');
+        }
+    }
+    
+    async loadForceLogs() {
+        try {
+            document.getElementById('force-logs-section').style.display = 'block';
+            
+            if (this.config.forceLogsUrl) {
+                SheetsManager.embed('force-logs-sheet', 
+                    this.config.forceLogsUrl, 
+                    {
+                        maxHeight: '350px',
+                        showStats: true,
+                        sortable: true,
+                        cacheMinutes: 60
+                    }
+                );
+            } else {
+                document.getElementById('force-logs-sheet').innerHTML = `
+                    <div class="no-data-message">
+                        <p>📝 Force activity logs will be displayed here.</p>
+                        <p>This would show requisitions, battle scars, battle honors, and other force modifications for <strong>${this.forceData.forceName}</strong>.</p>
+                        <p><em>Configure forceLogsUrl in crusade-force.js to enable this feature.</em></p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error loading force logs:', error);
+            this.showDataError('force-logs-sheet', 'Failed to load force logs');
         }
     }
     
@@ -236,6 +316,31 @@ class CrusadeForceApp {
         }
     }
     
+    formatLaunchDate(dateString) {
+        if (!dateString) return null;
+        
+        try {
+            const date = new Date(dateString);
+            
+            // Check if date is valid
+            if (isNaN(date.getTime())) {
+                return null;
+            }
+            
+            // Format as "dd MMM yyyy" (e.g., "15 Jan 2024")
+            const day = String(date.getDate()).padStart(2, '0');
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+            
+            return `${day} ${month} ${year}`;
+        } catch (error) {
+            console.warn('Launch date formatting error:', error);
+            return null;
+        }
+    }
+    
     showError(message) {
         document.getElementById('error-message').style.display = 'block';
         document.getElementById('error-text').textContent = message;
@@ -243,10 +348,11 @@ class CrusadeForceApp {
         // Hide other sections
         document.getElementById('force-header').style.display = 'none';
         document.getElementById('force-stats').style.display = 'none';
-        document.getElementById('force-details-section').style.display = 'none';
         document.getElementById('battle-history-section').style.display = 'none';
-        document.getElementById('roster-section').style.display = 'none';
-        document.getElementById('progress-section').style.display = 'none';
+        document.getElementById('army-lists-section').style.display = 'none';
+        document.getElementById('characters-units-section').style.display = 'none';
+        document.getElementById('stories-section').style.display = 'none';
+        document.getElementById('force-logs-section').style.display = 'none';
     }
     
     showDataError(containerId, message) {
