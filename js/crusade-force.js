@@ -71,7 +71,7 @@ class CrusadeForceApp {
     }
     
     async loadMainForceData() {
-        const forceSheetUrl = CrusadeConfig.getSheetUrl('crusadeForces');
+        const forceSheetUrl = CrusadeConfig.getSheetUrl('forces');
         
         if (!forceSheetUrl) {
             throw new Error('Crusade Forces sheet URL not configured in CrusadeConfig');
@@ -117,7 +117,7 @@ class CrusadeForceApp {
             if (index === 0) {
                 console.log('Header row:', row);
             } else {
-                console.log(`Row ${index}: Force name in column 2 =`, row[2]);
+                console.log(`Row ${index}: Force name in column 1 =`, row[1]);
             }
         });
         
@@ -126,34 +126,26 @@ class CrusadeForceApp {
         console.log('Decoded force name for matching:', decodedForceName);
         
         const forceRow = data.find(row => 
-            row[2] && row[2].toString().toLowerCase().trim() === decodedForceName.toLowerCase().trim()
+            row[1] && row[1].toString().toLowerCase().trim() === decodedForceName.toLowerCase().trim()
         );
         
         if (!forceRow) {
             // Show more helpful error message with available forces
-            const availableForces = data.slice(1).map(row => row[2]).filter(name => name);
+            const availableForces = data.slice(1).map(row => row[1]).filter(name => name);
             console.log('Available forces:', availableForces);
             throw new Error(`Force "${decodedForceName}" not found in the database. Available forces: ${availableForces.join(', ')}`);
         }
         
-        // Map the actual columns from your Crusade Forces sheet
-        // Corrected column mapping: Force Name is in column 2 (index 2)
-        this.forceData = {
-            timestamp: forceRow[0] || '',    // Timestamp (usually hidden)
-            playerName: forceRow[1] || '',   // Player Name (column 1)
-            forceName: forceRow[2] || '',    // Force Name (column 2) - THIS is what we match on
-            faction: forceRow[3] || '',      // Faction (column 3)
-            detachment: forceRow[4] || '',   // Detachment (column 4)
-            // Additional columns if they exist in your sheet
-            crusadePoints: forceRow[5] || 0,
-            powerLevel: forceRow[6] || 0,
-            battlesWon: forceRow[7] || 0,
-            battlesLost: forceRow[8] || 0,
-            battlesTied: forceRow[9] || 0,
-            notes: forceRow[10] || '',
-            // Use timestamp as created date if no other date column exists
-            created: forceRow[0] || ''
-        };
+        // Map the actual columns from your Forces sheet
+		this.forceData = {
+			
+			playerName: forceRow[0] || '',   
+			forceName: forceRow[1] || '',    
+			faction: forceRow[2] || '',      
+			detachment: forceRow[3] || '',   
+			notes: forceRow[4] || '',        
+			timestamp: forceRow[5] || '',   	
+		};
         
         console.log('Successfully found and loaded force data:', this.forceData);
         
