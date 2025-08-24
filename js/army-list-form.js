@@ -6,7 +6,7 @@ class ArmyListForm {
         this.config = {
             // Google Sheets Configuration
             forceSheetUrl: 'https://script.google.com/macros/s/AKfycbw81ZEFEAzOrfvOxWBHHT17kGqLrk3g-VpXuDeUbK_8YehP1dNe8FEUMf6PuDzZ4JnH/exec',
-            armyListSheetUrl: null, // You'll need to create a Google Apps Script for army lists
+            armyListSheetUrl: 'https://script.google.com/macros/s/AKfycbyDp0u1_BAGU3oaxQrmzTfgvkAV-OnTzBojrEj0dbh01wWO8XK_67C9HlyNhImYmZiC/exec', 
             
             // Form validation settings
             maxCharacters: 50000,  // Maximum characters allowed in army list text

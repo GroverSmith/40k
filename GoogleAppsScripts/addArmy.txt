@@ -2,7 +2,7 @@
 // Deploy this as a web app to handle form submissions
 
 // Configuration - UPDATE THESE VALUES
-const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE'; // Replace with your Google Sheet ID
+const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE';
 const SHEET_NAME = 'Army Lists'; // Name of the sheet tab for army lists
 
 function doPost(e) {
@@ -104,7 +104,7 @@ function doPost(e) {
     // Log success
     console.log('Successfully added army list:', data.armyName, 'for force:', data.forceName);
     
-    // Return success response
+    // Return success response with CORS headers
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
@@ -112,20 +112,29 @@ function doPost(e) {
         rowNumber: newRowNumber,
         timestamp: data.timestamp
       }))
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      });
       
   } catch (error) {
     // Log the error
     console.error('Error processing army list submission:', error);
     
-    // Return error response
+    // Return error response with CORS headers
     return ContentService
       .createTextOutput(JSON.stringify({
         success: false,
         error: error.message || 'Unknown error occurred'
       }))
       .setMimeType(ContentService.MimeType.JSON)
-      .setHttpResponseCode(400);
+      .setHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      });
   }
 }
 
@@ -134,16 +143,28 @@ function doGet(e) {
   try {
     const action = e.parameter.action || 'list';
     
+    let response;
     switch(action) {
       case 'list':
-        return getArmyLists(e.parameter);
+        response = getArmyLists(e.parameter);
+        break;
       case 'get':
-        return getArmyListById(e.parameter.id);
+        response = getArmyListById(e.parameter.id);
+        break;
       case 'test':
-        return getRecentArmyLists(); // The original test functionality
+        response = getRecentArmyLists(); // The original test functionality
+        break;
       default:
-        return getArmyLists(e.parameter);
+        response = getArmyLists(e.parameter);
     }
+    
+    // Add CORS headers to the response
+    return response.setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
+    
   } catch (error) {
     console.error('Error handling GET request:', error);
     
@@ -152,8 +173,26 @@ function doGet(e) {
         success: false,
         error: error.message
       }))
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders({
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      });
   }
+}
+
+// Add OPTIONS method handler for CORS preflight requests
+function doOptions(e) {
+  return ContentService
+    .createTextOutput('')
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '3600'
+    });
 }
 
 function getArmyLists(params = {}) {
