@@ -1,3 +1,4 @@
+// filename: army-list-form.js
 // Army List Form - Handle form submission to Google Sheets API
 // 40k Crusade Campaign Tracker
 
@@ -27,8 +28,8 @@ class ArmyListForm {
         
         // Initialize character counter
         this.updateCharacterCount();
-		
-		// Auto-populate user name if user is selected
+        
+        // Auto-populate user name if user is selected
         this.autoPopulateUserName();
     }
     
@@ -155,6 +156,29 @@ class ArmyListForm {
         textarea.style.height = 'auto';
         const newHeight = Math.min(Math.max(textarea.scrollHeight, 300), 600);
         textarea.style.height = newHeight + 'px';
+    }
+    
+    autoPopulateUserName() {
+        // Check if UserManager is available and has a current user
+        if (typeof UserManager !== 'undefined' && UserManager.hasCurrentUser()) {
+            const userNameField = document.getElementById('user-name');
+            if (userNameField && userNameField.value === '') {
+                userNameField.value = UserManager.getCurrentUserName();
+                userNameField.style.backgroundColor = 'rgba(78, 205, 196, 0.1)';
+                userNameField.title = 'Auto-populated with current user';
+                
+                // Make field readonly to prevent changes
+                userNameField.readOnly = true;
+                userNameField.style.cursor = 'not-allowed';
+                
+                console.log('Auto-populated user name:', UserManager.getCurrentUserName());
+            }
+        }
+        
+        // Listen for user changes
+        window.addEventListener('userChanged', (event) => {
+            this.autoPopulateUserName();
+        });
     }
     
     validateField(field) {
