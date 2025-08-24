@@ -1,0 +1,245 @@
+/* filename: user-field.css */
+/* User Field Auto-population Styles */
+
+/* User field indicator */
+.user-field-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.1) 0%, rgba(78, 205, 196, 0.05) 100%);
+    border: 1px solid rgba(78, 205, 196, 0.3);
+    border-radius: 6px;
+    font-size: 0.9em;
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Selected user display - acts as field replacement */
+.user-field-indicator.selected {
+    padding: 12px 16px;
+    border: 2px solid rgba(78, 205, 196, 0.3);
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.15) 0%, rgba(78, 205, 196, 0.08) 100%);
+    margin-top: 0;
+    font-size: 1em;
+}
+
+.user-field-indicator.selected .user-display {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+}
+
+.user-field-indicator.selected .indicator-icon {
+    font-size: 1.3em;
+    color: #4ecdc4;
+}
+
+.user-field-indicator.selected .indicator-text {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.user-field-indicator.selected .label {
+    color: #999999;
+    font-size: 0.9em;
+}
+
+.user-field-indicator.selected strong {
+    color: #ffffff;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.user-field-indicator.warning {
+    background: linear-gradient(135deg, rgba(255, 170, 0, 0.1) 0%, rgba(255, 170, 0, 0.05) 100%);
+    border-color: rgba(255, 170, 0, 0.3);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.indicator-icon {
+    font-size: 1.1em;
+}
+
+.indicator-text {
+    flex: 1;
+    color: #cccccc;
+}
+
+.indicator-text strong {
+    color: #4ecdc4;
+    font-weight: 600;
+}
+
+.warning .indicator-text strong {
+    color: #ffa500;
+}
+
+.change-user-link {
+    color: #4ecdc4;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 12px;
+    border: 1px solid rgba(78, 205, 196, 0.3);
+    border-radius: 4px;
+    background: rgba(78, 205, 196, 0.05);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.change-user-link:hover {
+    background-color: rgba(78, 205, 196, 0.15);
+    border-color: rgba(78, 205, 196, 0.5);
+    text-decoration: none;
+    color: #7fefea;
+}
+
+/* Locked user field styles */
+input[name="userName"]:read-only,
+input[id="user-name"]:read-only {
+    background-color: rgba(78, 205, 196, 0.1) !important;
+    border-color: rgba(78, 205, 196, 0.3) !important;
+    color: #ffffff !important;
+    cursor: not-allowed !important;
+    position: relative;
+}
+
+input[name="userName"]:read-only:focus,
+input[id="user-name"]:read-only:focus {
+    border-color: rgba(78, 205, 196, 0.5) !important;
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1) !important;
+}
+
+/* Tooltip animation */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+}
+
+.user-select-tooltip {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.user-select-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -8px;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 8px 8px 0;
+    border-color: transparent #2c5aa0 transparent transparent;
+}
+
+/* Form group adjustments for user field */
+.form-group:has(#user-name) {
+    position: relative;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .user-field-indicator {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        font-size: 0.85em;
+    }
+    
+    .change-user-link {
+        align-self: flex-end;
+        margin-top: 4px;
+    }
+    
+    .user-select-tooltip {
+        top: 60px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        text-align: center;
+    }
+    
+    .user-select-tooltip::after {
+        display: none;
+    }
+}
+
+/* Global user field state classes */
+.user-field-locked {
+    background-color: rgba(78, 205, 196, 0.1) !important;
+    border-color: rgba(78, 205, 196, 0.3) !important;
+}
+
+.user-field-warning {
+    background-color: rgba(255, 170, 0, 0.1) !important;
+    border-color: rgba(255, 170, 0, 0.3) !important;
+}
+
+/* Create a reusable component style */
+.user-input-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.user-input-group label {
+    display: block;
+    color: #4ecdc4;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+}
+
+.user-input-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #4a4a4a;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.user-input-group input:focus {
+    outline: none;
+    border-color: #4ecdc4;
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+}
+
+.user-input-group .help-text {
+    color: #aaaaaa;
+    font-size: 0.9em;
+    font-style: italic;
+    margin-top: 5px;
+}

@@ -4,9 +4,9 @@
 
 const UserManager = {
     // Storage keys
-    STORAGE_KEY: 'crusade_selected_user',
+    STORAGE_KEY: 'crusade_selected_user',  // No expiration - persists indefinitely
     USERS_CACHE_KEY: 'crusade_users_cache',
-    CACHE_DURATION: 3600000, // 1 hour in milliseconds
+    USERS_CACHE_DURATION: 3600000, // 1 hour for the user list cache
     
     // Current user data
     currentUser: null,
@@ -40,13 +40,14 @@ const UserManager = {
     
     /**
      * Load saved user from localStorage
+     * This never expires - user selection persists indefinitely
      */
     loadSavedUser() {
         try {
             const savedUser = localStorage.getItem(this.STORAGE_KEY);
             if (savedUser) {
                 this.currentUser = JSON.parse(savedUser);
-                console.log('Loaded saved user:', this.currentUser);
+                console.log('Loaded saved user (no expiration):', this.currentUser);
             }
         } catch (error) {
             console.warn('Error loading saved user:', error);
@@ -56,6 +57,7 @@ const UserManager = {
     
     /**
      * Load cached users if available and fresh
+     * User list cache expires after USERS_CACHE_DURATION
      */
     loadCachedUsers() {
         try {
@@ -64,13 +66,15 @@ const UserManager = {
                 const { users, timestamp } = JSON.parse(cachedData);
                 const age = Date.now() - timestamp;
                 
-                if (age < this.CACHE_DURATION) {
+                if (age < this.USERS_CACHE_DURATION) {
                     this.users = users;
                     this.usersLoaded = true;
-                    console.log('Loaded cached users:', this.users.length, 'users');
+                    const ageMinutes = Math.round(age / 60000);
+                    console.log(`Loaded cached users: ${this.users.length} users (cached ${ageMinutes} minutes ago)`);
                     return true;
                 } else {
-                    console.log('Cached users expired, will fetch when needed');
+                    console.log('Cached users expired, will fetch when dropdown is opened');
+                    localStorage.removeItem(this.USERS_CACHE_KEY); // Clean up expired cache
                 }
             }
         } catch (error) {
@@ -80,7 +84,7 @@ const UserManager = {
     },
     
     /**
-     * Save users to cache
+     * Save users to cache with timestamp for expiration
      */
     saveUsersToCache() {
         try {
@@ -89,7 +93,7 @@ const UserManager = {
                 timestamp: Date.now()
             };
             localStorage.setItem(this.USERS_CACHE_KEY, JSON.stringify(cacheData));
-            console.log('Saved users to cache');
+            console.log(`Saved ${this.users.length} users to cache (expires in 1 hour)`);
         } catch (error) {
             console.warn('Error saving users to cache:', error);
         }
@@ -97,12 +101,13 @@ const UserManager = {
     
     /**
      * Save current user to localStorage
+     * No expiration - persists indefinitely until explicitly changed or cleared
      */
     saveCurrentUser() {
         try {
             if (this.currentUser) {
                 localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.currentUser));
-                console.log('Saved current user to cache:', this.currentUser);
+                console.log('Saved current user (no expiration):', this.currentUser);
             } else {
                 localStorage.removeItem(this.STORAGE_KEY);
                 console.log('Removed user from cache');
@@ -368,12 +373,13 @@ const UserManager = {
     
     /**
      * Select a user as the current user
+     * Selected user persists indefinitely in localStorage
      */
     selectUser(user) {
-        console.log('Selecting user:', user);
+        console.log('Selecting user (will persist indefinitely):', user);
         
         this.currentUser = user;
-        this.saveCurrentUser();
+        this.saveCurrentUser(); // Saves without expiration
         
         // Update UI
         this.updateUserDisplayName();
@@ -425,20 +431,101 @@ const UserManager = {
     },
     
     /**
-     * Auto-populate user name fields
+     * Auto-populate all user name fields on the page
      */
-    autoPopulateUserFields() {
+    autoPopulateAllUserFields() {
         if (!this.currentUser) return;
         
-        const userFields = document.querySelectorAll('input[name="userName"], input[id="user-name"], input[name="user-name"]');
+        // Find all potential user name fields
+        const userFields = document.querySelectorAll(
+            'input[name="userName"], ' +
+            'input[id="user-name"], ' +
+            'input[name="user-name"], ' +
+            'input[name="user"], ' +
+            'input[name="playerName"], ' +
+            'input[name="submittedBy"]'
+        );
         
         userFields.forEach(field => {
-            if (field.value === '' || field.placeholder.toLowerCase().includes('name')) {
-                field.value = this.currentUser.name;
-                field.style.backgroundColor = '#2a4a2a';
-                field.title = 'Auto-populated with current user';
+            // Skip if field already has a value (unless it's a placeholder)
+            if (field.value && !field.placeholder.toLowerCase().includes('name')) {
+                return;
+            }
+            
+            // Set the value and make it read-only
+            field.value = this.currentUser.name;
+            field.readOnly = true;
+            field.style.backgroundColor = 'rgba(78, 205, 196, 0.1)';
+            field.style.cursor = 'not-allowed';
+            field.title = 'Auto-populated with current user. Change user from the dropdown in the top right.';
+            
+            // Add visual indicator if there's a parent form group
+            const formGroup = field.closest('.form-group') || field.closest('.user-input-group');
+            if (formGroup && !formGroup.querySelector('.user-field-indicator')) {
+                this.addFieldIndicator(field, this.currentUser);
             }
         });
+    },
+    
+    /**
+     * Add a visual indicator to a user field
+     */
+    addFieldIndicator(field, user) {
+        const indicator = document.createElement('div');
+        indicator.className = 'user-field-indicator';
+        indicator.innerHTML = `
+            <span class="indicator-icon">🔒</span>
+            <span class="indicator-text">Using selected user: <strong>${user.name}</strong></span>
+            <a href="#" class="change-user-link" onclick="UserManager.promptUserChange(event)">Change user</a>
+        `;
+        
+        // Insert after the field
+        field.parentNode.insertBefore(indicator, field.nextSibling);
+    },
+    
+    /**
+     * Prompt user to change their selection
+     */
+    promptUserChange(event) {
+        if (event) event.preventDefault();
+        
+        const dropdownTrigger = document.getElementById('user-dropdown-trigger');
+        if (dropdownTrigger) {
+            dropdownTrigger.click();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Show tooltip
+            const tooltip = document.createElement('div');
+            tooltip.className = 'user-select-tooltip';
+            tooltip.textContent = 'Select a user from the dropdown above ↗️';
+            tooltip.style.cssText = `
+                position: fixed;
+                top: 70px;
+                right: 20px;
+                background: linear-gradient(135deg, #2c5aa0 0%, #1e4080 100%);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                animation: slideInRight 0.3s ease-out;
+                font-weight: bold;
+            `;
+            
+            document.body.appendChild(tooltip);
+            
+            setTimeout(() => {
+                tooltip.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => {
+                    if (document.body.contains(tooltip)) {
+                        document.body.removeChild(tooltip);
+                    }
+                }, 300);
+            }, 3000);
+        } else {
+            // Fallback: show create user modal
+            this.showCreateUserModal();
+        }
     },
     
     /**
@@ -763,7 +850,7 @@ const UserManager = {
         
         // Auto-populate any user fields on the current page
         setTimeout(() => {
-            this.autoPopulateUserFields();
+            this.autoPopulateAllUserFields();
         }, 100);
         
         // Dispatch custom event for other components to listen to
@@ -787,13 +874,29 @@ const UserManager = {
     
     /**
      * Clear current user selection
+     * Removes the persistent user selection
      */
     clearUser() {
+        console.log('Clearing user selection');
         this.currentUser = null;
-        this.saveCurrentUser();
+        this.saveCurrentUser(); // Removes from localStorage
         this.updateUserDisplayName();
         this.populateUserDropdown();
         this.onUserChanged(null);
+    },
+    
+    /**
+     * Clear all UserManager data from localStorage
+     * Useful for debugging or logout functionality
+     */
+    clearAllData() {
+        console.log('Clearing all UserManager data');
+        localStorage.removeItem(this.STORAGE_KEY);
+        localStorage.removeItem(this.USERS_CACHE_KEY);
+        this.currentUser = null;
+        this.users = [];
+        this.usersLoaded = false;
+        this.updateUserDisplayName();
     },
     
     /**
@@ -845,10 +948,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add slight delay to ensure config is loaded
     setTimeout(async () => {
         try {
+            // Check if config is available, if not try a bit longer
+            if (typeof CrusadeConfig === 'undefined') {
+                console.log('Waiting for CrusadeConfig...');
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
             await UserManager.init();
             
             // Auto-populate any existing user fields
-            UserManager.autoPopulateUserFields();
+            UserManager.autoPopulateAllUserFields();
             
             console.log('✅ UserManager fully initialized with lazy loading');
         } catch (error) {

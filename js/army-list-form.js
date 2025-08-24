@@ -29,8 +29,23 @@ class ArmyListForm {
         // Initialize character counter
         this.updateCharacterCount();
         
-        // Auto-populate user name if user is selected
-        this.autoPopulateUserName();
+        // Wait for UserManager to be ready, then auto-populate user name
+        this.waitForUserManager();
+    }
+    
+    waitForUserManager() {
+        // Check if UserManager exists and is ready
+        if (typeof UserManager !== 'undefined') {
+            // Give UserManager a moment to load the saved user
+            setTimeout(() => {
+                this.autoPopulateUserName();
+            }, 200);
+        } else {
+            // UserManager not loaded yet, wait and try again
+            setTimeout(() => {
+                this.waitForUserManager();
+            }, 100);
+        }
     }
     
     setupEventListeners() {
@@ -159,26 +174,180 @@ class ArmyListForm {
     }
     
     autoPopulateUserName() {
-        // Check if UserManager is available and has a current user
-        if (typeof UserManager !== 'undefined' && UserManager.hasCurrentUser()) {
-            const userNameField = document.getElementById('user-name');
-            if (userNameField && userNameField.value === '') {
-                userNameField.value = UserManager.getCurrentUserName();
-                userNameField.style.backgroundColor = 'rgba(78, 205, 196, 0.1)';
-                userNameField.title = 'Auto-populated with current user';
-                
-                // Make field readonly to prevent changes
-                userNameField.readOnly = true;
-                userNameField.style.cursor = 'not-allowed';
-                
-                console.log('Auto-populated user name:', UserManager.getCurrentUserName());
-            }
+        const userNameField = document.getElementById('user-name');
+        if (!userNameField) return;
+        
+        // Check if UserManager is available
+        if (typeof UserManager === 'undefined') {
+            console.log('UserManager not available yet');
+            return;
         }
         
-        // Listen for user changes
-        window.addEventListener('userChanged', (event) => {
-            this.autoPopulateUserName();
-        });
+        // Check if UserManager has loaded the current user
+        const currentUser = UserManager.getCurrentUser();
+        
+        if (currentUser) {
+            // User is selected - hide the input field and show indicator
+            userNameField.value = currentUser.name;
+            userNameField.readOnly = true;
+            userNameField.style.display = 'none'; // Hide the input field
+            userNameField.required = true; // Still required for form validation
+            
+            // Add a visual indicator showing the selected user
+            this.addUserFieldIndicator(currentUser);
+            
+            console.log('Auto-populated user name:', currentUser.name);
+        } else {
+            // No user selected - show input field and warning
+            userNameField.style.display = ''; // Show the input field
+            userNameField.readOnly = false;
+            userNameField.style.backgroundColor = '';
+            userNameField.style.cursor = '';
+            userNameField.placeholder = 'Enter your name or select a user from top right';
+            userNameField.title = 'Select a user from the dropdown in the top right for auto-population';
+            
+            this.addNoUserWarning();
+        }
+        
+        // Listen for user changes (only add listener once)
+        if (!this.userChangeListenerAdded) {
+            window.addEventListener('userChanged', (event) => {
+                this.handleUserChange(event.detail.user);
+            });
+            this.userChangeListenerAdded = true;
+        }
+    }
+    
+    addUserFieldIndicator(user) {
+        // Remove any existing indicator
+        const existingIndicator = document.querySelector('.user-field-indicator');
+        if (existingIndicator) {
+            existingIndicator.remove();
+        }
+        
+        const formGroup = document.querySelector('#user-name').closest('.form-group');
+        if (!formGroup) return;
+        
+        // Create indicator element that replaces the input field visually
+        const indicator = document.createElement('div');
+        indicator.className = 'user-field-indicator selected';
+        indicator.innerHTML = `
+            <div class="user-display">
+                <span class="indicator-icon">👤</span>
+                <span class="indicator-text">
+                    <span class="label">Submitting as:</span>
+                    <strong>${user.name}</strong>
+                </span>
+                <a href="#" class="change-user-link" onclick="armyListForm.promptUserChange(event)">Change user</a>
+            </div>
+        `;
+        
+        // Insert after the input field (which is now hidden)
+        const userNameField = document.getElementById('user-name');
+        userNameField.parentNode.insertBefore(indicator, userNameField.nextSibling);
+    }
+    
+    addNoUserWarning() {
+        // Remove any existing warning
+        const existingWarning = document.querySelector('.user-field-indicator');
+        if (existingWarning) {
+            existingWarning.remove();
+        }
+        
+        const formGroup = document.querySelector('#user-name').closest('.form-group');
+        if (!formGroup) return;
+        
+        // Create warning element
+        const warning = document.createElement('div');
+        warning.className = 'user-field-indicator warning';
+        warning.innerHTML = `
+            <span class="indicator-icon">⚠️</span>
+            <span class="indicator-text">No user selected</span>
+            <a href="#" class="change-user-link" onclick="armyListForm.promptUserChange(event)">Select user</a>
+        `;
+        
+        // Insert after the input field
+        const userNameField = document.getElementById('user-name');
+        userNameField.parentNode.insertBefore(warning, userNameField.nextSibling);
+    }
+    
+    handleUserChange(user) {
+        const userNameField = document.getElementById('user-name');
+        if (!userNameField) return;
+        
+        if (user) {
+            // User selected - hide input and show indicator
+            userNameField.value = user.name;
+            userNameField.readOnly = true;
+            userNameField.style.display = 'none'; // Hide the input field
+            
+            this.addUserFieldIndicator(user);
+            this.clearFieldError(userNameField);
+        } else {
+            // No user - show input field
+            userNameField.value = '';
+            userNameField.style.display = ''; // Show the input field
+            userNameField.readOnly = false;
+            userNameField.style.backgroundColor = '';
+            userNameField.style.cursor = '';
+            userNameField.placeholder = 'Enter your name or select a user from top right';
+            
+            this.addNoUserWarning();
+        }
+    }
+    
+    promptUserChange(event) {
+        event.preventDefault();
+        
+        // Trigger the user dropdown to open
+        if (typeof UserManager !== 'undefined') {
+            const dropdownTrigger = document.getElementById('user-dropdown-trigger');
+            if (dropdownTrigger) {
+                dropdownTrigger.click();
+                
+                // Scroll to top so user can see the dropdown
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Show a temporary tooltip
+                this.showTooltip('Select a user from the dropdown above ↗️');
+            } else {
+                // UserManager not initialized on this page, show create user modal
+                if (UserManager.showCreateUserModal) {
+                    UserManager.showCreateUserModal();
+                }
+            }
+        }
+    }
+    
+    showTooltip(message) {
+        const tooltip = document.createElement('div');
+        tooltip.className = 'user-select-tooltip';
+        tooltip.textContent = message;
+        tooltip.style.cssText = `
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e4080 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: slideInRight 0.3s ease-out;
+            font-weight: bold;
+        `;
+        
+        document.body.appendChild(tooltip);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            tooltip.style.animation = 'slideOutRight 0.3s ease-out';
+            setTimeout(() => {
+                if (document.body.contains(tooltip)) {
+                    document.body.removeChild(tooltip);
+                }
+            }, 300);
+        }, 3000);
     }
     
     validateField(field) {
@@ -447,6 +616,9 @@ function resetForm() {
     
     // Reset character counter
     armyListForm.updateCharacterCount();
+    
+    // Re-apply user auto-population
+    armyListForm.autoPopulateUserName();
     
     // Clear any field errors
     const errorElements = document.querySelectorAll('.field-error');
