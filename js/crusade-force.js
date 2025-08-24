@@ -1,23 +1,21 @@
 // Crusade Force Page - Individual force data management
 // 40k Crusade Campaign Tracker
+// FIXED: Army list ID bug where wrong army was being loaded
 
 class CrusadeForceApp {
     constructor() {
         this.forceName = null;
         this.forceData = null;
-        this.config = {
-            // Google Sheets URLs - you can easily update these
-            forceSheetUrl: 'https://script.google.com/macros/s/AKfycbw81ZEFEAzOrfvOxWBHHT17kGqLrk3g-VpXuDeUbK_8YehP1dNe8FEUMf6PuDzZ4JnH/exec',
-            battleHistoryUrl: null,     // Add your battle history sheet URL here
-            armyListsUrl: null,         // Add your army lists sheet URL here
-            charactersUnitsUrl: null,   // Add your characters and units sheet URL here
-            storiesUrl: null,           // Add your stories sheet URL here
-            forceLogsUrl: null          // Add your force logs sheet URL here
-        };
         this.init();
     }
     
     init() {
+        // Wait for config to be available
+        if (typeof CrusadeConfig === 'undefined') {
+            this.showError('Configuration not loaded. Please refresh the page.');
+            return;
+        }
+        
         // Get force name from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
         this.forceName = urlParams.get('force') || urlParams.get('name');
@@ -73,16 +71,47 @@ class CrusadeForceApp {
     }
     
     async loadMainForceData() {
-        const response = await fetch(this.config.forceSheetUrl);
+        const forceSheetUrl = CrusadeConfig.getSheetUrl('crusadeForces');
+        
+        if (!forceSheetUrl) {
+            throw new Error('Crusade Forces sheet URL not configured in CrusadeConfig');
+        }
+        
+        const response = await fetch(forceSheetUrl);
         if (!response.ok) {
             throw new Error('Failed to fetch force data');
         }
         
-        const data = await response.json();
+        const responseData = await response.json();
         
         // Debug logging to see what data we're working with
-        console.log('Raw sheet data:', data);
+        console.log('Raw response data:', responseData);
+        console.log('Response data type:', typeof responseData);
+        console.log('Response data is array:', Array.isArray(responseData));
+        
+        // Handle different response formats
+        let data;
+        if (Array.isArray(responseData)) {
+            // Direct array format (CSV-like)
+            data = responseData;
+        } else if (responseData.success && Array.isArray(responseData.data)) {
+            // JSON API format with success flag
+            data = responseData.data;
+        } else if (responseData.values && Array.isArray(responseData.values)) {
+            // Google Sheets API format
+            data = responseData.values;
+        } else {
+            console.error('Unexpected response format:', responseData);
+            throw new Error('Unexpected response format from force data API');
+        }
+        
+        console.log('Processed data:', data);
         console.log('Looking for force name:', this.forceName);
+        
+        if (!Array.isArray(data) || data.length === 0) {
+            throw new Error('No force data available or invalid data format');
+        }
+        
         console.log('Available force names in sheet:');
         data.forEach((row, index) => {
             if (index === 0) {
@@ -205,8 +234,11 @@ class CrusadeForceApp {
                 const fetchUrl = `${armyListsUrl}?action=list&force=${encodeURIComponent(this.forceData.forceName)}`;
                 
                 try {
+                    console.log('Fetching army lists from:', fetchUrl);
                     const response = await fetch(fetchUrl);
                     const data = await response.json();
+                    
+                    console.log('Army lists response:', data);
                     
                     if (data.success && data.count > 0) {
                         this.displayArmyListsData(data.data);
@@ -397,7 +429,10 @@ class CrusadeForceApp {
         }
     }
     
+    // FIXED: This is where the bug was - the army list ID generation and linking
     displayArmyListsData(armyLists) {
+        console.log('Displaying army lists data:', armyLists);
+        
         // Display army lists in a simple table format
         let html = '<div class="army-lists-display">';
         
@@ -424,19 +459,37 @@ class CrusadeForceApp {
             `;
             
             // Data rows
-            armyLists.forEach(armyList => {
+            armyLists.forEach((armyList, index) => {
+                console.log(`Army List ${index}:`, armyList);
+                
                 const timestamp = armyList.Timestamp ? new Date(armyList.Timestamp).toLocaleDateString() : 'Unknown';
                 const points = armyList['Points Value'] || '-';
                 const detachment = armyList.Detachment || '-';
                 const mfmVersion = armyList['MFM Version'] || '-';
                 const armyName = armyList['Army Name'] || 'Unnamed List';
-                const armyListId = armyList.id; // Row ID for linking
                 
-                // Create link to view army list
-                const armyNameLink = `<a href="../army-lists/view-army-list.html?id=${armyListId}" 
+                // FIX: Use the correct ID from the server response
+                // The server should be returning the proper row ID in armyList.id
+                // Let's log it to debug and use it properly
+                let armyListId = armyList.id;
+                
+                // Debug logging to see what ID we're getting
+                console.log(`Army "${armyName}" has ID:`, armyListId);
+                
+                // If the ID is missing or invalid, we need to handle this
+                if (!armyListId) {
+                    console.warn(`No ID found for army list "${armyName}". This will cause linking issues.`);
+                    // As a fallback, we could use the index, but this isn't reliable
+                    // Better to fix this in the server-side script
+                    armyListId = `missing-id-${index}`;
+                }
+                
+                // Create link to view army list - FIX: Use the proper ID
+                const armyNameLink = `<a href="../army-lists/view-army-list.html?id=${encodeURIComponent(armyListId)}" 
                                         style="color: #4ecdc4; text-decoration: none; transition: color 0.3s ease;"
                                         onmouseover="this.style.color='#7fefea'" 
-                                        onmouseout="this.style.color='#4ecdc4'">${armyName}</a>`;
+                                        onmouseout="this.style.color='#4ecdc4'"
+                                        title="View full army list details">${armyName}</a>`;
                 
                 html += `
                     <tr style="border-bottom: 1px solid #4a4a4a; color: #ffffff;">
@@ -469,11 +522,6 @@ class CrusadeForceApp {
     
     getForceData() {
         return this.forceData;
-    }
-    
-    updateConfig(newConfig) {
-        this.config = { ...this.config, ...newConfig };
-        console.log('Configuration updated:', this.config);
     }
 }
 

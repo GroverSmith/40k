@@ -1,5 +1,6 @@
 // Google Apps Script for Army List Form Submissions
 // Deploy this as a web app to handle form submissions
+// FIXED: Proper ID generation and handling for army list retrieval
 
 // Configuration - UPDATE THESE VALUES
 const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; // Replace with your Google Sheet ID
@@ -204,8 +205,6 @@ function doGet(e) {
   }
 }
 
-// Remove the doOptions function - it's not needed without CORS headers
-
 function getArmyLists(params = {}) {
   // Get army lists with optional filtering
   const { force, limit, offset } = params;
@@ -222,11 +221,23 @@ function getArmyLists(params = {}) {
   const headers = data[0];
   let rows = data.slice(1);
   
+  console.log('getArmyLists - Total rows found:', rows.length);
+  console.log('getArmyLists - Headers:', headers);
+  console.log('getArmyLists - Filter for force:', force);
+  
   // Filter by force name if specified (Force Name is now column 2, index 2)
   if (force) {
+    const originalRowCount = rows.length;
     rows = rows.filter(row => 
       row[2] && row[2].toString().toLowerCase().trim() === force.toLowerCase().trim()
     );
+    console.log(`getArmyLists - Filtered from ${originalRowCount} to ${rows.length} rows for force "${force}"`);
+    
+    // Debug: show what force names are available
+    if (rows.length === 0) {
+      const availableForces = data.slice(1).map(row => row[2]).filter(name => name);
+      console.log('getArmyLists - Available forces in sheet:', availableForces);
+    }
   }
   
   // Apply pagination if specified
@@ -234,14 +245,43 @@ function getArmyLists(params = {}) {
   const maxResults = parseInt(limit) || rows.length;
   const paginatedRows = rows.slice(startIndex, startIndex + maxResults);
   
-  // Convert to objects
+  // Convert to objects with CORRECT ID mapping
   const armyLists = paginatedRows.map((row, index) => {
-    const obj = { id: startIndex + index + 2 }; // +2 because of header row and 0-based index
+    // FIXED: Calculate the correct row number in the original sheet
+    // We need to account for:
+    // 1. Header row (+1)
+    // 2. Original row position in filtered data
+    // 3. Current position in paginated data
+    
+    // Find the original row index by matching the data
+    const originalRowIndex = data.findIndex(dataRow => 
+      dataRow[1] === row[1] && // User Name
+      dataRow[2] === row[2] && // Force Name  
+      dataRow[3] === row[3] && // Army Name
+      dataRow[0] && row[0] && new Date(dataRow[0]).getTime() === new Date(row[0]).getTime() // Timestamp match
+    );
+    
+    // The sheet row number is originalRowIndex + 1 (because sheet rows are 1-indexed, not 0-indexed)
+    const sheetRowNumber = originalRowIndex > 0 ? originalRowIndex + 1 : null;
+    
+    console.log(`Army list "${row[3]}" - Array index: ${originalRowIndex}, Sheet row: ${sheetRowNumber}`);
+    
+    const obj = { 
+      id: sheetRowNumber // This is the ACTUAL row number in the Google Sheet
+    };
+    
     headers.forEach((header, headerIndex) => {
       obj[header] = row[headerIndex];
     });
+    
     return obj;
   });
+  
+  console.log('getArmyLists - Final army lists with IDs:', armyLists.map(list => ({ 
+    name: list['Army Name'], 
+    id: list.id, 
+    force: list['Force Name'] 
+  })));
   
   return ContentService
     .createTextOutput(JSON.stringify({
@@ -256,6 +296,8 @@ function getArmyLists(params = {}) {
 
 function getArmyListById(id) {
   // Get a specific army list by row ID
+  console.log('getArmyListById called with ID:', id);
+  
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME);
   
@@ -265,14 +307,26 @@ function getArmyListById(id) {
   
   const rowNumber = parseInt(id);
   if (!rowNumber || rowNumber < 2) {
-    throw new Error('Invalid army list ID');
+    console.error('Invalid army list ID:', id);
+    throw new Error('Invalid army list ID: ' + id);
+  }
+  
+  // Check if the row number is within the valid range
+  const lastRow = sheet.getLastRow();
+  if (rowNumber > lastRow) {
+    console.error(`Row ${rowNumber} does not exist. Sheet has ${lastRow} rows.`);
+    throw new Error('Army list not found - row does not exist');
   }
   
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   const rowData = sheet.getRange(rowNumber, 1, 1, sheet.getLastColumn()).getValues()[0];
   
+  console.log('getArmyListById - Headers:', headers);
+  console.log('getArmyListById - Row data:', rowData);
+  
   if (!rowData || rowData.every(cell => !cell)) {
-    throw new Error('Army list not found');
+    console.error('Empty row data for row:', rowNumber);
+    throw new Error('Army list not found - empty row');
   }
   
   // Convert to object
@@ -280,6 +334,8 @@ function getArmyListById(id) {
   headers.forEach((header, index) => {
     armyList[header] = rowData[index];
   });
+  
+  console.log('getArmyListById - Final army list object:', armyList);
   
   return ContentService
     .createTextOutput(JSON.stringify({
@@ -307,10 +363,10 @@ function getRecentArmyLists() {
   const headers = data[0];
   const rows = data.slice(1, 11); // Get last 10 entries for testing
   
-  const result = rows.map(row => {
-    const obj = {};
-    headers.forEach((header, index) => {
-      obj[header] = row[index];
+  const result = rows.map((row, index) => {
+    const obj = { id: index + 2 }; // +2 because we start from row 2 (after header)
+    headers.forEach((header, headerIndex) => {
+      obj[header] = row[headerIndex];
     });
     return obj;
   });
@@ -361,5 +417,27 @@ function testSubmission() {
     console.log('Last row:', sheet ? sheet.getLastRow() : 'N/A');
   } catch (error) {
     console.error('Direct sheet access error:', error);
+  }
+}
+
+// Test function specifically for army list retrieval
+function testArmyListRetrieval() {
+  console.log('=== Testing Army List Retrieval ===');
+  
+  try {
+    // Test getting all army lists
+    const allLists = getArmyLists({});
+    console.log('All lists result:', JSON.parse(allLists.getContent()));
+    
+    // Test getting lists for a specific force (you'll need to update this with an actual force name)
+    const forceLists = getArmyLists({ force: 'Test Force' });
+    console.log('Force lists result:', JSON.parse(forceLists.getContent()));
+    
+    // Test getting a specific army list by ID (you'll need to update this with an actual ID)
+    const singleList = getArmyListById('2');
+    console.log('Single list result:', JSON.parse(singleList.getContent()));
+    
+  } catch (error) {
+    console.error('Test error:', error);
   }
 }
