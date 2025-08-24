@@ -7,23 +7,31 @@ const SHEET_NAME = 'Forces';
 
 function doPost(e) {
   try {
-    console.log('doPost called for force creation');
+    console.log('doPost called - raw data:', e.postData ? e.postData.contents : 'No postData');
     console.log('Parameters:', e.parameter);
     
     let data;
     
-    // Handle form data
+    // The form submission comes as URL-encoded parameters
     if (e.parameter) {
       data = e.parameter;
+      console.log('Using form parameters:', data);
     } else if (e.postData && e.postData.contents) {
       try {
+        // Try to parse as JSON (fallback)
         data = JSON.parse(e.postData.contents);
+        console.log('Parsed JSON data:', data);
       } catch (jsonError) {
-        throw new Error('Invalid data format');
+        console.error('Not JSON data:', jsonError.message);
+        throw new Error('No valid data received');
       }
     } else {
-      throw new Error('No data received');
+      throw new Error('No data received in request');
     }
+    
+    // Log the spreadsheet ID being used
+    console.log('Using spreadsheet ID:', SPREADSHEET_ID);
+    console.log('Using sheet name:', SHEET_NAME);
     
     // Validate required fields
     if (!data.userName || !data.forceName || !data.faction) {
@@ -34,14 +42,18 @@ function doPost(e) {
       throw new Error('Missing required fields: ' + missing.join(', '));
     }
     
-    console.log('Creating force:', data.forceName, 'for user:', data.userName);
+    console.log('Validation passed, opening spreadsheet...');
     
+    // Open the spreadsheet
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    console.log('Spreadsheet opened successfully');
+    
     let sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    console.log('Sheet found:', !!sheet);
     
     // Create sheet if it doesn't exist
     if (!sheet) {
-      console.log('Creating Forces sheet');
+      console.log('Creating new sheet:', SHEET_NAME);
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
       // Add headers
@@ -61,6 +73,8 @@ function doPost(e) {
       sheet.setColumnWidth(4, 150); // Detachment
       sheet.setColumnWidth(5, 300); // Notes
       sheet.setColumnWidth(6, 150); // Timestamp
+      
+      console.log('Created new sheet with headers');
     }
     
     // Check if force already exists for this user
@@ -73,6 +87,7 @@ function doPost(e) {
     });
     
     if (existingForce) {
+      console.log('Force already exists for this user');
       return ContentService
         .createTextOutput(JSON.stringify({
           success: false,
@@ -81,21 +96,35 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
     
+    // Parse timestamp - handle both ISO string and direct timestamp
+    let timestamp;
+    if (data.timestamp) {
+      timestamp = new Date(data.timestamp);
+    } else {
+      timestamp = new Date(); // Use current time if not provided
+    }
+    console.log('Using timestamp:', timestamp);
+    
     // Prepare the row data
-    const timestamp = new Date();
     const rowData = [
       data.userName,                           // User Name
       data.forceName,                          // Force Name
       data.faction,                            // Faction
-      data.detachment || data.subfaction || '', // Detachment (use subfaction if detachment not provided)
-      data.notes || data.forceDescription || '', // Notes (combine various note fields)
+      data.detachment || '',                   // Detachment
+      data.notes || '',                        // Notes
       timestamp                                 // Timestamp
     ];
     
-    // Add the new force
+    console.log('Row data prepared:', rowData);
+    
+    // Find the next empty row and append the data
     const lastRow = sheet.getLastRow();
     const newRowNumber = lastRow + 1;
+    console.log('Writing to row:', newRowNumber);
+    
+    // Insert the data
     sheet.getRange(newRowNumber, 1, 1, rowData.length).setValues([rowData]);
+    console.log('Data written to sheet successfully');
     
     // Format timestamp column
     sheet.getRange(newRowNumber, 6).setNumberFormat('yyyy-mm-dd hh:mm:ss');
@@ -103,31 +132,29 @@ function doPost(e) {
     // Auto-resize rows to fit content
     sheet.autoResizeRows(newRowNumber, 1);
     
-    console.log('Force created successfully:', data.forceName);
+    // Log success
+    console.log('Successfully created force:', data.forceName, 'for user:', data.userName);
     
+    // Return success response (without setHeaders which isn't supported)
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
         message: 'Force created successfully',
-        force: {
-          userName: data.userName,
-          forceName: data.forceName,
-          faction: data.faction,
-          detachment: data.detachment || data.subfaction || '',
-          notes: data.notes || data.forceDescription || '',
-          timestamp: timestamp.toISOString(),
-          rowNumber: newRowNumber
-        }
+        rowNumber: newRowNumber,
+        timestamp: timestamp.toISOString()
       }))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
-    console.error('Error creating force:', error);
+    // Log the error with more detail
+    console.error('Error processing force creation:', error);
+    console.error('Error stack:', error.stack);
     
+    // Return error response (without setHeaders)
     return ContentService
       .createTextOutput(JSON.stringify({
         success: false,
-        error: error.message
+        error: error.message || 'Unknown error occurred'
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
