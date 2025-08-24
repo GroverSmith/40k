@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		// Initialize Forces sheet with form integration
         const forcesUrl = CrusadeConfig.getSheetUrl('forces');
         if (forcesUrl) {
-            SheetsManager.embed('crusade-forces-sheet', 
+            const forcesEmbed = SheetsManager.embed('crusade-forces-sheet', 
                 forcesUrl, 
                 {
                     maxHeight: '350px',
@@ -66,6 +66,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     hideColumns: [5]        // Hide timestamp column
                 }
             );
+            
+            // After loading, also cache the data globally for other pages to use
+            const originalLoadData = forcesEmbed.loadData.bind(forcesEmbed);
+            forcesEmbed.loadData = async function() {
+                await originalLoadData();
+                
+                // Cache the raw data globally for the register force modal
+                if (this.rawData) {
+                    try {
+                        localStorage.setItem('forces_cache_global', JSON.stringify({
+                            data: this.rawData,
+                            timestamp: Date.now()
+                        }));
+                        console.log('Forces data cached globally for other pages');
+                    } catch (e) {
+                        console.warn('Error setting global forces cache:', e);
+                    }
+                }
+            };
         } else {
             console.warn('Forces sheet URL not configured');
             // Show placeholder content

@@ -369,6 +369,10 @@ class CrusadeDetailsApp {
         const modal = document.getElementById('register-force-modal');
         const forceSelect = document.getElementById('force-select');
         
+        // Show modal immediately with loading state
+        forceSelect.innerHTML = '<option value="">Loading forces...</option>';
+        modal.style.display = 'flex';
+        
         // Load available forces
         try {
             // FIXED: Changed from 'crusadeForces' to 'forces'
@@ -378,16 +382,52 @@ class CrusadeDetailsApp {
                 throw new Error('Forces sheet not configured');
             }
             
-            const response = await fetch(forcesUrl);
-            const responseData = await response.json();
+            // Try to get cached data first
+            const cacheKey = 'forces_cache_global';
+            const cached = localStorage.getItem(cacheKey);
+            let data = null;
             
-            let data;
-            if (Array.isArray(responseData)) {
-                data = responseData;
-            } else if (responseData.success && Array.isArray(responseData.data)) {
-                data = responseData.data;
-            } else {
-                throw new Error('Unable to load forces data');
+            if (cached) {
+                try {
+                    const cachedData = JSON.parse(cached);
+                    const cacheAge = Date.now() - cachedData.timestamp;
+                    const cacheMaxAge = (CrusadeConfig.getCacheConfig('default') || 1440) * 60 * 1000; // Convert minutes to ms
+                    
+                    if (cacheAge < cacheMaxAge) {
+                        console.log(`Using cached forces data (${Math.round(cacheAge / 60000)} minutes old)`);
+                        data = cachedData.data;
+                    } else {
+                        console.log('Forces cache expired, fetching fresh data');
+                    }
+                } catch (e) {
+                    console.warn('Error reading forces cache:', e);
+                }
+            }
+            
+            // If no valid cache, fetch fresh data
+            if (!data) {
+                console.log('Fetching fresh forces data...');
+                const response = await fetch(forcesUrl);
+                const responseData = await response.json();
+                
+                if (Array.isArray(responseData)) {
+                    data = responseData;
+                } else if (responseData.success && Array.isArray(responseData.data)) {
+                    data = responseData.data;
+                } else {
+                    throw new Error('Unable to load forces data');
+                }
+                
+                // Cache the data for future use
+                try {
+                    localStorage.setItem(cacheKey, JSON.stringify({
+                        data: data,
+                        timestamp: Date.now()
+                    }));
+                    console.log('Forces data cached for future use');
+                } catch (e) {
+                    console.warn('Error caching forces data:', e);
+                }
             }
             
             // Clear existing options
@@ -410,9 +450,7 @@ class CrusadeDetailsApp {
                     forceSelect.appendChild(option);
                 }
             });
-            
-            modal.style.display = 'flex';
-            
+
         } catch (error) {
             console.error('Error loading forces:', error);
             this.showRegisterError('Failed to load available forces: ' + error.message);
