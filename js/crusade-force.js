@@ -416,7 +416,8 @@ class CrusadeForceApp {
             html += `
                 <tr style="background-color: #3a3a3a; position: sticky; top: 0;">
                     <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Army Name</th>
-                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Faction</th>
+                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Detachment</th>
+                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">MFM</th>
                     <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Points</th>
                     <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Date Added</th>
                 </tr>
@@ -426,11 +427,14 @@ class CrusadeForceApp {
             armyLists.forEach(armyList => {
                 const timestamp = armyList.Timestamp ? new Date(armyList.Timestamp).toLocaleDateString() : 'Unknown';
                 const points = armyList['Points Value'] || '-';
+                const detachment = armyList.Detachment || '-';
+                const mfmVersion = armyList['MFM Version'] || '-';
                 
                 html += `
                     <tr style="border-bottom: 1px solid #4a4a4a; color: #ffffff;">
                         <td style="padding: 8px 12px;">${armyList['Army Name'] || 'Unnamed List'}</td>
-                        <td style="padding: 8px 12px;">${armyList.Faction || '-'}</td>
+                        <td style="padding: 8px 12px;">${detachment}</td>
+                        <td style="padding: 8px 12px;">${mfmVersion}</td>
                         <td style="padding: 8px 12px;">${points}</td>
                         <td style="padding: 8px 12px;">${timestamp}</td>
                     </tr>

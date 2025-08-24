@@ -20,7 +20,7 @@ const CrusadeConfig = {
         
         // Army Lists sheet (for army list submissions and retrieval)
         armyLists: {
-            url: 'https://script.google.com/macros/s/AKfycbzNQwWn9d42XsKWwiqjsqErERBaAGlE1-YnY19aPqImDqq8CtRbLl6_2ikiiHsLQs4q/exec',
+            url: 'https://script.google.com/macros/s/AKfycbxjF1xuneyqEQCcPM6iGQ9CZHyAyUeH8834gUnX6c-wgSQbghhj2kYAeDcETs0K5KQ/exec',
             sheetId: '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE',
             sheetName: 'Army Lists'
         },
