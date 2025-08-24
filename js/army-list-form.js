@@ -4,18 +4,18 @@
 
 class ArmyListForm {
     constructor() {
-        this.config = {
-            // Google Sheets Configuration
-            forceSheetUrl: 'https://script.google.com/macros/s/AKfycbw81ZEFEAzOrfvOxWBHHT17kGqLrk3g-VpXuDeUbK_8YehP1dNe8FEUMf6PuDzZ4JnH/exec',
-            armyListSheetUrl: 'https://script.google.com/macros/s/AKfycbyDp0u1_BAGU3oaxQrmzTfgvkAV-OnTzBojrEj0dbh01wWO8XK_67C9HlyNhImYmZiC/exec', // You'll need to create a Google Apps Script for army lists
-            
-            // Form validation settings
-            maxCharacters: 50000,  // Maximum characters allowed in army list text
-            minCharacters: 50      // Minimum characters required
-        };
-        
-        this.init();
-    }
+		this.config = {
+			// Google Sheets Configuration
+			forceSheetUrl: CrusadeConfig ? CrusadeConfig.getSheetUrl('forces') : '',
+			armyListSheetUrl: CrusadeConfig ? CrusadeConfig.getSheetUrl('armyLists') : '',
+			
+			// Form validation settings
+			maxCharacters: 50000,  // Maximum characters allowed in army list text
+			minCharacters: 50      // Minimum characters required
+		};
+		
+		this.init();
+	}
     
     init() {
         console.log('Army List Form initialized');
@@ -73,46 +73,72 @@ class ArmyListForm {
     }
     
     async loadForceOptions() {
-        try {
-            console.log('Loading force options...');
-            const response = await fetch(this.config.forceSheetUrl);
-            
-            if (!response.ok) {
-                throw new Error('Failed to fetch force data');
-            }
-            
-            const data = await response.json();
-            const forceSelect = document.getElementById('force-name');
-            
-            // Clear existing options except the first one
-            forceSelect.innerHTML = '<option value="">Select your force...</option>';
-            
-            // Add each force as an option (skip header row)
-            data.slice(1).forEach(row => {
-                if (row[2]) { // Force name is in column 2
-                    const option = document.createElement('option');
-                    option.value = row[2];
-                    option.textContent = row[2];
-                    forceSelect.appendChild(option);
-                }
-            });
-            
-            console.log(`Loaded ${data.length - 1} force options`);
-            
-        } catch (error) {
-            console.error('Error loading force options:', error);
-            
-            // Show error and provide manual entry option
-            const forceSelect = document.getElementById('force-name');
-            forceSelect.innerHTML = `
-                <option value="">Select your force...</option>
-                <option value="">--- Could not load forces ---</option>
-            `;
-            
-            // Add a text input as fallback
-            this.addManualForceEntry();
-        }
-    }
+		try {
+			console.log('Loading force options...');
+			
+			// Get the URL from CrusadeConfig
+			const forceSheetUrl = CrusadeConfig.getSheetUrl('forces');
+			if (!forceSheetUrl) {
+				throw new Error('Forces sheet URL not configured');
+			}
+			
+			const response = await fetch(forceSheetUrl);
+			
+			if (!response.ok) {
+				throw new Error('Failed to fetch force data');
+			}
+			
+			const data = await response.json();
+			const forceSelect = document.getElementById('force-name');
+			
+			// Clear existing options except the first one
+			forceSelect.innerHTML = '<option value="">Select your force...</option>';
+			
+			// Add each force as an option (skip header row)
+			data.slice(1).forEach(row => {
+				if (row[1]) { // Force name is in column 1 (FIXED)
+					const option = document.createElement('option');
+					option.value = row[1];
+					option.textContent = row[1];
+					forceSelect.appendChild(option);
+				}
+			});
+			
+			console.log(`Loaded ${data.length - 1} force options`);
+			
+		} catch (error) {
+			console.error('Error loading force options:', error);
+			
+			// Show error and provide manual entry option
+			const forceSelect = document.getElementById('force-name');
+			forceSelect.innerHTML = `
+				<option value="">Select your force...</option>
+				<option value="">--- Could not load forces ---</option>
+			`;
+			
+			// Add a text input as fallback
+			this.addManualForceEntry();
+		}
+	}
+
+	populateForceDropdown(data) {
+		const forceSelect = document.getElementById('force-name');
+		
+		// Clear existing options except the first one
+		forceSelect.innerHTML = '<option value="">Select your force...</option>';
+		
+		// Add each force as an option (skip header row)
+		data.slice(1).forEach(row => {
+			if (row[1]) { // Force name is in column 1
+				const option = document.createElement('option');
+				option.value = row[1];
+				option.textContent = row[1];
+				forceSelect.appendChild(option);
+			}
+		});
+		
+		console.log(`Loaded ${data.length - 1} force options`);
+	}
     
     addManualForceEntry() {
         const formGroup = document.querySelector('#force-name').closest('.form-group');

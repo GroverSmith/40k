@@ -214,10 +214,15 @@ const UserManager = {
         // Create user dropdown HTML with current user or placeholder
         const userName = this.currentUser ? this.currentUser.name : 'Select User';
         const userDropdownHtml = `
-            <div class="user-dropdown-trigger" id="user-dropdown-trigger">
-                <span class="user-icon">👤</span>
-                <span class="user-name" id="current-user-name">${userName}</span>
-                <span class="dropdown-arrow">▼</span>
+            <div class="user-controls-wrapper">
+                <button class="clear-cache-btn" id="clear-cache-btn" title="Clear all cached data">
+                    🔄 Clear Cache
+                </button>
+                <div class="user-dropdown-trigger" id="user-dropdown-trigger">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name" id="current-user-name">${userName}</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
             </div>
             <div class="user-dropdown-menu" id="user-dropdown-menu" style="display: none;">
                 <div class="user-dropdown-header">Select User</div>
@@ -253,9 +258,61 @@ const UserManager = {
             console.log('User dropdown added to body as fallback');
         }
         
+        // Set up cache clear button
+        this.setupCacheClearButton();
+        
         // If we have cached users, populate immediately
         if (this.usersLoaded && this.users.length > 0) {
             this.populateUserDropdown();
+        }
+    },
+    
+    /**
+     * Set up the cache clear button
+     */
+    setupCacheClearButton() {
+        const clearCacheBtn = document.getElementById('clear-cache-btn');
+        if (clearCacheBtn) {
+            clearCacheBtn.addEventListener('click', () => {
+                this.clearAllDataCaches();
+            });
+        }
+    },
+    
+    /**
+     * Clear all cached data across all pages
+     */
+    clearAllDataCaches() {
+        if (confirm('Clear all cached data? This will force fresh data loads on all pages.')) {
+            // Clear ALL localStorage entries related to the app
+            const keysToRemove = [];
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key) {
+                    // Clear everything except the selected user (which should persist)
+                    if (key !== this.STORAGE_KEY) {
+                        keysToRemove.push(key);
+                    }
+                }
+            }
+            
+            // Remove all found cache keys
+            keysToRemove.forEach(key => {
+                console.log('Removing cache key:', key);
+                localStorage.removeItem(key);
+            });
+            
+            // Clear any SheetsManager caches if available
+            if (typeof SheetsManager !== 'undefined' && SheetsManager.clearAllCaches) {
+                SheetsManager.clearAllCaches();
+            }
+            
+            console.log(`Cleared ${keysToRemove.length} cache entries`);
+            
+            // Show success and refresh
+            alert(`Cache cleared! ${keysToRemove.length} entries removed.\n\nRefreshing page...`);
+            location.reload();
         }
     },
     

@@ -152,6 +152,30 @@ const CrusadeApp = {
     }
 };
 
+// Add a global cache clear function
+window.clearAllDataCaches = function() {
+    if (confirm('Clear all cached data across all pages? This will force fresh data loads.')) {
+        SheetsManager.clearAllCaches();
+        
+        // Also clear any other app-specific caches
+        const additionalCacheKeys = [
+            'force_options_cache',
+            'crusade_users_cache',
+            'crusade_selected_user'
+        ];
+        
+        additionalCacheKeys.forEach(key => {
+            if (localStorage.getItem(key)) {
+                console.log('Clearing:', key);
+                localStorage.removeItem(key);
+            }
+        });
+        
+        alert('All caches cleared! Refreshing page...');
+        location.reload();
+    }
+};
+
 // Initialize error handling
 CrusadeApp.initErrorHandling();
 

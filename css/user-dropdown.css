@@ -253,3 +253,67 @@ input[name="user-name"]:not(:focus)[title*="Auto-populated"] {
 .user-dropdown-options::-webkit-scrollbar-thumb:hover {
     background: #6a6a6a;
 }
+
+/* User controls wrapper */
+.user-controls-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Clear cache button */
+.clear-cache-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background-color: #3a3a3a;
+    border: 2px solid #4a4a4a;
+    border-radius: 8px;
+    color: #4ecdc4;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.clear-cache-btn:hover {
+    background-color: #4a4a4a;
+    border-color: #4ecdc4;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+}
+
+.clear-cache-btn:active {
+    transform: translateY(0);
+}
+
+/* Adjust for mobile */
+@media (max-width: 768px) {
+    .user-controls-wrapper {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+    }
+    
+    .clear-cache-btn {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .clear-cache-btn {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+    
+    /* Stack vertically on very small screens */
+    .user-dropdown-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 5px;
+    }
+}

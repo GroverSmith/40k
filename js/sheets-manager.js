@@ -47,11 +47,35 @@ class SheetsManager {
     }
     
     /**
-     * Clear all caches for all embeds
-     */
-    static clearAllCaches() {
-        Object.values(this.embeds).forEach(embed => embed.clearCache());
-    }
+	 * Clear all caches for all embeds AND all fetch caches across all pages
+	 */
+	static clearAllCaches() {
+		// Clear caches for current page embeds
+		Object.values(this.embeds).forEach(embed => embed.clearCache());
+		
+		// Clear ALL sheets-related localStorage entries (across all pages)
+		const keysToRemove = [];
+		for (let i = 0; i < localStorage.length; i++) {
+			const key = localStorage.key(i);
+			// Remove any sheets cache or crusade-related cache
+			if (key && (
+				key.includes('sheets_cache') || 
+				key.includes('crusade_') ||
+				key.includes('force_cache') ||
+				key.includes('army_cache')
+			)) {
+				keysToRemove.push(key);
+			}
+		}
+		
+		// Remove all found cache keys
+		keysToRemove.forEach(key => {
+			console.log('Removing cache key:', key);
+			localStorage.removeItem(key);
+		});
+		
+		console.log(`Cleared ${keysToRemove.length} cache entries across all pages`);
+	}
     
     /**
      * Get an embed instance by container ID
