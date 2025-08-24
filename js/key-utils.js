@@ -4,62 +4,44 @@
 
 const KeyUtils = {
     /**
-     * Create a robust key from multiple values
-     * Uses base64 encoding of a structured format to ensure uniqueness and handle special characters
-     * Format: "field1:value1|field2:value2|field3:value3"
+     * Create a human-readable key from multiple values
+     * Uses pipe separation for readability: "Force Name|Player Name|2024-01-01T12:00:00.000Z"
      * 
      * @param {Object} keyData - Object with field names as keys and values
-     * @returns {string} - Base64 encoded key
+     * @returns {string} - Pipe-separated key
      */
     createKey(keyData) {
         // Sort fields alphabetically for consistency
         const sortedFields = Object.keys(keyData).sort();
         
-        // Create structured format
+        // Create pipe-separated format
         const keyParts = sortedFields.map(field => {
-            const value = this.normalizeValue(keyData[field]);
-            return `${field}:${value}`;
+            return this.normalizeValue(keyData[field]);
         });
         
-        const keyString = keyParts.join('|');
-        
-        // Base64 encode to handle special characters and make it URL-safe
-        const encodedKey = btoa(unescape(encodeURIComponent(keyString)))
-            .replace(/\+/g, '-')    // Make URL-safe
-            .replace(/\//g, '_')    // Make URL-safe
-            .replace(/=/g, '');     // Remove padding
-        
-        return encodedKey;
+        return keyParts.join('|');
     },
     
     /**
-     * Decode a key back to its original components
-     * @param {string} key - Base64 encoded key
+     * Parse a key back to its original components
+     * @param {string} key - Pipe-separated key
+     * @param {Array} fieldNames - Array of field names in the same order as the key was created
      * @returns {Object} - Object with field names and values
      */
-    decodeKey(key) {
+    parseKey(key, fieldNames) {
         try {
-            // Restore base64 padding and characters
-            let paddedKey = key.replace(/-/g, '+').replace(/_/g, '/');
-            while (paddedKey.length % 4) {
-                paddedKey += '=';
-            }
-            
-            // Decode from base64
-            const keyString = decodeURIComponent(escape(atob(paddedKey)));
-            
-            // Parse the structured format
+            const parts = key.split('|');
             const keyData = {};
-            const parts = keyString.split('|');
             
-            parts.forEach(part => {
-                const [field, ...valueParts] = part.split(':');
-                keyData[field] = valueParts.join(':'); // Rejoin in case value had colons
+            fieldNames.forEach((fieldName, index) => {
+                if (index < parts.length) {
+                    keyData[fieldName] = parts[index];
+                }
             });
             
             return keyData;
         } catch (error) {
-            console.error('Error decoding key:', error);
+            console.error('Error parsing key:', error);
             return null;
         }
     },
@@ -80,7 +62,8 @@ const KeyUtils = {
         }
         
         // Convert to string and trim whitespace
-        return String(value).trim();
+        // Also escape pipes to prevent key corruption
+        return String(value).trim().replace(/\|/g, '&#124;');
     },
     
     /**
@@ -88,35 +71,48 @@ const KeyUtils = {
      * @param {string} forceName - Name of the force
      * @param {string} userName - Name of the user/player
      * @param {Date|string} timestamp - Timestamp when force was created
-     * @returns {string} - Encoded key
+     * @returns {string} - Pipe-separated key: "forceName|userName|timestamp"
      */
     createForceKey(forceName, userName, timestamp) {
+        // Always use the same field order for force keys
         return this.createKey({
             forceName: forceName,
-            userName: userName,
-            timestamp: timestamp
+            timestamp: timestamp,  // Put timestamp second for easier reading
+            userName: userName
         });
+    },
+    
+    /**
+     * Parse a force key back to its components
+     * @param {string} key - Force key to parse
+     * @returns {Object} - Object with forceName, userName, timestamp
+     */
+    parseForceKey(key) {
+        return this.parseKey(key, ['forceName', 'timestamp', 'userName']);
     },
     
     /**
      * Create a key specifically for Crusades
      * @param {string} crusadeName - Name of the crusade
      * @param {Date|string} startDate - Start date of the crusade (optional)
-     * @returns {string} - Encoded key
+     * @returns {string} - Pipe-separated key
      */
     createCrusadeKey(crusadeName, startDate = null) {
-        const keyData = { crusadeName: crusadeName };
         if (startDate) {
-            keyData.startDate = startDate;
+            return this.createKey({
+                crusadeName: crusadeName,
+                startDate: startDate
+            });
+        } else {
+            return this.normalizeValue(crusadeName);
         }
-        return this.createKey(keyData);
     },
     
     /**
      * Create a key for Crusade Participants
      * @param {string} crusadeName - Name of the crusade
      * @param {string} forceKey - Key of the participating force
-     * @returns {string} - Encoded key
+     * @returns {string} - Pipe-separated key
      */
     createParticipantKey(crusadeName, forceKey) {
         return this.createKey({
@@ -126,28 +122,69 @@ const KeyUtils = {
     },
     
     /**
-     * Validate that a key can be properly decoded
-     * @param {string} key - Key to validate
-     * @returns {boolean} - True if key is valid
+     * Extract force name from a force key
+     * @param {string} forceKey - The force key
+     * @returns {string} - Force name
      */
-    isValidKey(key) {
-        const decoded = this.decodeKey(key);
-        return decoded !== null;
+    getForceNameFromKey(forceKey) {
+        const parsed = this.parseForceKey(forceKey);
+        return parsed ? parsed.forceName : 'Unknown Force';
     },
     
     /**
-     * Generate a short hash for display purposes (not for uniqueness)
-     * @param {string} key - Full key
-     * @returns {string} - Short 8-character hash
+     * Extract user name from a force key
+     * @param {string} forceKey - The force key
+     * @returns {string} - User name
      */
-    getShortHash(key) {
-        let hash = 0;
-        for (let i = 0; i < key.length; i++) {
-            const char = key.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash; // Convert to 32bit integer
+    getUserNameFromKey(forceKey) {
+        const parsed = this.parseForceKey(forceKey);
+        return parsed ? parsed.userName : 'Unknown User';
+    },
+    
+    /**
+     * Get a display name for a force key
+     * @param {string} forceKey - The force key
+     * @returns {string} - Display format: "Force Name (User Name)"
+     */
+    getForceDisplayName(forceKey) {
+        const parsed = this.parseForceKey(forceKey);
+        if (parsed && parsed.forceName && parsed.userName) {
+            return `${parsed.forceName} (${parsed.userName})`;
         }
-        return Math.abs(hash).toString(36).substring(0, 8).toUpperCase();
+        return forceKey; // Fallback to showing the key itself
+    },
+    
+    /**
+     * Validate that a key follows the expected format
+     * @param {string} key - Key to validate
+     * @param {number} expectedParts - Expected number of pipe-separated parts
+     * @returns {boolean} - True if key is valid
+     */
+    isValidKey(key, expectedParts = null) {
+        if (!key || typeof key !== 'string') {
+            return false;
+        }
+        
+        if (expectedParts !== null) {
+            const parts = key.split('|');
+            return parts.length === expectedParts;
+        }
+        
+        return true;
+    },
+    
+    /**
+     * Create a short version of a key for compact display
+     * @param {string} key - Full key
+     * @param {number} maxLength - Maximum length (default 50)
+     * @returns {string} - Shortened key with ellipsis if needed
+     */
+    getShortKey(key, maxLength = 50) {
+        if (!key || key.length <= maxLength) {
+            return key;
+        }
+        
+        return key.substring(0, maxLength - 3) + '...';
     }
 };
 
@@ -159,4 +196,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = KeyUtils;
 }
 
-console.log('KeyUtils loaded - robust key encoding system available');
+console.log('KeyUtils loaded - human-readable key system available');

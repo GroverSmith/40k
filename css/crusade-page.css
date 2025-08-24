@@ -374,6 +374,40 @@
     animation: spin 0.8s linear infinite;
 }
 
+/* Table sorting styles */
+.sheets-table th:hover {
+    background-color: #4a4a4a;
+}
+
+.sheets-table th.sort-asc .sort-indicator::after {
+    content: '▲';
+    color: #4ecdc4;
+}
+
+.sheets-table th.sort-desc .sort-indicator::after {
+    content: '▼';
+    color: #4ecdc4;
+}
+
+.sheets-table th:not(.sort-asc):not(.sort-desc) .sort-indicator::after {
+    content: '⇅';
+}
+
+.sheets-table a {
+    color: #4ecdc4;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.sheets-table a:hover {
+    color: #7fefea;
+    text-decoration: underline;
+}
+
+.sheets-table a:visited {
+    color: #3fb8b1;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .crusade-header {

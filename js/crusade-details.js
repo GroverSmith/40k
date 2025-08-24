@@ -261,31 +261,85 @@ class CrusadeDetailsApp {
         try {
             const forcesContent = document.getElementById('forces-content');
             
-            // We need to look up the actual force details using the force keys
-            // For now, we'll display the force keys and mention that full force lookup is needed
-            let html = '<div class="participating-forces">';
-            html += '<p>📋 <strong>Registered Forces:</strong></p>';
-            html += '<ul>';
+            if (forceKeys.length === 0) {
+                forcesContent.innerHTML = `
+                    <div class="no-data-message">
+                        <p>⚔️ No forces registered for this crusade yet.</p>
+                        <p>Click "Register Force" above to add a force to this crusade.</p>
+                    </div>
+                `;
+                return;
+            }
             
+            // Create table structure similar to other sheets
+            let html = '<div class="participating-forces">';
+            html += '<div class="sheets-table-wrapper" style="max-height: 400px; overflow-y: auto; border: 1px solid #4a4a4a; border-radius: 4px; background-color: #2a2a2a;">';
+            html += '<table class="sheets-table" style="width: 100%; border-collapse: collapse;" id="participants-table">';
+            
+            // Header row
+            html += `
+                <thead>
+                <tr style="background-color: #3a3a3a; position: sticky; top: 0;">
+                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4; cursor: pointer; user-select: none; position: relative; padding-right: 25px;" onclick="sortParticipantsTable(0)">
+                        Force Name
+                        <span class="sort-indicator" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #cccccc;">⇅</span>
+                    </th>
+                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4; cursor: pointer; user-select: none; position: relative; padding-right: 25px;" onclick="sortParticipantsTable(1)">
+                        Player
+                        <span class="sort-indicator" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #cccccc;">⇅</span>
+                    </th>
+                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4; cursor: pointer; user-select: none; position: relative; padding-right: 25px;" onclick="sortParticipantsTable(2)">
+                        Registered
+                        <span class="sort-indicator" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #cccccc;">⇅</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            // Data rows
             forceKeys.forEach(force => {
-                const shortKey = KeyUtils.getShortHash(force.crusadeForceKey);
                 const registrationDate = new Date(force.timestamp).toLocaleDateString();
+                const forceName = force.forceName || KeyUtils.getForceNameFromKey(force.crusadeForceKey);
+                const userName = force.userName || KeyUtils.getUserNameFromKey(force.crusadeForceKey);
+                
+                // Create link to force details page using the force name
+                const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceName);
+                const forceNameLink = `<a href="${forceUrl}" 
+                                        style="color: #4ecdc4; text-decoration: none; transition: color 0.3s ease;"
+                                        onmouseover="this.style.color='#7fefea'" 
+                                        onmouseout="this.style.color='#4ecdc4'"
+                                        title="View ${forceName} details">${forceName}</a>`;
                 
                 html += `
-                    <li style="margin-bottom: 10px; padding: 10px; background-color: #1a1a1a; border-radius: 5px; border-left: 3px solid #4ecdc4;">
-                        <strong>Force Key:</strong> ${shortKey}<br>
-                        <small style="color: #aaa;">Registered: ${registrationDate}</small>
-                        <br><small style="color: #888; font-style: italic;">
-                            Full force details lookup will be implemented in the next update
-                        </small>
-                    </li>
+                    <tr style="border-bottom: 1px solid #4a4a4a; color: #ffffff;" onmouseover="this.style.backgroundColor='#3a3a3a'" onmouseout="this.style.backgroundColor=''">
+                        <td style="padding: 8px 12px;">${forceNameLink}</td>
+                        <td style="padding: 8px 12px;">${userName}</td>
+                        <td style="padding: 8px 12px;">${registrationDate}</td>
+                    </tr>
                 `;
             });
             
-            html += '</ul>';
+            html += '</tbody>';
+            
+            html += '</table>';
+            html += '</div>'; // Close table wrapper
+            
+            // Add stats like other sheets
+            html += `<div class="sheets-stats" style="margin-top: 10px; padding: 10px; background-color: #3a3a3a; border-radius: 4px; color: #cccccc; font-size: 12px;">
+                ⚔️ Showing ${forceKeys.length} registered force${forceKeys.length !== 1 ? 's' : ''} for ${this.crusadeData['Crusade Name']}
+            </div>`;
+            
             html += '</div>';
             
             forcesContent.innerHTML = html;
+            
+            // Store the data for sorting
+            window.participantsTableData = forceKeys.map(force => [
+                force.forceName || KeyUtils.getForceNameFromKey(force.crusadeForceKey),
+                force.userName || KeyUtils.getUserNameFromKey(force.crusadeForceKey),
+                force.timestamp
+            ]);
             
         } catch (error) {
             console.error('Error displaying participating forces:', error);
@@ -348,6 +402,8 @@ class CrusadeDetailsApp {
                     const option = document.createElement('option');
                     option.value = forceKey;
                     option.textContent = displayName;
+                    option.setAttribute('data-force-name', row[2]); // Store force name for later use
+                    option.setAttribute('data-user-name', row[1]); // Store user name for later use
                     forceSelect.appendChild(option);
                 }
             });
@@ -379,6 +435,12 @@ class CrusadeDetailsApp {
                 throw new Error('Please select a force');
             }
             
+            // Get the force name and user name from the selected option
+            const forceSelect = document.getElementById('force-select');
+            const selectedOption = forceSelect.options[forceSelect.selectedIndex];
+            const forceName = selectedOption.getAttribute('data-force-name') || KeyUtils.getForceNameFromKey(forceKey);
+            const userName = selectedOption.getAttribute('data-user-name') || KeyUtils.getUserNameFromKey(forceKey);
+            
             const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
             
             if (!participantsUrl) {
@@ -388,7 +450,9 @@ class CrusadeDetailsApp {
             // Submit registration
             const registrationData = {
                 crusadeName: this.crusadeData['Crusade Name'],
-                crusadeForceKey: forceKey
+                crusadeForceKey: forceKey,
+                forceName: forceName,
+                userName: userName
             };
             
             // Create form for submission (to handle CORS issues)
@@ -591,6 +655,132 @@ document.addEventListener('DOMContentLoaded', () => {
 // Global functions for modal control
 function closeRegisterModal() {
     document.getElementById('register-force-modal').style.display = 'none';
+}
+
+// Global sorting variables for participants table
+let participantsSortColumn = null;
+let participantsSortDirection = 'asc';
+
+// Global function for sorting participants table
+function sortParticipantsTable(columnIndex) {
+    if (!window.participantsTableData) return;
+    
+    // Toggle sort direction if clicking the same column
+    if (participantsSortColumn === columnIndex) {
+        participantsSortDirection = participantsSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        participantsSortColumn = columnIndex;
+        participantsSortDirection = 'asc';
+    }
+    
+    // Sort the data
+    const sortedData = [...window.participantsTableData];
+    sortedData.sort((a, b) => {
+        let aVal = a[columnIndex] || '';
+        let bVal = b[columnIndex] || '';
+        
+        // Special handling for dates (column 2 is timestamp)
+        if (columnIndex === 2) {
+            aVal = new Date(aVal);
+            bVal = new Date(bVal);
+            
+            if (participantsSortDirection === 'asc') {
+                return aVal - bVal;
+            } else {
+                return bVal - aVal;
+            }
+        } else {
+            // String sort for other columns
+            aVal = String(aVal).toLowerCase();
+            bVal = String(bVal).toLowerCase();
+            
+            if (participantsSortDirection === 'asc') {
+                return aVal.localeCompare(bVal);
+            } else {
+                return bVal.localeCompare(aVal);
+            }
+        }
+    });
+    
+    // Update the table display
+    updateParticipantsTableDisplay(sortedData);
+    
+    // Update sort indicators
+    updateSortIndicators(columnIndex, participantsSortDirection);
+}
+
+function updateParticipantsTableDisplay(sortedData) {
+    const tbody = document.querySelector('#participants-table tbody');
+    if (!tbody) {
+        // If no tbody exists, we need to rebuild the table
+        rebuildParticipantsTable(sortedData);
+        return;
+    }
+    
+    // Clear existing rows
+    tbody.innerHTML = '';
+    
+    // Add sorted rows
+    sortedData.forEach(rowData => {
+        const registrationDate = new Date(rowData[2]).toLocaleDateString();
+        const forceName = rowData[0];
+        const userName = rowData[1];
+        
+        // Create link to force details page
+        const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceName);
+        const forceNameLink = `<a href="${forceUrl}" 
+                                style="color: #4ecdc4; text-decoration: none; transition: color 0.3s ease;"
+                                onmouseover="this.style.color='#7fefea'" 
+                                onmouseout="this.style.color='#4ecdc4'"
+                                title="View ${forceName} details">${forceName}</a>`;
+        
+        const row = document.createElement('tr');
+        row.style.borderBottom = '1px solid #4a4a4a';
+        row.style.color = '#ffffff';
+        row.onmouseover = () => row.style.backgroundColor = '#3a3a3a';
+        row.onmouseout = () => row.style.backgroundColor = '';
+        
+        row.innerHTML = `
+            <td style="padding: 8px 12px;">${forceNameLink}</td>
+            <td style="padding: 8px 12px;">${userName}</td>
+            <td style="padding: 8px 12px;">${registrationDate}</td>
+        `;
+        
+        tbody.appendChild(row);
+    });
+}
+
+function rebuildParticipantsTable(sortedData) {
+    // This function rebuilds the entire table - used as fallback
+    // We'd need access to the crusade app instance to call displayParticipatingForces
+    // For now, just log that we need to rebuild
+    console.log('Table rebuild needed - refreshing participating forces');
+    if (window.CrusadeDetailsApp && window.CrusadeDetailsApp.loadParticipatingForces) {
+        window.CrusadeDetailsApp.loadParticipatingForces();
+    }
+}
+
+function updateSortIndicators(activeColumn, direction) {
+    // Reset all indicators
+    const indicators = document.querySelectorAll('.sort-indicator');
+    indicators.forEach((indicator, index) => {
+        if (index === activeColumn) {
+            indicator.innerHTML = direction === 'asc' ? '▲' : '▼';
+            indicator.style.color = '#4ecdc4';
+        } else {
+            indicator.innerHTML = '⇅';
+            indicator.style.color = '#cccccc';
+        }
+    });
+    
+    // Update header classes
+    const headers = document.querySelectorAll('#participants-table th');
+    headers.forEach((header, index) => {
+        header.className = '';
+        if (index === activeColumn) {
+            header.className = `sort-${direction}`;
+        }
+    });
 }
 
 // Close modal when clicking outside of it

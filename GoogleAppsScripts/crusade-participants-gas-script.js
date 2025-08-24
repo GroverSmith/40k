@@ -27,8 +27,8 @@ function doPost(e) {
     }
     
     // Validate required fields
-    if (!data.crusadeName || !data.crusadeForceKey) {
-      throw new Error('Missing required fields: crusadeName and crusadeForceKey are required');
+    if (!data.crusadeName || !data.crusadeForceKey || !data.forceName || !data.userName) {
+      throw new Error('Missing required fields: crusadeName, crusadeForceKey, forceName, and userName are required');
     }
     
     console.log('Registering participant:', data.crusadeName, 'with force key:', data.crusadeForceKey);
@@ -42,7 +42,7 @@ function doPost(e) {
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
       // Add headers
-      const headers = ['Crusade Name', 'Crusade Force Key', 'Timestamp'];
+      const headers = ['Crusade Name', 'Crusade Force Key', 'Force Name', 'User Name', 'Timestamp'];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
       // Format header row
@@ -75,6 +75,8 @@ function doPost(e) {
     const newRow = [
       data.crusadeName,
       data.crusadeForceKey,
+      data.forceName,
+      data.userName,
       timestamp
     ];
     
@@ -82,7 +84,7 @@ function doPost(e) {
     sheet.getRange(lastRow + 1, 1, 1, newRow.length).setValues([newRow]);
     
     // Format timestamp column
-    sheet.getRange(lastRow + 1, 3).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+    sheet.getRange(lastRow + 1, 5).setNumberFormat('yyyy-mm-dd hh:mm:ss');
     
     console.log('Participant registered successfully');
     
@@ -177,7 +179,9 @@ function getForcesForCrusade(crusadeName) {
     .filter(row => row[0] && row[0].toString().toLowerCase().trim() === crusadeName.toLowerCase().trim())
     .map(row => ({
       crusadeForceKey: row[1],
-      timestamp: row[2]
+      forceName: row[2],
+      userName: row[3],
+      timestamp: row[4]
     }));
   
   console.log(`Found ${forceKeys.length} forces for crusade "${crusadeName}"`);
@@ -216,7 +220,7 @@ function getCrusadesForForce(forceKey) {
     .filter(row => row[1] && row[1].toString().trim() === forceKey.toString().trim())
     .map(row => ({
       crusadeName: row[0],
-      timestamp: row[2]
+      timestamp: row[4]
     }));
   
   console.log(`Found ${crusades.length} crusades for force key "${forceKey}"`);
