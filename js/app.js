@@ -1,40 +1,70 @@
 // Application initialization and configuration
-// 40k Crusade Campaign Tracker
+// 40k Crusade Campaign Tracker - Updated to use centralized config
 
 // Initialize sheets when the page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Wait for config to be available
+    if (typeof CrusadeConfig === 'undefined') {
+        console.error('CrusadeConfig not loaded! Make sure config.js is included before app.js');
+        return;
+    }
+    
+    // Debug the config to see what's missing
+    console.log('CrusadeConfig available:', !!CrusadeConfig);
+    console.log('CrusadeConfig.cache:', CrusadeConfig.cache);
+    
     console.log('40k Crusade Campaign Tracker - Initializing...');
     
-    // Initialize Crusades sheet
-    SheetsManager.embed('crusades-sheet', 
-        'https://script.google.com/macros/s/AKfycbyYInudtrcqZvk4BYepzUxEGSLRPkIUuQknOtUOL-I0Rl4LVDGqyD0QMso3ds_Cu_BqZw/exec', 
-        {
-            maxHeight: '350px',
-            showStats: true,
-            sortable: true,
-            linkColumn: 1,
-            linkPattern: 'crusades/{slug}.html',
-            cacheMinutes: 1440,     // Cache for 24 hours
-            hideColumns: [],
-            dateColumns: [3, 4]     // Columns 3 and 4 contain dates
+    try {
+        // Initialize Crusades sheet
+        const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
+        if (crusadesUrl) {
+            SheetsManager.embed('crusades-sheet', 
+                crusadesUrl, 
+                {
+                    maxHeight: '350px',
+                    showStats: true,
+                    sortable: true,
+                    linkColumn: 1,
+                    linkPattern: 'crusades/{slug}.html',
+                    cacheMinutes: CrusadeConfig.getCacheConfig('default'),
+                    hideColumns: [],
+                    dateColumns: [3, 4]     // Columns 3 and 4 contain dates
+                }
+            );
+        } else {
+            console.warn('Crusades sheet URL not configured');
         }
-    );
-    
-    // Initialize Crusade Forces sheet with form integration - Updated to use query parameter
-    SheetsManager.embed('crusade-forces-sheet', 
-        'https://script.google.com/macros/s/AKfycbw81ZEFEAzOrfvOxWBHHT17kGqLrk3g-VpXuDeUbK_8YehP1dNe8FEUMf6PuDzZ4JnH/exec', 
-        {
-            maxHeight: '350px',
-            showStats: true,
-            sortable: true,
-            linkColumn: 2,          // Force Name column (after hiding timestamp)
-            linkPattern: 'forces/force-details.html?force={slug}',  // Updated filename
-            cacheMinutes: 1440,     // Cache for 24 hours
-            hideColumns: [0]        // Hide timestamp column
+        
+        // Initialize Crusade Forces sheet with form integration
+        const crusadeForcesUrl = CrusadeConfig.getSheetUrl('crusadeForces');
+        if (crusadeForcesUrl) {
+            SheetsManager.embed('crusade-forces-sheet', 
+                crusadeForcesUrl, 
+                {
+                    maxHeight: '350px',
+                    showStats: true,
+                    sortable: true,
+                    linkColumn: 2,          // Force Name column (after hiding timestamp)
+                    linkPattern: CrusadeConfig.routes.forceDetailsPattern.replace('{force}', '{slug}'),
+                    cacheMinutes: CrusadeConfig.getCacheConfig('default'),
+                    hideColumns: [0]        // Hide timestamp column
+                }
+            );
+        } else {
+            console.warn('Crusade Forces sheet URL not configured');
         }
-    );
-    
-    console.log('Sheets initialized successfully');
+        
+        console.log('Sheets initialized successfully');
+        
+    } catch (error) {
+        console.error('Error initializing sheets:', error);
+        
+        // Try to provide more debugging info
+        if (CrusadeConfig && CrusadeConfig.debugConfig) {
+            CrusadeConfig.debugConfig();
+        }
+    }
 });
 
 // Application-specific utility functions
@@ -54,14 +84,12 @@ const CrusadeApp = {
     
     // Check if the application is running in development mode
     isDevelopment() {
-        return window.location.hostname === 'localhost' || 
-               window.location.hostname === '127.0.0.1' ||
-               window.location.protocol === 'file:';
+        return CrusadeConfig ? CrusadeConfig.isDevelopment() : false;
     },
     
-    // Get application version (could be useful for cache busting)
+    // Get application version
     getVersion() {
-        return '1.0.0';
+        return CrusadeConfig ? CrusadeConfig.app.version : '1.0.0';
     },
     
     // Refresh all data in the application
@@ -78,8 +106,13 @@ const CrusadeApp = {
     
     // Navigate to a specific crusade force page
     viewForce(forceName) {
-        const encodedName = encodeURIComponent(forceName);
-        window.location.href = `forces/?force=${encodedName}`;
+        if (CrusadeConfig) {
+            window.location.href = CrusadeConfig.buildForceUrl(forceName);
+        } else {
+            // Fallback if config not loaded
+            const encodedName = encodeURIComponent(forceName);
+            window.location.href = `forces/force-details.html?force=${encodedName}`;
+        }
     },
     
     // Navigate to a specific crusade page
@@ -105,6 +138,10 @@ CrusadeApp.initErrorHandling();
 // Make CrusadeApp globally available for debugging
 window.CrusadeApp = CrusadeApp;
 
-// Log initialization complete
-console.log('40k Crusade Campaign Tracker v' + CrusadeApp.getVersion() + ' initialized');
-console.log('Development mode:', CrusadeApp.isDevelopment());
+// Log initialization complete (wait for config to be ready)
+if (typeof CrusadeConfig !== 'undefined') {
+    console.log(CrusadeConfig.app.name + ' v' + CrusadeApp.getVersion() + ' initialized');
+    console.log('Development mode:', CrusadeApp.isDevelopment());
+} else {
+    console.warn('CrusadeConfig not available during app initialization');
+}

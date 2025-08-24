@@ -167,14 +167,16 @@ class CrusadeForceApp {
         try {
             document.getElementById('battle-history-section').style.display = 'block';
             
-            if (this.config.battleHistoryUrl) {
+            const battleHistoryUrl = CrusadeConfig.getSheetUrl('battleHistory');
+            
+            if (battleHistoryUrl) {
                 SheetsManager.embed('battle-history-sheet', 
-                    this.config.battleHistoryUrl, 
+                    battleHistoryUrl, 
                     {
                         maxHeight: '300px',
                         showStats: true,
                         sortable: true,
-                        cacheMinutes: 60
+                        cacheMinutes: CrusadeConfig.getCacheConfig('forcePage')
                     }
                 );
             } else {
@@ -182,7 +184,7 @@ class CrusadeForceApp {
                     <div class="no-data-message">
                         <p>📊 Battle history tracking will be implemented here.</p>
                         <p>This would show detailed battle reports, outcomes, and experience gained for <strong>${this.forceData.forceName}</strong>.</p>
-                        <p><em>Configure battleHistoryUrl in crusade-force.js to enable this feature.</em></p>
+                        <p><em>Configure battleHistory URL in CrusadeConfig to enable this feature.</em></p>
                     </div>
                 `;
             }
@@ -196,22 +198,42 @@ class CrusadeForceApp {
         try {
             document.getElementById('army-lists-section').style.display = 'block';
             
-            if (this.config.armyListsUrl) {
-                SheetsManager.embed('army-lists-sheet', 
-                    this.config.armyListsUrl, 
-                    {
-                        maxHeight: '400px',
-                        showStats: true,
-                        sortable: true,
-                        cacheMinutes: 60
+            const armyListsUrl = CrusadeConfig.getSheetUrl('armyLists');
+            
+            if (armyListsUrl) {
+                // Use the GET endpoint to fetch army lists for this force
+                const fetchUrl = `${armyListsUrl}?action=list&force=${encodeURIComponent(this.forceData.forceName)}`;
+                
+                try {
+                    const response = await fetch(fetchUrl);
+                    const data = await response.json();
+                    
+                    if (data.success && data.count > 0) {
+                        this.displayArmyListsData(data.data);
+                    } else {
+                        document.getElementById('army-lists-sheet').innerHTML = `
+                            <div class="no-data-message">
+                                <p>📋 No army lists found for <strong>${this.forceData.forceName}</strong>.</p>
+                                <p><a href="../army-lists/add-army-list.html" style="color: #4ecdc4;">Add your first army list</a> to get started!</p>
+                            </div>
+                        `;
                     }
-                );
+                } catch (fetchError) {
+                    console.error('Error fetching army lists:', fetchError);
+                    document.getElementById('army-lists-sheet').innerHTML = `
+                        <div class="no-data-message">
+                            <p>📋 Army lists will be displayed here.</p>
+                            <p>This would show army list configurations for <strong>${this.forceData.forceName}</strong>.</p>
+                            <p><em>Unable to load army lists at this time.</em></p>
+                        </div>
+                    `;
+                }
             } else {
                 document.getElementById('army-lists-sheet').innerHTML = `
                     <div class="no-data-message">
                         <p>📋 Army lists will be displayed here.</p>
                         <p>This would show different army list configurations and loadouts for <strong>${this.forceData.forceName}</strong>.</p>
-                        <p><em>Configure armyListsUrl in crusade-force.js to enable this feature.</em></p>
+                        <p><em>Configure armyLists URL in CrusadeConfig to enable this feature.</em></p>
                     </div>
                 `;
             }
@@ -225,14 +247,16 @@ class CrusadeForceApp {
         try {
             document.getElementById('characters-units-section').style.display = 'block';
             
-            if (this.config.charactersUnitsUrl) {
+            const charactersUnitsUrl = CrusadeConfig.getSheetUrl('charactersUnits');
+            
+            if (charactersUnitsUrl) {
                 SheetsManager.embed('characters-units-sheet', 
-                    this.config.charactersUnitsUrl, 
+                    charactersUnitsUrl, 
                     {
                         maxHeight: '400px',
                         showStats: true,
                         sortable: true,
-                        cacheMinutes: 60
+                        cacheMinutes: CrusadeConfig.getCacheConfig('forcePage')
                     }
                 );
             } else {
@@ -240,7 +264,7 @@ class CrusadeForceApp {
                     <div class="no-data-message">
                         <p>🛡️ Characters and units will be displayed here.</p>
                         <p>This would show individual characters, units, their experience, battle honors, and battle scars for <strong>${this.forceData.forceName}</strong>.</p>
-                        <p><em>Configure charactersUnitsUrl in crusade-force.js to enable this feature.</em></p>
+                        <p><em>Configure charactersUnits URL in CrusadeConfig to enable this feature.</em></p>
                     </div>
                 `;
             }
@@ -254,14 +278,16 @@ class CrusadeForceApp {
         try {
             document.getElementById('stories-section').style.display = 'block';
             
-            if (this.config.storiesUrl) {
+            const storiesUrl = CrusadeConfig.getSheetUrl('stories');
+            
+            if (storiesUrl) {
                 SheetsManager.embed('stories-sheet', 
-                    this.config.storiesUrl, 
+                    storiesUrl, 
                     {
                         maxHeight: '400px',
                         showStats: true,
                         sortable: true,
-                        cacheMinutes: 60
+                        cacheMinutes: CrusadeConfig.getCacheConfig('forcePage')
                     }
                 );
             } else {
@@ -269,7 +295,7 @@ class CrusadeForceApp {
                     <div class="no-data-message">
                         <p>📖 Force stories and narratives will be displayed here.</p>
                         <p>This would show battle reports, character development, and campaign narratives for <strong>${this.forceData.forceName}</strong>.</p>
-                        <p><em>Configure storiesUrl in crusade-force.js to enable this feature.</em></p>
+                        <p><em>Configure stories URL in CrusadeConfig to enable this feature.</em></p>
                     </div>
                 `;
             }
@@ -283,14 +309,16 @@ class CrusadeForceApp {
         try {
             document.getElementById('force-logs-section').style.display = 'block';
             
-            if (this.config.forceLogsUrl) {
+            const forceLogsUrl = CrusadeConfig.getSheetUrl('forceLogs');
+            
+            if (forceLogsUrl) {
                 SheetsManager.embed('force-logs-sheet', 
-                    this.config.forceLogsUrl, 
+                    forceLogsUrl, 
                     {
                         maxHeight: '350px',
                         showStats: true,
                         sortable: true,
-                        cacheMinutes: 60
+                        cacheMinutes: CrusadeConfig.getCacheConfig('forcePage')
                     }
                 );
             } else {
@@ -298,7 +326,7 @@ class CrusadeForceApp {
                     <div class="no-data-message">
                         <p>📝 Force activity logs will be displayed here.</p>
                         <p>This would show requisitions, battle scars, battle honors, and other force modifications for <strong>${this.forceData.forceName}</strong>.</p>
-                        <p><em>Configure forceLogsUrl in crusade-force.js to enable this feature.</em></p>
+                        <p><em>Configure forceLogs URL in CrusadeConfig to enable this feature.</em></p>
                     </div>
                 `;
             }
@@ -367,6 +395,58 @@ class CrusadeForceApp {
                 </div>
             `;
         }
+    }
+    
+    displayArmyListsData(armyLists) {
+        // Display army lists in a simple table format
+        let html = '<div class="army-lists-display">';
+        
+        if (armyLists.length === 0) {
+            html += `
+                <div class="no-data-message">
+                    <p>📋 No army lists found for <strong>${this.forceData.forceName}</strong>.</p>
+                    <p><a href="../army-lists/add-army-list.html" style="color: #4ecdc4;">Add your first army list</a> to get started!</p>
+                </div>
+            `;
+        } else {
+            html += '<div class="army-lists-table-wrapper" style="max-height: 400px; overflow-y: auto; border: 1px solid #4a4a4a; border-radius: 4px; background-color: #2a2a2a;">';
+            html += '<table class="sheets-table" style="width: 100%; border-collapse: collapse;">';
+            
+            // Header
+            html += `
+                <tr style="background-color: #3a3a3a; position: sticky; top: 0;">
+                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Army Name</th>
+                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Faction</th>
+                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Points</th>
+                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Date Added</th>
+                </tr>
+            `;
+            
+            // Data rows
+            armyLists.forEach(armyList => {
+                const timestamp = armyList.Timestamp ? new Date(armyList.Timestamp).toLocaleDateString() : 'Unknown';
+                const points = armyList['Points Value'] || '-';
+                
+                html += `
+                    <tr style="border-bottom: 1px solid #4a4a4a; color: #ffffff;">
+                        <td style="padding: 8px 12px;">${armyList['Army Name'] || 'Unnamed List'}</td>
+                        <td style="padding: 8px 12px;">${armyList.Faction || '-'}</td>
+                        <td style="padding: 8px 12px;">${points}</td>
+                        <td style="padding: 8px 12px;">${timestamp}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</table>';
+            html += '</div>';
+            
+            html += `<div class="sheets-stats" style="margin-top: 10px; padding: 10px; background-color: #3a3a3a; border-radius: 4px; color: #cccccc; font-size: 12px;">
+                📋 Showing ${armyLists.length} army list${armyLists.length !== 1 ? 's' : ''} for ${this.forceData.forceName}
+            </div>`;
+        }
+        
+        html += '</div>';
+        document.getElementById('army-lists-sheet').innerHTML = html;
     }
     
     // Public methods for debugging and manual control
