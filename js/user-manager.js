@@ -1,14 +1,18 @@
 // filename: user-manager.js
 // User Management System for 40k Crusade Campaign Tracker
-// Handles user selection, persistence, and context management
+// Optimized with lazy loading - displays cached user immediately, fetches list only when needed
 
 const UserManager = {
     // Storage keys
     STORAGE_KEY: 'crusade_selected_user',
+    USERS_CACHE_KEY: 'crusade_users_cache',
+    CACHE_DURATION: 3600000, // 1 hour in milliseconds
     
     // Current user data
     currentUser: null,
     users: [],
+    usersLoaded: false,
+    isLoadingUsers: false,
     
     /**
      * Initialize the user management system
@@ -16,13 +20,10 @@ const UserManager = {
     async init() {
         console.log('UserManager initializing...');
         
-        // Load saved user from cache
+        // Load saved user from cache FIRST
         this.loadSavedUser();
         
-        // Load all users from the backend
-        await this.loadUsers();
-        
-        // Set up user dropdown in header
+        // Set up user dropdown in header immediately with cached user
         this.setupUserDropdown();
         
         // Set up user selection handlers
@@ -31,13 +32,8 @@ const UserManager = {
         // Set up create user button on main page
         this.setupCreateUserButton();
         
-        // Verify dropdown was created
-        const dropdown = document.getElementById('user-dropdown-container');
-        if (dropdown) {
-            console.log('✅ User dropdown created successfully');
-        } else {
-            console.error('❌ User dropdown not found after creation');
-        }
+        // Check if we have cached users and they're still fresh
+        this.loadCachedUsers();
         
         console.log('UserManager initialized with current user:', this.currentUser);
     },
@@ -59,6 +55,47 @@ const UserManager = {
     },
     
     /**
+     * Load cached users if available and fresh
+     */
+    loadCachedUsers() {
+        try {
+            const cachedData = localStorage.getItem(this.USERS_CACHE_KEY);
+            if (cachedData) {
+                const { users, timestamp } = JSON.parse(cachedData);
+                const age = Date.now() - timestamp;
+                
+                if (age < this.CACHE_DURATION) {
+                    this.users = users;
+                    this.usersLoaded = true;
+                    console.log('Loaded cached users:', this.users.length, 'users');
+                    return true;
+                } else {
+                    console.log('Cached users expired, will fetch when needed');
+                }
+            }
+        } catch (error) {
+            console.warn('Error loading cached users:', error);
+        }
+        return false;
+    },
+    
+    /**
+     * Save users to cache
+     */
+    saveUsersToCache() {
+        try {
+            const cacheData = {
+                users: this.users,
+                timestamp: Date.now()
+            };
+            localStorage.setItem(this.USERS_CACHE_KEY, JSON.stringify(cacheData));
+            console.log('Saved users to cache');
+        } catch (error) {
+            console.warn('Error saving users to cache:', error);
+        }
+    },
+    
+    /**
      * Save current user to localStorage
      */
     saveCurrentUser() {
@@ -76,18 +113,34 @@ const UserManager = {
     },
     
     /**
-     * Load all users from the backend
+     * Load all users from the backend (only when needed)
      */
     async loadUsers() {
+        // Prevent multiple simultaneous loads
+        if (this.isLoadingUsers) {
+            console.log('Already loading users, skipping duplicate request');
+            return;
+        }
+        
+        // If already loaded, don't reload unless forced
+        if (this.usersLoaded) {
+            console.log('Users already loaded');
+            return;
+        }
+        
+        this.isLoadingUsers = true;
+        
         try {
             const usersUrl = CrusadeConfig.getSheetUrl('users');
             
             if (!usersUrl) {
                 console.warn('Users sheet URL not configured');
                 this.users = [];
+                this.usersLoaded = true;
                 return;
             }
             
+            console.log('Fetching users from Google Sheets...');
             const response = await fetch(usersUrl);
             const responseData = await response.json();
             
@@ -102,7 +155,7 @@ const UserManager = {
             
             // Convert to user objects (skip header row)
             this.users = data.slice(1).map((row, index) => ({
-                id: index + 2, // Row number in sheet (1-based, accounting for header)
+                id: index + 2,
                 timestamp: row[0] || new Date(),
                 name: row[1] || 'Unknown User',
                 discordHandle: row[2] || '',
@@ -114,21 +167,32 @@ const UserManager = {
                 isActive: true
             })).filter(user => user.name !== 'Unknown User');
             
-            console.log('Loaded users:', this.users);
+            console.log('Loaded users from API:', this.users);
+            this.usersLoaded = true;
             
-            // If we have a saved user, validate it still exists
+            // Save to cache
+            this.saveUsersToCache();
+            
+            // Update dropdown if it exists
+            this.populateUserDropdown();
+            
+            // Validate current user still exists
             if (this.currentUser) {
                 const userExists = this.users.find(u => u.name === this.currentUser.name);
                 if (!userExists) {
                     console.warn('Saved user no longer exists, clearing selection');
                     this.currentUser = null;
                     this.saveCurrentUser();
+                    this.updateUserDisplayName();
                 }
             }
             
         } catch (error) {
             console.error('Error loading users:', error);
             this.users = [];
+            this.usersLoaded = true; // Mark as loaded even on error to prevent repeated attempts
+        } finally {
+            this.isLoadingUsers = false;
         }
     },
     
@@ -142,17 +206,18 @@ const UserManager = {
             existingDropdown.remove();
         }
         
-        // Create user dropdown HTML
+        // Create user dropdown HTML with current user or placeholder
+        const userName = this.currentUser ? this.currentUser.name : 'Select User';
         const userDropdownHtml = `
             <div class="user-dropdown-trigger" id="user-dropdown-trigger">
                 <span class="user-icon">👤</span>
-                <span class="user-name" id="current-user-name">${this.currentUser ? this.currentUser.name : 'Select User'}</span>
+                <span class="user-name" id="current-user-name">${userName}</span>
                 <span class="dropdown-arrow">▼</span>
             </div>
             <div class="user-dropdown-menu" id="user-dropdown-menu" style="display: none;">
                 <div class="user-dropdown-header">Select User</div>
                 <div class="user-dropdown-options" id="user-dropdown-options">
-                    <!-- Options will be populated here -->
+                    <div class="user-dropdown-empty">Loading users...</div>
                 </div>
                 <div class="user-dropdown-divider"></div>
                 <div class="user-dropdown-action">
@@ -167,28 +232,26 @@ const UserManager = {
         userDropdownContainer.id = 'user-dropdown-container';
         userDropdownContainer.innerHTML = userDropdownHtml;
         
-        // Add to page - try multiple locations
+        // Add to page
         const container = document.querySelector('.container');
         const body = document.body;
         
         if (container) {
-            // Make container relative if it isn't already
             const containerStyle = getComputedStyle(container);
             if (containerStyle.position === 'static') {
                 container.style.position = 'relative';
             }
-            
-            // Add to container
             container.appendChild(userDropdownContainer);
             console.log('User dropdown added to container');
         } else {
-            // Fallback: add to body
             body.appendChild(userDropdownContainer);
             console.log('User dropdown added to body as fallback');
         }
         
-        // Populate dropdown options
-        this.populateUserDropdown();
+        // If we have cached users, populate immediately
+        if (this.usersLoaded && this.users.length > 0) {
+            this.populateUserDropdown();
+        }
     },
     
     /**
@@ -198,13 +261,28 @@ const UserManager = {
         const optionsContainer = document.getElementById('user-dropdown-options');
         if (!optionsContainer) return;
         
+        // Only show loading if we're actually loading
+        if (this.isLoadingUsers) {
+            optionsContainer.innerHTML = '<div class="user-dropdown-empty">Loading users...</div>';
+            return;
+        }
+        
+        // Clear container for fresh population
         optionsContainer.innerHTML = '';
         
+        // If users aren't loaded yet and we're not currently loading, show placeholder
+        if (!this.usersLoaded) {
+            optionsContainer.innerHTML = '<div class="user-dropdown-empty">Click to load users</div>';
+            return;
+        }
+        
+        // If no users available after loading
         if (this.users.length === 0) {
             optionsContainer.innerHTML = '<div class="user-dropdown-empty">No users available</div>';
             return;
         }
         
+        // Populate with user options
         this.users.forEach(user => {
             const option = document.createElement('div');
             option.className = 'user-dropdown-option';
@@ -235,10 +313,32 @@ const UserManager = {
         
         if (trigger && menu) {
             // Toggle dropdown on click
-            trigger.addEventListener('click', (e) => {
+            trigger.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 const isVisible = menu.style.display !== 'none';
-                menu.style.display = isVisible ? 'none' : 'block';
+                
+                if (!isVisible) {
+                    // Opening dropdown
+                    menu.style.display = 'block';
+                    
+                    // Load users if not loaded
+                    if (!this.usersLoaded && !this.isLoadingUsers) {
+                        // Show loading state immediately
+                        const optionsContainer = document.getElementById('user-dropdown-options');
+                        if (optionsContainer) {
+                            optionsContainer.innerHTML = '<div class="user-dropdown-empty">Loading users...</div>';
+                        }
+                        
+                        // Load users
+                        await this.loadUsers();
+                    } else if (this.usersLoaded) {
+                        // If users are already loaded, make sure they're displayed
+                        this.populateUserDropdown();
+                    }
+                } else {
+                    // Closing dropdown
+                    menu.style.display = 'none';
+                }
             });
             
             // Close dropdown when clicking outside
@@ -277,10 +377,14 @@ const UserManager = {
         
         // Update UI
         this.updateUserDisplayName();
-        this.populateUserDropdown(); // Refresh to show selection
+        
+        // Only repopulate if the dropdown is visible
+        const menu = document.getElementById('user-dropdown-menu');
+        if (menu && menu.style.display !== 'none') {
+            this.populateUserDropdown(); // Refresh to show selection
+        }
         
         // Close dropdown
-        const menu = document.getElementById('user-dropdown-menu');
         if (menu) {
             menu.style.display = 'none';
         }
@@ -326,15 +430,12 @@ const UserManager = {
     autoPopulateUserFields() {
         if (!this.currentUser) return;
         
-        // Find all user name input fields and populate them
         const userFields = document.querySelectorAll('input[name="userName"], input[id="user-name"], input[name="user-name"]');
         
         userFields.forEach(field => {
             if (field.value === '' || field.placeholder.toLowerCase().includes('name')) {
                 field.value = this.currentUser.name;
-                field.style.backgroundColor = '#2a4a2a'; // Slight green tint to show it's auto-populated
-                
-                // Add tooltip
+                field.style.backgroundColor = '#2a4a2a';
                 field.title = 'Auto-populated with current user';
             }
         });
@@ -346,32 +447,37 @@ const UserManager = {
     showCreateUserModal() {
         console.log('Showing create user modal');
         
-        // Create modal HTML
+        // Ensure users are loaded first
+        if (!this.usersLoaded) {
+            this.loadUsers();
+        }
+        
+        // Create modal HTML with improved structure
         const modalHtml = `
-            <div id="create-user-modal" class="modal" style="display: flex;">
-                <div class="modal-content" style="max-width: 600px;">
+            <div id="create-user-modal" class="modal-overlay" tabindex="-1">
+                <div class="modal-container">
                     <div class="modal-header">
-                        <h3>Create New User</h3>
-                        <button class="modal-close" onclick="UserManager.closeCreateUserModal()">&times;</button>
+                        <h2>Create New User</h2>
+                        <button class="modal-close-btn" onclick="UserManager.closeCreateUserModal()" aria-label="Close modal">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <form id="create-user-form">
+                        <form id="create-user-form" class="modal-form">
                             <div class="form-group">
-                                <label for="create-user-name">Name <span style="color: #ff6b6b;">*</span></label>
-                                <input type="text" id="create-user-name" name="name" required placeholder="Enter your name">
-                                <small class="help-text">Your display name for the campaign tracker.</small>
+                                <label for="create-user-name">Name <span class="required">*</span></label>
+                                <input type="text" id="create-user-name" name="name" required placeholder="Enter your name" autocomplete="name">
+                                <small class="help-text">Your display name for the campaign tracker</small>
                             </div>
                             
                             <div class="form-group">
                                 <label for="create-user-discord">Discord Handle</label>
-                                <input type="text" id="create-user-discord" name="discordHandle" placeholder="username#1234">
-                                <small class="help-text">Your Discord username and discriminator (optional).</small>
+                                <input type="text" id="create-user-discord" name="discordHandle" placeholder="username#1234" autocomplete="off">
+                                <small class="help-text">Your Discord username (optional)</small>
                             </div>
                             
                             <div class="form-group">
                                 <label for="create-user-email">Email</label>
-                                <input type="email" id="create-user-email" name="email" placeholder="your@email.com">
-                                <small class="help-text">Your email address (optional).</small>
+                                <input type="email" id="create-user-email" name="email" placeholder="your@email.com" autocomplete="email">
+                                <small class="help-text">Your email address (optional)</small>
                             </div>
                             
                             <div class="form-group">
@@ -384,32 +490,32 @@ const UserManager = {
                                     <option value="4">4 - Advanced</option>
                                     <option value="5">5 - Expert</option>
                                 </select>
-                                <small class="help-text">Rate your 40k experience level (1-5).</small>
+                                <small class="help-text">Rate your 40k experience level</small>
                             </div>
                             
                             <div class="form-group">
                                 <label for="create-user-experience">Years Experience</label>
                                 <input type="number" id="create-user-experience" name="yearsExperience" min="0" max="50" placeholder="5">
-                                <small class="help-text">How many years have you been playing Warhammer 40k?</small>
+                                <small class="help-text">Years playing Warhammer 40k</small>
                             </div>
                             
                             <div class="form-group">
                                 <label for="create-user-games">Games Per Year</label>
                                 <input type="number" id="create-user-games" name="gamesPerYear" min="0" max="365" placeholder="24">
-                                <small class="help-text">Approximately how many 40k games do you play per year?</small>
+                                <small class="help-text">Approximate games played annually</small>
                             </div>
                             
                             <div class="form-group">
                                 <label for="create-user-notes">Notes</label>
                                 <textarea id="create-user-notes" name="notes" rows="3" placeholder="Any additional notes about yourself, your armies, preferences, etc."></textarea>
-                                <small class="help-text">Optional notes about yourself or your gaming preferences.</small>
+                                <small class="help-text">Optional notes about yourself</small>
                             </div>
                             
-                            <div class="form-actions">
-                                <button type="button" onclick="UserManager.closeCreateUserModal()" class="btn-secondary">Cancel</button>
-                                <button type="submit" class="btn-primary" id="create-user-submit-btn">
+                            <div class="modal-actions">
+                                <button type="button" onclick="UserManager.closeCreateUserModal()" class="btn btn-secondary">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="create-user-submit-btn">
                                     <span class="btn-text">Create User</span>
-                                    <span class="btn-loading" style="display: none;">
+                                    <span class="btn-loading">
                                         <div class="loading-spinner"></div>
                                         Creating...
                                     </span>
@@ -424,7 +530,10 @@ const UserManager = {
         // Add modal to page
         const modalDiv = document.createElement('div');
         modalDiv.innerHTML = modalHtml;
-        document.body.appendChild(modalDiv);
+        document.body.appendChild(modalDiv.firstElementChild);
+        
+        // Prevent body scroll when modal is open
+        document.body.style.overflow = 'hidden';
         
         // Set up form handler
         const form = document.getElementById('create-user-form');
@@ -433,10 +542,63 @@ const UserManager = {
             this.handleCreateUser();
         });
         
-        // Focus on name field
+        // Close modal on overlay click
+        const overlay = document.getElementById('create-user-modal');
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                this.closeCreateUserModal();
+            }
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', this.handleEscapeKey);
+        
+        // Focus on name field after animation
         setTimeout(() => {
-            document.getElementById('create-user-name').focus();
-        }, 100);
+            const nameField = document.getElementById('create-user-name');
+            if (nameField) {
+                nameField.focus();
+            }
+        }, 300);
+        
+        // Trap focus within modal for accessibility
+        this.trapFocus(overlay);
+    },
+    
+    /**
+     * Handle escape key to close modal
+     */
+    handleEscapeKey(e) {
+        if (e.key === 'Escape') {
+            UserManager.closeCreateUserModal();
+        }
+    },
+    
+    /**
+     * Trap focus within modal for accessibility
+     */
+    trapFocus(element) {
+        const focusableElements = element.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstFocusable = focusableElements[0];
+        const lastFocusable = focusableElements[focusableElements.length - 1];
+        
+        element.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                if (e.shiftKey) {
+                    if (document.activeElement === firstFocusable) {
+                        e.preventDefault();
+                        lastFocusable.focus();
+                    }
+                } else {
+                    if (document.activeElement === lastFocusable) {
+                        e.preventDefault();
+                        firstFocusable.focus();
+                    }
+                }
+            }
+        });
     },
     
     /**
@@ -445,7 +607,21 @@ const UserManager = {
     closeCreateUserModal() {
         const modal = document.getElementById('create-user-modal');
         if (modal) {
-            modal.remove();
+            // Re-enable body scroll
+            document.body.style.overflow = '';
+            
+            // Remove escape key listener
+            document.removeEventListener('keydown', this.handleEscapeKey);
+            
+            // Add fade out animation
+            modal.style.animation = 'fadeOut 0.3s ease-out';
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (modal && modal.parentNode) {
+                    modal.parentNode.removeChild(modal);
+                }
+            }, 300);
         }
     },
     
@@ -462,7 +638,9 @@ const UserManager = {
             // Show loading state
             submitBtn.disabled = true;
             btnText.style.display = 'none';
-            btnLoading.style.display = 'flex';
+            btnText.classList.add('hidden');
+            btnLoading.style.display = 'inline-flex';
+            btnLoading.classList.add('active');
             
             const formData = new FormData(form);
             const userData = {
@@ -508,7 +686,9 @@ const UserManager = {
             // Reset button state
             submitBtn.disabled = false;
             btnText.style.display = 'inline';
+            btnText.classList.remove('hidden');
             btnLoading.style.display = 'none';
+            btnLoading.classList.remove('active');
         }
     },
     
@@ -597,8 +777,12 @@ const UserManager = {
      * Refresh user data from server
      */
     async refreshUsers() {
+        // Clear the cache to force reload
+        localStorage.removeItem(this.USERS_CACHE_KEY);
+        this.usersLoaded = false;
+        this.users = [];
+        
         await this.loadUsers();
-        this.populateUserDropdown();
     },
     
     /**
@@ -666,7 +850,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Auto-populate any existing user fields
             UserManager.autoPopulateUserFields();
             
-            console.log('✅ UserManager fully initialized and available globally');
+            console.log('✅ UserManager fully initialized with lazy loading');
         } catch (error) {
             console.error('❌ Error initializing UserManager:', error);
         }
@@ -678,4 +862,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = UserManager;
 }
 
-console.log('UserManager loaded - user management system available');
+console.log('UserManager loaded - optimized with lazy loading');
