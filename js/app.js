@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('40k Crusade Campaign Tracker - Initializing...');
     
     try {
-        // Initialize Crusades sheet
+        // Initialize Crusades sheet with custom column display
         const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
         if (crusadesUrl) {
             SheetsManager.embed('crusades-sheet', 
@@ -29,8 +29,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     linkColumn: 1,          // Crusade Name column
                     linkPattern: CrusadeConfig.routes.crusadeDetailsPattern.replace('{crusade}', '{slug}'),
                     cacheMinutes: CrusadeConfig.getCacheConfig('default'),
-                    hideColumns: [],
-                    dateColumns: [3, 4]     // Start Date and End Date columns
+                    hideColumns: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], // Hide columns 5 and up, show 0-4
+                    dateColumns: [3, 4],     // Start Date and End Date columns
+                    columnNames: {           // Custom column display names
+                        0: 'State',
+                        1: 'Name',
+                        2: 'Type',
+                        3: 'Start',
+                        4: 'End'
+                    }
                 }
             );
         } else {
@@ -149,30 +156,6 @@ const CrusadeApp = {
             .replace(/[^\w\s-]/g, '')
             .replace(/[\s_-]+/g, '-')
             .replace(/^-+|-+$/g, '');
-    }
-};
-
-// Add a global cache clear function
-window.clearAllDataCaches = function() {
-    if (confirm('Clear all cached data across all pages? This will force fresh data loads.')) {
-        SheetsManager.clearAllCaches();
-        
-        // Also clear any other app-specific caches
-        const additionalCacheKeys = [
-            'force_options_cache',
-            'crusade_users_cache',
-            'crusade_selected_user'
-        ];
-        
-        additionalCacheKeys.forEach(key => {
-            if (localStorage.getItem(key)) {
-                console.log('Clearing:', key);
-                localStorage.removeItem(key);
-            }
-        });
-        
-        alert('All caches cleared! Refreshing page...');
-        location.reload();
     }
 };
 

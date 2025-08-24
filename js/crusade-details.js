@@ -371,13 +371,14 @@ class CrusadeDetailsApp {
         
         // Load available forces
         try {
-            const crusadeForcesUrl = CrusadeConfig.getSheetUrl('crusadeForces');
+            // FIXED: Changed from 'crusadeForces' to 'forces'
+            const forcesUrl = CrusadeConfig.getSheetUrl('forces');
             
-            if (!crusadeForcesUrl) {
-                throw new Error('Crusade Forces sheet not configured');
+            if (!forcesUrl) {
+                throw new Error('Forces sheet not configured');
             }
             
-            const response = await fetch(crusadeForcesUrl);
+            const response = await fetch(forcesUrl);
             const responseData = await response.json();
             
             let data;
@@ -393,17 +394,19 @@ class CrusadeDetailsApp {
             forceSelect.innerHTML = '<option value="">Select a force...</option>';
             
             // Add force options
+            // Updated column indices for new sheet structure:
+            // Column 0: User Name, Column 1: Force Name, Column 2: Faction
             data.slice(1).forEach(row => {
-                if (row[1] && row[2]) { // userName and forceName
+                if (row[0] && row[1]) { // userName and forceName
                     // Create force key using our key system
-                    const forceKey = KeyUtils.createForceKey(row[2], row[1], row[0]); // forceName, userName, timestamp
-                    const displayName = `${row[2]} (${row[1]})${row[3] ? ` - ${row[3]}` : ''}`; // Force Name (Player) - Faction
+                    const forceKey = KeyUtils.createForceKey(row[1], row[0], row[5]); // forceName, userName, timestamp
+                    const displayName = `${row[1]} (${row[0]})${row[2] ? ` - ${row[2]}` : ''}`; // Force Name (User Name) - Faction
                     
                     const option = document.createElement('option');
                     option.value = forceKey;
                     option.textContent = displayName;
-                    option.setAttribute('data-force-name', row[2]); // Store force name for later use
-                    option.setAttribute('data-user-name', row[1]); // Store user name for later use
+                    option.setAttribute('data-force-name', row[1]); // Store force name for later use
+                    option.setAttribute('data-user-name', row[0]); // Store user name for later use
                     forceSelect.appendChild(option);
                 }
             });

@@ -1,6 +1,6 @@
 // filename: google-sheets-embed.js
 // GoogleSheetsEmbed - A comprehensive class for embedding Google Sheets data
-// Features: caching, sorting, pagination, responsive design, error handling
+// Features: caching, sorting, pagination, responsive design, error handling, custom column names
 class GoogleSheetsEmbed {
     constructor(containerSelector, appsScriptUrl, options = {}) {
         this.container = document.querySelector(containerSelector);
@@ -19,6 +19,7 @@ class GoogleSheetsEmbed {
             cacheMinutes: 5,      // cache data for 5 minutes (0 = no cache)
             hideColumns: [],      // array of column indices to hide (e.g., [0, 2])
             dateColumns: [],      // array of column indices to format as dates (e.g., [2, 3])
+            columnNames: {},      // object mapping column indices to custom names (e.g., {0: 'ID', 1: 'Name'})
             ...options
         };
         this.rawData = null;
@@ -188,9 +189,12 @@ class GoogleSheetsEmbed {
                 // Skip hidden columns
                 if (this.options.hideColumns.includes(index)) continue;
                 
+                // Use custom column name if provided, otherwise use original
+                const displayName = this.options.columnNames[index] || cell;
+                
                 const sortClass = this.sortColumn === index ? 'sort-' + this.sortDirection : '';
                 const sortable = this.options.sortable ? 'onclick="this.closest(\'.sheets-container\').sheetsEmbed.sortBy(' + index + ')"' : '';
-                const escapedCell = String(cell || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const escapedCell = String(displayName || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                 html += '<th class="' + sortClass + '" ' + sortable + '>' + escapedCell;
                 if (this.options.sortable) {
                     html += '<span class="sort-indicator"></span>';
@@ -240,7 +244,7 @@ class GoogleSheetsEmbed {
             // Count visible columns (excluding hidden ones)
             const visibleColumns = rows[0] && rows[0].length ? rows[0].length - this.options.hideColumns.length : 0;
             
-            let statsText = '⚔️ Showing ' + displayedRows + ' of ' + totalDataRows + ' forces, ' + visibleColumns + ' columns | Last updated: ' + new Date().toLocaleString();
+            let statsText = '⚔️ Showing ' + displayedRows + ' of ' + totalDataRows + ' rows, ' + visibleColumns + ' columns | Last updated: ' + new Date().toLocaleString();
             
             if (isFromCache) {
                 const cacheAgeHours = Math.round((Date.now() - cachedData.timestamp) / 3600000);
@@ -285,7 +289,7 @@ class GoogleSheetsEmbed {
             '<button onclick="this.closest(\'.sheets-container\').sheetsEmbed.goToPage(' + (this.currentPage - 1) + ')" ' +
             (this.currentPage === 1 ? 'disabled' : '') + '>Previous</button>' +
             '<span class="page-info">Page ' + this.currentPage + ' of ' + totalPages + 
-            ' (forces ' + startRow + '-' + endRow + ' of ' + totalRows + ')</span>' +
+            ' (rows ' + startRow + '-' + endRow + ' of ' + totalRows + ')</span>' +
             '<button onclick="this.closest(\'.sheets-container\').sheetsEmbed.goToPage(' + (this.currentPage + 1) + ')" ' +
             (this.currentPage === totalPages ? 'disabled' : '') + '>Next</button>' +
             '<button onclick="this.closest(\'.sheets-container\').sheetsEmbed.goToPage(' + totalPages + ')" ' +
