@@ -1,3 +1,4 @@
+// filename: sheets-manager.js
 /**
  * SheetsManager - Utility class for managing multiple GoogleSheetsEmbed instances
  * Provides easy setup and global cache management

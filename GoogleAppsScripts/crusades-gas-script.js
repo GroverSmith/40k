@@ -2,10 +2,8 @@
 // Google Apps Script for Crusades Sheet Access
 // Deploy this as a web app to handle crusade data requests
 
-// Configuration - UPDATE THESE VALUES
-const SPREADSHEET_ID = '1Nzjg5YsL4i63r1cXVzVtF6AW3a2YseUCL_gV6tv9JmU'; // Your Crusades spreadsheet ID
-const SHEET_NAME = 'Crusades'; // Update this to your actual sheet name (might be 'Crusades' or 'Sheet1')
-
+const SPREADSHEET_ID = '1Nzjg5YsL4i63r1cXVzVtF6AW3a2YseUCL_gV6tv9JmU'; 
+const SHEET_NAME = 'Crusades'; 
 function doGet(e) {
   try {
     const action = e.parameter.action || 'list';

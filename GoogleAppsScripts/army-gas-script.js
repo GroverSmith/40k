@@ -1,9 +1,9 @@
+// filename: army-gas-script.js
 // Google Apps Script for Army List Form Submissions
 // Deploy this as a web app to handle form submissions
-// FIXED: Proper ID generation and handling for army list retrieval
 
-// Configuration - UPDATE THESE VALUES
-const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; // Replace with your Google Sheet ID
+
+const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; 
 const SHEET_NAME = 'Army Lists'; // Name of the sheet tab for army lists
 
 function doPost(e) {

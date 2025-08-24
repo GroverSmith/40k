@@ -2,7 +2,6 @@
 // Google Apps Script for Users Sheet Management
 // Deploy this as a web app to handle user creation and retrieval
 
-// Configuration - UPDATE THESE VALUES
 const SPREADSHEET_ID = '15q9EIPz2PswXwNsZ0aJAb9mgT0qy_NXUUQqELEdx3W4';
 const SHEET_NAME = 'Users';
 

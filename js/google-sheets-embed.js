@@ -1,3 +1,4 @@
+// filename: google-sheets-embed.js
 // GoogleSheetsEmbed - A comprehensive class for embedding Google Sheets data
 // Features: caching, sorting, pagination, responsive design, error handling
 class GoogleSheetsEmbed {

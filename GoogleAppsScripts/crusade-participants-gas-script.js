@@ -2,7 +2,6 @@
 // Google Apps Script for Crusade Participants Sheet
 // Deploy this as a web app to handle participant registrations and lookups
 
-// Configuration - UPDATE THESE VALUES
 const SPREADSHEET_ID = '17jJO939FWthVaLCO091CQzx0hAmtNn8zE5zlqBf10JQ';
 const SHEET_NAME = 'Participants';
 

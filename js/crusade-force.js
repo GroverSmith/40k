@@ -1,6 +1,6 @@
+// filename: crusade-force.js
 // Crusade Force Page - Individual force data management
 // 40k Crusade Campaign Tracker
-// FIXED: Army list ID bug where wrong army was being loaded
 
 class CrusadeForceApp {
     constructor() {
