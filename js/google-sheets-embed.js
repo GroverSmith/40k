@@ -51,8 +51,7 @@ class GoogleSheetsEmbed {
         // Add the "Add New Force" button (left-aligned) - only for Crusade Forces
         if (this.container.id === 'crusade-forces-sheet') {
             const addForceBtn = document.createElement('a');
-            addForceBtn.href = 'https://docs.google.com/forms/d/e/1FAIpQLSf0CasoHdP0VuxvBaEbmAxc2Tsi0AeA1saHBa1EMfC4do4EOw/viewform?usp=dialog';
-            addForceBtn.target = '_blank';
+            addForceBtn.href = 'forces/add-force.html';
             addForceBtn.className = 'add-force-btn';
             addForceBtn.textContent = '+ Add New Force';
             buttonContainer.appendChild(addForceBtn);

@@ -43,24 +43,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }
-        
-        // Initialize Crusade Forces sheet with form integration
-        const crusadeForcesUrl = CrusadeConfig.getSheetUrl('crusadeForces');
-        if (crusadeForcesUrl) {
+		
+		// Initialize Forces sheet with form integration
+        const forcesUrl = CrusadeConfig.getSheetUrl('forces');
+        if (forcesUrl) {
             SheetsManager.embed('crusade-forces-sheet', 
-                crusadeForcesUrl, 
+                forcesUrl, 
                 {
                     maxHeight: '350px',
                     showStats: true,
                     sortable: true,
-                    linkColumn: 2,          // Force Name column (after hiding timestamp)
+                    linkColumn: 1,          // Force Name column
                     linkPattern: CrusadeConfig.routes.forceDetailsPattern.replace('{force}', '{slug}'),
                     cacheMinutes: CrusadeConfig.getCacheConfig('default'),
-                    hideColumns: [0]        // Hide timestamp column
+                    hideColumns: [5]        // Hide timestamp column
                 }
             );
         } else {
-            console.warn('Crusade Forces sheet URL not configured');
+            console.warn('Forces sheet URL not configured');
+            // Show placeholder content
+            document.getElementById('crusade-forces-sheet').innerHTML = `
+                <div class="no-data-message">
+                    <p>⚔️ Crusade forces will be displayed here.</p>
+                    <p><em>Configure forces URL in CrusadeConfig to enable this feature.</em></p>
+                </div>
+            `;
         }
         
         console.log('Sheets initialized successfully');

@@ -1,0 +1,135 @@
+<!-- filename: forces/add-force.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Crusade Force - 40k Crusade Campaign Tracker</title>
+    <meta name="description" content="Create a new Crusade Force for your Warhammer 40,000 campaigns.">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/army-list-form.css">
+    <link rel="stylesheet" href="../css/user-dropdown.css">
+    <link rel="stylesheet" href="../css/modal.css">
+    <link rel="stylesheet" href="../css/user-field.css">
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-button">← Back to Campaign Tracker</a>
+        
+        <header class="form-header">
+            <h1>⚔️ Create New Crusade Force</h1>
+            <p>Register your Crusade Force to begin tracking battles, requisitions, and campaign progress.</p>
+        </header>
+        
+        <form id="add-force-form" class="army-form">
+            <!-- User Name (Auto-populated) -->
+            <div class="form-group">
+                <label for="user-name">Player Name <span class="required">*</span></label>
+                <input type="text" id="user-name" name="userName" required 
+                       placeholder="Enter your name or select a user from top right">
+                <small class="help-text">Your name as the force commander.</small>
+            </div>
+            
+            <!-- Force Name -->
+            <div class="form-group">
+                <label for="force-name">Force Name <span class="required">*</span></label>
+                <input type="text" id="force-name" name="forceName" required 
+                       placeholder="e.g., Ultramarines 2nd Company, Death Guard Vectorium, etc.">
+                <small class="help-text">A unique name for your Crusade Force.</small>
+            </div>
+            
+            <!-- Faction -->
+            <div class="form-group">
+                <label for="faction">Faction <span class="required">*</span></label>
+                <select id="faction" name="faction" required>
+                    <option value="">Select faction...</option>
+                    <option value="Adepta Sororitas">Adepta Sororitas</option>
+                    <option value="Adeptus Custodes">Adeptus Custodes</option>
+                    <option value="Adeptus Mechanicus">Adeptus Mechanicus</option>
+                    <option value="Aeldari">Aeldari</option>
+                    <option value="Agents of the Imperium">Agents of the Imperium</option>
+                    <option value="Astra Militarum">Astra Militarum</option>
+                    <option value="Blood Angels">Blood Angels</option>
+                    <option value="Chaos Daemons">Chaos Daemons</option>
+                    <option value="Chaos Knights">Chaos Knights</option>
+                    <option value="Chaos Space Marines">Chaos Space Marines</option>
+                    <option value="Dark Angels">Dark Angels</option>
+                    <option value="Death Guard">Death Guard</option>
+                    <option value="Drukhari">Drukhari</option>
+                    <option value="Genestealer Cults">Genestealer Cults</option>
+                    <option value="Grey Knights">Grey Knights</option>
+                    <option value="Imperial Knights">Imperial Knights</option>
+                    <option value="Leagues of Votann">Leagues of Votann</option>
+                    <option value="Necrons">Necrons</option>
+                    <option value="Orks">Orks</option>
+                    <option value="Space Marines">Space Marines</option>
+                    <option value="Space Wolves">Space Wolves</option>
+                    <option value="T'au Empire">T'au Empire</option>
+                    <option value="Thousand Sons">Thousand Sons</option>
+                    <option value="Tyranids">Tyranids</option>
+                    <option value="World Eaters">World Eaters</option>
+                </select>
+                <small class="help-text">The primary faction for this force.</small>
+            </div>
+            
+            <!-- Detachment -->
+            <div class="form-group">
+                <label for="detachment">Detachment</label>
+                <input type="text" id="detachment" name="detachment" 
+                       placeholder="e.g., Gladius Task Force, Anvil Siege Force, etc.">
+                <small class="help-text">The detachment type for this force (optional)</small>
+            </div>
+            
+            <!-- Notes -->
+            <div class="form-group">
+                <label for="notes">Notes</label>
+                <textarea id="notes" name="notes" rows="4"
+                          placeholder="Any additional information about your force, its theme, or special rules..."></textarea>
+                <small class="help-text">Any notes or comments about this force (optional).</small>
+            </div>
+            
+            <!-- Submit Buttons -->
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="history.back()">Cancel</button>
+                <button type="submit" class="btn-primary" id="submit-btn">
+                    <span class="btn-text">Create Crusade Force</span>
+                    <span class="btn-loading" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        Creating...
+                    </span>
+                </button>
+            </div>
+        </form>
+        
+        <!-- Success Message -->
+        <div id="success-message" class="message success" style="display: none;">
+            <h3>✅ Crusade Force Created Successfully!</h3>
+            <p>Your new Crusade Force has been registered and is ready for battle!</p>
+            <div class="message-actions">
+                <button onclick="resetForm()" class="btn-secondary">Create Another Force</button>
+                <a href="../index.html" class="btn-primary">Back to Campaign Tracker</a>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="error-message" class="message error" style="display: none;">
+            <h3>❌ Creation Failed</h3>
+            <p id="error-text">There was an error creating your Crusade Force. Please try again.</p>
+            <div class="message-actions">
+                <button onclick="hideMessages()" class="btn-primary">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="../js/config.js"></script>
+    <script src="../js/user-manager.js"></script>
+    <script src="../js/google-sheets-embed.js"></script>
+    <script src="../js/sheets-manager.js"></script>
+    <script src="../js/add-force-form.js"></script>
+</body>
+</html>

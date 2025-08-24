@@ -5,12 +5,13 @@
 const CrusadeConfig = {
     // Google Sheets Configuration
     sheets: {
-        // Main Crusade Forces sheet (for loading force dropdown and force data)
-        crusadeForces: {
+		
+		// Main Forces sheet (simplified structure)
+        forces: {
             url: 'https://script.google.com/macros/s/AKfycbw81ZEFEAzOrfvOxWBHHT17kGqLrk3g-VpXuDeUbK_8YehP1dNe8FEUMf6PuDzZ4JnH/exec',
-            sheetId: '1k-ggXW43gSxa6sm3lg-d_wkFUoxMh7N_l7P78oEFv-0',
-            sheetName: 'Crusade Forces'
-        },
+            sheetId: '13n56kfJPSMoeV9VyiTXYajWT1LuBmnpj2oSwcek_osg',
+            sheetName: 'Forces'
+        },        
         
         // Crusades sheet (for campaign/crusade information)
         crusades: {
