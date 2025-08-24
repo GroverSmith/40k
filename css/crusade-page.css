@@ -1,0 +1,222 @@
+/* filename: crusade-page.css */
+/* Crusade Details Page Specific Styles */
+
+.crusade-header {
+    background: linear-gradient(135deg, #2c5aa0 0%, #1e4080 100%);
+    padding: 30px 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.crusade-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+    opacity: 0.3;
+}
+
+.crusade-header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 1;
+}
+
+.crusade-subtitle {
+    color: #4ecdc4;
+    font-size: 1.2em;
+    margin-top: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.crusade-dates {
+    color: #cccccc;
+    font-size: 0.95em;
+    margin-top: 8px;
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+    opacity: 0.9;
+}
+
+.crusade-status {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-top: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+.status-active {
+    background-color: #4ecdc4;
+    color: #1a1a1a;
+}
+
+.status-upcoming {
+    background-color: #ffa500;
+    color: #1a1a1a;
+}
+
+.status-past {
+    background-color: #888888;
+    color: #ffffff;
+}
+
+.data-section {
+    background-color: #2a2a2a;
+    margin: 30px 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.section-header {
+    background-color: #3a3a3a;
+    padding: 15px 20px;
+    border-bottom: 2px solid #4ecdc4;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #4ecdc4;
+    font-size: 1.3em;
+}
+
+.section-content {
+    padding: 20px;
+}
+
+.content-block {
+    background-color: #1a1a1a;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #4ecdc4;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.content-block:last-child {
+    margin-bottom: 0;
+}
+
+.content-block h4 {
+    color: #4ecdc4;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.content-block p {
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.content-block p:last-child {
+    margin-bottom: 0;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #4a4a4a;
+    border-radius: 50%;
+    border-top-color: #4ecdc4;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.error-message {
+    background-color: #4a1e1e;
+    border: 1px solid #cc6666;
+    color: #ff9999;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+.back-button {
+    display: inline-block;
+    background-color: #3a3a3a;
+    color: #4ecdc4;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #4a4a4a;
+    color: #4ecdc4;
+    text-decoration: none;
+}
+
+.no-data-message {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    padding: 40px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .crusade-header {
+        padding: 20px 15px;
+    }
+    
+    .crusade-header h1 {
+        font-size: 2em;
+    }
+    
+    .crusade-subtitle {
+        font-size: 1em;
+    }
+    
+    .section-content {
+        padding: 15px;
+    }
+    
+    .content-block {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .crusade-header h1 {
+        font-size: 1.8em;
+    }
+    
+    .crusade-subtitle {
+        font-size: 0.9em;
+    }
+    
+    .crusade-dates {
+        font-size: 0.85em;
+    }
+    
+    .section-content {
+        padding: 12px;
+    }
+    
+    .content-block {
+        padding: 12px;
+    }
+}

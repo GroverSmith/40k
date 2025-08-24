@@ -1,3 +1,4 @@
+// filename: app.js
 // Application initialization and configuration
 // 40k Crusade Campaign Tracker - Updated to use centralized config
 
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Debug the config to see what's missing
     console.log('CrusadeConfig available:', !!CrusadeConfig);
-    console.log('CrusadeConfig.cache:', CrusadeConfig.cache);
+    console.log('CrusadeConfig.cache:', CrusadeConfig.app.cache);
     
     console.log('40k Crusade Campaign Tracker - Initializing...');
     
@@ -25,15 +26,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     maxHeight: '350px',
                     showStats: true,
                     sortable: true,
-                    linkColumn: 1,
-                    linkPattern: 'crusades/{slug}.html',
+                    linkColumn: 1,          // Crusade Name column
+                    linkPattern: CrusadeConfig.routes.crusadeDetailsPattern.replace('{crusade}', '{slug}'),
                     cacheMinutes: CrusadeConfig.getCacheConfig('default'),
                     hideColumns: [],
-                    dateColumns: [3, 4]     // Columns 3 and 4 contain dates
+                    dateColumns: [3, 4]     // Start Date and End Date columns
                 }
             );
         } else {
             console.warn('Crusades sheet URL not configured');
+            // Show placeholder content
+            document.getElementById('crusades-sheet').innerHTML = `
+                <div class="no-data-message">
+                    <p>📜 Crusade campaigns will be displayed here.</p>
+                    <p><em>Configure crusades URL in CrusadeConfig to enable this feature.</em></p>
+                </div>
+            `;
         }
         
         // Initialize Crusade Forces sheet with form integration
@@ -117,8 +125,13 @@ const CrusadeApp = {
     
     // Navigate to a specific crusade page
     viewCrusade(crusadeName) {
-        const slug = this.createSlug(crusadeName);
-        window.location.href = `crusades/${slug}.html`;
+        if (CrusadeConfig) {
+            window.location.href = CrusadeConfig.buildCrusadeUrl(crusadeName);
+        } else {
+            // Fallback if config not loaded
+            const encodedName = encodeURIComponent(crusadeName);
+            window.location.href = `crusades/crusade-details.html?crusade=${encodedName}`;
+        }
     },
     
     // Create URL-friendly slug from text

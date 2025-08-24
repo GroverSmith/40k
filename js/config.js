@@ -1,3 +1,4 @@
+// filename: config.js
 // Centralized Configuration for 40k Crusade Campaign Tracker
 // Update all your URLs and IDs here instead of scattered throughout the codebase
 
@@ -14,7 +15,7 @@ const CrusadeConfig = {
         // Crusades sheet (for campaign/crusade information)
         crusades: {
             url: 'https://script.google.com/macros/s/AKfycbyYInudtrcqZvk4BYepzUxEGSLRPkIUuQknOtUOL-I0Rl4LVDGqyD0QMso3ds_Cu_BqZw/exec',
-            sheetId: 'YOUR_CRUSADES_SPREADSHEET_ID',
+            sheetId: '1Nzjg5YsL4i63r1cXVzVtF6AW3a2YseUCL_gV6tv9JmU',
             sheetName: 'Crusades'
         },
         
@@ -89,10 +90,12 @@ const CrusadeConfig = {
         // Main pages
         home: 'index.html',
         forceDetails: 'forces/force-details.html',
+        crusadeDetails: 'crusades/crusade-details.html',
         addArmyList: 'army-lists/add-army-list.html',
         
         // Dynamic patterns
         forceDetailsPattern: 'forces/force-details.html?force={force}',
+        crusadeDetailsPattern: 'crusades/crusade-details.html?crusade={crusade}',
         
         // External links
         addForceForm: 'https://docs.google.com/forms/d/e/1FAIpQLSf0CasoHdP0VuxvBaEbmAxc2Tsi0AeA1saHBa1EMfC4do4EOw/viewform?usp=dialog'
@@ -174,6 +177,14 @@ const CrusadeConfig = {
         return this.routes.forceDetailsPattern.replace('{force}', encodedName);
     },
     
+    buildCrusadeUrl(crusadeName, basePath = '') {
+        const encodedName = encodeURIComponent(crusadeName);
+        if (basePath) {
+            return `${basePath}${this.routes.crusadeDetailsPattern.replace('{crusade}', encodedName)}`;
+        }
+        return this.routes.crusadeDetailsPattern.replace('{crusade}', encodedName);
+    },
+    
     // Build force URL from different directories
     buildForceUrlFromRoot(forceName) {
         return this.buildForceUrl(forceName, '');
@@ -181,6 +192,15 @@ const CrusadeConfig = {
     
     buildForceUrlFromSubdir(forceName) {
         return this.buildForceUrl(forceName, '../');
+    },
+    
+    // Build crusade URL from different directories
+    buildCrusadeUrlFromRoot(crusadeName) {
+        return this.buildCrusadeUrl(crusadeName, '');
+    },
+    
+    buildCrusadeUrlFromSubdir(crusadeName) {
+        return this.buildCrusadeUrl(crusadeName, '../');
     },
     
     // Debug method to check config integrity
@@ -195,8 +215,8 @@ const CrusadeConfig = {
     // Get configuration for specific use cases
     getFormConfig() {
         return {
-            maxCharacters: this.validation.armyList.maxCharacters,
-            minCharacters: this.validation.armyList.minCharacters,
+            maxCharacters: this.app.validation.armyList.maxCharacters,
+            minCharacters: this.app.validation.armyList.minCharacters,
             factions: this.gameData.factions,
             detachments: this.gameData.detachmentTypes,
             mfmVersions: this.gameData.mfmVersions
@@ -205,7 +225,7 @@ const CrusadeConfig = {
     
     getCacheConfig(type = 'default') {
         // Ensure cache object exists
-        if (!this.cache) {
+        if (!this.app.cache) {
             console.warn('Cache configuration not found, using default value');
             return 1440; // 24 hours default
         }
@@ -225,10 +245,10 @@ const CrusadeConfig = {
                 break;
         }
         
-        const cacheValue = this.cache[cacheKey];
+        const cacheValue = this.app.cache[cacheKey];
         if (cacheValue === undefined) {
             console.warn(`Cache key '${cacheKey}' not found, using default`);
-            return this.cache.defaultMinutes || 1440;
+            return this.app.cache.defaultMinutes || 1440;
         }
         
         return cacheValue;
