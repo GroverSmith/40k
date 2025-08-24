@@ -429,10 +429,18 @@ class CrusadeForceApp {
                 const points = armyList['Points Value'] || '-';
                 const detachment = armyList.Detachment || '-';
                 const mfmVersion = armyList['MFM Version'] || '-';
+                const armyName = armyList['Army Name'] || 'Unnamed List';
+                const armyListId = armyList.id; // Row ID for linking
+                
+                // Create link to view army list
+                const armyNameLink = `<a href="../army-lists/view-army-list.html?id=${armyListId}" 
+                                        style="color: #4ecdc4; text-decoration: none; transition: color 0.3s ease;"
+                                        onmouseover="this.style.color='#7fefea'" 
+                                        onmouseout="this.style.color='#4ecdc4'">${armyName}</a>`;
                 
                 html += `
                     <tr style="border-bottom: 1px solid #4a4a4a; color: #ffffff;">
-                        <td style="padding: 8px 12px;">${armyList['Army Name'] || 'Unnamed List'}</td>
+                        <td style="padding: 8px 12px;">${armyNameLink}</td>
                         <td style="padding: 8px 12px;">${detachment}</td>
                         <td style="padding: 8px 12px;">${mfmVersion}</td>
                         <td style="padding: 8px 12px;">${points}</td>

@@ -166,9 +166,21 @@ const CrusadeConfig = {
         return sheet.url;
     },
     
-    buildForceUrl(forceName) {
+    buildForceUrl(forceName, basePath = '') {
         const encodedName = encodeURIComponent(forceName);
+        if (basePath) {
+            return `${basePath}${this.routes.forceDetailsPattern.replace('{force}', encodedName)}`;
+        }
         return this.routes.forceDetailsPattern.replace('{force}', encodedName);
+    },
+    
+    // Build force URL from different directories
+    buildForceUrlFromRoot(forceName) {
+        return this.buildForceUrl(forceName, '');
+    },
+    
+    buildForceUrlFromSubdir(forceName) {
+        return this.buildForceUrl(forceName, '../');
     },
     
     // Debug method to check config integrity
