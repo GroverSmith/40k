@@ -2,28 +2,59 @@
 // Deploy this as a web app to handle form submissions
 
 // Configuration - UPDATE THESE VALUES
-const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE';
+const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; // Replace with your Google Sheet ID
 const SHEET_NAME = 'Army Lists'; // Name of the sheet tab for army lists
 
 function doPost(e) {
   try {
-    // Log the incoming request for debugging
-    console.log('Received POST request:', e.postData.contents);
+    console.log('doPost called - raw data:', e.postData ? e.postData.contents : 'No postData');
+    console.log('Parameters:', e.parameter);
     
-    // Parse the JSON data from the form
-    const data = JSON.parse(e.postData.contents);
+    let data;
+    
+    // The form submission comes as URL-encoded parameters
+    if (e.parameter) {
+      data = e.parameter;
+      console.log('Using form parameters:', data);
+    } else if (e.postData && e.postData.contents) {
+      try {
+        // Try to parse as JSON (fallback)
+        data = JSON.parse(e.postData.contents);
+        console.log('Parsed JSON data:', data);
+      } catch (jsonError) {
+        console.error('Not JSON data:', jsonError.message);
+        throw new Error('No valid data received');
+      }
+    } else {
+      throw new Error('No data received in request');
+    }
+    
+    // Log the spreadsheet ID being used
+    console.log('Using spreadsheet ID:', SPREADSHEET_ID);
+    console.log('Using sheet name:', SHEET_NAME);
     
     // Validate required fields
     if (!data.userName || !data.forceName || !data.armyName || !data.armyListText) {
-      throw new Error('Missing required fields: userName, forceName, armyName, or armyListText');
+      const missing = [];
+      if (!data.userName) missing.push('userName');
+      if (!data.forceName) missing.push('forceName'); 
+      if (!data.armyName) missing.push('armyName');
+      if (!data.armyListText) missing.push('armyListText');
+      throw new Error('Missing required fields: ' + missing.join(', '));
     }
+    
+    console.log('Validation passed, opening spreadsheet...');
     
     // Open the spreadsheet
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    console.log('Spreadsheet opened successfully');
+    
     let sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    console.log('Sheet found:', !!sheet);
     
     // Create the sheet if it doesn't exist
     if (!sheet) {
+      console.log('Creating new sheet:', SHEET_NAME);
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
       // Add header row
@@ -59,12 +90,21 @@ function doPost(e) {
       sheet.setColumnWidth(9, 300); // Notes
       sheet.setColumnWidth(10, 400); // Army List Text (will auto-expand)
       
-      console.log('Created new sheet:', SHEET_NAME);
+      console.log('Created new sheet with headers');
     }
+    
+    // Parse timestamp - handle both ISO string and direct timestamp
+    let timestamp;
+    if (data.timestamp) {
+      timestamp = new Date(data.timestamp);
+    } else {
+      timestamp = new Date(); // Use current time if not provided
+    }
+    console.log('Using timestamp:', timestamp);
     
     // Prepare the row data
     const rowData = [
-      new Date(data.timestamp),    // Timestamp
+      timestamp,                   // Timestamp
       data.userName,               // User Name
       data.forceName,              // Force Name
       data.armyName,               // Army Name
@@ -76,17 +116,24 @@ function doPost(e) {
       data.armyListText            // Army List Text
     ];
     
+    console.log('Row data prepared - first few fields:', [
+      timestamp, 
+      data.userName, 
+      data.forceName, 
+      data.armyName, 
+      data.faction
+    ]);
+    
     // Find the next empty row and append the data
     const lastRow = sheet.getLastRow();
     const newRowNumber = lastRow + 1;
+    console.log('Writing to row:', newRowNumber);
     
     // Insert the data
     sheet.getRange(newRowNumber, 1, 1, rowData.length).setValues([rowData]);
+    console.log('Data written to sheet successfully');
     
     // Format the new row
-    const newRowRange = sheet.getRange(newRowNumber, 1, 1, rowData.length);
-    
-    // Format timestamp column
     sheet.getRange(newRowNumber, 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
     
     // Format points column as number
@@ -104,37 +151,28 @@ function doPost(e) {
     // Log success
     console.log('Successfully added army list:', data.armyName, 'for force:', data.forceName);
     
-    // Return success response with CORS headers
+    // Return success response (without setHeaders which isn't supported)
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
         message: 'Army list submitted successfully',
         rowNumber: newRowNumber,
-        timestamp: data.timestamp
+        timestamp: timestamp.toISOString()
       }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders({
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      });
+      .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
-    // Log the error
+    // Log the error with more detail
     console.error('Error processing army list submission:', error);
+    console.error('Error stack:', error.stack);
     
-    // Return error response with CORS headers
+    // Return error response (without setHeaders)
     return ContentService
       .createTextOutput(JSON.stringify({
         success: false,
         error: error.message || 'Unknown error occurred'
       }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders({
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      });
+      .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
@@ -143,27 +181,16 @@ function doGet(e) {
   try {
     const action = e.parameter.action || 'list';
     
-    let response;
     switch(action) {
       case 'list':
-        response = getArmyLists(e.parameter);
-        break;
+        return getArmyLists(e.parameter);
       case 'get':
-        response = getArmyListById(e.parameter.id);
-        break;
+        return getArmyListById(e.parameter.id);
       case 'test':
-        response = getRecentArmyLists(); // The original test functionality
-        break;
+        return getRecentArmyLists(); // The original test functionality
       default:
-        response = getArmyLists(e.parameter);
+        return getArmyLists(e.parameter);
     }
-    
-    // Add CORS headers to the response
-    return response.setHeaders({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    });
     
   } catch (error) {
     console.error('Error handling GET request:', error);
@@ -173,27 +200,11 @@ function doGet(e) {
         success: false,
         error: error.message
       }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders({
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      });
+      .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
-// Add OPTIONS method handler for CORS preflight requests
-function doOptions(e) {
-  return ContentService
-    .createTextOutput('')
-    .setMimeType(ContentService.MimeType.TEXT)
-    .setHeaders({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Max-Age': '3600'
-    });
-}
+// Remove the doOptions function - it's not needed without CORS headers
 
 function getArmyLists(params = {}) {
   // Get army lists with optional filtering
@@ -314,7 +325,7 @@ function getRecentArmyLists() {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// Utility function to test the script
+// Utility function to test the script manually
 function testSubmission() {
   const testData = {
     timestamp: new Date().toISOString(),
@@ -329,13 +340,26 @@ function testSubmission() {
     armyListText: 'This is a test army list with some sample text to verify the submission works correctly.'
   };
   
-  // Simulate a POST request
+  // Simulate a form POST request
   const mockEvent = {
     postData: {
-      contents: JSON.stringify(testData)
-    }
+      type: 'application/x-www-form-urlencoded',
+      contents: null
+    },
+    parameter: testData
   };
   
   const result = doPost(mockEvent);
   console.log('Test result:', result.getContent());
+  
+  // Also test direct sheet writing
+  try {
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    console.log('Spreadsheet found:', !!spreadsheet);
+    console.log('Sheet found:', !!sheet);
+    console.log('Last row:', sheet ? sheet.getLastRow() : 'N/A');
+  } catch (error) {
+    console.error('Direct sheet access error:', error);
+  }
 }
