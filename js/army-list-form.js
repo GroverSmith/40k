@@ -27,6 +27,9 @@ class ArmyListForm {
         
         // Initialize character counter
         this.updateCharacterCount();
+		
+		// Auto-populate user name if user is selected
+        this.autoPopulateUserName();
     }
     
     setupEventListeners() {

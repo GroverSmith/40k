@@ -18,6 +18,33 @@ body {
     text-align: center;
 }
 
+/* Page Actions */
+.page-actions {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 15px;
+}
+
+.create-user-main-btn {
+    background: linear-gradient(135deg, #2c5aa0 0%, #1e4080 100%);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(44, 90, 160, 0.3);
+}
+
+.create-user-main-btn:hover {
+    background: linear-gradient(135deg, #1e4080 0%, #15325f 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(44, 90, 160, 0.4);
+}
+
 /* Typography */
 h1 {
     color: #2c5aa0;

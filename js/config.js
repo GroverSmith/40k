@@ -33,6 +33,13 @@ const CrusadeConfig = {
             sheetName: 'Participants'
         },
         
+        // Users sheet (for user management)
+        users: {
+            url: 'https://script.google.com/macros/s/AKfycbzbIx-wGm2hxFzLClVPWTwA6YeFfJvQaPkr6A5IQJom6jqYab-4DHJ_JeBgVDDgG0s/exec', 
+            sheetId: '15q9EIPz2PswXwNsZ0aJAb9mgT0qy_NXUUQqELEdx3W4',
+            sheetName: 'Users'
+        },
+        
         // Placeholder for future sheets
         battleHistory: {
             url: null, // Add when you create battle history tracking
