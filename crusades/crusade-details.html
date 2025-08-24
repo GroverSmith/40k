@@ -57,10 +57,54 @@
         <div class="data-section" id="forces-section" style="display: none;">
             <div class="section-header">
                 <h3>⚔️ Participating Forces</h3>
+                <button id="register-force-btn" class="section-action-btn">+ Register Force</button>
             </div>
             <div class="section-content">
                 <div id="forces-content"></div>
             </div>
+        </div>
+        
+        <!-- Force Registration Modal -->
+        <div id="register-force-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Register Force for Crusade</h3>
+                    <button class="modal-close" onclick="closeRegisterModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="register-force-form">
+                        <div class="form-group">
+                            <label for="force-select">Select Force:</label>
+                            <select id="force-select" name="forceKey" required>
+                                <option value="">Loading forces...</option>
+                            </select>
+                            <small class="help-text">Choose which force to register for this crusade.</small>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" onclick="closeRegisterModal()" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-primary" id="register-submit-btn">
+                                <span class="btn-text">Register Force</span>
+                                <span class="btn-loading" style="display: none;">
+                                    <div class="loading-spinner"></div>
+                                    Registering...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Success/Error Messages -->
+        <div id="register-success-message" class="message success" style="display: none;">
+            <h3>✅ Force Registered Successfully!</h3>
+            <p>The force has been registered for this crusade.</p>
+        </div>
+        
+        <div id="register-error-message" class="message error" style="display: none;">
+            <h3>⚠ Registration Failed</h3>
+            <p id="register-error-text">There was an error registering the force.</p>
         </div>
         
         <!-- Error Display -->
@@ -71,6 +115,7 @@
 
     <!-- JavaScript Files -->
     <script src="../js/config.js"></script>
+    <script src="../js/key-utils.js"></script>
     <script src="../js/google-sheets-embed.js"></script>
     <script src="../js/sheets-manager.js"></script>
     <script src="../js/crusade-details.js"></script>

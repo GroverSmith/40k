@@ -26,6 +26,13 @@ const CrusadeConfig = {
             sheetName: 'Army Lists'
         },
         
+        // Crusade Participants sheet (mapping forces to crusades)
+        crusadeParticipants: {
+            url: 'https://script.google.com/macros/s/AKfycbx79dYbG5yCDKa-kz0iKPlJowWekbJkhmJRNIJ5b0HjcVfV1JXrJqqeIejxDpHoWzsIZg/exec',
+            sheetId: '17jJO939FWthVaLCO091CQzx0hAmtNn8zE5zlqBf10JQ',
+            sheetName: 'Participants'
+        },
+        
         // Placeholder for future sheets
         battleHistory: {
             url: null, // Add when you create battle history tracking

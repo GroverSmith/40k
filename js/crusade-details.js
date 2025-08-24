@@ -125,6 +125,9 @@ class CrusadeDetailsApp {
         // Display Narrative
         this.displayNarrative();
         
+        // Set up force registration
+        this.setupForceRegistration();
+        
         // Show sections
         document.getElementById('introduction-section').style.display = 'block';
         document.getElementById('rules-section').style.display = 'block';
@@ -160,7 +163,6 @@ class CrusadeDetailsApp {
             const ruleBlock = this.crusadeData[`Rules Block ${i}`];
             if (ruleBlock && ruleBlock.trim()) {
                 rules.push({
-                    title: `Rules Block ${i}`,
                     content: ruleBlock
                 });
             }
@@ -171,7 +173,6 @@ class CrusadeDetailsApp {
             rules.forEach((rule, index) => {
                 html += `
                     <div class="content-block">
-                        ${rules.length > 1 ? `<h4>${rule.title}</h4>` : ''}
                         ${this.formatText(rule.content)}
                     </div>
                 `;
@@ -195,7 +196,6 @@ class CrusadeDetailsApp {
             const narrativeBlock = this.crusadeData[`Narrative Block ${i}`];
             if (narrativeBlock && narrativeBlock.trim()) {
                 narratives.push({
-                    title: `Narrative Block ${i}`,
                     content: narrativeBlock
                 });
             }
@@ -206,7 +206,6 @@ class CrusadeDetailsApp {
             narratives.forEach((narrative, index) => {
                 html += `
                     <div class="content-block">
-                        ${narratives.length > 1 ? `<h4>${narrative.title}</h4>` : ''}
                         ${this.formatText(narrative.content)}
                     </div>
                 `;
@@ -225,23 +224,30 @@ class CrusadeDetailsApp {
         try {
             const forcesContent = document.getElementById('forces-content');
             
-            const crusadeForcesUrl = CrusadeConfig.getSheetUrl('crusadeForces');
+            const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
             
-            if (crusadeForcesUrl) {
-                // For now, we'll show all forces since we don't have a crusade filter
-                // In the future, you might want to add a "Crusade" column to the Crusade Forces sheet
-                forcesContent.innerHTML = `
-                    <div class="no-data-message">
-                        <p>⚔️ Forces participating in this crusade will be shown here.</p>
-                        <p>To link forces to specific crusades, consider adding a "Crusade" column to your Crusade Forces sheet.</p>
-                        <p><em>For now, you can view all forces on the <a href="../index.html" style="color: #4ecdc4;">main page</a>.</em></p>
-                    </div>
-                `;
+            if (participantsUrl) {
+                // Get forces registered for this specific crusade
+                const fetchUrl = `${participantsUrl}?action=forces-for-crusade&crusade=${encodeURIComponent(this.crusadeData['Crusade Name'])}`;
+                
+                const response = await fetch(fetchUrl);
+                const data = await response.json();
+                
+                if (data.success && data.forces && data.forces.length > 0) {
+                    await this.displayParticipatingForces(data.forces);
+                } else {
+                    forcesContent.innerHTML = `
+                        <div class="no-data-message">
+                            <p>⚔️ No forces registered for this crusade yet.</p>
+                            <p>Click "Register Force" above to add a force to this crusade.</p>
+                        </div>
+                    `;
+                }
             } else {
                 forcesContent.innerHTML = `
                     <div class="no-data-message">
                         <p>⚔️ Participating forces will be displayed here.</p>
-                        <p><em>Configure crusadeForces URL in CrusadeConfig to enable this feature.</em></p>
+                        <p><em>Configure crusadeParticipants URL in CrusadeConfig to enable this feature.</em></p>
                     </div>
                 `;
             }
@@ -249,6 +255,237 @@ class CrusadeDetailsApp {
             console.error('Error loading participating forces:', error);
             this.showDataError('forces-content', 'Failed to load participating forces');
         }
+    }
+    
+    async displayParticipatingForces(forceKeys) {
+        try {
+            const forcesContent = document.getElementById('forces-content');
+            
+            // We need to look up the actual force details using the force keys
+            // For now, we'll display the force keys and mention that full force lookup is needed
+            let html = '<div class="participating-forces">';
+            html += '<p>📋 <strong>Registered Forces:</strong></p>';
+            html += '<ul>';
+            
+            forceKeys.forEach(force => {
+                const shortKey = KeyUtils.getShortHash(force.crusadeForceKey);
+                const registrationDate = new Date(force.timestamp).toLocaleDateString();
+                
+                html += `
+                    <li style="margin-bottom: 10px; padding: 10px; background-color: #1a1a1a; border-radius: 5px; border-left: 3px solid #4ecdc4;">
+                        <strong>Force Key:</strong> ${shortKey}<br>
+                        <small style="color: #aaa;">Registered: ${registrationDate}</small>
+                        <br><small style="color: #888; font-style: italic;">
+                            Full force details lookup will be implemented in the next update
+                        </small>
+                    </li>
+                `;
+            });
+            
+            html += '</ul>';
+            html += '</div>';
+            
+            forcesContent.innerHTML = html;
+            
+        } catch (error) {
+            console.error('Error displaying participating forces:', error);
+            this.showDataError('forces-content', 'Failed to display participating forces');
+        }
+    }
+    
+    setupForceRegistration() {
+        const registerBtn = document.getElementById('register-force-btn');
+        const form = document.getElementById('register-force-form');
+        
+        if (registerBtn) {
+            registerBtn.addEventListener('click', () => {
+                this.showRegisterModal();
+            });
+        }
+        
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleForceRegistration();
+            });
+        }
+    }
+    
+    async showRegisterModal() {
+        const modal = document.getElementById('register-force-modal');
+        const forceSelect = document.getElementById('force-select');
+        
+        // Load available forces
+        try {
+            const crusadeForcesUrl = CrusadeConfig.getSheetUrl('crusadeForces');
+            
+            if (!crusadeForcesUrl) {
+                throw new Error('Crusade Forces sheet not configured');
+            }
+            
+            const response = await fetch(crusadeForcesUrl);
+            const responseData = await response.json();
+            
+            let data;
+            if (Array.isArray(responseData)) {
+                data = responseData;
+            } else if (responseData.success && Array.isArray(responseData.data)) {
+                data = responseData.data;
+            } else {
+                throw new Error('Unable to load forces data');
+            }
+            
+            // Clear existing options
+            forceSelect.innerHTML = '<option value="">Select a force...</option>';
+            
+            // Add force options
+            data.slice(1).forEach(row => {
+                if (row[1] && row[2]) { // userName and forceName
+                    // Create force key using our key system
+                    const forceKey = KeyUtils.createForceKey(row[2], row[1], row[0]); // forceName, userName, timestamp
+                    const displayName = `${row[2]} (${row[1]})${row[3] ? ` - ${row[3]}` : ''}`; // Force Name (Player) - Faction
+                    
+                    const option = document.createElement('option');
+                    option.value = forceKey;
+                    option.textContent = displayName;
+                    forceSelect.appendChild(option);
+                }
+            });
+            
+            modal.style.display = 'flex';
+            
+        } catch (error) {
+            console.error('Error loading forces:', error);
+            this.showRegisterError('Failed to load available forces: ' + error.message);
+        }
+    }
+    
+    async handleForceRegistration() {
+        const form = document.getElementById('register-force-form');
+        const submitBtn = document.getElementById('register-submit-btn');
+        const btnText = submitBtn.querySelector('.btn-text');
+        const btnLoading = submitBtn.querySelector('.btn-loading');
+        
+        try {
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'flex';
+            
+            const formData = new FormData(form);
+            const forceKey = formData.get('forceKey');
+            
+            if (!forceKey) {
+                throw new Error('Please select a force');
+            }
+            
+            const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
+            
+            if (!participantsUrl) {
+                throw new Error('Crusade Participants sheet not configured');
+            }
+            
+            // Submit registration
+            const registrationData = {
+                crusadeName: this.crusadeData['Crusade Name'],
+                crusadeForceKey: forceKey
+            };
+            
+            // Create form for submission (to handle CORS issues)
+            const hiddenForm = document.createElement('form');
+            hiddenForm.method = 'POST';
+            hiddenForm.action = participantsUrl;
+            hiddenForm.target = 'register-submit-frame';
+            hiddenForm.style.display = 'none';
+            
+            Object.entries(registrationData).forEach(([key, value]) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                hiddenForm.appendChild(input);
+            });
+            
+            // Create iframe for submission
+            let iframe = document.getElementById('register-submit-frame');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.name = 'register-submit-frame';
+                iframe.id = 'register-submit-frame';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+            }
+            
+            document.body.appendChild(hiddenForm);
+            
+            // Handle response
+            return new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    reject(new Error('Registration timeout'));
+                }, 15000);
+                
+                iframe.onload = () => {
+                    clearTimeout(timeout);
+                    try {
+                        const response = iframe.contentWindow.document.body.textContent;
+                        const result = JSON.parse(response);
+                        
+                        if (result.success) {
+                            this.showRegisterSuccess();
+                            this.closeRegisterModal();
+                            this.loadParticipatingForces(); // Refresh the forces list
+                        } else {
+                            throw new Error(result.error || 'Registration failed');
+                        }
+                    } catch (error) {
+                        // Assume success if we can't read the response (CORS)
+                        console.log('Could not read response, assuming success');
+                        this.showRegisterSuccess();
+                        this.closeRegisterModal();
+                        this.loadParticipatingForces();
+                    }
+                    
+                    document.body.removeChild(hiddenForm);
+                    resolve();
+                };
+                
+                hiddenForm.submit();
+            });
+            
+        } catch (error) {
+            console.error('Error registering force:', error);
+            this.showRegisterError(error.message);
+        } finally {
+            // Reset button state
+            submitBtn.disabled = false;
+            btnText.style.display = 'inline';
+            btnLoading.style.display = 'none';
+        }
+    }
+    
+    closeRegisterModal() {
+        document.getElementById('register-force-modal').style.display = 'none';
+    }
+    
+    showRegisterSuccess() {
+        const message = document.getElementById('register-success-message');
+        message.style.display = 'block';
+        
+        setTimeout(() => {
+            message.style.display = 'none';
+        }, 5000);
+    }
+    
+    showRegisterError(errorText) {
+        const message = document.getElementById('register-error-message');
+        const errorTextEl = document.getElementById('register-error-text');
+        
+        errorTextEl.textContent = errorText;
+        message.style.display = 'block';
+        
+        setTimeout(() => {
+            message.style.display = 'none';
+        }, 8000);
     }
     
     formatDate(dateValue) {
@@ -349,6 +586,19 @@ document.addEventListener('DOMContentLoaded', () => {
     window.CrusadeDetailsApp = crusadeApp;
     
     console.log('Crusade Details page initialized');
+});
+
+// Global functions for modal control
+function closeRegisterModal() {
+    document.getElementById('register-force-modal').style.display = 'none';
+}
+
+// Close modal when clicking outside of it
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('register-force-modal');
+    if (event.target === modal) {
+        closeRegisterModal();
+    }
 });
 
 // Utility functions for crusade page
