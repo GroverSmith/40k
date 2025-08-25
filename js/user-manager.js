@@ -354,8 +354,6 @@ const UserManager = {
             
             option.innerHTML = `
                 <div class="user-option-name">${user.name}</div>
-                ${user.discordHandle ? `<div class="user-option-detail">Discord: ${user.discordHandle}</div>` : ''}
-                ${user.email ? `<div class="user-option-email">${user.email}</div>` : ''}
             `;
             
             option.addEventListener('click', () => {
