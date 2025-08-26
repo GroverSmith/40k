@@ -1,0 +1,42 @@
+/* filename: css/pages/home.css */
+/* Homepage specific styles and fixes */
+
+/* Homepage Header - Title Bar Style */
+header {
+  background: var(--gradient-primary);
+  padding: 30px 20px;
+  border-radius: var(--radius-xl);
+  margin-bottom: 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Optional decorative background pattern */
+header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+  opacity: 0.3;
+}
+
+header h1 {
+  margin: 0;
+  font-size: var(--font-5xl);
+  color: var(--color-text);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  position: relative;
+  z-index: 1;
+}
+
+header p {
+  color: var(--color-text-muted);
+  font-size: var(--font-lg);
+  margin-top: 10px;
+  position: relative;
+  z-index: 1;
+}

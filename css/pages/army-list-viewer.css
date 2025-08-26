@@ -1,0 +1,234 @@
+/* filename: css/pages/army-list-viewer.css */
+/* Army List Viewer Page Specific Styles */
+/* Extracted from inline styles in view-army-list.html */
+
+.army-list-viewer {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Army List Header */
+.army-list-header {
+  background: var(--gradient-primary);
+  padding: 25px 20px;
+  border-radius: var(--radius-xl);
+  margin-bottom: 30px;
+  text-align: center;
+  color: white;
+}
+
+.army-list-header h1 {
+  margin: 0;
+  font-size: var(--font-4xl);
+  color: var(--color-text);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.army-list-subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--font-lg);
+  margin-top: 10px;
+}
+
+/* Army List Metadata Grid */
+.army-list-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.meta-card {
+  background-color: var(--color-bg-card);
+  padding: 15px;
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--color-secondary);
+}
+
+.meta-label {
+  font-weight: bold;
+  color: var(--color-secondary);
+  font-size: var(--font-sm);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.meta-value {
+  color: var(--color-text);
+  font-size: var(--font-lg);
+}
+
+/* Army List Content Container */
+.army-list-content {
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.army-list-content .content-header {
+  background-color: var(--color-bg-card-alt);
+  padding: 15px 20px;
+  border-bottom: 2px solid var(--color-secondary);
+}
+
+.army-list-content .content-header h3 {
+  margin: 0;
+  color: var(--color-secondary);
+  font-size: var(--font-xl);
+}
+
+/* Army List Text Display */
+.army-list-text {
+  padding: 25px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background-color: var(--color-bg-main);
+  max-height: 600px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  margin: 20px;
+}
+
+/* Scrollbar Styling for Army List Text */
+.army-list-text::-webkit-scrollbar {
+  width: 8px;
+}
+
+.army-list-text::-webkit-scrollbar-track {
+  background: var(--color-bg-main);
+  border-radius: var(--radius-sm);
+}
+
+.army-list-text::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.army-list-text::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-light);
+}
+
+/* Action Buttons Container */
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+/* Character Count Display */
+.army-list-content .character-count {
+  color: var(--color-text-dim);
+  font-size: var(--font-sm);
+  text-align: right;
+  margin: 10px 20px;
+  padding: 5px 10px;
+  background-color: var(--color-bg-card-alt);
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  float: right;
+}
+
+/* Print Styles */
+@media print {
+  .army-list-viewer {
+    max-width: 100%;
+  }
+  
+  .action-buttons,
+  .back-button,
+  .character-count {
+    display: none;
+  }
+  
+  .army-list-header {
+    background: none;
+    border: 2px solid #000;
+    color: #000;
+    page-break-after: avoid;
+  }
+  
+  .army-list-header h1 {
+    color: #000;
+    text-shadow: none;
+  }
+  
+  .army-list-text {
+    max-height: none;
+    border: 1px solid #000;
+    color: #000;
+    background: white;
+  }
+  
+  .meta-card {
+    border: 1px solid #000;
+    page-break-inside: avoid;
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .army-list-meta {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .action-buttons .btn {
+    width: 100%;
+  }
+  
+  .army-list-text {
+    font-size: 13px;
+    padding: 15px;
+    margin: 15px;
+    max-height: 400px;
+  }
+  
+  .army-list-header h1 {
+    font-size: var(--font-3xl);
+  }
+  
+  .army-list-content .character-count {
+    float: none;
+    display: block;
+    text-align: center;
+    margin: 10px auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .army-list-header {
+    padding: 20px 15px;
+  }
+  
+  .army-list-header h1 {
+    font-size: var(--font-2xl);
+  }
+  
+  .army-list-subtitle {
+    font-size: var(--font-md);
+  }
+  
+  .army-list-text {
+    font-size: 12px;
+    padding: 12px;
+    margin: 10px;
+    max-height: 350px;
+  }
+  
+  .meta-card {
+    padding: 12px;
+  }
+}

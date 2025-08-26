@@ -1,0 +1,389 @@
+/* filename: css/forms-unified.css */
+/* Unified form styles - single source of truth */
+
+/* ===============================
+   FORM CONTAINERS
+   =============================== */
+
+.form-container,
+.army-form {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: var(--color-bg-card);
+  padding: 30px;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.form-header h1 {
+  color: var(--color-primary);
+  margin-bottom: 10px;
+}
+
+.form-header p {
+  color: var(--color-text-muted);
+  font-size: var(--font-lg);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ===============================
+   FORM GROUPS - Single Definition
+   =============================== */
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  color: var(--color-secondary);
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: var(--font-lg);
+}
+
+.form-group label .required {
+  color: var(--color-error);
+  font-weight: normal;
+}
+
+/* ===============================
+   FORM INPUTS - Unified
+   =============================== */
+
+.form-group input,
+.form-group select,
+.form-group textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-main);
+  color: var(--color-text);
+  font-size: 16px;
+  font-family: inherit;
+  transition: border-color var(--transition-normal), 
+              box-shadow var(--transition-normal),
+              background-color var(--transition-normal);
+  box-sizing: border-box;
+}
+
+/* Focus States */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+  background-color: rgba(26, 26, 26, 1);
+}
+
+/* Placeholder Styles */
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-placeholder);
+  opacity: 1;
+}
+
+/* Select Styles */
+select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234ecdc4' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+select option {
+  background-color: var(--color-bg-main);
+  color: var(--color-text);
+  padding: 8px;
+}
+
+/* Textarea Styles */
+textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: var(--line-height-normal);
+}
+
+/* Special Textareas */
+textarea.code,
+#army-list-text {
+  min-height: 300px;
+  max-height: 600px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+/* Read-only and Disabled States */
+input:read-only,
+select:read-only,
+textarea:read-only,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  background-color: var(--color-bg-card-alt);
+}
+
+/* ===============================
+   FORM ACTIONS
+   =============================== */
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 35px;
+  padding-top: 25px;
+  border-top: 1px solid var(--color-border);
+}
+
+.modal .form-actions {
+  justify-content: flex-end;
+  margin-top: 25px;
+  padding-top: 20px;
+}
+
+/* ===============================
+   FORM VALIDATION & STATES
+   =============================== */
+
+/* Error State */
+.form-group.has-error input,
+.form-group.has-error select,
+.form-group.has-error textarea,
+input.error,
+select.error,
+textarea.error {
+  border-color: var(--color-error);
+}
+
+.form-group.has-error input:focus,
+.form-group.has-error select:focus,
+.form-group.has-error textarea:focus,
+input.error:focus,
+select.error:focus,
+textarea.error:focus {
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+}
+
+/* Success State */
+.form-group.has-success input,
+.form-group.has-success select,
+.form-group.has-success textarea,
+input.success,
+select.success,
+textarea.success {
+  border-color: var(--color-success);
+}
+
+.form-group.has-success input:focus,
+.form-group.has-success select:focus,
+.form-group.has-success textarea:focus,
+input.success:focus,
+select.success:focus,
+textarea.success:focus {
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+}
+
+/* Warning State */
+.form-group.has-warning input,
+.form-group.has-warning select,
+.form-group.has-warning textarea,
+input.warning,
+select.warning,
+textarea.warning {
+  border-color: var(--color-warning);
+  background-color: var(--color-warning-bg);
+}
+
+/* ===============================
+   FORM HELPERS
+   =============================== */
+
+.textarea-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 5px;
+  gap: 15px;
+}
+
+.form-error {
+  color: var(--color-error);
+  font-size: var(--font-sm);
+  margin-top: 5px;
+}
+
+.form-success {
+  color: var(--color-success);
+  font-size: var(--font-sm);
+  margin-top: 5px;
+}
+
+/* ===============================
+   CHECKBOX & RADIO
+   =============================== */
+
+.form-check {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.form-check input[type="checkbox"],
+.form-check input[type="radio"] {
+  width: auto;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.form-check label {
+  margin-bottom: 0;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+/* ===============================
+   INPUT GROUPS
+   =============================== */
+
+.input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.input-group input {
+  flex: 1;
+}
+
+.input-group .btn {
+  flex-shrink: 0;
+}
+
+/* ===============================
+   FORM GRID
+   =============================== */
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.form-col {
+  min-width: 0;
+}
+
+/* ===============================
+   FILE INPUT
+   =============================== */
+
+input[type="file"] {
+  padding: 8px;
+  background-color: var(--color-bg-card);
+  border: 2px dashed var(--color-border);
+  cursor: pointer;
+}
+
+input[type="file"]:hover {
+  border-color: var(--color-secondary);
+  background-color: var(--color-bg-card-alt);
+}
+
+/* ===============================
+   RESPONSIVE FORM STYLES
+   =============================== */
+
+@media (max-width: 768px) {
+  .form-container,
+  .army-form {
+    padding: 20px;
+    margin: 0 10px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+    margin: 0;
+  }
+  
+  .textarea-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .char-counter {
+    align-self: flex-end;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal .form-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+  
+  .modal .form-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-header h1 {
+    font-size: var(--font-3xl);
+  }
+  
+  .form-header p {
+    font-size: var(--font-md);
+  }
+  
+  .form-container,
+  .army-form {
+    padding: 15px;
+  }
+  
+  textarea.code,
+  #army-list-text {
+    min-height: 250px;
+    font-size: 13px;
+  }
+  
+  /* Prevents zoom on iOS */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px;
+  }
+}
