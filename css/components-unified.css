@@ -120,7 +120,8 @@
   font-weight: normal;
   transition: all var(--transition-normal);
   box-shadow: var(--shadow-sm);
-  /* Remove float for centered positioning */
+  line-height: normal;
+  margin: 0 10px;
 }
 
 .add-army-list-btn:hover {
@@ -133,6 +134,21 @@
 
 .add-army-list-btn:visited {
   color: white !important;
+}
+
+/* Button container for aligned buttons */
+.button-row {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-row .add-army-list-btn {
+  margin: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 /* Button Sizes */
@@ -484,7 +500,7 @@ th:not(.sort-asc):not(.sort-desc) .sort-indicator::after {
 .section-action-btn {
   display: inline-block;
   background-color: var(--color-primary);
-  color: white;
+  color: white !important;
   text-decoration: none;
   padding: 6px 12px;
   border-radius: var(--radius-sm);
@@ -497,8 +513,12 @@ th:not(.sort-asc):not(.sort-desc) .sort-indicator::after {
 
 .section-action-btn:hover {
   background-color: var(--color-primary-dark);
-  color: white;
+  color: white !important;
   text-decoration: none;
+}
+
+.section-action-btn:visited {
+  color: white !important;
 }
 
 /* ===============================

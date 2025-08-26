@@ -169,6 +169,51 @@ textarea:disabled {
   padding-top: 20px;
 }
 
+/* Override button styles in form contexts to ensure consistency */
+.form-actions .btn-primary,
+.form-actions .btn-secondary {
+  padding: 12px 24px;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 100px;
+  border: none;
+}
+
+.form-actions .btn-primary {
+  background-color: var(--color-primary);
+  color: white !important;
+  box-shadow: var(--shadow-primary);
+}
+
+.form-actions .btn-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-primary-hover);
+  color: white !important;
+}
+
+.form-actions .btn-secondary {
+  background-color: var(--color-bg-card-alt);
+  color: var(--color-secondary) !important;
+  border: 2px solid var(--color-border);
+}
+
+.form-actions .btn-secondary:hover {
+  background-color: var(--color-border);
+  border-color: var(--color-secondary);
+  transform: translateY(-2px);
+  color: var(--color-secondary) !important;
+  text-decoration: none;
+}
+
 /* ===============================
    FORM VALIDATION & STATES
    =============================== */
