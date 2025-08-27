@@ -20,31 +20,43 @@
 </head>
 <body>
     <div class="container">
-        <a href="../index.html" class="back-button">← Back to Campaign Tracker</a>
+        <a href="#" id="back-button" class="back-button">← Back to Force</a>
         
         <header class="form-header">
             <h1>📋 Add Army List</h1>
-            <p>Upload your army list from BattleScribe, Army Builder, or other apps by copy-pasting the text output.</p>
+            <p id="force-context">Loading force information...</p>
         </header>
         
+        <!-- Force Information Display -->
+        <div id="force-info" class="force-info-display" style="background: #2a2a2a; border: 1px solid #4ecdc4; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+            <h3 style="color: #4ecdc4; margin-top: 0;">Force Information</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                <div>
+                    <label style="color: #999; font-size: 0.9em;">Force Name:</label>
+                    <div id="display-force-name" style="color: #fff; font-weight: bold;">-</div>
+                </div>
+                <div>
+                    <label style="color: #999; font-size: 0.9em;">Player:</label>
+                    <div id="display-user-name" style="color: #fff; font-weight: bold;">-</div>
+                </div>
+                <div>
+                    <label style="color: #999; font-size: 0.9em;">Faction:</label>
+                    <div id="display-faction" style="color: #fff; font-weight: bold;">-</div>
+                </div>
+                <div>
+                    <label style="color: #999; font-size: 0.9em;">Detachment:</label>
+                    <div id="display-detachment" style="color: #fff; font-weight: bold;">-</div>
+                </div>
+            </div>
+        </div>
+        
         <form id="army-list-form" class="army-form">
-            <!-- User Name -->
-            <div class="form-group">
-                <label for="user-name">Your Name <span class="required">*</span></label>
-                <input type="text" id="user-name" name="userName" required 
-                       placeholder="Enter your name">
-                <small class="help-text">Your name as the army list submitter.</small>
-            </div>
-            
-            <!-- Force Selection -->
-            <div class="form-group">
-                <label for="force-name">Crusade Force <span class="required">*</span></label>
-                <select id="force-name" name="forceName" required>
-                    <option value="">Select your force...</option>
-                    <!-- Options will be populated dynamically -->
-                </select>
-                <small class="help-text">Select which Crusade Force this army list belongs to.</small>
-            </div>
+            <!-- Hidden fields for force data -->
+            <input type="hidden" id="force-key" name="forceKey">
+            <input type="hidden" id="user-name" name="userName">
+            <input type="hidden" id="force-name" name="forceName">
+            <input type="hidden" id="faction" name="faction">
+            <input type="hidden" id="detachment" name="detachment">
             
             <!-- Army List Name -->
             <div class="form-group">
@@ -52,48 +64,6 @@
                 <input type="text" id="army-name" name="armyName" required 
                        placeholder="e.g., 1000pt Tournament List, Patrol Detachment, etc.">
                 <small class="help-text">Give your army list a descriptive name.</small>
-            </div>
-            
-            <!-- Faction -->
-            <div class="form-group">
-                <label for="faction">Faction <span class="required">*</span></label>
-                <select id="faction" name="faction" required>
-                    <option value="">Select faction...</option>
-                    <option value="Adepta Sororitas">Adepta Sororitas</option>
-                    <option value="Adeptus Custodes">Adeptus Custodes</option>
-                    <option value="Adeptus Mechanicus">Adeptus Mechanicus</option>
-                    <option value="Aeldari">Aeldari</option>
-                    <option value="Agents of the Imperium">Agents of the Imperium</option>
-                    <option value="Astra Militarum">Astra Militarum</option>
-                    <option value="Blood Angels">Blood Angels</option>
-                    <option value="Chaos Daemons">Chaos Daemons</option>
-                    <option value="Chaos Knights">Chaos Knights</option>
-                    <option value="Chaos Space Marines">Chaos Space Marines</option>
-                    <option value="Dark Angels">Dark Angels</option>
-                    <option value="Death Guard">Death Guard</option>
-                    <option value="Drukhari">Drukhari</option>
-                    <option value="Genestealer Cults">Genestealer Cults</option>
-                    <option value="Grey Knights">Grey Knights</option>
-                    <option value="Imperial Knights">Imperial Knights</option>
-                    <option value="Leagues of Votann">Leagues of Votann</option>
-                    <option value="Necrons">Necrons</option>
-                    <option value="Orks">Orks</option>
-                    <option value="Space Marines">Space Marines</option>
-                    <option value="Space Wolves">Space Wolves</option>
-                    <option value="T'au Empire">T'au Empire</option>
-                    <option value="Thousand Sons">Thousand Sons</option>
-                    <option value="Tyranids">Tyranids</option>
-                    <option value="World Eaters">World Eaters</option>
-                </select>
-                <small class="help-text">Select the primary faction for this army list.</small>
-            </div>
-            
-            <!-- Detachment -->
-            <div class="form-group">
-                <label for="detachment">Detachment</label>
-                <input type="text" id="detachment" name="detachment" 
-                       placeholder="e.g., Battalion Detachment, Patrol Detachment, etc.">
-                <small class="help-text">Type of detachment used (optional).</small>
             </div>
             
             <!-- MFM Version -->
@@ -158,7 +128,7 @@ The entire text will be stored for reference and display."></textarea>
             <p>Your army list has been saved to the database.</p>
             <div class="message-actions">
                 <button onclick="resetForm()" class="btn-secondary">Add Another List</button>
-                <a href="../index.html" class="btn-primary">Back to Campaign Tracker</a>
+                <a href="#" id="back-to-force-btn" class="btn-primary">Back to Force</a>
             </div>
         </div>
         
@@ -174,6 +144,7 @@ The entire text will be stored for reference and display."></textarea>
 
     <!-- JavaScript Files -->
 	<script src="../js/config.js"></script>
+	<script src="../js/key-utils.js"></script>
 	
 	<!-- User modules -->
 	<script src="../js/user-storage.js"></script>

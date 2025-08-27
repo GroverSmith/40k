@@ -60,7 +60,7 @@
         <div class="data-section" id="army-lists-section" style="display: none;">
 			<div class="section-header">
 				<h3>📋 Army Lists</h3>
-				<a href="../army-lists/add-army-list.html" class="section-action-btn">+ Add Army List</a>
+				<a href="#" id="add-army-list-btn" class="section-action-btn">+ Add Army List</a>
 			</div>
 			<div class="section-content">
 				<div id="army-lists-sheet"></div>
@@ -105,11 +105,37 @@
 
     <!-- JavaScript Files -->
 	<script src="../js/config.js"></script>
+	<script src="../js/key-utils.js"></script>
     <script src="../js/google-sheets-embed.js"></script>
     <script src="../js/sheets-manager.js"></script>
     <script src="../js/force-data.js"></script>
 	<script src="../js/force-ui.js"></script>
 	<script src="../js/force-sections.js"></script>
 	<script src="../js/crusade-force.js"></script>
+	
+	<script>
+	// Set up the Add Army List button after force data loads
+	document.addEventListener('DOMContentLoaded', () => {
+	    // Wait for force data to be available
+	    const checkForceData = setInterval(() => {
+	        if (window.CrusadeForceApp && window.CrusadeForceApp.forceData) {
+	            clearInterval(checkForceData);
+	            const addArmyListBtn = document.getElementById('add-army-list-btn');
+	            if (addArmyListBtn) {
+	                const forceData = window.CrusadeForceApp.forceData;
+	                // Build URL with force context
+	                const params = new URLSearchParams({
+	                    forceKey: forceData.key,
+	                    forceName: forceData.forceName,
+	                    userName: forceData.playerName,
+	                    faction: forceData.faction,
+	                    detachment: forceData.detachment || ''
+	                });
+	                addArmyListBtn.href = `../army-lists/add-army-list.html?${params.toString()}`;
+	            }
+	        }
+	    }, 100);
+	});
+	</script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 // filename: army-gas-script.js
 // Google Apps Script for Army List Form Submissions with Composite Key System
 // Deploy this as a web app to handle form submissions
+// Updated to have Force Key as the second column (between Key and Timestamp)
 
 const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; 
 const SHEET_NAME = 'Army Lists';
@@ -85,20 +86,20 @@ function doPost(e) {
       console.log('Creating new sheet:', SHEET_NAME);
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
-      // Add header row with Key and Force Key columns
+      // Add header row with Force Key as second column
       const headers = [
-        'Key',           // Primary key
-        'Force Key',     // Foreign key to Forces sheet
-        'Timestamp',
-        'User Name',
-        'Force Name', 
-        'Army Name',
-        'Faction',
-        'Detachment',
-        'MFM Version',
-        'Points Value',
-        'Notes',
-        'Army List Text'
+        'Key',           // Primary key (column 0)
+        'Force Key',     // Foreign key to Forces sheet (column 1) - NEW POSITION
+        'Timestamp',     // Column 2
+        'User Name',     // Column 3
+        'Force Name',    // Column 4
+        'Army Name',     // Column 5
+        'Faction',       // Column 6
+        'Detachment',    // Column 7
+        'MFM Version',   // Column 8
+        'Points Value',  // Column 9
+        'Notes',         // Column 10
+        'Army List Text' // Column 11
       ];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
@@ -122,12 +123,20 @@ function doPost(e) {
       sheet.setColumnWidth(11, 300); // Notes
       sheet.setColumnWidth(12, 400); // Army List Text
       
-      console.log('Created new sheet with headers including key columns');
+      console.log('Created new sheet with headers including Force Key as second column');
     }
     
-    // Generate the force key (foreign key)
-    const forceKey = generateForceKey(data.forceName, data.userName);
-    console.log('Generated force key (FK):', forceKey);
+    // Generate or use provided force key
+    let forceKey;
+    if (data.forceKey) {
+      // Force key provided directly from form
+      forceKey = data.forceKey;
+      console.log('Using provided force key:', forceKey);
+    } else {
+      // Generate force key from force name and user name
+      forceKey = generateForceKey(data.forceName, data.userName);
+      console.log('Generated force key (FK):', forceKey);
+    }
     
     // Generate the army list key (primary key)
     const armyListKey = generateArmyListKey(forceKey, data.armyName, sheet);
@@ -142,23 +151,23 @@ function doPost(e) {
     }
     console.log('Using timestamp:', timestamp);
     
-    // Prepare the row data with keys
+    // Prepare the row data with Force Key as second column
     const rowData = [
-      armyListKey,                 // Key (Primary Key)
-      forceKey,                    // Force Key (Foreign Key)
-      timestamp,                   // Timestamp
-      data.userName,               // User Name
-      data.forceName,              // Force Name
-      data.armyName,               // Army Name
-      data.faction || '',          // Faction
-      data.detachment || '',       // Detachment
-      data.mfmVersion || '',       // MFM Version
-      data.pointsValue || '',      // Points Value
-      data.notes || '',            // Notes
-      data.armyListText            // Army List Text
+      armyListKey,                 // Key (Primary Key) - Column 0
+      forceKey,                    // Force Key (Foreign Key) - Column 1 (NEW POSITION)
+      timestamp,                   // Timestamp - Column 2
+      data.userName,               // User Name - Column 3
+      data.forceName,              // Force Name - Column 4
+      data.armyName,               // Army Name - Column 5
+      data.faction || '',          // Faction - Column 6
+      data.detachment || '',       // Detachment - Column 7
+      data.mfmVersion || '',       // MFM Version - Column 8
+      data.pointsValue || '',      // Points Value - Column 9
+      data.notes || '',            // Notes - Column 10
+      data.armyListText            // Army List Text - Column 11
     ];
     
-    console.log('Row data prepared with keys - first few fields:', [
+    console.log('Row data prepared with Force Key as second column - first few fields:', [
       armyListKey, 
       forceKey,
       timestamp, 
@@ -272,10 +281,10 @@ function getArmyLists(params = {}) {
   console.log('getArmyLists - Total rows found:', rows.length);
   console.log('getArmyLists - Headers:', headers);
   
-  // Filter by force key if specified (Force Key is column 1, index 1)
+  // Filter by force key if specified (Force Key is now column 1)
   if (forceKey) {
     const originalRowCount = rows.length;
-    rows = rows.filter(row => row[1] === forceKey);
+    rows = rows.filter(row => row[1] === forceKey); // Force Key is at index 1
     console.log(`getArmyLists - Filtered from ${originalRowCount} to ${rows.length} rows for force key "${forceKey}"`);
   }
   
@@ -288,7 +297,8 @@ function getArmyLists(params = {}) {
   const armyLists = paginatedRows.map((row) => {
     const obj = { 
       id: row[0], // Use the key as ID
-      key: row[0] // Also include as 'key' for clarity
+      key: row[0], // Also include as 'key' for clarity
+      Key: row[0]  // Include uppercase for compatibility
     };
     
     headers.forEach((header, headerIndex) => {
@@ -347,7 +357,8 @@ function getArmyListByKey(armyListKey) {
   // Convert to object
   const armyList = { 
     id: armyListRow[0], // Use key as ID
-    key: armyListRow[0]
+    key: armyListRow[0],
+    Key: armyListRow[0] // Include uppercase for compatibility
   };
   headers.forEach((header, index) => {
     armyList[header] = armyListRow[index];
@@ -395,7 +406,8 @@ function getRecentArmyLists() {
   const result = rows.map((row) => {
     const obj = { 
       id: row[0], // Use key as ID
-      key: row[0]
+      key: row[0],
+      Key: row[0] // Include uppercase for compatibility
     };
     headers.forEach((header, headerIndex) => {
       obj[header] = row[headerIndex];
@@ -417,6 +429,7 @@ function getRecentArmyLists() {
 function testSubmission() {
   const testData = {
     timestamp: new Date().toISOString(),
+    forceKey: 'TestForce_TestUser',
     userName: 'Test User',
     forceName: 'Test Force',
     armyName: 'Test Army List',

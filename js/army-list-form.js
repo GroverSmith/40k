@@ -1,6 +1,6 @@
 // filename: army-list-form.js
 // Army List Form - Extends BaseForm for army list submissions
-// 40k Crusade Campaign Tracker
+// 40k Crusade Campaign Tracker - Updated to use force context from URL
 
 class ArmyListForm extends BaseForm {
     constructor() {
@@ -12,17 +12,18 @@ class ArmyListForm extends BaseForm {
             minCharacters: 50
         });
         
+        this.forceContext = null;
         this.init();
     }
     
     init() {
         console.log('Army List Form initialized');
         
+        // Get force context from URL parameters
+        this.loadForceContext();
+        
         // Initialize base form functionality
         this.initBase();
-        
-        // Load available forces for dropdown
-        this.loadForceOptions();
         
         // Set up character counter for army list text
         const armyTextArea = document.getElementById('army-list-text');
@@ -37,104 +38,66 @@ class ArmyListForm extends BaseForm {
         }
     }
     
-    async loadForceOptions() {
-		try {
-			console.log('Loading force options...');
-			
-			const forceSheetUrl = CrusadeConfig.getSheetUrl('forces');
-			if (!forceSheetUrl) {
-				throw new Error('Forces sheet URL not configured');
-			}
-			
-			console.log('Fetching forces from:', forceSheetUrl);
-			const response = await fetch(forceSheetUrl);
-			
-			if (!response.ok) {
-				throw new Error('Failed to fetch force data');
-			}
-			
-			const data = await response.json();
-			const forceSelect = document.getElementById('force-name');
-			
-			forceSelect.innerHTML = '<option value="">Select your force...</option>';
-			
-			console.log('Force data received:', data);
-			
-			// Get current user name
-			const currentUser = UserManager.getCurrentUserName();
-			console.log('Current user:', currentUser);
-			
-			if (!currentUser) {
-				forceSelect.innerHTML += '<option value="">Please select a user first</option>';
-				return;
-			}
-			
-			// Add each force as an option (skip header row)
-			// Column structure after Key addition: 0=Key, 1=User Name, 2=Force Name, 3=Faction, etc.
-			let forcesFound = 0;
-			data.slice(1).forEach(row => {
-				const userName = row[1];  // User Name is column 1
-				const forceName = row[2]; // Force Name is column 2
-				const forceKey = row[0];  // Key is column 0
-				
-				// Only show forces belonging to current user
-				if (forceName && userName && userName === currentUser) {
-					const option = document.createElement('option');
-					option.value = forceKey; // Use key as value for proper linking
-					option.textContent = forceName;
-					option.dataset.forceName = forceName; // Store force name as data attribute
-					forceSelect.appendChild(option);
-					forcesFound++;
-				}
-			});
-			
-			console.log(`Loaded ${forcesFound} forces for user ${currentUser}`);
-			
-			if (forcesFound === 0) {
-				forceSelect.innerHTML += '<option value="">No forces found for your user</option>';
-			}
-			
-		} catch (error) {
-			console.error('Error loading force options:', error);
-			
-			const forceSelect = document.getElementById('force-name');
-			forceSelect.innerHTML = `
-				<option value="">Select your force...</option>
-				<option value="">--- Could not load forces ---</option>
-			`;
-			
-			this.addManualForceEntry();
-		}
-	}
-    
-    addManualForceEntry() {
-        const formGroup = document.querySelector('#force-name').closest('.form-group');
-        const helpText = formGroup.querySelector('.help-text');
+    loadForceContext() {
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
         
-        helpText.innerHTML = `
-            <span style="color: #ff6b6b;">Unable to load forces automatically.</span> 
-            <a href="#" onclick="armyListForm.showManualEntry()" style="color: #4ecdc4;">Enter force name manually</a>
-        `;
+        // Extract force information
+        this.forceContext = {
+            forceKey: urlParams.get('forceKey'),
+            forceName: urlParams.get('forceName'),
+            userName: urlParams.get('userName'),
+            faction: urlParams.get('faction'),
+            detachment: urlParams.get('detachment') || ''
+        };
+        
+        console.log('Force context loaded:', this.forceContext);
+        
+        // Validate force context
+        if (!this.forceContext.forceKey || !this.forceContext.forceName) {
+            console.error('No force context provided');
+            this.showError('No force selected. Please access this form from a force details page.');
+            document.getElementById('army-list-form').style.display = 'none';
+            return;
+        }
+        
+        // Populate hidden fields
+        document.getElementById('force-key').value = this.forceContext.forceKey;
+        document.getElementById('force-name').value = this.forceContext.forceName;
+        document.getElementById('user-name').value = this.forceContext.userName;
+        document.getElementById('faction').value = this.forceContext.faction;
+        document.getElementById('detachment').value = this.forceContext.detachment;
+        
+        // Update display fields
+        document.getElementById('display-force-name').textContent = this.forceContext.forceName;
+        document.getElementById('display-user-name').textContent = this.forceContext.userName;
+        document.getElementById('display-faction').textContent = this.forceContext.faction;
+        document.getElementById('display-detachment').textContent = this.forceContext.detachment || 'Not specified';
+        
+        // Update header context
+        document.getElementById('force-context').textContent = 
+            `Adding army list for ${this.forceContext.forceName}`;
+        
+        // Update back button
+        const backButton = document.getElementById('back-button');
+        if (backButton) {
+            backButton.href = `../forces/force-details.html?key=${encodeURIComponent(this.forceContext.forceKey)}`;
+        }
+        
+        // Update success message back button
+        const backToForceBtn = document.getElementById('back-to-force-btn');
+        if (backToForceBtn) {
+            backToForceBtn.href = `../forces/force-details.html?key=${encodeURIComponent(this.forceContext.forceKey)}`;
+        }
     }
     
-    showManualEntry() {
-        const forceSelect = document.getElementById('force-name');
-        const formGroup = forceSelect.closest('.form-group');
-        
-        const textInput = document.createElement('input');
-        textInput.type = 'text';
-        textInput.id = 'force-name';
-        textInput.name = 'forceName';
-        textInput.required = true;
-        textInput.placeholder = 'Enter your Crusade Force name...';
-        textInput.className = forceSelect.className;
-        
-        forceSelect.parentNode.replaceChild(textInput, forceSelect);
-        
-        const helpText = formGroup.querySelector('.help-text');
-        helpText.textContent = 'Enter the name of your Crusade Force.';
-        
-        textInput.focus();
+    /**
+     * Override to skip user name population since it's handled by force context
+     */
+    autoPopulateUserName() {
+        // Skip the base class implementation
+        // User name is already set from force context
+        console.log('User name already set from force context:', this.forceContext?.userName);
     }
     
     updateCharacterCount() {
@@ -191,38 +154,43 @@ class ArmyListForm extends BaseForm {
      * Override to gather army list specific data
      */
     gatherFormData() {
-		const form = document.getElementById(this.formId);
-		const formData = new FormData(form);
-		
-		// Get the selected force option
-		const forceSelect = document.getElementById('force-name');
-		const selectedOption = forceSelect.options[forceSelect.selectedIndex];
-		
-		// Get force key and name
-		const forceKey = formData.get('forceName').trim(); // This is actually the key now
-		const forceName = selectedOption ? (selectedOption.dataset.forceName || selectedOption.textContent) : forceKey;
-		
-		return {
-			timestamp: new Date().toISOString(),
-			userName: formData.get('userName').trim(),
-			forceKey: forceKey,  // Send the key
-			forceName: forceName, // Send the actual force name
-			armyName: formData.get('armyName').trim(),
-			faction: formData.get('faction').trim(),
-			detachment: formData.get('detachment').trim(),
-			mfmVersion: formData.get('mfmVersion').trim(),
-			pointsValue: formData.get('pointsValue') || '',
-			notes: formData.get('notes').trim(),
-			armyListText: formData.get('armyListText').trim()
-		};
-	}
+        const form = document.getElementById(this.formId);
+        const formData = new FormData(form);
+        
+        return {
+            timestamp: new Date().toISOString(),
+            forceKey: formData.get('forceKey').trim(),
+            userName: formData.get('userName').trim(),
+            forceName: formData.get('forceName').trim(),
+            armyName: formData.get('armyName').trim(),
+            faction: formData.get('faction').trim(),
+            detachment: formData.get('detachment').trim(),
+            mfmVersion: formData.get('mfmVersion').trim(),
+            pointsValue: formData.get('pointsValue') || '',
+            notes: formData.get('notes').trim(),
+            armyListText: formData.get('armyListText').trim()
+        };
+    }
+    
+    /**
+     * Override to return correct instance name
+     */
+    getFormInstanceName() {
+        return 'armyListForm';
+    }
 }
 
 // Global utility functions
 function resetForm() {
     const form = document.getElementById('army-list-form');
     if (form) {
-        form.reset();
+        // Only reset the fields that user can edit
+        document.getElementById('army-name').value = '';
+        document.getElementById('mfm-version').value = '';
+        document.getElementById('points-value').value = '';
+        document.getElementById('notes').value = '';
+        document.getElementById('army-list-text').value = '';
+        
         form.style.display = 'block';
     }
     
@@ -231,7 +199,6 @@ function resetForm() {
     
     if (armyListForm) {
         armyListForm.updateCharacterCount();
-        armyListForm.autoPopulateUserName();
     }
     
     const errorElements = document.querySelectorAll('.field-error');
