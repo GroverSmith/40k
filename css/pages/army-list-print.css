@@ -1,0 +1,138 @@
+/* filename: pages/army-list-print.css */
+/* Print-specific styles for Army List Viewer */
+/* 40k Crusade Campaign Tracker */
+
+@media print {
+    /* Hide non-printable elements */
+    .back-button,
+    .action-buttons,
+    .loading-state,
+    .error-state,
+    .character-count {
+        display: none !important;
+    }
+    
+    /* Reset body and container for print */
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 11pt !important;
+        line-height: 1.5 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .container {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0.5in !important;
+        margin: 0 !important;
+    }
+    
+    /* Compact header section */
+    .army-list-header {
+        border-bottom: 2px solid black !important;
+        padding-bottom: 10pt !important;
+        margin-bottom: 15pt !important;
+    }
+    
+    .army-list-header h1 {
+        font-size: 18pt !important;
+        color: black !important;
+        margin: 0 0 5pt 0 !important;
+    }
+    
+    .army-list-header p {
+        font-size: 10pt !important;
+        color: black !important;
+        margin: 0 !important;
+    }
+    
+    /* Consolidate metadata into compact inline format */
+    .army-list-meta {
+        border: none !important;
+        background: none !important;
+        padding: 0 !important;
+        margin: 0 0 15pt 0 !important;
+        display: block !important;
+    }
+    
+    .army-list-meta .meta-card {
+        display: inline !important;
+        margin-right: 15pt !important;
+        background: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    
+    .army-list-meta .meta-label {
+        display: inline !important;
+        font-weight: bold !important;
+        color: black !important;
+        font-size: 10pt !important;
+    }
+    
+    .army-list-meta .meta-label::after {
+        content: ": " !important;
+    }
+    
+    .army-list-meta .meta-value {
+        display: inline !important;
+        color: black !important;
+        font-size: 10pt !important;
+        margin-right: 10pt !important;
+    }
+    
+    /* Special handling for Notes field - put on new line if present */
+    .army-list-meta .meta-card:has(.meta-label:contains("Notes")) {
+        display: block !important;
+        margin-top: 5pt !important;
+    }
+    
+    /* Army list content section */
+    .army-list-content {
+        page-break-inside: avoid !important;
+        background: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin-top: 15pt !important;
+    }
+    
+    .content-header {
+        display: none !important; /* Remove redundant header */
+    }
+    
+    /* Expand pre element to show all content */
+    .army-list-text {
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important;
+        overflow: visible !important;
+        max-height: none !important;
+        height: auto !important;
+        background: none !important;
+        border: 1px solid #ccc !important;
+        padding: 10pt !important;
+        margin: 0 !important;
+        font-family: 'Courier New', monospace !important;
+        font-size: 9pt !important;
+        line-height: 1.4 !important;
+        color: black !important;
+        box-shadow: none !important;
+    }
+    
+    /* Ensure no scrollbars appear */
+    * {
+        overflow: visible !important;
+    }
+    
+    /* Page break control */
+    @page {
+        margin: 0.5in;
+        size: letter;
+    }
+    
+    /* Avoid page breaks inside army list text if possible */
+    .army-list-text {
+        page-break-inside: auto !important;
+    }
+}
