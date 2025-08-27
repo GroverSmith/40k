@@ -38,52 +38,74 @@ class ArmyListForm extends BaseForm {
     }
     
     async loadForceOptions() {
-        try {
-            console.log('Loading force options...');
-            
-            const forceSheetUrl = CrusadeConfig.getSheetUrl('forces');
-            if (!forceSheetUrl) {
-                throw new Error('Forces sheet URL not configured');
-            }
-            
-            console.log('Fetching forces from:', forceSheetUrl);
-            const response = await fetch(forceSheetUrl);
-            
-            if (!response.ok) {
-                throw new Error('Failed to fetch force data');
-            }
-            
-            const data = await response.json();
-            const forceSelect = document.getElementById('force-name');
-            
-            forceSelect.innerHTML = '<option value="">Select your force...</option>';
-            
-            console.log('Force data received:', data);
-            
-            // Add each force as an option (skip header row)
-            data.slice(1).forEach(row => {
-                if (row[1]) { // Force name is in column 1
-                    const option = document.createElement('option');
-                    option.value = row[1];
-                    option.textContent = row[1];
-                    forceSelect.appendChild(option);
-                }
-            });
-            
-            console.log(`Loaded ${data.length - 1} force options`);
-            
-        } catch (error) {
-            console.error('Error loading force options:', error);
-            
-            const forceSelect = document.getElementById('force-name');
-            forceSelect.innerHTML = `
-                <option value="">Select your force...</option>
-                <option value="">--- Could not load forces ---</option>
-            `;
-            
-            this.addManualForceEntry();
-        }
-    }
+		try {
+			console.log('Loading force options...');
+			
+			const forceSheetUrl = CrusadeConfig.getSheetUrl('forces');
+			if (!forceSheetUrl) {
+				throw new Error('Forces sheet URL not configured');
+			}
+			
+			console.log('Fetching forces from:', forceSheetUrl);
+			const response = await fetch(forceSheetUrl);
+			
+			if (!response.ok) {
+				throw new Error('Failed to fetch force data');
+			}
+			
+			const data = await response.json();
+			const forceSelect = document.getElementById('force-name');
+			
+			forceSelect.innerHTML = '<option value="">Select your force...</option>';
+			
+			console.log('Force data received:', data);
+			
+			// Get current user name
+			const currentUser = UserManager.getCurrentUserName();
+			console.log('Current user:', currentUser);
+			
+			if (!currentUser) {
+				forceSelect.innerHTML += '<option value="">Please select a user first</option>';
+				return;
+			}
+			
+			// Add each force as an option (skip header row)
+			// Column structure after Key addition: 0=Key, 1=User Name, 2=Force Name, 3=Faction, etc.
+			let forcesFound = 0;
+			data.slice(1).forEach(row => {
+				const userName = row[1];  // User Name is column 1
+				const forceName = row[2]; // Force Name is column 2
+				const forceKey = row[0];  // Key is column 0
+				
+				// Only show forces belonging to current user
+				if (forceName && userName && userName === currentUser) {
+					const option = document.createElement('option');
+					option.value = forceKey; // Use key as value for proper linking
+					option.textContent = forceName;
+					option.dataset.forceName = forceName; // Store force name as data attribute
+					forceSelect.appendChild(option);
+					forcesFound++;
+				}
+			});
+			
+			console.log(`Loaded ${forcesFound} forces for user ${currentUser}`);
+			
+			if (forcesFound === 0) {
+				forceSelect.innerHTML += '<option value="">No forces found for your user</option>';
+			}
+			
+		} catch (error) {
+			console.error('Error loading force options:', error);
+			
+			const forceSelect = document.getElementById('force-name');
+			forceSelect.innerHTML = `
+				<option value="">Select your force...</option>
+				<option value="">--- Could not load forces ---</option>
+			`;
+			
+			this.addManualForceEntry();
+		}
+	}
     
     addManualForceEntry() {
         const formGroup = document.querySelector('#force-name').closest('.form-group');
@@ -169,29 +191,31 @@ class ArmyListForm extends BaseForm {
      * Override to gather army list specific data
      */
     gatherFormData() {
-        const form = document.getElementById(this.formId);
-        const formData = new FormData(form);
-        
-        return {
-            timestamp: new Date().toISOString(),
-            userName: formData.get('userName').trim(),
-            forceName: formData.get('forceName').trim(),
-            armyName: formData.get('armyName').trim(),
-            faction: formData.get('faction').trim(),
-            detachment: formData.get('detachment').trim(),
-            mfmVersion: formData.get('mfmVersion').trim(),
-            pointsValue: formData.get('pointsValue') || '',
-            notes: formData.get('notes').trim(),
-            armyListText: formData.get('armyListText').trim()
-        };
-    }
-    
-    /**
-     * Override to return correct instance name
-     */
-    getFormInstanceName() {
-        return 'armyListForm';
-    }
+		const form = document.getElementById(this.formId);
+		const formData = new FormData(form);
+		
+		// Get the selected force option
+		const forceSelect = document.getElementById('force-name');
+		const selectedOption = forceSelect.options[forceSelect.selectedIndex];
+		
+		// Get force key and name
+		const forceKey = formData.get('forceName').trim(); // This is actually the key now
+		const forceName = selectedOption ? (selectedOption.dataset.forceName || selectedOption.textContent) : forceKey;
+		
+		return {
+			timestamp: new Date().toISOString(),
+			userName: formData.get('userName').trim(),
+			forceKey: forceKey,  // Send the key
+			forceName: forceName, // Send the actual force name
+			armyName: formData.get('armyName').trim(),
+			faction: formData.get('faction').trim(),
+			detachment: formData.get('detachment').trim(),
+			mfmVersion: formData.get('mfmVersion').trim(),
+			pointsValue: formData.get('pointsValue') || '',
+			notes: formData.get('notes').trim(),
+			armyListText: formData.get('armyListText').trim()
+		};
+	}
 }
 
 // Global utility functions
