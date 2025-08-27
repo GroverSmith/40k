@@ -1,6 +1,8 @@
 // filename: google-sheets-embed.js
 // GoogleSheetsEmbed - A comprehensive class for embedding Google Sheets data
 // Features: caching, sorting, pagination, responsive design, error handling, custom column names
+// Updated to support linkDataColumn for using hidden columns as link values
+
 class GoogleSheetsEmbed {
     constructor(containerSelector, appsScriptUrl, options = {}) {
         this.container = document.querySelector(containerSelector);
@@ -15,6 +17,7 @@ class GoogleSheetsEmbed {
             pagination: false,    // enable pagination instead of scrolling
             rowsPerPage: 50,      // rows per page when pagination is enabled
             linkColumn: null,     // column index to convert to links (null = no links)
+            linkDataColumn: null, // column index to use for link data (if different from linkColumn)
             linkPattern: '{slug}.html',  // URL pattern where {slug} gets replaced
             cacheMinutes: 5,      // cache data for 5 minutes (0 = no cache)
             hideColumns: [],      // array of column indices to hide (e.g., [0, 2])
@@ -221,9 +224,18 @@ class GoogleSheetsEmbed {
                     
                     // Check if this column should be converted to links
                     if (this.options.linkColumn === cellIndex && cell) {
-                        // Use URL-encoded actual name instead of slug for better matching
-                        const encodedName = encodeURIComponent(cell);
-                        const url = this.options.linkPattern.replace('{slug}', encodedName);
+                        // Determine what value to use for the link
+                        let linkValue;
+                        if (this.options.linkDataColumn !== null && this.options.linkDataColumn !== undefined) {
+                            // Use a different column's value for the link
+                            linkValue = displayRows[i][this.options.linkDataColumn] || cell;
+                        } else {
+                            // Use this column's value for the link
+                            linkValue = cell;
+                        }
+                        
+                        const encodedValue = encodeURIComponent(linkValue);
+                        const url = this.options.linkPattern.replace('{slug}', encodedValue);
                         html += '<td><a href="' + url + '" style="color: #4ecdc4; text-decoration: none;">' + displayCell + '</a></td>';
                     } else {
                         html += '<td>' + displayCell + '</td>';
