@@ -40,9 +40,9 @@ const CrusadeConfig = {
             sheetName: 'Users'
         },
         
-        // Placeholder for future sheets
+        
         battleHistory: {
-            url: null,
+            url: https://script.google.com/macros/s/AKfycbyO76bOvui0w5SgGfDQEpBw1nt9PGZXDNnlzTY_l84-PkMWOm-Y86A2hjC05x-Fn2D_/exec,
             sheetId: '1ybyOYvN_7hHJ2lT5iK3wMOuY3grlUwGTooxbttgmJyk',
             sheetName: 'Battle History'
         },

@@ -1,0 +1,347 @@
+// filename: battle-gas-script.js
+// Google Apps Script for Battle History Sheet
+// Deploy this as a web app to handle battle report submissions and retrieval
+
+const SPREADSHEET_ID = '1ybyOYvN_7hHJ2lT5iK3wMOuY3grlUwGTooxbttgmJyk';
+const SHEET_NAME = 'Battle History';
+
+// Generate unique battle key using timestamp + random suffix
+function generateBattleKey() {
+  const timestamp = new Date().toISOString().replace(/[-:T.Z]/g, '').substring(0, 14);
+  const suffix = Math.random().toString(36).substring(2, 6);
+  return `${timestamp}_${suffix}`;
+}
+
+function doPost(e) {
+  try {
+    console.log('doPost called for battle report');
+    console.log('Parameters:', e.parameter);
+    
+    let data;
+    
+    if (e.parameter) {
+      data = e.parameter;
+    } else if (e.postData && e.postData.contents) {
+      try {
+        data = JSON.parse(e.postData.contents);
+      } catch (jsonError) {
+        throw new Error('Invalid data format');
+      }
+    } else {
+      throw new Error('No data received');
+    }
+    
+    // Validate required fields
+    const required = ['force1Key', 'force2Key', 'datePlayed', 'player1', 'player2'];
+    const missing = required.filter(field => !data[field]);
+    if (missing.length > 0) {
+      throw new Error('Missing required fields: ' + missing.join(', '));
+    }
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    // Create sheet if it doesn't exist
+    if (!sheet) {
+      console.log('Creating Battle History sheet');
+      sheet = spreadsheet.insertSheet(SHEET_NAME);
+      
+      const headers = [
+        'Key',
+        'Timestamp',
+        'Force 1 Key',
+        'Force 2 Key',
+        'Date Played',
+        'Battle Size',
+        'Player 1',
+        'Force 1',
+        'Army 1',
+        'Player 2',
+        'Force 2',
+        'Army 2',
+        'Victor',
+        'Player 1 Score',
+        'Player 2 Score',
+        'Battle Name',
+        'Summary Notes',
+        'Crusade Key'
+      ];
+      
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+      
+      // Format header row
+      const headerRange = sheet.getRange(1, 1, 1, headers.length);
+      headerRange.setFontWeight('bold');
+      headerRange.setBackground('#4ecdc4');
+      headerRange.setFontColor('#ffffff');
+      
+      // Set column widths
+      sheet.setColumnWidth(1, 150); // Key
+      sheet.setColumnWidth(2, 150); // Timestamp
+      sheet.setColumnWidth(3, 150); // Force 1 Key
+      sheet.setColumnWidth(4, 150); // Force 2 Key
+      sheet.setColumnWidth(5, 100); // Date Played
+      sheet.setColumnWidth(6, 100); // Battle Size
+      sheet.setColumnWidth(7, 120); // Player 1
+      sheet.setColumnWidth(8, 150); // Force 1
+      sheet.setColumnWidth(9, 150); // Army 1
+      sheet.setColumnWidth(10, 120); // Player 2
+      sheet.setColumnWidth(11, 150); // Force 2
+      sheet.setColumnWidth(12, 150); // Army 2
+      sheet.setColumnWidth(13, 100); // Victor
+      sheet.setColumnWidth(14, 80); // Player 1 Score
+      sheet.setColumnWidth(15, 80); // Player 2 Score
+      sheet.setColumnWidth(16, 200); // Battle Name
+      sheet.setColumnWidth(17, 300); // Summary Notes
+      sheet.setColumnWidth(18, 200); // Crusade Key
+    }
+    
+    // Generate unique key
+    const battleKey = generateBattleKey();
+    console.log('Generated battle key:', battleKey);
+    
+    // Parse timestamp
+    const timestamp = new Date();
+    
+    // Determine victor
+    let victor = data.victor || '';
+    if (!victor && data.player1Score && data.player2Score) {
+      const p1Score = parseInt(data.player1Score);
+      const p2Score = parseInt(data.player2Score);
+      if (p1Score > p2Score) {
+        victor = 'Player 1';
+      } else if (p2Score > p1Score) {
+        victor = 'Player 2';
+      } else {
+        victor = 'Draw';
+      }
+    }
+    
+    // Prepare row data
+    const rowData = [
+      battleKey,
+      timestamp,
+      data.force1Key || '',
+      data.force2Key || '',
+      data.datePlayed || '',
+      data.battleSize || '',
+      data.player1 || '',
+      data.force1 || '',
+      data.army1 || '',
+      data.player2 || '',
+      data.force2 || '',
+      data.army2 || '',
+      victor,
+      data.player1Score || '',
+      data.player2Score || '',
+      data.battleName || '',
+      data.summaryNotes || '',
+      data.crusadeKey || ''
+    ];
+    
+    const lastRow = sheet.getLastRow();
+    const newRowNumber = lastRow + 1;
+    
+    sheet.getRange(newRowNumber, 1, 1, rowData.length).setValues([rowData]);
+    
+    // Format the new row
+    sheet.getRange(newRowNumber, 1).setFontWeight('bold'); // Key
+    sheet.getRange(newRowNumber, 2).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
+    sheet.getRange(newRowNumber, 5).setNumberFormat('yyyy-mm-dd'); // Date Played
+    
+    // Format score columns as numbers
+    if (data.player1Score) {
+      sheet.getRange(newRowNumber, 14).setNumberFormat('#,##0');
+    }
+    if (data.player2Score) {
+      sheet.getRange(newRowNumber, 15).setNumberFormat('#,##0');
+    }
+    
+    // Set text wrapping for notes
+    sheet.getRange(newRowNumber, 17).setWrap(true);
+    
+    console.log('Battle report saved successfully');
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        message: 'Battle report submitted successfully',
+        key: battleKey,
+        timestamp: timestamp.toISOString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    console.error('Error processing battle report:', error);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  try {
+    const action = e.parameter.action || 'list';
+    
+    switch(action) {
+      case 'list':
+        return getBattlesList(e.parameter);
+      case 'get':
+        return getBattleByKey(e.parameter.key);
+      case 'force-battles':
+        return getBattlesForForce(e.parameter.forceKey);
+      case 'recent':
+        return getRecentBattles(e.parameter.limit);
+      default:
+        return getBattlesList(e.parameter);
+    }
+    
+  } catch (error) {
+    console.error('Error handling GET request:', error);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function getBattlesList(params = {}) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify([]))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  const data = sheet.getDataRange().getValues();
+  
+  // Return raw data for compatibility with sheets system
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getBattleByKey(battleKey) {
+  if (!battleKey) {
+    throw new Error('Battle key is required');
+  }
+  
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Battle History sheet not found');
+  }
+  
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  
+  // Find by key (column 0)
+  const battleRow = data.find((row, index) => {
+    if (index === 0) return false;
+    return row[0] === battleKey;
+  });
+  
+  if (!battleRow) {
+    throw new Error('Battle report not found');
+  }
+  
+  // Convert to object
+  const battle = {};
+  headers.forEach((header, index) => {
+    battle[header] = battleRow[index];
+  });
+  
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: true,
+      data: battle
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getBattlesForForce(forceKey) {
+  if (!forceKey) {
+    throw new Error('Force key is required');
+  }
+  
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        battles: []
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  
+  // Filter battles where force is either Force 1 or Force 2
+  const battles = data.slice(1)
+    .filter(row => row[2] === forceKey || row[3] === forceKey) // Force 1 Key or Force 2 Key
+    .map(row => {
+      const battle = {};
+      headers.forEach((header, index) => {
+        battle[header] = row[index];
+      });
+      return battle;
+    });
+  
+  console.log(`Found ${battles.length} battles for force key "${forceKey}"`);
+  
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: true,
+      battles: battles
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getRecentBattles(limit = 10) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        battles: []
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const maxRows = Math.min(parseInt(limit), data.length - 1);
+  
+  // Get the most recent battles (assuming they're at the bottom)
+  const recentRows = data.slice(Math.max(1, data.length - maxRows));
+  
+  const battles = recentRows.map(row => {
+    const battle = {};
+    headers.forEach((header, index) => {
+      battle[header] = row[index];
+    });
+    return battle;
+  }).reverse(); // Most recent first
+  
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: true,
+    battles: battles
+  }))
+    .setMimeType(ContentService.MimeType.JSON);
+}

@@ -1,0 +1,214 @@
+<!-- filename: add-battle-report.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Battle Report - 40k Crusade Campaign Tracker</title>
+    <meta name="description" content="Record a battle result for the Crusade campaign.">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../css/variables.css">
+	<link rel="stylesheet" href="../css/base.css">
+	<link rel="stylesheet" href="../css/buttons-unified.css">
+	<link rel="stylesheet" href="../css/components-unified.css">
+	<link rel="stylesheet" href="../css/forms-unified.css">
+	<link rel="stylesheet" href="../css/responsive.css">
+	<link rel="stylesheet" href="../css/user-dropdown.css">
+	<link rel="stylesheet" href="../css/modal.css">
+	<link rel="stylesheet" href="../css/user-field.css">
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-button">← Back to Campaign Tracker</a>
+        
+        <header class="form-header">
+            <h1>⚔️ Add Battle Report</h1>
+            <p>Record the results of a battle for the campaign records.</p>
+        </header>
+        
+        <form id="battle-report-form" class="battle-form">
+            <!-- Battle Information -->
+            <h3 style="color: #4ecdc4; margin-bottom: 20px;">Battle Information</h3>
+            
+            <div class="form-group">
+                <label for="crusade-select">Crusade Campaign</label>
+                <select id="crusade-select" name="crusadeKey">
+                    <option value="">Select crusade (optional)...</option>
+                </select>
+                <small class="help-text">Which crusade campaign is this battle part of?</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="battle-name">Battle Name</label>
+                <input type="text" id="battle-name" name="battleName" 
+                       placeholder="e.g., Battle for Outpost Alpha, Skirmish at Dawn">
+                <small class="help-text">Give this battle a memorable name (optional).</small>
+            </div>
+            
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label for="date-played">Date Played <span class="required">*</span></label>
+                    <input type="date" id="date-played" name="datePlayed" required>
+                    <small class="help-text">When was this battle fought?</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="battle-size">Battle Size</label>
+                    <select id="battle-size" name="battleSize">
+                        <option value="">Select size...</option>
+                        <option value="500">500 pts - Combat Patrol</option>
+                        <option value="1000">1000 pts - Incursion</option>
+                        <option value="1500">1500 pts - Strike Force</option>
+                        <option value="2000">2000 pts - Strike Force</option>
+                        <option value="2500">2500 pts - Onslaught</option>
+                        <option value="3000">3000 pts - Onslaught</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <small class="help-text">Point level of the battle.</small>
+                </div>
+            </div>
+            
+            <!-- Player 1 Information -->
+            <h3 style="color: #4ecdc4; margin-top: 30px; margin-bottom: 20px;">Player 1</h3>
+            
+            <div class="form-group">
+                <label for="player1-name">Player 1 Name <span class="required">*</span></label>
+                <input type="text" id="player1-name" name="player1" required 
+                       placeholder="Enter player name">
+                <small class="help-text">Name of the first player.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="force1-select">Player 1 Force <span class="required">*</span></label>
+                <select id="force1-select" name="force1Key" required>
+                    <option value="">Select force...</option>
+                </select>
+                <small class="help-text">Select the Crusade Force used by Player 1.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="army1-name">Player 1 Army List</label>
+                <input type="text" id="army1-name" name="army1" 
+                       placeholder="e.g., 1000pt Strike Force List">
+                <small class="help-text">Name or description of the army list used (optional).</small>
+            </div>
+            
+            <!-- Player 2 Information -->
+            <h3 style="color: #4ecdc4; margin-top: 30px; margin-bottom: 20px;">Player 2</h3>
+            
+            <div class="form-group">
+                <label for="player2-name">Player 2 Name <span class="required">*</span></label>
+                <input type="text" id="player2-name" name="player2" required 
+                       placeholder="Enter player name">
+                <small class="help-text">Name of the second player.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="force2-select">Player 2 Force <span class="required">*</span></label>
+                <select id="force2-select" name="force2Key" required>
+                    <option value="">Select force...</option>
+                </select>
+                <small class="help-text">Select the Crusade Force used by Player 2.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="army2-name">Player 2 Army List</label>
+                <input type="text" id="army2-name" name="army2" 
+                       placeholder="e.g., 1000pt Patrol Detachment">
+                <small class="help-text">Name or description of the army list used (optional).</small>
+            </div>
+            
+            <!-- Battle Results -->
+            <h3 style="color: #4ecdc4; margin-top: 30px; margin-bottom: 20px;">Battle Results</h3>
+            
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label for="player1-score">Player 1 Score</label>
+                    <input type="number" id="player1-score" name="player1Score" min="0" max="100">
+                    <small class="help-text">Victory points scored.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="player2-score">Player 2 Score</label>
+                    <input type="number" id="player2-score" name="player2Score" min="0" max="100">
+                    <small class="help-text">Victory points scored.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="victor">Victor</label>
+                    <select id="victor" name="victor">
+                        <option value="">Auto-determine</option>
+                        <option value="Player 1">Player 1 Victory</option>
+                        <option value="Player 2">Player 2 Victory</option>
+                        <option value="Draw">Draw</option>
+                    </select>
+                    <small class="help-text">Will auto-determine from scores if left blank.</small>
+                </div>
+            </div>
+            
+            <!-- Summary Notes -->
+            <div class="form-group">
+                <label for="summary-notes">Battle Summary</label>
+                <textarea id="summary-notes" name="summaryNotes" rows="5"
+                          placeholder="Describe the key moments of the battle, heroic deeds, notable events, etc."></textarea>
+                <small class="help-text">Optional narrative summary of the battle.</small>
+            </div>
+            
+            <!-- Hidden fields for force names (will be populated by JS) -->
+            <input type="hidden" id="force1-name" name="force1">
+            <input type="hidden" id="force2-name" name="force2">
+            
+            <!-- Submit Buttons -->
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="history.back()">Cancel</button>
+                <button type="submit" class="btn-primary" id="submit-btn">
+                    <span class="btn-text">Submit Battle Report</span>
+                    <span class="btn-loading" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        Submitting...
+                    </span>
+                </button>
+            </div>
+        </form>
+        
+        <!-- Success Message -->
+        <div id="success-message" class="message success" style="display: none;">
+            <h3>✅ Battle Report Submitted!</h3>
+            <p>The battle has been recorded in the campaign history.</p>
+            <div class="message-actions">
+                <button onclick="resetForm()" class="btn-secondary">Record Another Battle</button>
+                <a href="../index.html" class="btn-primary">Back to Campaign Tracker</a>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="error-message" class="message error" style="display: none;">
+            <h3>❌ Submission Failed</h3>
+            <p id="error-text">There was an error submitting the battle report. Please try again.</p>
+            <div class="message-actions">
+                <button onclick="hideMessages()" class="btn-primary">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+	<script src="../js/config.js"></script>
+	<script src="../js/key-utils.js"></script>
+	
+	<!-- User modules -->
+	<script src="../js/user-storage.js"></script>
+	<script src="../js/user-api.js"></script>
+	<script src="../js/user-ui.js"></script>
+	<script src="../js/user-modal.js"></script>
+	<script src="../js/user-manager.js"></script>
+	
+	<!-- Other dependencies -->
+    <script src="../js/google-sheets-embed.js"></script>
+    <script src="../js/sheets-manager.js"></script>
+	
+	<!-- Form modules -->
+    <script src="../js/form-base.js"></script>
+	<script src="../js/battle-report-form.js"></script>
+</body>
+</html>
