@@ -1,10 +1,10 @@
 // filename: crusade-details.js
-// Main orchestration for Crusade Details Page
+// Main orchestration for Crusade Details Page using Key System
 // 40k Crusade Campaign Tracker
 
 class CrusadeDetailsApp {
     constructor() {
-        this.crusadeName = null;
+        this.crusadeKey = null;
         this.crusadeData = null;
         this.init();
     }
@@ -16,38 +16,42 @@ class CrusadeDetailsApp {
             return;
         }
         
-        // Get crusade name from URL parameter
+        // Get crusade key from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        this.crusadeName = urlParams.get('crusade') || urlParams.get('name');
+        this.crusadeKey = urlParams.get('key') || urlParams.get('crusade');
         
-        if (!this.crusadeName) {
-            CrusadeUI.showError('No crusade specified. Please select a crusade from the main page.');
-            return;
+        if (!this.crusadeKey) {
+            // Try legacy name parameter for backward compatibility
+            const crusadeName = urlParams.get('name');
+            if (crusadeName) {
+                console.warn('Using legacy URL format, generating key from name');
+                this.crusadeKey = CrusadeData.generateCrusadeKey(decodeURIComponent(crusadeName));
+            } else {
+                CrusadeUI.showError('No crusade specified. Please select a crusade from the main page.');
+                return;
+            }
         }
         
-        // Decode the crusade name
-        this.crusadeName = decodeURIComponent(this.crusadeName);
-        
-        console.log('Loading data for crusade:', this.crusadeName);
+        console.log('Loading data for crusade key:', this.crusadeKey);
         this.loadCrusadeData();
     }
     
     async loadCrusadeData() {
         try {
-            console.log('Starting loadCrusadeData...');
+            console.log('Starting loadCrusadeData with key:', this.crusadeKey);
             
             // Load main crusade data
             console.log('Loading main crusade data...');
-            this.crusadeData = await CrusadeData.loadCrusadeData(this.crusadeName);
-            console.log('Main crusade data loaded successfully');
+            this.crusadeData = await CrusadeData.loadCrusadeData(this.crusadeKey);
+            console.log('Main crusade data loaded successfully:', this.crusadeData);
             
             // Update UI with crusade data
             this.displayCrusadeContent();
             
-            // Initialize force registration
+            // Initialize force registration with crusade key
             ForceRegistration.init(this.crusadeData);
             
-            // Load participating forces
+            // Load participating forces using crusade key
             console.log('Loading participating forces...');
             await this.loadParticipatingForces();
             console.log('Participating forces loaded');
@@ -62,7 +66,7 @@ class CrusadeDetailsApp {
     
     displayCrusadeContent() {
         // Update header
-        CrusadeUI.updateHeader(this.crusadeData, this.crusadeName);
+        CrusadeUI.updateHeader(this.crusadeData, this.crusadeData['Crusade Name']);
         
         // Display sections
         CrusadeUI.displayIntroduction(this.crusadeData);
@@ -72,7 +76,11 @@ class CrusadeDetailsApp {
     
     async loadParticipatingForces() {
         try {
-            const result = await CrusadeData.loadParticipatingForces(this.crusadeData['Crusade Name']);
+            // Use the crusade key
+            const crusadeKey = this.crusadeData.key || this.crusadeData.Key || 
+                              CrusadeData.generateCrusadeKey(this.crusadeData['Crusade Name']);
+            
+            const result = await CrusadeData.loadParticipatingForces(crusadeKey);
             
             if (result.success) {
                 CrusadeUI.displayParticipatingForces(result.forces, this.crusadeData['Crusade Name']);
@@ -95,6 +103,10 @@ class CrusadeDetailsApp {
     getCrusadeData() {
         return this.crusadeData;
     }
+    
+    getCrusadeKey() {
+        return this.crusadeKey;
+    }
 }
 
 // Initialize the crusade details app when page loads
@@ -107,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make loadParticipatingForces available globally for force registration callback
     window.loadParticipatingForces = () => crusadeApp.loadParticipatingForces();
     
-    console.log('Crusade Details page initialized with modular architecture');
+    console.log('Crusade Details page initialized with key system');
 });
 
 // Global sorting variables for participants table
@@ -172,11 +184,12 @@ function updateParticipantsTableDisplay(sortedData) {
     // Add sorted rows
     sortedData.forEach(rowData => {
         const registrationDate = new Date(rowData[2]).toLocaleDateString();
-        const forceName = rowData[0];
+        const forceKey = rowData[3]; // Force key
+        const forceName = rowData[0]; // Force name
         const userName = rowData[1];
         
-        // Create link to force details page
-        const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceName);
+        // Create link to force details page using key
+        const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceKey);
         const forceNameLink = `<a href="${forceUrl}" 
                                 style="color: #4ecdc4; text-decoration: none; transition: color 0.3s ease;"
                                 onmouseover="this.style.color='#7fefea'" 
@@ -215,16 +228,21 @@ function updateSortIndicators(activeColumn, direction) {
 
 // Utility functions for crusade page
 const CrusadePageUtils = {
-    // Convert crusade name to URL parameter
-    createCrusadeUrl(crusadeName, basePath = 'crusades/') {
-        const encodedName = encodeURIComponent(crusadeName);
-        return `${basePath}crusade-details.html?crusade=${encodedName}`;
+    // Convert crusade data to URL parameter using key
+    createCrusadeUrl(crusadeKey, basePath = 'crusades/') {
+        const encodedKey = encodeURIComponent(crusadeKey);
+        return `${basePath}crusade-details.html?key=${encodedKey}`;
     },
     
-    // Get current crusade name from URL
-    getCurrentCrusadeName() {
+    // Get current crusade key from URL
+    getCurrentCrusadeKey() {
         const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('crusade') || urlParams.get('name');
+        return urlParams.get('key') || urlParams.get('crusade');
+    },
+    
+    // Generate crusade key from name
+    generateCrusadeKey(crusadeName) {
+        return crusadeName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
     }
 };
 

@@ -1,50 +1,93 @@
 // filename: crusade-data.js
-// Data fetching and management for Crusade Details
+// Data fetching and management for Crusade Details using Key System
 // 40k Crusade Campaign Tracker
 
 const CrusadeData = {
     /**
-     * Load main crusade data from API
+     * Generate a crusade key from crusade name
      */
-    async loadCrusadeData(crusadeName) {
+    generateCrusadeKey(crusadeName) {
+        // Match the server-side key generation
+        return crusadeName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+    },
+    
+    /**
+     * Generate a force key from force name and user name
+     */
+    generateForceKey(forceName, userName) {
+        // Match the server-side key generation
+        const forcePart = forceName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+        const userPart = userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
+        return `${forcePart}_${userPart}`;
+    },
+    
+    /**
+     * Load main crusade data from API using key
+     */
+    async loadCrusadeData(crusadeKey) {
         const crusadeSheetUrl = CrusadeConfig.getSheetUrl('crusades');
         
         if (!crusadeSheetUrl) {
             throw new Error('Crusades sheet URL not configured in CrusadeConfig');
         }
         
-        const fetchUrl = `${crusadeSheetUrl}?action=get&name=${encodeURIComponent(crusadeName)}`;
-        const response = await fetch(fetchUrl);
+        // Try to get by key first
+        const fetchUrl = `${crusadeSheetUrl}?action=get&key=${encodeURIComponent(crusadeKey)}`;
         
-        if (!response.ok) {
+        try {
+            const response = await fetch(fetchUrl);
+            
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log('Crusade API response:', responseData);
+                
+                if (responseData.success && responseData.data) {
+                    // Add the key to the data for reference
+                    responseData.data.key = responseData.data.Key || crusadeKey;
+                    return responseData.data;
+                }
+            }
+        } catch (error) {
+            console.log('Could not load by key, trying by name:', error);
+        }
+        
+        // Fallback: try to load by name (for backward compatibility)
+        const nameUrl = `${crusadeSheetUrl}?action=get-by-name&name=${encodeURIComponent(crusadeKey)}`;
+        const nameResponse = await fetch(nameUrl);
+        
+        if (!nameResponse.ok) {
             throw new Error('Failed to fetch crusade data');
         }
         
-        const responseData = await response.json();
-        console.log('Crusade API response:', responseData);
+        const nameData = await nameResponse.json();
+        console.log('Crusade API response (by name):', nameData);
         
-        if (!responseData.success || !responseData.data) {
-            throw new Error(responseData.error || 'Crusade not found');
+        if (!nameData.success || !nameData.data) {
+            throw new Error(nameData.error || 'Crusade not found');
         }
         
-        return responseData.data;
+        // Add the key to the data
+        nameData.data.key = nameData.data.Key || this.generateCrusadeKey(nameData.data['Crusade Name']);
+        return nameData.data;
     },
     
     /**
-     * Load forces participating in a crusade
+     * Load forces participating in a crusade using crusade key
      */
-    async loadParticipatingForces(crusadeName) {
+    async loadParticipatingForces(crusadeKey) {
         const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
         
         if (!participantsUrl) {
             return { success: false, forces: [] };
         }
         
-        const fetchUrl = `${participantsUrl}?action=forces-for-crusade&crusade=${encodeURIComponent(crusadeName)}`;
+        const fetchUrl = `${participantsUrl}?action=forces-for-crusade&crusadeKey=${encodeURIComponent(crusadeKey)}`;
         
         try {
             const response = await fetch(fetchUrl);
             const data = await response.json();
+            
+            console.log('Participating forces response:', data);
             
             if (data.success && data.forces && data.forces.length > 0) {
                 return { success: true, forces: data.forces };
@@ -95,7 +138,7 @@ const CrusadeData = {
     },
     
     /**
-     * Register a force for a crusade
+     * Register a force for a crusade using keys
      */
     async registerForce(registrationData) {
         const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
@@ -103,6 +146,19 @@ const CrusadeData = {
         if (!participantsUrl) {
             throw new Error('Crusade Participants sheet not configured');
         }
+        
+        // Ensure we have keys
+        if (!registrationData.crusadeKey) {
+            registrationData.crusadeKey = this.generateCrusadeKey(registrationData.crusadeName);
+        }
+        if (!registrationData.forceKey && registrationData.forceName && registrationData.userName) {
+            registrationData.forceKey = this.generateForceKey(registrationData.forceName, registrationData.userName);
+        }
+        
+        console.log('Registering with keys:', {
+            crusadeKey: registrationData.crusadeKey,
+            forceKey: registrationData.forceKey
+        });
         
         // Create form for submission
         const form = document.createElement('form');
@@ -211,4 +267,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = CrusadeData;
 }
 
-console.log('CrusadeData module loaded');
+console.log('CrusadeData module loaded with key system support');

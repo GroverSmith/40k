@@ -1,5 +1,5 @@
 // filename: force-ui.js
-// UI rendering and DOM manipulation for Force Details
+// UI rendering and DOM manipulation for Force Details using Key System
 // 40k Crusade Campaign Tracker
 
 const ForceUI = {
@@ -16,6 +16,9 @@ const ForceUI = {
                 ${forceData.faction}${forceData.detachment ? ` - ${forceData.detachment}` : ''} • Commanded by ${forceData.playerName}
             </div>
             ${launchDate ? `<div class="force-launch-date">Crusade Force Launched on ${launchDate}</div>` : ''}
+            <div class="force-key-display" style="font-size: 0.8em; color: #888; margin-top: 5px;">
+                Force Key: <code style="background: #333; padding: 2px 6px; border-radius: 3px;">${forceData.key}</code>
+            </div>
         `;
         
         // Update page title
@@ -40,11 +43,12 @@ const ForceUI = {
     },
     
     /**
-     * Display army lists in a table format
+     * Display army lists in a table format using keys
      */
-    displayArmyLists(armyLists, forceName) {
+    displayArmyLists(armyLists, forceName, forceKey) {
         const container = document.getElementById('army-lists-sheet');
         console.log('Displaying army lists data:', armyLists);
+        console.log('Force key:', forceKey);
         
         let html = '<div class="army-lists-display">';
         
@@ -80,18 +84,19 @@ const ForceUI = {
                 const mfmVersion = armyList['MFM Version'] || '-';
                 const armyName = armyList['Army Name'] || 'Unnamed List';
                 
-                let armyListId = armyList.id;
+                // Use the key field for linking (Key or key depending on response format)
+                let armyListKey = armyList.Key || armyList.key || armyList.id;
                 
                 // Debug logging
-                console.log(`Army "${armyName}" has ID:`, armyListId);
+                console.log(`Army "${armyName}" has key:`, armyListKey);
                 
-                if (!armyListId) {
-                    console.warn(`No ID found for army list "${armyName}". This will cause linking issues.`);
-                    armyListId = `missing-id-${index}`;
+                if (!armyListKey) {
+                    console.warn(`No key found for army list "${armyName}". This will cause linking issues.`);
+                    armyListKey = `missing-key-${index}`;
                 }
                 
-                // Create link to view army list
-                const armyNameLink = `<a href="../army-lists/view-army-list.html?id=${encodeURIComponent(armyListId)}" 
+                // Create link to view army list using key
+                const armyNameLink = `<a href="../army-lists/view-army-list.html?key=${encodeURIComponent(armyListKey)}" 
                                         style="color: #4ecdc4; text-decoration: none; transition: color 0.3s ease;"
                                         onmouseover="this.style.color='#7fefea'" 
                                         onmouseout="this.style.color='#4ecdc4'"
@@ -217,4 +222,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = ForceUI;
 }
 
-console.log('ForceUI module loaded');
+console.log('ForceUI module loaded with key system support');

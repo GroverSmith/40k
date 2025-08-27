@@ -41,17 +41,18 @@ const UserAPI = {
             
             // Convert to user objects (skip header row)
             const users = data.slice(1).map((row, index) => ({
-                id: index + 2,
-                timestamp: row[0] || new Date(),
-                name: row[1] || 'Unknown User',
-                discordHandle: row[2] || '',
-                email: row[3] || '',
-                notes: row[4] || '',
-                selfRating: row[5] || '',
-                yearsExperience: row[6] || '',
-                gamesPerYear: row[7] || '',
-                isActive: true
-            })).filter(user => user.name !== 'Unknown User');
+			id: index + 2,
+			key: row[0] || '',           // Key
+			timestamp: row[1] || new Date(), // Timestamp
+			name: row[2] || 'Unknown User',  // Name (now correctly at index 2)
+			discordHandle: row[3] || '',     // Discord Handle
+			email: row[4] || '',              // Email
+			notes: row[5] || '',              // Notes
+			selfRating: row[6] || '',         // Self Rating
+			yearsExperience: row[7] || '',    // Years Experience
+			gamesPerYear: row[8] || '',       // Games Per Year
+			isActive: true
+		})).filter(user => user.name !== 'Unknown User');
             
             console.log('Loaded users from API:', users);
             return users;

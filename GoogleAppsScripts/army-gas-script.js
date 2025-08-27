@@ -1,10 +1,41 @@
 // filename: army-gas-script.js
-// Google Apps Script for Army List Form Submissions
+// Google Apps Script for Army List Form Submissions with Composite Key System
 // Deploy this as a web app to handle form submissions
 
-
 const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; 
-const SHEET_NAME = 'Army Lists'; // Name of the sheet tab for army lists
+const SHEET_NAME = 'Army Lists';
+
+// Key generation functions
+function generateForceKey(forceName, userName) {
+  // Match the force key format from forces sheet
+  const forcePart = forceName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+  const userPart = userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
+  return `${forcePart}_${userPart}`;
+}
+
+function generateArmyListKey(forceKey, armyName, sheet) {
+  // Generate base key
+  const armyPart = armyName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
+  const baseKey = `${forceKey}_${armyPart}`;
+  
+  // Find the next sequence number
+  let sequence = 1;
+  if (sheet.getLastRow() > 1) {
+    const existingKeys = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues().flat();
+    const matchingKeys = existingKeys.filter(k => k && k.startsWith(baseKey + '_'));
+    
+    if (matchingKeys.length > 0) {
+      const sequences = matchingKeys.map(k => {
+        const parts = k.split('_');
+        const seq = parseInt(parts[parts.length - 1]);
+        return isNaN(seq) ? 0 : seq;
+      });
+      sequence = Math.max(...sequences) + 1;
+    }
+  }
+  
+  return `${baseKey}_${String(sequence).padStart(2, '0')}`;
+}
 
 function doPost(e) {
   try {
@@ -30,10 +61,6 @@ function doPost(e) {
       throw new Error('No data received in request');
     }
     
-    // Log the spreadsheet ID being used
-    console.log('Using spreadsheet ID:', SPREADSHEET_ID);
-    console.log('Using sheet name:', SHEET_NAME);
-    
     // Validate required fields
     if (!data.userName || !data.forceName || !data.armyName || !data.armyListText) {
       const missing = [];
@@ -58,8 +85,10 @@ function doPost(e) {
       console.log('Creating new sheet:', SHEET_NAME);
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
-      // Add header row
+      // Add header row with Key and Force Key columns
       const headers = [
+        'Key',           // Primary key
+        'Force Key',     // Foreign key to Forces sheet
         'Timestamp',
         'User Name',
         'Force Name', 
@@ -80,31 +109,43 @@ function doPost(e) {
       headerRange.setFontColor('#ffffff');
       
       // Set column widths
-      sheet.setColumnWidth(1, 150); // Timestamp
-      sheet.setColumnWidth(2, 150); // User Name
-      sheet.setColumnWidth(3, 200); // Force Name
-      sheet.setColumnWidth(4, 200); // Army Name
-      sheet.setColumnWidth(5, 120); // Faction
-      sheet.setColumnWidth(6, 120); // Detachment
-      sheet.setColumnWidth(7, 100); // MFM Version
-      sheet.setColumnWidth(8, 100); // Points Value
-      sheet.setColumnWidth(9, 300); // Notes
-      sheet.setColumnWidth(10, 400); // Army List Text (will auto-expand)
+      sheet.setColumnWidth(1, 250); // Key
+      sheet.setColumnWidth(2, 200); // Force Key
+      sheet.setColumnWidth(3, 150); // Timestamp
+      sheet.setColumnWidth(4, 150); // User Name
+      sheet.setColumnWidth(5, 200); // Force Name
+      sheet.setColumnWidth(6, 200); // Army Name
+      sheet.setColumnWidth(7, 120); // Faction
+      sheet.setColumnWidth(8, 120); // Detachment
+      sheet.setColumnWidth(9, 100); // MFM Version
+      sheet.setColumnWidth(10, 100); // Points Value
+      sheet.setColumnWidth(11, 300); // Notes
+      sheet.setColumnWidth(12, 400); // Army List Text
       
-      console.log('Created new sheet with headers');
+      console.log('Created new sheet with headers including key columns');
     }
     
-    // Parse timestamp - handle both ISO string and direct timestamp
+    // Generate the force key (foreign key)
+    const forceKey = generateForceKey(data.forceName, data.userName);
+    console.log('Generated force key (FK):', forceKey);
+    
+    // Generate the army list key (primary key)
+    const armyListKey = generateArmyListKey(forceKey, data.armyName, sheet);
+    console.log('Generated army list key (PK):', armyListKey);
+    
+    // Parse timestamp
     let timestamp;
     if (data.timestamp) {
       timestamp = new Date(data.timestamp);
     } else {
-      timestamp = new Date(); // Use current time if not provided
+      timestamp = new Date();
     }
     console.log('Using timestamp:', timestamp);
     
-    // Prepare the row data
+    // Prepare the row data with keys
     const rowData = [
+      armyListKey,                 // Key (Primary Key)
+      forceKey,                    // Force Key (Foreign Key)
       timestamp,                   // Timestamp
       data.userName,               // User Name
       data.forceName,              // Force Name
@@ -117,12 +158,13 @@ function doPost(e) {
       data.armyListText            // Army List Text
     ];
     
-    console.log('Row data prepared - first few fields:', [
+    console.log('Row data prepared with keys - first few fields:', [
+      armyListKey, 
+      forceKey,
       timestamp, 
       data.userName, 
       data.forceName, 
-      data.armyName, 
-      data.faction
+      data.armyName
     ]);
     
     // Find the next empty row and append the data
@@ -135,28 +177,32 @@ function doPost(e) {
     console.log('Data written to sheet successfully');
     
     // Format the new row
-    sheet.getRange(newRowNumber, 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+    sheet.getRange(newRowNumber, 1).setFontWeight('bold'); // Key column
+    sheet.getRange(newRowNumber, 2).setFontWeight('bold'); // Force Key column
+    sheet.getRange(newRowNumber, 3).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
     
     // Format points column as number
     if (data.pointsValue) {
-      sheet.getRange(newRowNumber, 8).setNumberFormat('#,##0');
+      sheet.getRange(newRowNumber, 10).setNumberFormat('#,##0');
     }
     
     // Set text wrapping for notes and army list text columns
-    sheet.getRange(newRowNumber, 9).setWrap(true);  // Notes
-    sheet.getRange(newRowNumber, 10).setWrap(true); // Army List Text
+    sheet.getRange(newRowNumber, 11).setWrap(true);  // Notes
+    sheet.getRange(newRowNumber, 12).setWrap(true); // Army List Text
     
     // Auto-resize row height to fit content
     sheet.autoResizeRows(newRowNumber, 1);
     
     // Log success
-    console.log('Successfully added army list:', data.armyName, 'for force:', data.forceName);
+    console.log('Successfully added army list with key:', armyListKey);
     
-    // Return success response (without setHeaders which isn't supported)
+    // Return success response with the key
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
         message: 'Army list submitted successfully',
+        key: armyListKey,
+        forceKey: forceKey,
         rowNumber: newRowNumber,
         timestamp: timestamp.toISOString()
       }))
@@ -167,7 +213,7 @@ function doPost(e) {
     console.error('Error processing army list submission:', error);
     console.error('Error stack:', error.stack);
     
-    // Return error response (without setHeaders)
+    // Return error response
     return ContentService
       .createTextOutput(JSON.stringify({
         success: false,
@@ -186,9 +232,11 @@ function doGet(e) {
       case 'list':
         return getArmyLists(e.parameter);
       case 'get':
-        return getArmyListById(e.parameter.id);
+        return getArmyListByKey(e.parameter.key);
+      case 'force-lists':
+        return getArmyListsForForce(e.parameter.forceKey);
       case 'test':
-        return getRecentArmyLists(); // The original test functionality
+        return getRecentArmyLists();
       default:
         return getArmyLists(e.parameter);
     }
@@ -207,7 +255,7 @@ function doGet(e) {
 
 function getArmyLists(params = {}) {
   // Get army lists with optional filtering
-  const { force, limit, offset } = params;
+  const { forceKey, limit, offset } = params;
   
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME);
@@ -223,21 +271,12 @@ function getArmyLists(params = {}) {
   
   console.log('getArmyLists - Total rows found:', rows.length);
   console.log('getArmyLists - Headers:', headers);
-  console.log('getArmyLists - Filter for force:', force);
   
-  // Filter by force name if specified (Force Name is now column 2, index 2)
-  if (force) {
+  // Filter by force key if specified (Force Key is column 1, index 1)
+  if (forceKey) {
     const originalRowCount = rows.length;
-    rows = rows.filter(row => 
-      row[2] && row[2].toString().toLowerCase().trim() === force.toLowerCase().trim()
-    );
-    console.log(`getArmyLists - Filtered from ${originalRowCount} to ${rows.length} rows for force "${force}"`);
-    
-    // Debug: show what force names are available
-    if (rows.length === 0) {
-      const availableForces = data.slice(1).map(row => row[2]).filter(name => name);
-      console.log('getArmyLists - Available forces in sheet:', availableForces);
-    }
+    rows = rows.filter(row => row[1] === forceKey);
+    console.log(`getArmyLists - Filtered from ${originalRowCount} to ${rows.length} rows for force key "${forceKey}"`);
   }
   
   // Apply pagination if specified
@@ -245,29 +284,11 @@ function getArmyLists(params = {}) {
   const maxResults = parseInt(limit) || rows.length;
   const paginatedRows = rows.slice(startIndex, startIndex + maxResults);
   
-  // Convert to objects with CORRECT ID mapping
-  const armyLists = paginatedRows.map((row, index) => {
-    // FIXED: Calculate the correct row number in the original sheet
-    // We need to account for:
-    // 1. Header row (+1)
-    // 2. Original row position in filtered data
-    // 3. Current position in paginated data
-    
-    // Find the original row index by matching the data
-    const originalRowIndex = data.findIndex(dataRow => 
-      dataRow[1] === row[1] && // User Name
-      dataRow[2] === row[2] && // Force Name  
-      dataRow[3] === row[3] && // Army Name
-      dataRow[0] && row[0] && new Date(dataRow[0]).getTime() === new Date(row[0]).getTime() // Timestamp match
-    );
-    
-    // The sheet row number is originalRowIndex + 1 (because sheet rows are 1-indexed, not 0-indexed)
-    const sheetRowNumber = originalRowIndex > 0 ? originalRowIndex + 1 : null;
-    
-    console.log(`Army list "${row[3]}" - Array index: ${originalRowIndex}, Sheet row: ${sheetRowNumber}`);
-    
+  // Convert to objects with key as identifier
+  const armyLists = paginatedRows.map((row) => {
     const obj = { 
-      id: sheetRowNumber // This is the ACTUAL row number in the Google Sheet
+      id: row[0], // Use the key as ID
+      key: row[0] // Also include as 'key' for clarity
     };
     
     headers.forEach((header, headerIndex) => {
@@ -277,10 +298,10 @@ function getArmyLists(params = {}) {
     return obj;
   });
   
-  console.log('getArmyLists - Final army lists with IDs:', armyLists.map(list => ({ 
+  console.log('getArmyLists - Returning army lists with keys:', armyLists.map(list => ({ 
     name: list['Army Name'], 
-    id: list.id, 
-    force: list['Force Name'] 
+    key: list.key, 
+    forceKey: list['Force Key'] 
   })));
   
   return ContentService
@@ -294,9 +315,13 @@ function getArmyLists(params = {}) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function getArmyListById(id) {
-  // Get a specific army list by row ID
-  console.log('getArmyListById called with ID:', id);
+function getArmyListByKey(armyListKey) {
+  // Get a specific army list by its key
+  console.log('getArmyListByKey called with key:', armyListKey);
+  
+  if (!armyListKey) {
+    throw new Error('Army list key is required');
+  }
   
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME);
@@ -305,37 +330,30 @@ function getArmyListById(id) {
     throw new Error('Army Lists sheet not found');
   }
   
-  const rowNumber = parseInt(id);
-  if (!rowNumber || rowNumber < 2) {
-    console.error('Invalid army list ID:', id);
-    throw new Error('Invalid army list ID: ' + id);
-  }
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
   
-  // Check if the row number is within the valid range
-  const lastRow = sheet.getLastRow();
-  if (rowNumber > lastRow) {
-    console.error(`Row ${rowNumber} does not exist. Sheet has ${lastRow} rows.`);
-    throw new Error('Army list not found - row does not exist');
-  }
+  // Find by key (Key is column 0)
+  const armyListRow = data.find((row, index) => {
+    if (index === 0) return false; // Skip header
+    return row[0] === armyListKey;
+  });
   
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  const rowData = sheet.getRange(rowNumber, 1, 1, sheet.getLastColumn()).getValues()[0];
-  
-  console.log('getArmyListById - Headers:', headers);
-  console.log('getArmyListById - Row data:', rowData);
-  
-  if (!rowData || rowData.every(cell => !cell)) {
-    console.error('Empty row data for row:', rowNumber);
-    throw new Error('Army list not found - empty row');
+  if (!armyListRow) {
+    console.error(`Army list with key "${armyListKey}" not found`);
+    throw new Error('Army list not found');
   }
   
   // Convert to object
-  const armyList = { id: rowNumber };
+  const armyList = { 
+    id: armyListRow[0], // Use key as ID
+    key: armyListRow[0]
+  };
   headers.forEach((header, index) => {
-    armyList[header] = rowData[index];
+    armyList[header] = armyListRow[index];
   });
   
-  console.log('getArmyListById - Final army list object:', armyList);
+  console.log('getArmyListByKey - Found army list:', armyList);
   
   return ContentService
     .createTextOutput(JSON.stringify({
@@ -345,8 +363,19 @@ function getArmyListById(id) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+function getArmyListsForForce(forceKey) {
+  // Get all army lists for a specific force
+  console.log('getArmyListsForForce called with force key:', forceKey);
+  
+  if (!forceKey) {
+    throw new Error('Force key is required');
+  }
+  
+  return getArmyLists({ forceKey: forceKey });
+}
+
 function getRecentArmyLists() {
-  // Original functionality for testing - get recent entries
+  // Get recent entries for testing
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME);
   
@@ -363,8 +392,11 @@ function getRecentArmyLists() {
   const headers = data[0];
   const rows = data.slice(1, 11); // Get last 10 entries for testing
   
-  const result = rows.map((row, index) => {
-    const obj = { id: index + 2 }; // +2 because we start from row 2 (after header)
+  const result = rows.map((row) => {
+    const obj = { 
+      id: row[0], // Use key as ID
+      key: row[0]
+    };
     headers.forEach((header, headerIndex) => {
       obj[header] = row[headerIndex];
     });
@@ -381,7 +413,7 @@ function getRecentArmyLists() {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// Utility function to test the script manually
+// Test functions
 function testSubmission() {
   const testData = {
     timestamp: new Date().toISOString(),
@@ -407,20 +439,8 @@ function testSubmission() {
   
   const result = doPost(mockEvent);
   console.log('Test result:', result.getContent());
-  
-  // Also test direct sheet writing
-  try {
-    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-    console.log('Spreadsheet found:', !!spreadsheet);
-    console.log('Sheet found:', !!sheet);
-    console.log('Last row:', sheet ? sheet.getLastRow() : 'N/A');
-  } catch (error) {
-    console.error('Direct sheet access error:', error);
-  }
 }
 
-// Test function specifically for army list retrieval
 function testArmyListRetrieval() {
   console.log('=== Testing Army List Retrieval ===');
   
@@ -429,13 +449,9 @@ function testArmyListRetrieval() {
     const allLists = getArmyLists({});
     console.log('All lists result:', JSON.parse(allLists.getContent()));
     
-    // Test getting lists for a specific force (you'll need to update this with an actual force name)
-    const forceLists = getArmyLists({ force: 'Test Force' });
-    console.log('Force lists result:', JSON.parse(forceLists.getContent()));
-    
-    // Test getting a specific army list by ID (you'll need to update this with an actual ID)
-    const singleList = getArmyListById('2');
-    console.log('Single list result:', JSON.parse(singleList.getContent()));
+    // Test key generation
+    const testForceKey = generateForceKey('Test Force', 'Test User');
+    console.log('Test force key:', testForceKey);
     
   } catch (error) {
     console.error('Test error:', error);

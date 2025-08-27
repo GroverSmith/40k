@@ -1,5 +1,5 @@
 // filename: force-registration.js
-// Force registration modal and logic for Crusade Details
+// Force registration modal and logic for Crusade Details using Key System
 // 40k Crusade Campaign Tracker
 
 const ForceRegistration = {
@@ -60,16 +60,22 @@ const ForceRegistration = {
             forceSelect.innerHTML = '<option value="">Select a force...</option>';
             
             // Add force options (skip header row)
+            // Forces now have Key in column 0
             data.slice(1).forEach(row => {
-                if (row[0] && row[1]) { // userName and forceName
-                    const forceKey = KeyUtils.createForceKey(row[1], row[0], row[5]);
-                    const displayName = `${row[1]} (${row[0]})${row[2] ? ` - ${row[2]}` : ''}`;
+                if (row[0]) { // Key column
+                    const forceKey = row[0];
+                    const userName = row[1];
+                    const forceName = row[2];
+                    const faction = row[3];
+                    
+                    const displayName = `${forceName} (${userName})${faction ? ` - ${faction}` : ''}`;
                     
                     const option = document.createElement('option');
                     option.value = forceKey;
                     option.textContent = displayName;
-                    option.setAttribute('data-force-name', row[1]);
-                    option.setAttribute('data-user-name', row[0]);
+                    option.setAttribute('data-force-key', forceKey);
+                    option.setAttribute('data-force-name', forceName);
+                    option.setAttribute('data-user-name', userName);
                     forceSelect.appendChild(option);
                 }
             });
@@ -105,16 +111,26 @@ const ForceRegistration = {
             // Get force details from selected option
             const forceSelect = document.getElementById('force-select');
             const selectedOption = forceSelect.options[forceSelect.selectedIndex];
-            const forceName = selectedOption.getAttribute('data-force-name') || KeyUtils.getForceNameFromKey(forceKey);
-            const userName = selectedOption.getAttribute('data-user-name') || KeyUtils.getUserNameFromKey(forceKey);
+            const forceName = selectedOption.getAttribute('data-force-name');
+            const userName = selectedOption.getAttribute('data-user-name');
             
-            // Prepare registration data
+            // Get crusade key
+            const crusadeKey = this.crusadeData.key || this.crusadeData.Key || 
+                              CrusadeData.generateCrusadeKey(this.crusadeData['Crusade Name']);
+            
+            // Prepare registration data with keys
             const registrationData = {
+                crusadeKey: crusadeKey,
                 crusadeName: this.crusadeData['Crusade Name'],
-                crusadeForceKey: forceKey,
+                forceKey: forceKey,
                 forceName: forceName,
                 userName: userName
             };
+            
+            console.log('Registering with keys:', {
+                crusadeKey: crusadeKey,
+                forceKey: forceKey
+            });
             
             // Submit registration
             await CrusadeData.registerForce(registrationData);
@@ -197,4 +213,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = ForceRegistration;
 }
 
-console.log('ForceRegistration module loaded');
+console.log('ForceRegistration module loaded with key system support');

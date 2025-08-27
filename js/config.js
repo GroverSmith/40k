@@ -1,12 +1,11 @@
 // filename: config.js
 // Centralized Configuration for 40k Crusade Campaign Tracker
-// Update all your URLs and IDs here instead of scattered throughout the codebase
+// Updated with composite key definitions
 
 const CrusadeConfig = {
     // Google Sheets Configuration
     sheets: {
-		
-		// Main Forces sheet (simplified structure)
+        // Main Forces sheet (simplified structure)
         forces: {
             url: 'https://script.google.com/macros/s/AKfycbw9gjWBeUEyKDpyB-TLOMrs5cmjrNV6EoaEV87LXfv-MfdquKVYGHCRLePsdOk9PIsz/exec',
             sheetId: '13n56kfJPSMoeV9VyiTXYajWT1LuBmnpj2oSwcek_osg',
@@ -43,34 +42,154 @@ const CrusadeConfig = {
         
         // Placeholder for future sheets
         battleHistory: {
-            url: null, // Add when you create battle history tracking
+            url: null,
             sheetId: '1ybyOYvN_7hHJ2lT5iK3wMOuY3grlUwGTooxbttgmJyk',
             sheetName: 'Battle History'
         },
         
         charactersUnits: {
-            url: null, // Add when you create character/unit tracking
+            url: null,
             sheetId: null,
             sheetName: 'Characters and Units'
         },
         
         stories: {
-            url: null, // Add when you create stories tracking
+            url: null,
             sheetId: null,
             sheetName: 'Stories'
         },
         
         forceLogs: {
-            url: null, // Add when you create force logs tracking
+            url: null,
             sheetId: null,
             sheetName: 'Force Logs'
         }
     },
     
+    // Key Definitions for Relational Structure
+    keyDefinitions: {
+        forces: {
+            primaryKey: {
+                columns: ['forceName', 'userName'],
+                separator: '_',
+                formatter: (data) => {
+                    // Remove spaces and special characters, limit length for readability
+                    const forcePart = data.forceName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+                    const userPart = data.userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
+                    return `${forcePart}_${userPart}`;
+                }
+            },
+            keyColumn: 0,  // Key will be in column A (index 0)
+            headers: ['Key', 'User Name', 'Force Name', 'Faction', 'Detachment', 'Notes', 'Timestamp']
+        },
+        
+        armyLists: {
+            primaryKey: {
+                columns: ['forceKey', 'armyName', 'sequence'],
+                separator: '_',
+                formatter: (data) => {
+                    // Use force key as base, add army name and sequence
+                    const armyPart = data.armyName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
+                    const seq = String(data.sequence || 1).padStart(2, '0');
+                    return `${data.forceKey}_${armyPart}_${seq}`;
+                }
+            },
+            foreignKeys: {
+                forceKey: 'forces'  // References forces table
+            },
+            keyColumn: 0,
+            headers: ['Key', 'Force Key', 'Timestamp', 'User Name', 'Force Name', 'Army Name', 
+                     'Faction', 'Detachment', 'MFM Version', 'Points Value', 'Notes', 'Army List Text']
+        },
+        
+        users: {
+            primaryKey: {
+                columns: ['name'],
+                formatter: (data) => {
+                    // Simple user key - just cleaned name
+                    return data.name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+                }
+            },
+            keyColumn: 0,
+            headers: ['Key', 'Timestamp', 'Name', 'Discord Handle', 'Email', 'Notes', 
+                     'Self Rating', 'Years Experience', 'Games Per Year']
+        },
+        
+        crusades: {
+            primaryKey: {
+                columns: ['crusadeName'],
+                formatter: (data) => {
+                    // Simple crusade key - just cleaned name
+                    return data.crusadeName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+                }
+            },
+            keyColumn: 0,
+            headers: ['Key', 'State', 'Crusade Name', 'Crusade Type', 'Start Date', 'End Date', 
+                     'Introduction', 'Rules Block 1', 'Rules Block 2', 'Rules Block 3', 
+                     'Narrative Block 1', 'Narrative Block 2']
+        },
+        
+        crusadeParticipants: {
+            primaryKey: {
+                columns: ['crusadeKey', 'forceKey'],
+                separator: '_',
+                formatter: (data) => {
+                    // Composite key of crusade and force
+                    return `${data.crusadeKey}_${data.forceKey}`;
+                }
+            },
+            foreignKeys: {
+                crusadeKey: 'crusades',
+                forceKey: 'forces'
+            },
+            keyColumn: 0,
+            headers: ['Key', 'Crusade Key', 'Force Key', 'Crusade Name', 'Force Name', 
+                     'User Name', 'Timestamp']
+        }
+    },
+    
+    // Key Generation Helper Functions
+    generateKey(sheetType, data) {
+        const keyDef = this.keyDefinitions[sheetType];
+        if (!keyDef || !keyDef.primaryKey) {
+            throw new Error(`No key definition found for sheet type: ${sheetType}`);
+        }
+        
+        return keyDef.primaryKey.formatter(data);
+    },
+    
+    // Check if a key exists (would need to be called from GAS)
+    validateKeyUniqueness(sheet, key, keyColumn = 0) {
+        // This is pseudo-code for the GAS side
+        // Would need to be implemented in the Google Apps Script
+        return `
+            const existingKeys = sheet.getRange(2, ${keyColumn + 1}, sheet.getLastRow() - 1, 1).getValues().flat();
+            return !existingKeys.includes(key);
+        `;
+    },
+    
+    // Get the next sequence number for composite keys (for GAS)
+    getNextSequence(sheet, baseKey, keyColumn = 0) {
+        // This is pseudo-code for the GAS side
+        return `
+            const existingKeys = sheet.getRange(2, ${keyColumn + 1}, sheet.getLastRow() - 1, 1).getValues().flat();
+            const matchingKeys = existingKeys.filter(k => k && k.startsWith(baseKey));
+            if (matchingKeys.length === 0) return 1;
+            
+            const sequences = matchingKeys.map(k => {
+                const parts = k.split('_');
+                const seq = parseInt(parts[parts.length - 1]);
+                return isNaN(seq) ? 0 : seq;
+            });
+            
+            return Math.max(...sequences) + 1;
+        `;
+    },
+    
     // Application Configuration
     app: {
         name: '40k Crusade Campaign Tracker',
-        version: '1.0.0',
+        version: '2.0.0', // Bumped for key system implementation
         
         // Cache settings
         cache: {
@@ -88,6 +207,10 @@ const CrusadeConfig = {
             },
             userName: {
                 minLength: 2,
+                maxLength: 100
+            },
+            forceName: {
+                minLength: 3,
                 maxLength: 100
             }
         },
@@ -108,12 +231,13 @@ const CrusadeConfig = {
         crusadeDetails: 'crusades/crusade-details.html',
         addArmyList: 'army-lists/add-army-list.html',
         
-        // Dynamic patterns
-        forceDetailsPattern: 'forces/force-details.html?force={force}',
-        crusadeDetailsPattern: 'crusades/crusade-details.html?crusade={crusade}',
+        // Dynamic patterns - now using keys instead of names
+        forceDetailsPattern: 'forces/force-details.html?key={key}',
+        crusadeDetailsPattern: 'crusades/crusade-details.html?key={key}',
+        armyListViewPattern: 'army-lists/view-army-list.html?key={key}',
         
         // External links
-        addForceForm: 'https://docs.google.com/forms/d/e/1FAIpQLSf0CasoHdP0VuxvBaEbmAxc2Tsi0AeA1saHBa1EMfC4do4EOw/viewform?usp=dialog'
+        addForceForm: 'forces/add-force.html'
     },
     
     // 40k Game Data
@@ -184,47 +308,55 @@ const CrusadeConfig = {
         return sheet.url;
     },
     
-    buildForceUrl(forceName, basePath = '') {
-        const encodedName = encodeURIComponent(forceName);
+    // Updated URL builders to use keys
+    buildForceUrl(forceKey, basePath = '') {
+        const encodedKey = encodeURIComponent(forceKey);
         if (basePath) {
-            return `${basePath}${this.routes.forceDetailsPattern.replace('{force}', encodedName)}`;
+            return `${basePath}${this.routes.forceDetailsPattern.replace('{key}', encodedKey)}`;
         }
-        return this.routes.forceDetailsPattern.replace('{force}', encodedName);
+        return this.routes.forceDetailsPattern.replace('{key}', encodedKey);
     },
     
-    buildCrusadeUrl(crusadeName, basePath = '') {
-        const encodedName = encodeURIComponent(crusadeName);
+    buildCrusadeUrl(crusadeKey, basePath = '') {
+        const encodedKey = encodeURIComponent(crusadeKey);
         if (basePath) {
-            return `${basePath}${this.routes.crusadeDetailsPattern.replace('{crusade}', encodedName)}`;
+            return `${basePath}${this.routes.crusadeDetailsPattern.replace('{key}', encodedKey)}`;
         }
-        return this.routes.crusadeDetailsPattern.replace('{crusade}', encodedName);
+        return this.routes.crusadeDetailsPattern.replace('{key}', encodedKey);
     },
     
-    // Build force URL from different directories
-    buildForceUrlFromRoot(forceName) {
-        return this.buildForceUrl(forceName, '');
+    buildArmyListUrl(armyListKey, basePath = '') {
+        const encodedKey = encodeURIComponent(armyListKey);
+        if (basePath) {
+            return `${basePath}${this.routes.armyListViewPattern.replace('{key}', encodedKey)}`;
+        }
+        return this.routes.armyListViewPattern.replace('{key}', encodedKey);
     },
     
-    buildForceUrlFromSubdir(forceName) {
-        return this.buildForceUrl(forceName, '../');
+    // Build URLs from different directories
+    buildForceUrlFromRoot(forceKey) {
+        return this.buildForceUrl(forceKey, '');
     },
     
-    // Build crusade URL from different directories
-    buildCrusadeUrlFromRoot(crusadeName) {
-        return this.buildCrusadeUrl(crusadeName, '');
+    buildForceUrlFromSubdir(forceKey) {
+        return this.buildForceUrl(forceKey, '../');
     },
     
-    buildCrusadeUrlFromSubdir(crusadeName) {
-        return this.buildCrusadeUrl(crusadeName, '../');
+    buildCrusadeUrlFromRoot(crusadeKey) {
+        return this.buildCrusadeUrl(crusadeKey, '');
     },
     
-    // Debug method to check config integrity
+    buildCrusadeUrlFromSubdir(crusadeKey) {
+        return this.buildCrusadeUrl(crusadeKey, '../');
+    },
+    
+    // Debug method
     debugConfig() {
         console.log('CrusadeConfig debug:');
-        console.log('- Cache object:', this.cache);
-        console.log('- Sheets object:', this.sheets);
-        console.log('- Routes object:', this.routes);
-        console.log('- App object:', this.app);
+        console.log('- Version:', this.app.version);
+        console.log('- Key definitions:', this.keyDefinitions);
+        console.log('- Sheets:', this.sheets);
+        console.log('- Routes:', this.routes);
     },
     
     // Get configuration for specific use cases
@@ -239,13 +371,11 @@ const CrusadeConfig = {
     },
     
     getCacheConfig(type = 'default') {
-        // Ensure cache object exists
         if (!this.app.cache) {
             console.warn('Cache configuration not found, using default value');
-            return 1440; // 24 hours default
+            return 1440;
         }
         
-        // Handle the mapping from type to cache property
         let cacheKey;
         switch(type) {
             case 'forcePage':
@@ -260,13 +390,7 @@ const CrusadeConfig = {
                 break;
         }
         
-        const cacheValue = this.app.cache[cacheKey];
-        if (cacheValue === undefined) {
-            console.warn(`Cache key '${cacheKey}' not found, using default`);
-            return this.app.cache.defaultMinutes || 1440;
-        }
-        
-        return cacheValue;
+        return this.app.cache[cacheKey] || 1440;
     }
 };
 
@@ -279,3 +403,4 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 console.log('CrusadeConfig loaded:', CrusadeConfig.app.name, 'v' + CrusadeConfig.app.version);
+console.log('Key system initialized for relational data management');

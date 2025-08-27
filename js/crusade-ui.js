@@ -1,5 +1,5 @@
 // filename: crusade-ui.js
-// UI rendering and DOM manipulation for Crusade Details
+// UI rendering and DOM manipulation for Crusade Details using Key System
 // 40k Crusade Campaign Tracker
 
 const CrusadeUI = {
@@ -14,6 +14,7 @@ const CrusadeUI = {
         const startDate = this.formatDate(crusadeData['Start Date']);
         const endDate = this.formatDate(crusadeData['End Date']);
         const state = crusadeData['State'] || 'Unknown';
+        const crusadeKey = crusadeData.key || crusadeData.Key || '';
         
         let dateString = '';
         if (startDate && endDate) {
@@ -29,295 +30,421 @@ const CrusadeUI = {
             <div class="crusade-subtitle">${crusadeType}</div>
             ${dateString ? `<div class="crusade-dates">${dateString}</div>` : ''}
             <div class="crusade-status status-${state.toLowerCase()}">${state.toUpperCase()}</div>
+            ${crusadeKey ? `<div class="crusade-key">Key: ${crusadeKey}</div>` : ''}
         `;
-        
-        // Update page title
-        document.title = `${name} - Crusade Details`;
     },
     
     /**
-     * Display introduction section
+     * Display participants in table
      */
-    displayIntroduction(crusadeData) {
-        const introContent = document.getElementById('introduction-content');
-        const introduction = crusadeData['Introduction'];
+    displayParticipants(participantsData, crusadeName) {
+        const container = document.getElementById('participants-container');
         
-        if (introduction && introduction.trim()) {
-            introContent.innerHTML = `
-                <div class="content-block">
-                    ${this.formatText(introduction)}
-                </div>
-            `;
-        } else {
-            introContent.innerHTML = `
-                <div class="no-data-message">
-                    <p>No introduction provided for this crusade.</p>
-                </div>
-            `;
-        }
-        
-        document.getElementById('introduction-section').style.display = 'block';
-    },
-    
-    /**
-     * Display rules section
-     */
-    displayRules(crusadeData) {
-        const rulesContent = document.getElementById('rules-content');
-        const rules = [];
-        
-        // Collect all rules blocks
-        for (let i = 1; i <= 3; i++) {
-            const ruleBlock = crusadeData[`Rules Block ${i}`];
-            if (ruleBlock && ruleBlock.trim()) {
-                rules.push({ content: ruleBlock });
-            }
-        }
-        
-        if (rules.length > 0) {
-            let html = '';
-            rules.forEach((rule) => {
-                html += `
-                    <div class="content-block">
-                        ${this.formatText(rule.content)}
-                    </div>
-                `;
-            });
-            rulesContent.innerHTML = html;
-        } else {
-            rulesContent.innerHTML = `
-                <div class="no-data-message">
-                    <p>No special rules defined for this crusade.</p>
-                </div>
-            `;
-        }
-        
-        document.getElementById('rules-section').style.display = 'block';
-    },
-    
-    /**
-     * Display narrative section
-     */
-    displayNarrative(crusadeData) {
-        const narrativeContent = document.getElementById('narrative-content');
-        const narratives = [];
-        
-        // Collect all narrative blocks
-        for (let i = 1; i <= 2; i++) {
-            const narrativeBlock = crusadeData[`Narrative Block ${i}`];
-            if (narrativeBlock && narrativeBlock.trim()) {
-                narratives.push({ content: narrativeBlock });
-            }
-        }
-        
-        if (narratives.length > 0) {
-            let html = '';
-            narratives.forEach((narrative) => {
-                html += `
-                    <div class="content-block">
-                        ${this.formatText(narrative.content)}
-                    </div>
-                `;
-            });
-            narrativeContent.innerHTML = html;
-        } else {
-            narrativeContent.innerHTML = `
-                <div class="no-data-message">
-                    <p>No narrative content available for this crusade.</p>
-                </div>
-            `;
-        }
-        
-        document.getElementById('narrative-section').style.display = 'block';
-    },
-    
-    /**
-     * Display participating forces table
-     */
-    displayParticipatingForces(forces, crusadeName) {
-        const forcesContent = document.getElementById('forces-content');
-        
-        if (!forces || forces.length === 0) {
-            forcesContent.innerHTML = `
-                <div class="no-data-message">
-                    <p>⚔️ No forces registered for this crusade yet.</p>
-                    <p>Click "Register Force" above to add a force to this crusade.</p>
-                </div>
-            `;
+        if (!participantsData || participantsData.length <= 1) {
+            container.innerHTML = '<p class="no-data">No forces registered for this crusade yet.</p>';
             return;
         }
         
-        // Create table structure
-        let html = '<div class="participating-forces">';
-        html += '<div class="sheets-table-wrapper" style="max-height: 400px; overflow-y: auto; border: 1px solid #4a4a4a; border-radius: 4px; background-color: #2a2a2a;">';
-        html += '<table class="sheets-table" style="width: 100%; border-collapse: collapse;" id="participants-table">';
-        
-        // Header row
-        html += `
-            <thead>
-            <tr style="background-color: #3a3a3a; position: sticky; top: 0;">
-                <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4; cursor: pointer; user-select: none; position: relative; padding-right: 25px;" onclick="sortParticipantsTable(0)">
-                    Force Name
-                    <span class="sort-indicator" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #cccccc;">⇅</span>
-                </th>
-                <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4; cursor: pointer; user-select: none; position: relative; padding-right: 25px;" onclick="sortParticipantsTable(1)">
-                    Player
-                    <span class="sort-indicator" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #cccccc;">⇅</span>
-                </th>
-                <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4; cursor: pointer; user-select: none; position: relative; padding-right: 25px;" onclick="sortParticipantsTable(2)">
-                    Registered
-                    <span class="sort-indicator" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #cccccc;">⇅</span>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
+        // Build participants table with force keys
+        let tableHTML = `
+            <table class="participants-table">
+                <thead>
+                    <tr>
+                        <th>Force Name</th>
+                        <th>Player</th>
+                        <th>Faction</th>
+                        <th>Created</th>
+                        <th>Last Battle</th>
+                        <th>Battles</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
         `;
         
-        // Data rows
-        forces.forEach(force => {
-            const registrationDate = new Date(force.timestamp).toLocaleDateString();
-            const forceName = force.forceName || KeyUtils.getForceNameFromKey(force.crusadeForceKey);
-            const userName = force.userName || KeyUtils.getUserNameFromKey(force.crusadeForceKey);
+        // Skip header row and process participants
+        participantsData.slice(1).forEach(row => {
+            // Extract key and force data
+            const forceKey = row[0] || '';
+            const forceName = row[1] || '';
+            const userName = row[2] || '';
+            const faction = row[3] || '';
+            const createDate = this.formatDate(row[4]);
+            const lastBattle = this.formatDate(row[5]);
+            const battleCount = row[6] || 0;
             
-            const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceName);
-            const forceNameLink = `<a href="${forceUrl}" 
-                                    style="color: #4ecdc4; text-decoration: none; transition: color 0.3s ease;"
-                                    onmouseover="this.style.color='#7fefea'" 
-                                    onmouseout="this.style.color='#4ecdc4'"
-                                    title="View ${forceName} details">${forceName}</a>`;
-            
-            html += `
-                <tr style="border-bottom: 1px solid #4a4a4a; color: #ffffff;" onmouseover="this.style.backgroundColor='#3a3a3a'" onmouseout="this.style.backgroundColor=''">
-                    <td style="padding: 8px 12px;">${forceNameLink}</td>
-                    <td style="padding: 8px 12px;">${userName}</td>
-                    <td style="padding: 8px 12px;">${registrationDate}</td>
-                </tr>
-            `;
+            if (forceKey && forceName) {
+                // Create link to force details using the key
+                const forceUrl = `force-details.html?force=${encodeURIComponent(forceKey)}`;
+                
+                tableHTML += `
+                    <tr>
+                        <td><a href="${forceUrl}" class="force-link">${forceName}</a></td>
+                        <td>${userName}</td>
+                        <td>${faction}</td>
+                        <td>${createDate || '-'}</td>
+                        <td>${lastBattle || 'No battles yet'}</td>
+                        <td class="text-center">${battleCount}</td>
+                        <td class="text-center">
+                            <a href="${forceUrl}" class="btn btn-small btn-primary">View Force</a>
+                        </td>
+                    </tr>
+                `;
+            }
         });
         
-        html += '</tbody></table></div>';
+        tableHTML += `
+                </tbody>
+            </table>
+        `;
         
-        // Add stats
-        html += `<div class="sheets-stats" style="margin-top: 10px; padding: 10px; background-color: #3a3a3a; border-radius: 4px; color: #cccccc; font-size: 12px;">
-            ⚔️ Showing ${forces.length} registered force${forces.length !== 1 ? 's' : ''} for ${crusadeName}
-        </div>`;
+        container.innerHTML = tableHTML;
         
-        html += '</div>';
+        // Add table sorting functionality
+        this.setupTableSorting();
+    },
+    
+    /**
+     * Display crusade rules
+     */
+    displayRules(rulesData) {
+        const container = document.getElementById('rules-container');
         
-        forcesContent.innerHTML = html;
+        if (!rulesData || rulesData.length <= 1) {
+            container.innerHTML = '<p class="no-data">No special rules for this crusade.</p>';
+            return;
+        }
         
-        // Store data for sorting
-        window.participantsTableData = forces.map(force => [
-            force.forceName || KeyUtils.getForceNameFromKey(force.crusadeForceKey),
-            force.userName || KeyUtils.getUserNameFromKey(force.crusadeForceKey),
-            force.timestamp
-        ]);
+        let rulesHTML = '<div class="rules-list">';
         
-        document.getElementById('forces-section').style.display = 'block';
+        // Skip header row
+        rulesData.slice(1).forEach(row => {
+            const ruleName = row[0];
+            const description = row[1];
+            
+            if (ruleName) {
+                rulesHTML += `
+                    <div class="rule-item">
+                        <h3>${ruleName}</h3>
+                        <p>${description || ''}</p>
+                    </div>
+                `;
+            }
+        });
+        
+        rulesHTML += '</div>';
+        container.innerHTML = rulesHTML;
+    },
+    
+    /**
+     * Display crusade schedule
+     */
+    displaySchedule(scheduleData) {
+        const container = document.getElementById('schedule-container');
+        
+        if (!scheduleData || scheduleData.length <= 1) {
+            container.innerHTML = '<p class="no-data">No scheduled events for this crusade.</p>';
+            return;
+        }
+        
+        let scheduleHTML = `
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Event</th>
+                        <th>Location</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        // Skip header row
+        scheduleData.slice(1).forEach(row => {
+            const date = this.formatDate(row[0]);
+            const event = row[1];
+            const location = row[2];
+            const notes = row[3];
+            
+            if (date || event) {
+                scheduleHTML += `
+                    <tr>
+                        <td>${date || '-'}</td>
+                        <td>${event || '-'}</td>
+                        <td>${location || '-'}</td>
+                        <td>${notes || ''}</td>
+                    </tr>
+                `;
+            }
+        });
+        
+        scheduleHTML += `
+                </tbody>
+            </table>
+        `;
+        
+        container.innerHTML = scheduleHTML;
+    },
+    
+    /**
+     * Setup table sorting
+     */
+    setupTableSorting() {
+        const table = document.querySelector('.participants-table');
+        if (!table) return;
+        
+        const headers = table.querySelectorAll('th');
+        headers.forEach((header, index) => {
+            // Skip the Actions column
+            if (index === headers.length - 1) return;
+            
+            header.style.cursor = 'pointer';
+            header.addEventListener('click', () => {
+                this.sortTable(table, index);
+            });
+        });
+    },
+    
+    /**
+     * Sort table by column
+     */
+    sortTable(table, columnIndex) {
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        // Determine sort direction
+        const isAscending = table.dataset.sortColumn == columnIndex && 
+                          table.dataset.sortDirection === 'asc';
+        
+        // Sort rows
+        rows.sort((a, b) => {
+            const aValue = a.cells[columnIndex].textContent.trim();
+            const bValue = b.cells[columnIndex].textContent.trim();
+            
+            // Handle numeric columns
+            if (columnIndex === 5) { // Battles column
+                return isAscending ? 
+                    Number(aValue) - Number(bValue) : 
+                    Number(bValue) - Number(aValue);
+            }
+            
+            // Handle text columns
+            if (isAscending) {
+                return aValue.localeCompare(bValue);
+            } else {
+                return bValue.localeCompare(aValue);
+            }
+        });
+        
+        // Update table
+        rows.forEach(row => tbody.appendChild(row));
+        
+        // Update sort indicators
+        table.dataset.sortColumn = columnIndex;
+        table.dataset.sortDirection = isAscending ? 'desc' : 'asc';
+        
+        // Update header indicators
+        const headers = table.querySelectorAll('th');
+        headers.forEach((header, index) => {
+            header.classList.remove('sort-asc', 'sort-desc');
+            if (index === columnIndex) {
+                header.classList.add(isAscending ? 'sort-desc' : 'sort-asc');
+            }
+        });
     },
     
     /**
      * Show loading state
      */
-    showLoading(elementId, message = 'Loading...') {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.innerHTML = `
-                <div class="loading-spinner"></div>
-                <span>${message}</span>
-            `;
+    showLoading(containerId) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.innerHTML = '<div class="loading">Loading...</div>';
         }
     },
     
     /**
      * Show error state
      */
-    showError(message) {
-        document.getElementById('error-message').style.display = 'block';
-        document.getElementById('error-text').textContent = message;
-        
-        // Hide other sections
-        document.getElementById('crusade-header').style.display = 'none';
-        document.getElementById('introduction-section').style.display = 'none';
-        document.getElementById('rules-section').style.display = 'none';
-        document.getElementById('narrative-section').style.display = 'none';
-        document.getElementById('forces-section').style.display = 'none';
-    },
-    
-    /**
-     * Show data error in specific container
-     */
-    showDataError(containerId, message) {
+    showError(containerId, message) {
         const container = document.getElementById(containerId);
         if (container) {
-            container.innerHTML = `
-                <div class="error-message">
-                    <strong>Error:</strong> ${message}
-                </div>
-            `;
+            container.innerHTML = `<div class="error-message">${message}</div>`;
         }
     },
     
     /**
      * Format date for display
      */
-    formatDate(dateValue) {
-        if (!dateValue) return null;
+    formatDate(dateString) {
+        if (!dateString) return '';
         
         try {
-            let date;
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
             
-            if (dateValue instanceof Date) {
-                date = dateValue;
-            } else if (typeof dateValue === 'string') {
-                date = new Date(dateValue);
-            } else if (typeof dateValue === 'number') {
-                // Excel/Google Sheets serial date number
-                date = new Date((dateValue - 25569) * 86400 * 1000);
-            } else {
-                return String(dateValue);
-            }
-            
-            // Check if date is valid
-            if (isNaN(date.getTime())) {
-                return String(dateValue);
-            }
-            
-            // Format as "dd MMM yyyy"
-            const day = String(date.getDate()).padStart(2, '0');
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const month = months[date.getMonth()];
-            const year = date.getFullYear();
-            
-            return `${day} ${month} ${year}`;
-        } catch (error) {
-            console.warn('Date formatting error:', error);
-            return String(dateValue);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        } catch (e) {
+            return dateString;
         }
+    },	
+	
+
+   /**
+	 * Display introduction section
+	 */
+	displayIntroduction(crusadeData) {
+		const container = document.getElementById('introduction-content');
+		const section = document.getElementById('introduction-section');
+		if (!container || !section) return;
+		
+		const introduction = crusadeData['Introduction'] || '';
+		if (introduction) {
+			container.innerHTML = `<div class="introduction-text">${introduction}</div>`;
+			section.style.display = 'block'; // Show the section
+		} else {
+			container.innerHTML = '<p class="no-data">No introduction available for this crusade.</p>';
+			section.style.display = 'block'; // Show even if no data
+		}
+	},
+
+	/**
+	 * Display rules section
+	 */
+	displayRules(crusadeData) {
+		const container = document.getElementById('rules-content');
+		const section = document.getElementById('rules-section');
+		if (!container || !section) return;
+		
+		let rulesHTML = '';
+		const rulesBlock1 = crusadeData['Rules Block 1'] || '';
+		const rulesBlock2 = crusadeData['Rules Block 2'] || '';
+		const rulesBlock3 = crusadeData['Rules Block 3'] || '';
+		
+		if (rulesBlock1 || rulesBlock2 || rulesBlock3) {
+			rulesHTML = '<div class="rules-blocks">';
+			if (rulesBlock1) rulesHTML += `<div class="rule-block">${rulesBlock1}</div>`;
+			if (rulesBlock2) rulesHTML += `<div class="rule-block">${rulesBlock2}</div>`;
+			if (rulesBlock3) rulesHTML += `<div class="rule-block">${rulesBlock3}</div>`;
+			rulesHTML += '</div>';
+		} else {
+			rulesHTML = '<p class="no-data">No special rules for this crusade.</p>';
+		}
+		
+		container.innerHTML = rulesHTML;
+		section.style.display = 'block'; // Show the section
+	},
+
+	/**
+	 * Display narrative section
+	 */
+	displayNarrative(crusadeData) {
+		const container = document.getElementById('narrative-content');
+		const section = document.getElementById('narrative-section');
+		if (!container || !section) return;
+		
+		let narrativeHTML = '';
+		const narrativeBlock1 = crusadeData['Narrative Block 1'] || '';
+		const narrativeBlock2 = crusadeData['Narrative Block 2'] || '';
+		
+		if (narrativeBlock1 || narrativeBlock2) {
+			narrativeHTML = '<div class="narrative-blocks">';
+			if (narrativeBlock1) narrativeHTML += `<div class="narrative-block">${narrativeBlock1}</div>`;
+			if (narrativeBlock2) narrativeHTML += `<div class="narrative-block">${narrativeBlock2}</div>`;
+			narrativeHTML += '</div>';
+		} else {
+			narrativeHTML = '<p class="no-data">No narrative content available for this crusade.</p>';
+		}
+		
+		container.innerHTML = narrativeHTML;
+		section.style.display = 'block'; // Show the section
+	},
+
+	/**
+	 * Display participating forces
+	 */
+	displayParticipatingForces(forces, crusadeName) {
+		const container = document.getElementById('forces-content');
+		const section = document.getElementById('forces-section');
+		if (!container || !section) return;
+		
+		if (!forces || forces.length === 0) {
+			container.innerHTML = '<p class="no-data">No forces registered for this crusade yet.</p>';
+			section.style.display = 'block'; // Show the section
+			return;
+		}
+        
+        // Store data globally for sorting
+        window.participantsTableData = forces.map(force => [
+            force['Force Name'] || '',
+            force['User Name'] || '',
+            force.Timestamp || new Date(),
+            force['Force Key'] || force.Key || ''
+        ]);
+        
+        // Create table HTML
+        let html = `
+            <table id="participants-table" class="sheets-table">
+                <thead>
+                    <tr>
+                        <th onclick="sortParticipantsTable(0)" style="cursor: pointer;">
+                            Force Name <span class="sort-indicator">⇅</span>
+                        </th>
+                        <th onclick="sortParticipantsTable(1)" style="cursor: pointer;">
+                            Player <span class="sort-indicator">⇅</span>
+                        </th>
+                        <th onclick="sortParticipantsTable(2)" style="cursor: pointer;">
+                            Registered <span class="sort-indicator">⇅</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        // Add rows
+        forces.forEach(force => {
+            const forceName = force['Force Name'] || '';
+            const userName = force['User Name'] || '';
+            const registrationDate = new Date(force.Timestamp || Date.now()).toLocaleDateString();
+            const forceKey = force['Force Key'] || force.Key || '';
+            
+            // Create link to force details page using key
+            const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceKey);
+            const forceNameLink = `<a href="${forceUrl}" 
+                                    style="color: #4ecdc4; text-decoration: none;"
+                                    title="View ${forceName} details">${forceName}</a>`;
+            
+            html += `
+                <tr>
+                    <td>${forceNameLink}</td>
+                    <td>${userName}</td>
+                    <td>${registrationDate}</td>
+                </tr>
+            `;
+        });
+        
+        html += `
+                </tbody>
+            </table>
+        `;
+        
+        container.innerHTML = html;
+		section.style.display = 'block'; // Show the section at the end
     },
     
     /**
-     * Format text with line breaks
+     * Show data error
      */
-    formatText(text) {
-        if (!text) return '';
-        
-        // Convert line breaks to paragraphs
-        const paragraphs = text.toString().split('\n\n');
-        
-        return paragraphs
-            .map(paragraph => {
-                const trimmed = paragraph.trim();
-                if (!trimmed) return '';
-                
-                // Convert single line breaks to <br> within paragraphs
-                const formatted = trimmed.replace(/\n/g, '<br>');
-                
-                return `<p>${formatted}</p>`;
-            })
-            .filter(p => p)
-            .join('');
+    showDataError(containerId, message) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.innerHTML = `<p class="error-message">${message}</p>`;
+        }
     }
 };
 
@@ -330,3 +457,5 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 console.log('CrusadeUI module loaded');
+	
+	

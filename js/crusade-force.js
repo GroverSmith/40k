@@ -1,10 +1,10 @@
 // filename: crusade-force.js
-// Main orchestration for Force Details Page
+// Main orchestration for Force Details Page using Key System
 // 40k Crusade Campaign Tracker
 
 class CrusadeForceApp {
     constructor() {
-        this.forceName = null;
+        this.forceKey = null;
         this.forceData = null;
         this.init();
     }
@@ -16,30 +16,42 @@ class CrusadeForceApp {
             return;
         }
         
-        // Get force name from URL parameter
+        // Get force key from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        this.forceName = urlParams.get('force') || urlParams.get('name');
+        this.forceKey = urlParams.get('key') || urlParams.get('force');
         
-        if (!this.forceName) {
-            ForceUI.showError('No force specified. Please select a force from the main page.');
-            return;
+        if (!this.forceKey) {
+            // Try to construct key from legacy parameters
+            const forceName = urlParams.get('name');
+            const userName = urlParams.get('user');
+            
+            if (forceName) {
+                // Try to generate key from name (won't be perfect without username)
+                console.warn('Using legacy URL format, key generation may be inaccurate');
+                if (userName) {
+                    this.forceKey = ForceData.generateForceKey(forceName, userName);
+                } else {
+                    ForceUI.showError('Force key not provided. Please use the proper link format with ?key=');
+                    return;
+                }
+            } else {
+                ForceUI.showError('No force specified. Please select a force from the main page.');
+                return;
+            }
         }
         
-        // Decode the force name
-        this.forceName = decodeURIComponent(this.forceName);
-        
-        console.log('Loading data for force:', this.forceName);
+        console.log('Loading data for force key:', this.forceKey);
         this.loadForceData();
     }
     
     async loadForceData() {
         try {
-            console.log('Starting loadForceData...');
+            console.log('Starting loadForceData with key:', this.forceKey);
             
             // Load main force data
             console.log('Loading main force data...');
-            this.forceData = await ForceData.loadForceData(this.forceName);
-            console.log('Main force data loaded successfully');
+            this.forceData = await ForceData.loadForceData(this.forceKey);
+            console.log('Main force data loaded successfully:', this.forceData);
             
             // Update UI with force data
             ForceUI.updateHeader(this.forceData);
@@ -83,7 +95,7 @@ class CrusadeForceApp {
     
     async loadArmyLists() {
         try {
-            console.log('Loading army lists...');
+            console.log('Loading army lists for force key:', this.forceData.key);
             await ForceSections.loadArmyLists(this.forceData);
         } catch (error) {
             console.error('Error loading army lists:', error);
@@ -130,6 +142,10 @@ class CrusadeForceApp {
     getForceData() {
         return this.forceData;
     }
+    
+    getForceKey() {
+        return this.forceKey;
+    }
 }
 
 // Initialize the force app when page loads
@@ -139,21 +155,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make it globally available for debugging
     window.CrusadeForceApp = forceApp;
     
-    console.log('Crusade Force page initialized with modular architecture');
+    console.log('Crusade Force page initialized with key system');
 });
 
 // Utility functions for force page
 const ForcePageUtils = {
-    // Convert force name to URL parameter
-    createForceUrl(forceName, basePath = 'forces/') {
-        const encodedName = encodeURIComponent(forceName);
-        return `${basePath}force-details.html?force=${encodedName}`;
+    // Convert force data to URL parameter using key
+    createForceUrl(forceKey, basePath = 'forces/') {
+        const encodedKey = encodeURIComponent(forceKey);
+        return `${basePath}force-details.html?key=${encodedKey}`;
     },
     
-    // Get current force name from URL
-    getCurrentForceName() {
+    // Get current force key from URL
+    getCurrentForceKey() {
         const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('force') || urlParams.get('name');
+        return urlParams.get('key') || urlParams.get('force');
+    },
+    
+    // Generate force key from name and user
+    generateForceKey(forceName, userName) {
+        const forcePart = forceName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+        const userPart = userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
+        return `${forcePart}_${userPart}`;
     },
     
     // Format date consistently

@@ -1,5 +1,5 @@
 // filename: force-sections.js
-// Section loaders for Force Details using SheetsManager
+// Section loaders for Force Details using SheetsManager with Key System
 // 40k Crusade Campaign Tracker
 
 const ForceSections = {
@@ -11,13 +11,16 @@ const ForceSections = {
         const battleHistoryUrl = CrusadeConfig.getSheetUrl('battleHistory');
         
         if (battleHistoryUrl) {
+            // When implemented, this should filter by force key
             SheetsManager.embed('battle-history-sheet', 
                 battleHistoryUrl, 
                 {
                     maxHeight: '300px',
                     showStats: true,
                     sortable: true,
-                    cacheMinutes: CrusadeConfig.getCacheConfig('forcePage')
+                    cacheMinutes: CrusadeConfig.getCacheConfig('forcePage'),
+                    // Future: Add filter parameter for force key
+                    // filter: { forceKey: forceData.key }
                 }
             );
         } else {
@@ -32,15 +35,19 @@ const ForceSections = {
     },
     
     /**
-     * Load army lists section
+     * Load army lists section using force key
      */
     async loadArmyLists(forceData) {
         ForceUI.showSection('army-lists-section');
         
-        const result = await ForceData.loadArmyLists(forceData.forceName);
+        // Use the force key to load army lists
+        const forceKey = forceData.key;
+        console.log('Loading army lists for force key:', forceKey);
+        
+        const result = await ForceData.loadArmyLists(forceKey);
         
         if (result.success) {
-            ForceUI.displayArmyLists(result.data, forceData.forceName);
+            ForceUI.displayArmyLists(result.data, forceData.forceName, forceKey);
         } else {
             ForceUI.displayPlaceholder(
                 'army-lists-sheet',
@@ -60,13 +67,16 @@ const ForceSections = {
         const charactersUnitsUrl = CrusadeConfig.getSheetUrl('charactersUnits');
         
         if (charactersUnitsUrl) {
+            // When implemented, this should filter by force key
             SheetsManager.embed('characters-units-sheet', 
                 charactersUnitsUrl, 
                 {
                     maxHeight: '400px',
                     showStats: true,
                     sortable: true,
-                    cacheMinutes: CrusadeConfig.getCacheConfig('forcePage')
+                    cacheMinutes: CrusadeConfig.getCacheConfig('forcePage'),
+                    // Future: Add filter parameter for force key
+                    // filter: { forceKey: forceData.key }
                 }
             );
         } else {
@@ -88,13 +98,16 @@ const ForceSections = {
         const storiesUrl = CrusadeConfig.getSheetUrl('stories');
         
         if (storiesUrl) {
+            // When implemented, this should filter by force key
             SheetsManager.embed('stories-sheet', 
                 storiesUrl, 
                 {
                     maxHeight: '400px',
                     showStats: true,
                     sortable: true,
-                    cacheMinutes: CrusadeConfig.getCacheConfig('forcePage')
+                    cacheMinutes: CrusadeConfig.getCacheConfig('forcePage'),
+                    // Future: Add filter parameter for force key
+                    // filter: { forceKey: forceData.key }
                 }
             );
         } else {
@@ -116,13 +129,16 @@ const ForceSections = {
         const forceLogsUrl = CrusadeConfig.getSheetUrl('forceLogs');
         
         if (forceLogsUrl) {
+            // When implemented, this should filter by force key
             SheetsManager.embed('force-logs-sheet', 
                 forceLogsUrl, 
                 {
                     maxHeight: '350px',
                     showStats: true,
                     sortable: true,
-                    cacheMinutes: CrusadeConfig.getCacheConfig('forcePage')
+                    cacheMinutes: CrusadeConfig.getCacheConfig('forcePage'),
+                    // Future: Add filter parameter for force key
+                    // filter: { forceKey: forceData.key }
                 }
             );
         } else {
@@ -145,4 +161,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = ForceSections;
 }
 
-console.log('ForceSections module loaded');
+console.log('ForceSections module loaded with key system support');

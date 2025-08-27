@@ -1,9 +1,15 @@
 // filename: users-gas-script.js
-// Google Apps Script for Users Sheet Management
+// Google Apps Script for Users Sheet Management with Key System
 // Deploy this as a web app to handle user creation and retrieval
 
 const SPREADSHEET_ID = '15q9EIPz2PswXwNsZ0aJAb9mgT0qy_NXUUQqELEdx3W4';
 const SHEET_NAME = 'Users';
+
+// Key generation function
+function generateUserKey(name) {
+  // Simple user key - just cleaned name
+  return name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+}
 
 function doPost(e) {
   try {
@@ -40,8 +46,8 @@ function doPost(e) {
       console.log('Creating users sheet');
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
-      // Add headers
-      const headers = ['Timestamp', 'Name', 'Discord Handle', 'Email', 'Notes', 'Self Rating', 'Years Experience', 'Games Per Year'];
+      // Add headers with Key column first
+      const headers = ['Key', 'Timestamp', 'Name', 'Discord Handle', 'Email', 'Notes', 'Self Rating', 'Years Experience', 'Games Per Year'];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
       // Format header row
@@ -51,37 +57,39 @@ function doPost(e) {
       headerRange.setFontColor('#ffffff');
       
       // Set column widths
-      sheet.setColumnWidth(1, 150); // Timestamp
-      sheet.setColumnWidth(2, 150); // Name
-      sheet.setColumnWidth(3, 150); // Discord Handle
-      sheet.setColumnWidth(4, 200); // Email
-      sheet.setColumnWidth(5, 300); // Notes
-      sheet.setColumnWidth(6, 100); // Self Rating
-      sheet.setColumnWidth(7, 120); // Years Experience
-      sheet.setColumnWidth(8, 120); // Games Per Year
+      sheet.setColumnWidth(1, 180); // Key
+      sheet.setColumnWidth(2, 150); // Timestamp
+      sheet.setColumnWidth(3, 150); // Name
+      sheet.setColumnWidth(4, 150); // Discord Handle
+      sheet.setColumnWidth(5, 200); // Email
+      sheet.setColumnWidth(6, 300); // Notes
+      sheet.setColumnWidth(7, 100); // Self Rating
+      sheet.setColumnWidth(8, 120); // Years Experience
+      sheet.setColumnWidth(9, 120); // Games Per Year
     }
     
-    // Check if user already exists
-    const data_range = sheet.getDataRange();
-    const values = data_range.getValues();
+    // Generate user key
+    const userKey = generateUserKey(data.name);
+    console.log('Generated user key:', userKey);
     
-    const existingUser = values.find((row, index) => {
-      if (index === 0) return false; // Skip header
-      return row[1] && row[1].toString().toLowerCase().trim() === data.name.toLowerCase().trim();
-    });
-    
-    if (existingUser) {
-      return ContentService
-        .createTextOutput(JSON.stringify({
-          success: false,
-          error: 'A user with this name already exists'
-        }))
-        .setMimeType(ContentService.MimeType.JSON);
+    // Check if user key already exists
+    if (sheet.getLastRow() > 1) {
+      const existingKeys = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues().flat();
+      
+      if (existingKeys.includes(userKey)) {
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: false,
+            error: 'A user with this name already exists'
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
     }
     
     // Add new user
     const timestamp = new Date();
     const newRow = [
+      userKey,                             // Key
       timestamp,                           // Timestamp
       data.name.trim(),                    // Name
       data.discordHandle || '',            // Discord Handle
@@ -95,16 +103,20 @@ function doPost(e) {
     const lastRow = sheet.getLastRow();
     sheet.getRange(lastRow + 1, 1, 1, newRow.length).setValues([newRow]);
     
+    // Format key column
+    sheet.getRange(lastRow + 1, 1).setFontWeight('bold');
     // Format timestamp column
-    sheet.getRange(lastRow + 1, 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+    sheet.getRange(lastRow + 1, 2).setNumberFormat('yyyy-mm-dd hh:mm:ss');
     
-    console.log('User created successfully:', data.name);
+    console.log('User created successfully with key:', userKey);
     
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
         message: 'User created successfully',
+        key: userKey,
         user: {
+          key: userKey,
           name: data.name,
           discordHandle: data.discordHandle || '',
           email: data.email || '',
@@ -137,6 +149,8 @@ function doGet(e) {
       case 'list':
         return getUsersList();
       case 'get':
+        return getUserByKey(e.parameter.key);
+      case 'get-by-name':
         return getUserByName(e.parameter.name);
       default:
         return getUsersList();
@@ -160,9 +174,9 @@ function getUsersList() {
     const sheet = spreadsheet.getSheetByName(SHEET_NAME);
     
     if (!sheet) {
-      // Return empty array if no sheet exists yet
+      // Return empty array with headers if no sheet exists yet
       return ContentService
-        .createTextOutput(JSON.stringify([['Timestamp', 'Name', 'Discord Handle', 'Email', 'Notes', 'Self Rating', 'Years Experience', 'Games Per Year']]))
+        .createTextOutput(JSON.stringify([['Key', 'Timestamp', 'Name', 'Discord Handle', 'Email', 'Notes', 'Self Rating', 'Years Experience', 'Games Per Year']]))
         .setMimeType(ContentService.MimeType.JSON);
     }
     
@@ -187,12 +201,12 @@ function getUsersList() {
   }
 }
 
-function getUserByName(userName) {
+function getUserByKey(userKey) {
   try {
-    console.log('getUserByName called with:', userName);
+    console.log('getUserByKey called with:', userKey);
     
-    if (!userName) {
-      throw new Error('User name is required');
+    if (!userKey) {
+      throw new Error('User key is required');
     }
     
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -205,19 +219,14 @@ function getUserByName(userName) {
     const data = sheet.getDataRange().getValues();
     const headers = data[0];
     
-    // Find the user by name (Name is now in column 1, index 1)
+    // Find the user by key (Key is column 0)
     const userRow = data.find((row, index) => {
       if (index === 0) return false; // Skip header row
-      
-      const rowUserName = row[1]; // Name column
-      if (!rowUserName) return false;
-      
-      // Case-insensitive comparison with trimming
-      return rowUserName.toString().toLowerCase().trim() === userName.toLowerCase().trim();
+      return row[0] === userKey;
     });
     
     if (!userRow) {
-      throw new Error(`User "${userName}" not found`);
+      throw new Error(`User with key "${userKey}" not found`);
     }
     
     // Convert to object
@@ -226,7 +235,7 @@ function getUserByName(userName) {
       user[header] = userRow[index];
     });
     
-    console.log('getUserByName - Found user:', user);
+    console.log('getUserByKey - Found user:', user);
     
     return ContentService
       .createTextOutput(JSON.stringify({
@@ -235,6 +244,30 @@ function getUserByName(userName) {
       }))
       .setMimeType(ContentService.MimeType.JSON);
       
+  } catch (error) {
+    console.error('Error getting user by key:', error);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function getUserByName(userName) {
+  try {
+    console.log('getUserByName called with:', userName);
+    
+    if (!userName) {
+      throw new Error('User name is required');
+    }
+    
+    // Generate the key from the name and use key-based lookup
+    const userKey = generateUserKey(userName);
+    return getUserByKey(userKey);
+    
   } catch (error) {
     console.error('Error getting user by name:', error);
     
@@ -255,6 +288,10 @@ function testUsersScript() {
     // Test getting all users
     const allUsers = getUsersList();
     console.log('All users result:', JSON.parse(allUsers.getContent()));
+    
+    // Test key generation
+    const testKey = generateUserKey('John Smith');
+    console.log('Test user key:', testKey);
     
     // Test creating a user (commented out to avoid creating test data)
     // const testUser = {

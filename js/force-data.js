@@ -1,18 +1,44 @@
 // filename: force-data.js
-// Data fetching and management for Force Details
+// Data fetching and management for Force Details using Key System
 // 40k Crusade Campaign Tracker
 
 const ForceData = {
     /**
-     * Load main force data from the Forces sheet
+     * Load main force data from the Forces sheet by key
      */
-    async loadForceData(forceName) {
+    async loadForceData(forceKey) {
         const forceSheetUrl = CrusadeConfig.getSheetUrl('forces');
         
         if (!forceSheetUrl) {
             throw new Error('Crusade Forces sheet URL not configured in CrusadeConfig');
         }
         
+        // First try to get by key
+        const keyUrl = `${forceSheetUrl}?action=get&key=${encodeURIComponent(forceKey)}`;
+        
+        try {
+            const keyResponse = await fetch(keyUrl);
+            if (keyResponse.ok) {
+                const keyData = await keyResponse.json();
+                if (keyData.success && keyData.data) {
+                    console.log('Force loaded by key:', keyData.data);
+                    // Transform the data to match expected structure
+                    return {
+                        key: keyData.data.Key,
+                        forceName: keyData.data['Force Name'],
+                        playerName: keyData.data['User Name'],
+                        faction: keyData.data.Faction,
+                        detachment: keyData.data.Detachment,
+                        notes: keyData.data.Notes,
+                        timestamp: keyData.data.Timestamp
+                    };
+                }
+            }
+        } catch (error) {
+            console.log('Could not load by key, trying list method:', error);
+        }
+        
+        // Fallback: Get all forces and find by key
         const response = await fetch(forceSheetUrl);
         if (!response.ok) {
             throw new Error('Failed to fetch force data');
@@ -34,34 +60,33 @@ const ForceData = {
         }
         
         console.log('Processed data:', data);
-        console.log('Looking for force name:', forceName);
+        console.log('Looking for force key:', forceKey);
         
         if (!Array.isArray(data) || data.length === 0) {
             throw new Error('No force data available or invalid data format');
         }
         
-        // Find the force by name
-        const decodedForceName = decodeURIComponent(forceName);
-        console.log('Decoded force name for matching:', decodedForceName);
-        
-        const forceRow = data.find(row => 
-            row[1] && row[1].toString().toLowerCase().trim() === decodedForceName.toLowerCase().trim()
-        );
+        // Find the force by key (Key is now column 0)
+        const forceRow = data.find((row, index) => {
+            if (index === 0) return false; // Skip header
+            return row[0] === forceKey; // Key column
+        });
         
         if (!forceRow) {
-            const availableForces = data.slice(1).map(row => row[1]).filter(name => name);
-            console.log('Available forces:', availableForces);
-            throw new Error(`Force "${decodedForceName}" not found in the database. Available forces: ${availableForces.join(', ')}`);
+            const availableKeys = data.slice(1).map(row => row[0]).filter(key => key);
+            console.log('Available force keys:', availableKeys);
+            throw new Error(`Force with key "${forceKey}" not found. Available keys: ${availableKeys.slice(0, 5).join(', ')}`);
         }
         
-        // Map the columns from Forces sheet
+        // Map the columns from Forces sheet (with key in column 0)
         const forceData = {
-            playerName: forceRow[0] || '',
-            forceName: forceRow[1] || '',
-            faction: forceRow[2] || '',
-            detachment: forceRow[3] || '',
-            notes: forceRow[4] || '',
-            timestamp: forceRow[5] || ''
+            key: forceRow[0] || '',           // Key
+            playerName: forceRow[1] || '',   // User Name
+            forceName: forceRow[2] || '',    // Force Name
+            faction: forceRow[3] || '',      // Faction
+            detachment: forceRow[4] || '',   // Detachment
+            notes: forceRow[5] || '',        // Notes
+            timestamp: forceRow[6] || ''     // Timestamp
         };
         
         console.log('Successfully found and loaded force data:', forceData);
@@ -69,9 +94,9 @@ const ForceData = {
     },
     
     /**
-     * Load army lists for a force
+     * Load army lists for a force using force key
      */
-    async loadArmyLists(forceName) {
+    async loadArmyLists(forceKey) {
         const armyListsUrl = CrusadeConfig.getSheetUrl('armyLists');
         
         if (!armyListsUrl) {
@@ -79,8 +104,8 @@ const ForceData = {
         }
         
         try {
-            const fetchUrl = `${armyListsUrl}?action=list&force=${encodeURIComponent(forceName)}`;
-            console.log('Fetching army lists from:', fetchUrl);
+            const fetchUrl = `${armyListsUrl}?action=force-lists&forceKey=${encodeURIComponent(forceKey)}`;
+            console.log('Fetching army lists for force key:', forceKey);
             
             const response = await fetch(fetchUrl);
             const data = await response.json();
@@ -97,6 +122,16 @@ const ForceData = {
             console.error('Error fetching army lists:', error);
             return { success: false, data: [], error: error.message };
         }
+    },
+    
+    /**
+     * Generate a force key from force name and user name
+     */
+    generateForceKey(forceName, userName) {
+        // Match the server-side key generation
+        const forcePart = forceName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+        const userPart = userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
+        return `${forcePart}_${userPart}`;
     },
     
     /**
@@ -137,4 +172,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = ForceData;
 }
 
-console.log('ForceData module loaded');
+console.log('ForceData module loaded with key system support');

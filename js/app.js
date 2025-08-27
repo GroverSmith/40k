@@ -18,29 +18,29 @@ document.addEventListener('DOMContentLoaded', function() {
     
     try {
         // Initialize Crusades sheet with custom column display
-        const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
-        if (crusadesUrl) {
-            SheetsManager.embed('crusades-sheet', 
-                crusadesUrl, 
-                {
-                    maxHeight: '350px',
-                    showStats: true,
-                    sortable: true,
-                    linkColumn: 1,          // Crusade Name column
-                    linkPattern: CrusadeConfig.routes.crusadeDetailsPattern.replace('{crusade}', '{slug}'),
-                    cacheMinutes: CrusadeConfig.getCacheConfig('default'),
-                    hideColumns: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], // Hide columns 5 and up, show 0-4
-                    dateColumns: [3, 4],     // Start Date and End Date columns
-                    columnNames: {           // Custom column display names
-                        0: 'State',
-                        1: 'Name',
-                        2: 'Type',
-                        3: 'Start',
-                        4: 'End'
-                    }
-                }
-            );
-        } else {
+		const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
+		if (crusadesUrl) {
+			SheetsManager.embed('crusades-sheet', 
+				crusadesUrl, 
+				{
+					maxHeight: '350px',
+					showStats: true,
+					sortable: true,
+					linkColumn: 2,          // Crusade Name column (now index 2 since Key is 0)
+					linkPattern: 'crusades/crusade-details.html?key={slug}',
+					cacheMinutes: CrusadeConfig.getCacheConfig('default'),
+					hideColumns: [0, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], // Hide Key column (0) and columns 6+
+					dateColumns: [4, 5],     // Start Date and End Date columns (now indices 4 and 5)
+					columnNames: {           // Custom column display names matching new indices
+						1: 'State',
+						2: 'Name',
+						3: 'Type',
+						4: 'Start',
+						5: 'End'
+					}
+				}
+			);
+		} else {
             console.warn('Crusades sheet URL not configured');
             // Show placeholder content
             document.getElementById('crusades-sheet').innerHTML = `
@@ -52,20 +52,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 		
 		// Initialize Forces sheet with form integration
-        const forcesUrl = CrusadeConfig.getSheetUrl('forces');
-        if (forcesUrl) {
-            const forcesEmbed = SheetsManager.embed('crusade-forces-sheet', 
-                forcesUrl, 
-                {
-                    maxHeight: '350px',
-                    showStats: true,
-                    sortable: true,
-                    linkColumn: 1,          // Force Name column
-                    linkPattern: CrusadeConfig.routes.forceDetailsPattern.replace('{force}', '{slug}'),
-                    cacheMinutes: CrusadeConfig.getCacheConfig('default'),
-                    hideColumns: [5]        // Hide timestamp column
-                }
-            );
+		const forcesUrl = CrusadeConfig.getSheetUrl('forces');
+		if (forcesUrl) {
+			const forcesEmbed = SheetsManager.embed('crusade-forces-sheet', 
+				forcesUrl, 
+				{
+					maxHeight: '350px',
+					showStats: true,
+					sortable: true,
+					linkColumn: 2,          // Force Name column (now index 2 since Key is 0)
+					linkPattern: 'forces/force-details.html?key={slug}',
+					cacheMinutes: CrusadeConfig.getCacheConfig('default'),
+					hideColumns: [0, 6],    // Hide Key column (0) and Timestamp column (6)
+					columnNames: {          // Optional: add custom column names for clarity
+						1: 'User Name',
+						2: 'Force Name',
+						3: 'Faction',
+						4: 'Detachment',
+						5: 'Notes'
+					}
+				}
+			);
             
             // After loading, also cache the data globally for other pages to use
             const originalLoadData = forcesEmbed.loadData.bind(forcesEmbed);
