@@ -18,7 +18,7 @@ class ArmyListViewer {
         
         // Get army list ID from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        this.armyListId = urlParams.get('id');
+        this.armyListId = urlParams.get('key');
         
         if (!this.armyListId) {
             this.showError('No army list specified. Please select an army list to view.');
@@ -38,7 +38,7 @@ class ArmyListViewer {
             }
             
             // Use the GET endpoint to fetch specific army list by ID
-            const fetchUrl = `${armyListUrl}?action=get&id=${encodeURIComponent(this.armyListId)}`;
+            const fetchUrl = `${armyListUrl}?action=get&key=${encodeURIComponent(this.armyListId)}`;
             
             const response = await fetch(fetchUrl);
             const data = await response.json();
