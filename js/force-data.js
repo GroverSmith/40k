@@ -112,90 +112,95 @@ const ForceData = {
     /**
      * Load battle history for this force
      */
-    async loadBattleHistory(forceKey) {
-        try {
-            const battleHistoryUrl = CrusadeConfig.getSheetUrl('battleHistory');
-            if (!battleHistoryUrl) {
-                console.warn('Battle History sheet URL not configured');
-                return [];
-            }
-            
-            const key = forceKey || this.forceKey;
-            const fetchUrl = `${battleHistoryUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`;
-            
-            // Use CacheManager with specific identifier
-            const responseData = await CacheManager.fetchWithCache(
-                fetchUrl,
-                'battleHistory',
-                `force_${key}`
-            );
-            
-            let battles = [];
-            if (responseData.success && responseData.battles) {
-                battles = responseData.battles;
-            } else if (Array.isArray(responseData)) {
-                // Handle raw array response
-                const headers = responseData[0];
-                battles = responseData.slice(1).map(row => {
-                    const battle = {};
-                    headers.forEach((header, index) => {
-                        battle[header] = row[index];
-                    });
-                    return battle;
-                });
-            }
-            
-            // Process battles to determine results
-            const processedBattles = battles.map(battle => {
-                // Determine if this force won, lost, or drew
-                if (battle['Force 1 Key'] === key) {
-                    // This force was Force 1
-                    battle.wasForce1 = true;
-                    battle.opponent = battle['Force 2'];
-                    battle.opponentPlayer = battle['Player 2'];
-                    battle.forceScore = battle['Player 1 Score'];
-                    battle.opponentScore = battle['Player 2 Score'];
-                    
-                    if (battle.Victor === 'Player 1') {
-                        battle.result = 'Victory';
-                    } else if (battle.Victor === 'Player 2') {
-                        battle.result = 'Defeat';
-                    } else {
-                        battle.result = 'Draw';
-                    }
-                } else if (battle['Force 2 Key'] === key) {
-                    // This force was Force 2
-                    battle.wasForce1 = false;
-                    battle.opponent = battle['Force 1'];
-                    battle.opponentPlayer = battle['Player 1'];
-                    battle.forceScore = battle['Player 2 Score'];
-                    battle.opponentScore = battle['Player 1 Score'];
-                    
-                    if (battle.Victor === 'Player 2') {
-                        battle.result = 'Victory';
-                    } else if (battle.Victor === 'Player 1') {
-                        battle.result = 'Defeat';
-                    } else {
-                        battle.result = 'Draw';
-                    }
-                }
-                
-                return battle;
-            }).sort((a, b) => {
-                // Sort by date played (most recent first)
-                const dateA = new Date(a['Date Played'] || 0);
-                const dateB = new Date(b['Date Played'] || 0);
-                return dateB - dateA;
-            });
-            
-            this.battleHistoryData = processedBattles;
-            return processedBattles;
-            
-        } catch (error) {
-            console.error('Error loading battle history:', error);
-            return [];
-        }
-    },
+    // filename: js/force-data.js (partial update - loadBattleHistory method)
+	// Updated battle outcome logic
+
+	async loadBattleHistory(forceKey) {
+		try {
+			const battleHistoryUrl = CrusadeConfig.getSheetUrl('battleHistory');
+			if (!battleHistoryUrl) {
+				console.warn('Battle History sheet URL not configured');
+				return [];
+			}
+			
+			const key = forceKey || this.forceKey;
+			const fetchUrl = `${battleHistoryUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`;
+			
+			// Use CacheManager with specific identifier
+			const responseData = await CacheManager.fetchWithCache(
+				fetchUrl,
+				'battleHistory',
+				`force_${key}`
+			);
+			
+			let battles = [];
+			if (responseData.success && responseData.battles) {
+				battles = responseData.battles;
+			} else if (Array.isArray(responseData)) {
+				// Handle raw array response
+				const headers = responseData[0];
+				battles = responseData.slice(1).map(row => {
+					const battle = {};
+					headers.forEach((header, index) => {
+						battle[header] = row[index];
+					});
+					return battle;
+				});
+			}
+			
+			// Process battles to determine results
+			const processedBattles = battles.map(battle => {
+				// Determine if this force was Force 1 or Force 2
+				const isForce1 = battle['Force 1 Key'] === key;
+				const isForce2 = battle['Force 2 Key'] === key;
+				
+				if (isForce1) {
+					battle.wasForce1 = true;
+					battle.opponent = battle['Force 2'];
+					battle.opponentPlayer = battle['Player 2'];
+					battle.forceScore = battle['Player 1 Score'];
+					battle.opponentScore = battle['Player 2 Score'];
+				} else if (isForce2) {
+					battle.wasForce1 = false;
+					battle.opponent = battle['Force 1'];
+					battle.opponentPlayer = battle['Player 1'];
+					battle.forceScore = battle['Player 2 Score'];
+					battle.opponentScore = battle['Player 1 Score'];
+				}
+				
+				// Determine outcome using the correct logic
+				const victor = battle['Victor'];
+				const victorForceKey = battle['Victor Force Key'];
+				
+				// First check if it's a draw
+				if (victor === 'Draw') {
+					battle.result = 'Draw';
+				} 
+				// If not a draw, check the Victor Force Key
+				else if (victorForceKey === key) {
+					battle.result = 'Victory';
+				} 
+				// Otherwise it's a defeat
+				else {
+					battle.result = 'Defeat';
+				}
+				
+				return battle;
+			}).sort((a, b) => {
+				// Sort by date played (most recent first)
+				const dateA = new Date(a['Date Played'] || 0);
+				const dateB = new Date(b['Date Played'] || 0);
+				return dateB - dateA;
+			});
+			
+			this.battleHistoryData = processedBattles;
+			return processedBattles;
+			
+		} catch (error) {
+			console.error('Error loading battle history:', error);
+			return [];
+		}
+	},
     
     /**
      * Calculate battle statistics
