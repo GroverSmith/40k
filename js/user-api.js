@@ -1,5 +1,5 @@
-// filename: user-api.js
-// Server communication for User Management System
+// filename: js/user-api.js
+// Server communication for User Management System (using CacheManager)
 // 40k Crusade Campaign Tracker
 
 const UserAPI = {
@@ -26,35 +26,25 @@ const UserAPI = {
                 return [];
             }
             
-            console.log('Fetching users from Google Sheets...');
-            const response = await fetch(usersUrl);
-            const responseData = await response.json();
-            
-            let data;
-            if (Array.isArray(responseData)) {
-                data = responseData;
-            } else if (responseData.success && Array.isArray(responseData.data)) {
-                data = responseData.data;
-            } else {
-                throw new Error('Unable to load users data');
-            }
+            // Use CacheManager for fetching with cache
+            const data = await CacheManager.fetchWithCache(usersUrl, 'users');
             
             // Convert to user objects (skip header row)
             const users = data.slice(1).map((row, index) => ({
-			id: index + 2,
-			key: row[0] || '',           // Key
-			timestamp: row[1] || new Date(), // Timestamp
-			name: row[2] || 'Unknown User',  // Name (now correctly at index 2)
-			discordHandle: row[3] || '',     // Discord Handle
-			email: row[4] || '',              // Email
-			notes: row[5] || '',              // Notes
-			selfRating: row[6] || '',         // Self Rating
-			yearsExperience: row[7] || '',    // Years Experience
-			gamesPerYear: row[8] || '',       // Games Per Year
-			isActive: true
-		})).filter(user => user.name !== 'Unknown User');
+                id: index + 2,
+                key: row[0] || '',
+                timestamp: row[1] || new Date(),
+                name: row[2] || 'Unknown User',
+                discordHandle: row[3] || '',
+                email: row[4] || '',
+                notes: row[5] || '',
+                selfRating: row[6] || '',
+                yearsExperience: row[7] || '',
+                gamesPerYear: row[8] || '',
+                isActive: true
+            })).filter(user => user.name !== 'Unknown User');
             
-            console.log('Loaded users from API:', users);
+            console.log('Loaded users from API/cache:', users);
             return users;
             
         } catch (error) {
@@ -112,6 +102,8 @@ const UserAPI = {
                     const result = JSON.parse(response);
                     
                     if (result.success) {
+                        // Clear users cache to force reload
+                        CacheManager.clear('users');
                         resolve(result);
                     } else {
                         reject(new Error(result.error || 'User creation failed'));
@@ -119,6 +111,7 @@ const UserAPI = {
                 } catch (error) {
                     // Assume success if we can't read the response (CORS)
                     console.log('Could not read response, assuming success');
+                    CacheManager.clear('users');
                     resolve({ success: true });
                 }
                 
@@ -168,4 +161,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = UserAPI;
 }
 
-console.log('UserAPI module loaded');
+console.log('UserAPI module loaded (using CacheManager)');

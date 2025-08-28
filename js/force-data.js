@@ -1,5 +1,5 @@
 // filename: js/force-data.js
-// Data fetching and management for Force Details using Key System with global caching
+// Data fetching and management for Force Details using unified CacheManager
 // 40k Crusade Campaign Tracker
 
 const ForceData = {
@@ -16,47 +16,14 @@ const ForceData = {
         this.forceKey = forceKey;
         
         try {
-            // Check cache first and use it if valid
-            const cachedData = UserStorage.loadCachedForces();
-            if (cachedData.valid) {
-                console.log('Using cached forces data');
-                const force = this.findForceInData(cachedData.forces, forceKey);
-                this.forceData = force;
-                return force;
-            }
-            
-            console.log('Cache miss or expired, loading from API...');
-            
-            // Load from API if cache miss
             const forceSheetUrl = CrusadeConfig.getSheetUrl('forces');
             
             if (!forceSheetUrl) {
                 throw new Error('Crusade Forces sheet URL not configured in CrusadeConfig');
             }
             
-            // Get all forces and cache them
-            const response = await fetch(forceSheetUrl);
-            if (!response.ok) {
-                throw new Error('Failed to fetch force data');
-            }
-            
-            const responseData = await response.json();
-            
-            // Handle different response formats
-            let data;
-            if (Array.isArray(responseData)) {
-                data = responseData;
-            } else if (responseData.success && Array.isArray(responseData.data)) {
-                data = responseData.data;
-            } else if (responseData.values && Array.isArray(responseData.values)) {
-                data = responseData.values;
-            } else {
-                console.error('Unexpected response format:', responseData);
-                throw new Error('Unexpected response format from force data API');
-            }
-            
-            // Save to cache for 1 hour
-            UserStorage.saveForcesToCache(data);
+            // Use CacheManager for unified caching
+            const data = await CacheManager.fetchWithCache(forceSheetUrl, 'forces');
             
             const force = this.findForceInData(data, forceKey);
             this.forceData = force;
@@ -118,10 +85,13 @@ const ForceData = {
         
         try {
             const fetchUrl = `${armyListsUrl}?action=force-lists&forceKey=${encodeURIComponent(forceKey || this.forceKey)}`;
-            console.log('Fetching army lists for force key:', forceKey || this.forceKey);
             
-            const response = await fetch(fetchUrl);
-            const data = await response.json();
+            // Use CacheManager with specific identifier for this query
+            const data = await CacheManager.fetchWithCache(
+                fetchUrl, 
+                'armyLists', 
+                `force_${forceKey || this.forceKey}`
+            );
             
             console.log('Army lists response:', data);
             
@@ -151,15 +121,14 @@ const ForceData = {
             }
             
             const key = forceKey || this.forceKey;
-            console.log('Loading battle history for force:', key);
+            const fetchUrl = `${battleHistoryUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`;
             
-            const response = await fetch(`${battleHistoryUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const responseData = await response.json();
+            // Use CacheManager with specific identifier
+            const responseData = await CacheManager.fetchWithCache(
+                fetchUrl,
+                'battleHistory',
+                `force_${key}`
+            );
             
             let battles = [];
             if (responseData.success && responseData.battles) {
@@ -272,27 +241,10 @@ const ForceData = {
      */
     async getParticipatingCrusades() {
         try {
-            // Load crusades from cache if available
-            const cachedCrusades = UserStorage.loadCachedCrusades();
-            let crusadesData;
-            
-            if (cachedCrusades.valid) {
-                console.log('Using cached crusades data for participating crusades');
-                crusadesData = cachedCrusades.crusades;
-            } else {
-                const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
-                if (!crusadesUrl) {
-                    return [];
-                }
-                
-                const response = await fetch(crusadesUrl);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                crusadesData = await response.json();
-                UserStorage.saveCrusadesToCache(crusadesData);
-            }
+            // Load crusades using CacheManager
+            const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
+            const crusadesData = crusadesUrl ? 
+                await CacheManager.fetchWithCache(crusadesUrl, 'crusades') : [];
             
             // Load participants to find which crusades this force is in
             const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
@@ -300,12 +252,11 @@ const ForceData = {
                 return [];
             }
             
-            const participantsResponse = await fetch(participantsUrl);
-            if (!participantsResponse.ok) {
-                return [];
-            }
-            
-            const participantsData = await participantsResponse.json();
+            const participantsData = await CacheManager.fetchWithCache(
+                participantsUrl, 
+                'participants',
+                `force_${this.forceKey}`
+            );
             
             // Find crusades this force participates in
             const crusadeKeys = participantsData
@@ -355,8 +306,7 @@ const ForceData = {
         }
         
         try {
-            const response = await fetch(sheetUrl);
-            const data = await response.json();
+            const data = await CacheManager.fetchWithCache(sheetUrl, sheetType);
             
             return {
                 success: true,
@@ -382,4 +332,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = ForceData;
 }
 
-console.log('ForceData module loaded with key system and caching support');
+console.log('ForceData module loaded with unified CacheManager');

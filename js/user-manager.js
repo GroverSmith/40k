@@ -1,5 +1,5 @@
-// filename: user-manager.js
-// Core User Management System for 40k Crusade Campaign Tracker
+// filename: js/user-manager.js
+// Core User Management System for 40k Crusade Campaign Tracker (using CacheManager)
 // Orchestrates storage, API, UI, and modal modules
 
 const UserManager = {
@@ -14,7 +14,7 @@ const UserManager = {
     async init() {
         console.log('UserManager initializing...');
         
-        // Load saved user from cache FIRST
+        // Load saved user from storage FIRST
         this.currentUser = UserStorage.loadSavedUser();
         
         // Set up user dropdown in header immediately with cached user
@@ -38,13 +38,6 @@ const UserManager = {
         // Set up create user button on main page
         UserUI.setupCreateUserButton(() => this.showCreateUserModal());
         
-        // Check if we have cached users and they're still fresh
-        const cachedData = UserStorage.loadCachedUsers();
-        if (cachedData.valid) {
-            this.users = cachedData.users;
-            this.usersLoaded = true;
-        }
-        
         console.log('UserManager initialized with current user:', this.currentUser);
     },
     
@@ -61,9 +54,6 @@ const UserManager = {
         if (users) {
             this.users = users;
             this.usersLoaded = true;
-            
-            // Save to cache
-            UserStorage.saveUsersToCache(users);
             
             // Validate current user still exists
             if (this.currentUser) {
@@ -184,7 +174,7 @@ const UserManager = {
      */
     async refreshUsers() {
         // Clear the cache to force reload
-        UserStorage.clearUserCaches();
+        CacheManager.clear('users');
         this.usersLoaded = false;
         this.users = [];
         
@@ -196,7 +186,7 @@ const UserManager = {
      */
     clearAllDataCaches() {
         if (confirm('Clear all cached data? This will force fresh data loads on all pages.')) {
-            const clearedCount = UserStorage.clearAllDataCaches();
+            const clearedCount = CacheManager.clearAll();
             
             // Clear any SheetsManager caches if available
             if (typeof SheetsManager !== 'undefined' && SheetsManager.clearAllCaches) {
@@ -266,13 +256,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof UserModal === 'undefined') {
                 console.error('UserModal module not loaded!');
             }
+            if (typeof CacheManager === 'undefined') {
+                console.error('CacheManager module not loaded!');
+            }
             
             await UserManager.init();
             
             // Auto-populate any existing user fields
             UserUI.autoPopulateAllUserFields(UserManager.currentUser);
             
-            console.log('✅ UserManager fully initialized with modular architecture');
+            console.log('✅ UserManager fully initialized with unified caching');
         } catch (error) {
             console.error('❌ Error initializing UserManager:', error);
         }
@@ -284,4 +277,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = UserManager;
 }
 
-console.log('UserManager core module loaded - orchestrating modular user management system');
+console.log('UserManager core module loaded - using unified CacheManager');

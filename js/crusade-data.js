@@ -1,5 +1,5 @@
 // filename: js/crusade-data.js
-// Data loading and management for Crusade Details page with global caching
+// Data loading and management for Crusade Details page using unified CacheManager
 // 40k Crusade Campaign Tracker
 
 const CrusadeData = {
@@ -15,30 +15,13 @@ const CrusadeData = {
         this.crusadeKey = crusadeKey;
         
         try {
-            // Check cache first
-            const cachedData = UserStorage.loadCachedCrusades();
-            if (cachedData.valid) {
-                console.log('Using cached crusades data');
-                return this.findCrusadeInData(cachedData.crusades, crusadeKey);
-            }
-            
-            // Load from API if cache miss
             const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
             if (!crusadesUrl) {
                 throw new Error('Crusades sheet URL not configured');
             }
             
-            console.log('Loading crusades from API...');
-            const response = await fetch(crusadesUrl);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            
-            // Save to cache for 24 hours
-            UserStorage.saveCrusadesToCache(data);
+            // Use CacheManager for unified caching
+            const data = await CacheManager.fetchWithCache(crusadesUrl, 'crusades');
             
             return this.findCrusadeInData(data, crusadeKey);
             
@@ -78,151 +61,100 @@ const CrusadeData = {
     },
     
     /**
-     * Load forces participating in this crusade from cache or API
+     * Load forces participating in this crusade
      */
-    async loadParticipatingForces() {
-        try {
-            // First load all forces (check cache first)
-            const cachedForces = UserStorage.loadCachedForces();
-            let forcesData;
-            
-            if (cachedForces.valid) {
-                console.log('Using cached forces data');
-                forcesData = cachedForces.forces;
-            } else {
-                const forcesUrl = CrusadeConfig.getSheetUrl('forces');
-                if (!forcesUrl) {
-                    console.warn('Forces sheet URL not configured');
-                    return [];
-                }
-                
-                console.log('Loading forces from API...');
-                const response = await fetch(forcesUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                forcesData = await response.json();
-                
-                // Save to cache
-                UserStorage.saveForcesToCache(forcesData);
-            }
-            
-            this.forcesData = forcesData;
-            
-            // Now load participants to filter forces
-            await this.loadParticipants();
-            
-            // Filter forces that are participating in this crusade
-            return this.filterParticipatingForces();
-            
-        } catch (error) {
-            console.error('Error loading participating forces:', error);
-            return [];
-        }
-    },
-    
-    /**
-     * Load crusade participants data
-     */
-    async loadParticipants() {
+    async loadParticipatingForces(crusadeKey) {
         try {
             const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
             
             if (!participantsUrl) {
                 console.warn('Participants sheet URL not configured');
-                return [];
+                return { success: true, forces: [] };
             }
             
-            const response = await fetch(participantsUrl);
+            // Use specific GET endpoint for crusade participants
+            const fetchUrl = `${participantsUrl}?action=forces-for-crusade&crusadeKey=${encodeURIComponent(crusadeKey)}`;
             
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            // Use CacheManager with specific identifier
+            const response = await CacheManager.fetchWithCache(
+                fetchUrl,
+                'participants',
+                `crusade_${crusadeKey}`
+            );
+            
+            if (response.success && response.forces) {
+                return { success: true, forces: response.forces };
             }
             
-            const data = await response.json();
-            this.participantsData = data;
-            
-            return data;
+            return { success: true, forces: [] };
             
         } catch (error) {
-            console.error('Error loading participants:', error);
-            return [];
+            console.error('Error loading participating forces:', error);
+            return { success: false, forces: [], error: error.message };
         }
     },
     
     /**
-     * Filter forces that are registered for this crusade
+     * Load all available forces (for registration dropdown)
      */
-    filterParticipatingForces() {
-        if (!this.forcesData || this.forcesData.length < 2) {
-            return [];
+    async loadAvailableForces() {
+        try {
+            const forcesUrl = CrusadeConfig.getSheetUrl('forces');
+            if (!forcesUrl) {
+                throw new Error('Forces sheet URL not configured');
+            }
+            
+            // Use CacheManager for unified caching
+            return await CacheManager.fetchWithCache(forcesUrl, 'forces');
+            
+        } catch (error) {
+            console.error('Error loading available forces:', error);
+            throw error;
         }
-        
-        if (!this.participantsData || this.participantsData.length < 2) {
-            // No participants yet, return empty
-            return [];
-        }
-        
-        // Get participant force keys for this crusade
-        // Participants structure: 0=Key, 1=Crusade Key, 2=Force Key
-        const participantForceKeys = this.participantsData
-            .slice(1) // Skip header
-            .filter(row => row[1] === this.crusadeKey) // Filter by crusade key
-            .map(row => row[2]); // Get force keys
-        
-        // Filter forces that are participating
-        const headers = this.forcesData[0];
-        const participatingForces = this.forcesData
-            .slice(1) // Skip header
-            .filter(row => participantForceKeys.includes(row[0])) // Filter by force key
-            .map(row => {
-                const force = {};
-                headers.forEach((header, index) => {
-                    force[header] = row[index];
-                });
-                return force;
-            });
-        
-        return participatingForces;
     },
     
     /**
-     * Get all available forces for registration dropdown
+     * Register a force for a crusade
      */
-    getAllAvailableForces() {
-        if (!this.forcesData || this.forcesData.length < 2) {
-            return [];
+    async registerForce(registrationData) {
+        const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
+        
+        if (!participantsUrl) {
+            throw new Error('Participants sheet URL not configured');
         }
         
-        const headers = this.forcesData[0];
-        const forces = this.forcesData.slice(1).map(row => {
-            const force = {};
-            headers.forEach((header, index) => {
-                force[header] = row[index];
-            });
-            return force;
+        // Submit registration
+        const response = await fetch(participantsUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(registrationData).toString()
         });
         
-        return forces;
+        if (!response.ok) {
+            throw new Error('Failed to register force');
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Clear the participants cache for this crusade
+            CacheManager.clear('participants', `crusade_${registrationData.crusadeKey}`);
+        }
+        
+        return result;
     },
     
     /**
-     * Check if a force is already registered
+     * Generate crusade key from name
      */
-    isForceRegistered(forceKey) {
-        if (!this.participantsData || this.participantsData.length < 2) {
-            return false;
-        }
-        
-        return this.participantsData.slice(1).some(row => 
-            row[1] === this.crusadeKey && row[2] === forceKey
-        );
+    generateCrusadeKey(crusadeName) {
+        return crusadeName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
     }
 };
 
 // Make globally available
 window.CrusadeData = CrusadeData;
 
-console.log('CrusadeData module loaded with global caching support');
+console.log('CrusadeData module loaded with unified CacheManager');
