@@ -359,39 +359,58 @@ class BattleReportForm extends BaseForm {
         
         // Add filtered forces
         forces.forEach(row => {
-            const forceKey = row[0];
-            const userName = row[1];
-            const forceName = row[2];
-            const faction = row[3];
+            const forceKey = row[0];    // Key column
+            const userName = row[1];    // User Name column
+            const forceName = row[2];   // Force Name column
+            const faction = row[3];     // Faction column
+            
+            if (!forceKey || !forceName) {
+                console.warn('Skipping force with missing key or name:', row);
+                return;
+            }
             
             const option = document.createElement('option');
             option.value = forceKey;
             option.textContent = `${forceName} - ${faction}`;
+            
+            // Set data attributes for later use
             option.dataset.forceName = forceName;
             option.dataset.userName = userName;
             option.dataset.faction = faction;
+            
             select.appendChild(option);
         });
         
         if (forces.length === 0) {
             select.innerHTML = '<option value="">No forces for this player</option>';
         }
+        
+        console.log(`Force dropdown ${playerNum} populated with ${forces.length} forces`);
     }
     
     handleForceSelection(playerNum, forceKey) {
         if (!forceKey) {
-            // Clear army list dropdown
+            // Clear army list dropdown and force name
             this.updateArmyListDropdown(playerNum, []);
+            const forceNameField = document.getElementById(`force${playerNum}-name`);
+            if (forceNameField) {
+                forceNameField.value = '';
+            }
             return;
         }
         
         const select = document.getElementById(`force${playerNum}-select`);
         const selectedOption = select.options[select.selectedIndex];
         
-        // Store force name in hidden field
+        // Store force name in hidden field - this is CRITICAL for the form submission
         const forceNameField = document.getElementById(`force${playerNum}-name`);
         if (forceNameField) {
-            forceNameField.value = selectedOption.dataset.forceName || '';
+            // Get the force name from the dataset
+            const forceName = selectedOption.dataset.forceName || '';
+            console.log(`Setting force${playerNum} name to:`, forceName);
+            forceNameField.value = forceName;
+        } else {
+            console.error(`Hidden field force${playerNum}-name not found!`);
         }
         
         // Check if armyListsData is properly loaded and is an array
@@ -698,6 +717,13 @@ class BattleReportForm extends BaseForm {
         const army1 = army1Select ? army1Select.value : formData.get('army1');
         const army2 = army2Select ? army2Select.value : formData.get('army2');
         
+        // The order here MUST match the column order expected by the Google Apps Script
+        // From battle-gas-script.js, the expected order is:
+        // timestamp, crusadeKey, battleName, datePlayed, battleSize,
+        // player1, force1Key, force1, army1, player1Score,
+        // player2, force2Key, force2, army2, player2Score,
+        // victor, summaryNotes
+        
         return {
             timestamp: new Date().toISOString(),
             crusadeKey: formData.get('crusadeKey') || '',
@@ -712,7 +738,7 @@ class BattleReportForm extends BaseForm {
             player1Score: formData.get('player1Score') || '',
             
             player2: formData.get('player2').trim(),
-            force2Key: formData.get('force2Key'),
+            force2Key: formData.get('force2Key'), 
             force2: formData.get('force2').trim(),
             army2: army2 || '',
             player2Score: formData.get('player2Score') || '',

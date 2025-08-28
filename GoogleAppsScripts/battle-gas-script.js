@@ -49,10 +49,10 @@ function doPost(e) {
       const headers = [
         'Key',
         'Timestamp',
+        'Battle Size',
         'Force 1 Key',
         'Force 2 Key',
         'Date Played',
-        'Battle Size',
         'Player 1',
         'Force 1',
         'Army 1',
@@ -64,7 +64,8 @@ function doPost(e) {
         'Player 2 Score',
         'Battle Name',
         'Summary Notes',
-        'Crusade Key'
+        'Crusade Key',
+        'Victor Force Key'  // New column
       ];
       
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
@@ -94,6 +95,7 @@ function doPost(e) {
       sheet.setColumnWidth(16, 200); // Battle Name
       sheet.setColumnWidth(17, 300); // Summary Notes
       sheet.setColumnWidth(18, 200); // Crusade Key
+      sheet.setColumnWidth(19, 150); // Victor Force Key
     }
     
     // Generate unique key
@@ -103,40 +105,52 @@ function doPost(e) {
     // Parse timestamp
     const timestamp = new Date();
     
-    // Determine victor
+    // Determine victor and victor force key
     let victor = data.victor || '';
+    let victorForceKey = '';
+    
     if (!victor && data.player1Score && data.player2Score) {
       const p1Score = parseInt(data.player1Score);
       const p2Score = parseInt(data.player2Score);
       if (p1Score > p2Score) {
-        victor = 'Player 1';
+        victor = data.player1;
+        victorForceKey = data.force1Key;
       } else if (p2Score > p1Score) {
-        victor = 'Player 2';
+        victor = data.player2;
+        victorForceKey = data.force2Key;
       } else {
         victor = 'Draw';
+        victorForceKey = 'Draw';
       }
+    } else if (victor === data.player1) {
+      victorForceKey = data.force1Key;
+    } else if (victor === data.player2) {
+      victorForceKey = data.force2Key;
+    } else if (victor === 'Draw') {
+      victorForceKey = 'Draw';
     }
     
-    // Prepare row data
+    // Prepare row data - ORDER MUST MATCH YOUR SHEET COLUMNS!
     const rowData = [
-      battleKey,
-      timestamp,
-      data.force1Key || '',
-      data.force2Key || '',
-      data.datePlayed || '',
-      data.battleSize || '',
-      data.player1 || '',
-      data.force1 || '',
-      data.army1 || '',
-      data.player2 || '',
-      data.force2 || '',
-      data.army2 || '',
-      victor,
-      data.player1Score || '',
-      data.player2Score || '',
-      data.battleName || '',
-      data.summaryNotes || '',
-      data.crusadeKey || ''
+      battleKey,                    // Column 0: Key
+      timestamp,                    // Column 1: Timestamp
+      data.battleSize || '',        // Column 2: Battle Size
+      data.force1Key || '',         // Column 3: Force 1 Key
+      data.force2Key || '',         // Column 4: Force 2 Key
+      data.datePlayed || '',        // Column 5: Date Played
+      data.player1 || '',           // Column 6: Player 1
+      data.force1 || '',            // Column 7: Force 1
+      data.army1 || '',             // Column 8: Army 1
+      data.player2 || '',           // Column 9: Player 2
+      data.force2 || '',            // Column 10: Force 2
+      data.army2 || '',             // Column 11: Army 2
+      victor,                       // Column 12: Victor
+      data.player1Score || '',      // Column 13: Player 1 Score
+      data.player2Score || '',      // Column 14: Player 2 Score
+      data.battleName || '',        // Column 15: Battle Name
+      data.summaryNotes || '',      // Column 16: Summary Notes
+      data.crusadeKey || '',        // Column 17: Crusade Key
+      victorForceKey                // Column 18: Victor Force Key
     ];
     
     const lastRow = sheet.getLastRow();
@@ -341,7 +355,7 @@ function getRecentBattles(limit = 10) {
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
-    battles: battles
-  }))
+      battles: battles
+    }))
     .setMimeType(ContentService.MimeType.JSON);
 }
