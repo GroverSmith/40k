@@ -211,6 +211,30 @@ class BattleReportForm extends BaseForm {
        inputField.parentNode.replaceChild(select, inputField);
    }
    
+   /**
+	 * Override submitToGoogleSheets to clear battle caches after submission
+	 */
+	async submitToGoogleSheets(data) {
+		// Call the parent method to do the actual submission
+		const result = await super.submitToGoogleSheets(data);
+		
+		// Clear battle history cache for both forces after successful submission
+		if (data.force1Key) {
+			CacheManager.clear('battleHistory', `force_${data.force1Key}`);
+			console.log('Cleared battle cache for force 1:', data.force1Key);
+		}
+		if (data.force2Key) {
+			CacheManager.clear('battleHistory', `force_${data.force2Key}`);
+			console.log('Cleared battle cache for force 2:', data.force2Key);
+		}
+		
+		// Also clear any generic battle history cache
+		CacheManager.clearType('battleHistory');
+		console.log('Cleared all battle history caches after submission');
+		
+		return result;
+	}
+   
    async loadUsers() {
        try {
            console.log('Loading users for battle report...');
