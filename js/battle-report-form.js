@@ -394,11 +394,31 @@ class BattleReportForm extends BaseForm {
             forceNameField.value = selectedOption.dataset.forceName || '';
         }
         
+        // Check if armyListsData is properly loaded and is an array
+        if (!this.armyListsData || !Array.isArray(this.armyListsData)) {
+            console.warn('Army lists data not available or not an array:', this.armyListsData);
+            this.updateArmyListDropdown(playerNum, []);
+            return;
+        }
+        
         // Filter army lists for this force
-        const forceArmyLists = this.armyListsData.slice(1).filter(row => {
-            const armyForceKey = row[1]; // Force Key is column 1
-            return armyForceKey === forceKey;
+        // Skip header row if present
+        const dataToFilter = this.armyListsData.length > 0 && Array.isArray(this.armyListsData[0]) 
+            ? this.armyListsData.slice(1)  // Skip header row for raw sheet data
+            : this.armyListsData;           // Use as-is for processed data
+        
+        const forceArmyLists = dataToFilter.filter(row => {
+            // Handle both array format and object format
+            if (Array.isArray(row)) {
+                const armyForceKey = row[1]; // Force Key is column 1
+                return armyForceKey === forceKey;
+            } else if (row && typeof row === 'object') {
+                return row['Force Key'] === forceKey || row.forceKey === forceKey;
+            }
+            return false;
         });
+        
+        console.log(`Found ${forceArmyLists.length} army lists for force ${forceKey}`);
         
         // Update army list dropdown
         this.updateArmyListDropdown(playerNum, forceArmyLists);
@@ -413,15 +433,29 @@ class BattleReportForm extends BaseForm {
         
         // Add filtered army lists
         armyLists.forEach(row => {
-            const armyKey = row[0];
-            const armyName = row[5]; // Army Name is column 5
-            const points = row[9];   // Points Value is column 9
+            let armyKey, armyName, points;
+            
+            // Handle both array and object formats
+            if (Array.isArray(row)) {
+                armyKey = row[0];       // Key is column 0
+                armyName = row[5];      // Army Name is column 5
+                points = row[9];        // Points Value is column 9
+            } else if (row && typeof row === 'object') {
+                armyKey = row.Key || row.key || row.id;
+                armyName = row['Army Name'] || row.armyName || row.name;
+                points = row['Points Value'] || row.pointsValue || row.points;
+            }
+            
+            if (!armyName) {
+                console.warn('Army list missing name:', row);
+                return;
+            }
             
             const option = document.createElement('option');
             option.value = armyName;
             option.textContent = points ? `${armyName} (${points} pts)` : armyName;
-            option.dataset.armyKey = armyKey;
-            option.dataset.points = points;
+            option.dataset.armyKey = armyKey || '';
+            option.dataset.points = points || '';
             select.appendChild(option);
         });
         
@@ -437,6 +471,7 @@ class BattleReportForm extends BaseForm {
             const armyListsUrl = CrusadeConfig.getSheetUrl('armyLists');
             if (!armyListsUrl) {
                 console.log('Army Lists sheet URL not configured, skipping');
+                this.armyListsData = [];
                 return;
             }
             
@@ -445,13 +480,27 @@ class BattleReportForm extends BaseForm {
                 throw new Error('Failed to fetch army lists data');
             }
             
-            const data = await response.json();
-            this.armyListsData = data;
+            const responseData = await response.json();
             
-            console.log(`Loaded ${data.length - 1} army lists`);
+            // Handle different response formats
+            if (Array.isArray(responseData)) {
+                this.armyListsData = responseData;
+            } else if (responseData.success && Array.isArray(responseData.data)) {
+                // If it's wrapped in a success response, use the data array
+                this.armyListsData = responseData.data;
+            } else if (responseData.data && Array.isArray(responseData.data)) {
+                // Sometimes just has data property
+                this.armyListsData = responseData.data;
+            } else {
+                console.warn('Unexpected army lists response format:', responseData);
+                this.armyListsData = [];
+            }
+            
+            console.log(`Loaded ${Array.isArray(this.armyListsData) ? this.armyListsData.length - 1 : 0} army lists`);
             
         } catch (error) {
             console.error('Error loading army lists:', error);
+            this.armyListsData = [];
             // Not critical if army lists don't load
         }
     }
