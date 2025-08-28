@@ -24,9 +24,6 @@ class BattleReportForm extends BaseForm {
         this.initBase();
         this.checkForCrusadeParameter();
         
-        // Load data from cache or API
-        this.loadAllData();
-        
         // Set up date field to default to today
         const dateField = document.getElementById('date-played');
         if (dateField) {
@@ -37,18 +34,33 @@ class BattleReportForm extends BaseForm {
         // Set up custom battle size functionality
         this.setupCustomBattleSize();
         
-        // Set up player dropdowns
+        // IMPORTANT: Set up player dropdowns FIRST (convert inputs to selects)
         this.setupPlayerDropdowns();
+        
+        // THEN load data (which will populate the dropdowns)
+        this.loadAllData();
     }
     
     async loadAllData() {
+        console.log('Starting loadAllData...');
+        
         // Load all data in parallel for better performance
-        await Promise.all([
+        const results = await Promise.allSettled([
             this.loadUsers(),
-            this.loadForces(),
+            this.loadForces(), 
             this.loadCrusades(),
             this.loadArmyLists()
         ]);
+        
+        // Log results for debugging
+        results.forEach((result, index) => {
+            const names = ['Users', 'Forces', 'Crusades', 'Army Lists'];
+            if (result.status === 'rejected') {
+                console.error(`Failed to load ${names[index]}:`, result.reason);
+            } else {
+                console.log(`Successfully loaded ${names[index]}`);
+            }
+        });
     }
     
     setupCustomBattleSize() {
@@ -109,34 +121,47 @@ class BattleReportForm extends BaseForm {
         const player1Field = document.getElementById('player1-name');
         const player2Field = document.getElementById('player2-name');
         
-        if (player1Field) {
+        console.log('Setting up player dropdowns. Found player1Field:', !!player1Field, 'player2Field:', !!player2Field);
+        
+        if (player1Field && player1Field.tagName === 'INPUT') {
             this.convertToPlayerDropdown(player1Field, 'player1-name', 1);
+        } else if (player1Field && player1Field.tagName === 'SELECT') {
+            console.log('Player 1 field is already a select element');
         }
         
-        if (player2Field) {
+        if (player2Field && player2Field.tagName === 'INPUT') {
             this.convertToPlayerDropdown(player2Field, 'player2-name', 2);
+        } else if (player2Field && player2Field.tagName === 'SELECT') {
+            console.log('Player 2 field is already a select element');
         }
         
         // Convert army list inputs to dropdowns
         const army1Field = document.getElementById('army1-name');
         const army2Field = document.getElementById('army2-name');
         
-        if (army1Field) {
+        if (army1Field && army1Field.tagName === 'INPUT') {
             this.convertToArmyListDropdown(army1Field, 'army1-select', 1);
         }
         
-        if (army2Field) {
+        if (army2Field && army2Field.tagName === 'INPUT') {
             this.convertToArmyListDropdown(army2Field, 'army2-select', 2);
         }
         
         // Set up force selection change handlers
-        document.getElementById('force1-select').addEventListener('change', (e) => {
-            this.handleForceSelection(1, e.target.value);
-        });
+        const force1Select = document.getElementById('force1-select');
+        const force2Select = document.getElementById('force2-select');
         
-        document.getElementById('force2-select').addEventListener('change', (e) => {
-            this.handleForceSelection(2, e.target.value);
-        });
+        if (force1Select) {
+            force1Select.addEventListener('change', (e) => {
+                this.handleForceSelection(1, e.target.value);
+            });
+        }
+        
+        if (force2Select) {
+            force2Select.addEventListener('change', (e) => {
+                this.handleForceSelection(2, e.target.value);
+            });
+        }
     }
     
     convertToPlayerDropdown(inputField, fieldId, playerNum) {
@@ -190,31 +215,43 @@ class BattleReportForm extends BaseForm {
         try {
             console.log('Loading users for battle report...');
             
+            // Initialize as empty array to prevent errors
+            this.usersData = [];
+            
             // Check cache first
             const cachedData = UserStorage.loadCachedUsers();
-            if (cachedData.valid) {
-                console.log('Using cached users data');
+            if (cachedData && cachedData.valid && cachedData.users && Array.isArray(cachedData.users)) {
+                console.log('Using cached users data:', cachedData.users);
                 this.usersData = cachedData.users;
                 this.populatePlayerDropdowns();
                 return;
             }
             
-            // Load from API if needed
-            if (window.UserManager && window.UserManager.users.length > 0) {
+            // Check if UserManager has users loaded
+            if (window.UserManager && window.UserManager.users && Array.isArray(window.UserManager.users) && window.UserManager.users.length > 0) {
+                console.log('Using UserManager users:', window.UserManager.users);
                 this.usersData = window.UserManager.users;
                 this.populatePlayerDropdowns();
+                return;
+            }
+            
+            // Load directly from API
+            console.log('Loading users from API...');
+            const users = await UserAPI.loadUsers();
+            
+            if (users && Array.isArray(users)) {
+                console.log('Loaded users from API:', users);
+                this.usersData = users;
+                this.populatePlayerDropdowns();
             } else {
-                // Load directly if UserManager not available
-                const users = await UserAPI.loadUsers();
-                if (users) {
-                    this.usersData = users;
-                    this.populatePlayerDropdowns();
-                }
+                console.warn('No users loaded from API');
+                this.populatePlayerDropdowns(); // Call with empty array
             }
             
         } catch (error) {
             console.error('Error loading users:', error);
-            // Fall back to text inputs if we can't load users
+            // Still populate dropdowns even if empty
+            this.populatePlayerDropdowns();
         }
     }
     
@@ -222,7 +259,18 @@ class BattleReportForm extends BaseForm {
         const player1Select = document.getElementById('player1-name');
         const player2Select = document.getElementById('player2-name');
         
-        if (!player1Select || !player2Select) return;
+        // Check if dropdowns exist and are SELECT elements (not INPUT)
+        if (!player1Select || !player2Select || 
+            player1Select.tagName !== 'SELECT' || player2Select.tagName !== 'SELECT') {
+            console.log('Player dropdowns not ready yet (may still be input fields)');
+            return;
+        }
+        
+        // Check if we have users data
+        if (!this.usersData || !Array.isArray(this.usersData)) {
+            console.warn('usersData not ready yet:', this.usersData);
+            return;
+        }
         
         // Clear existing options (except placeholder)
         while (player1Select.options.length > 1) {
@@ -232,8 +280,18 @@ class BattleReportForm extends BaseForm {
             player2Select.remove(1);
         }
         
+        if (this.usersData.length === 0) {
+            console.warn('No users available for dropdowns');
+            return;
+        }
+        
         // Add user options to both dropdowns
         this.usersData.forEach(user => {
+            if (!user || !user.name) {
+                console.warn('Invalid user data:', user);
+                return;
+            }
+            
             const option1 = document.createElement('option');
             option1.value = user.name;
             option1.textContent = user.name;
