@@ -1,4 +1,4 @@
-<!-- filename: battle=reports/add-battle-report.html -->
+<!-- filename: battle-reports/add-battle-report.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,15 +56,15 @@
                 <div class="form-group">
                     <label for="battle-size">Battle Size</label>
                     <select id="battle-size" name="battleSize">
-                        <option value="">Select size...</option>
                         <option value="500">500 pts - Combat Patrol</option>
                         <option value="1000">1000 pts - Incursion</option>
                         <option value="1500">1500 pts - Strike Force</option>
                         <option value="2000">2000 pts - Strike Force</option>
                         <option value="2500">2500 pts - Onslaught</option>
                         <option value="3000">3000 pts - Onslaught</option>
-                        <option value="Other">Other</option>
+                        <option value="Custom" selected>Custom</option>
                     </select>
+                    <!-- Custom size input will be added by JavaScript -->
                     <small class="help-text">Point level of the battle.</small>
                 </div>
             </div>
@@ -74,8 +74,9 @@
             
             <div class="form-group">
                 <label for="player1-name">Player 1 Name <span class="required">*</span></label>
+                <!-- This will be converted to a dropdown by JavaScript -->
                 <input type="text" id="player1-name" name="player1" required 
-                       placeholder="Enter player name">
+                       placeholder="Select player...">
                 <small class="help-text">Name of the first player.</small>
             </div>
             
@@ -99,8 +100,9 @@
             
             <div class="form-group">
                 <label for="player2-name">Player 2 Name <span class="required">*</span></label>
+                <!-- This will be converted to a dropdown by JavaScript -->
                 <input type="text" id="player2-name" name="player2" required 
-                       placeholder="Enter player name">
+                       placeholder="Select player...">
                 <small class="help-text">Name of the second player.</small>
             </div>
             

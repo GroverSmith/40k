@@ -1,270 +1,228 @@
-// filename: crusade-data.js
-// Data fetching and management for Crusade Details using Key System
+// filename: js/crusade-data.js
+// Data loading and management for Crusade Details page with global caching
 // 40k Crusade Campaign Tracker
 
 const CrusadeData = {
-    /**
-     * Generate a crusade key from crusade name
-     */
-    generateCrusadeKey(crusadeName) {
-        // Match the server-side key generation
-        return crusadeName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
-    },
+    crusadeKey: null,
+    crusadeData: null,
+    forcesData: [],
+    participantsData: [],
     
     /**
-     * Generate a force key from force name and user name
-     */
-    generateForceKey(forceName, userName) {
-        // Match the server-side key generation
-        const forcePart = forceName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
-        const userPart = userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
-        return `${forcePart}_${userPart}`;
-    },
-    
-    /**
-     * Load main crusade data from API using key
+     * Load crusade data from cache or API
      */
     async loadCrusadeData(crusadeKey) {
-        const crusadeSheetUrl = CrusadeConfig.getSheetUrl('crusades');
-        
-        if (!crusadeSheetUrl) {
-            throw new Error('Crusades sheet URL not configured in CrusadeConfig');
-        }
-        
-        // Try to get by key first
-        const fetchUrl = `${crusadeSheetUrl}?action=get&key=${encodeURIComponent(crusadeKey)}`;
+        this.crusadeKey = crusadeKey;
         
         try {
-            const response = await fetch(fetchUrl);
-            
-            if (response.ok) {
-                const responseData = await response.json();
-                console.log('Crusade API response:', responseData);
-                
-                if (responseData.success && responseData.data) {
-                    // Add the key to the data for reference
-                    responseData.data.key = responseData.data.Key || crusadeKey;
-                    return responseData.data;
-                }
+            // Check cache first
+            const cachedData = UserStorage.loadCachedCrusades();
+            if (cachedData.valid) {
+                console.log('Using cached crusades data');
+                return this.findCrusadeInData(cachedData.crusades, crusadeKey);
             }
-        } catch (error) {
-            console.log('Could not load by key, trying by name:', error);
-        }
-        
-        // Fallback: try to load by name (for backward compatibility)
-        const nameUrl = `${crusadeSheetUrl}?action=get-by-name&name=${encodeURIComponent(crusadeKey)}`;
-        const nameResponse = await fetch(nameUrl);
-        
-        if (!nameResponse.ok) {
-            throw new Error('Failed to fetch crusade data');
-        }
-        
-        const nameData = await nameResponse.json();
-        console.log('Crusade API response (by name):', nameData);
-        
-        if (!nameData.success || !nameData.data) {
-            throw new Error(nameData.error || 'Crusade not found');
-        }
-        
-        // Add the key to the data
-        nameData.data.key = nameData.data.Key || this.generateCrusadeKey(nameData.data['Crusade Name']);
-        return nameData.data;
-    },
-    
-    /**
-     * Load forces participating in a crusade using crusade key
-     */
-    async loadParticipatingForces(crusadeKey) {
-        const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
-        
-        if (!participantsUrl) {
-            return { success: false, forces: [] };
-        }
-        
-        const fetchUrl = `${participantsUrl}?action=forces-for-crusade&crusadeKey=${encodeURIComponent(crusadeKey)}`;
-        
-        try {
-            const response = await fetch(fetchUrl);
+            
+            // Load from API if cache miss
+            const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
+            if (!crusadesUrl) {
+                throw new Error('Crusades sheet URL not configured');
+            }
+            
+            console.log('Loading crusades from API...');
+            const response = await fetch(crusadesUrl);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const data = await response.json();
             
-            console.log('Participating forces response:', data);
+            // Save to cache for 24 hours
+            UserStorage.saveCrusadesToCache(data);
             
-            if (data.success && data.forces && data.forces.length > 0) {
-                return { success: true, forces: data.forces };
+            return this.findCrusadeInData(data, crusadeKey);
+            
+        } catch (error) {
+            console.error('Error loading crusade data:', error);
+            throw error;
+        }
+    },
+    
+    /**
+     * Find specific crusade in data array
+     */
+    findCrusadeInData(data, crusadeKey) {
+        if (!data || data.length < 2) {
+            throw new Error('No crusade data available');
+        }
+        
+        // Find crusade by key (column 0)
+        const crusadeRow = data.find((row, index) => {
+            if (index === 0) return false; // Skip header
+            return row[0] === crusadeKey;
+        });
+        
+        if (!crusadeRow) {
+            throw new Error(`Crusade with key "${crusadeKey}" not found`);
+        }
+        
+        // Map to object using header
+        const headers = data[0];
+        const crusade = {};
+        headers.forEach((header, index) => {
+            crusade[header] = crusadeRow[index];
+        });
+        
+        this.crusadeData = crusade;
+        return crusade;
+    },
+    
+    /**
+     * Load forces participating in this crusade from cache or API
+     */
+    async loadParticipatingForces() {
+        try {
+            // First load all forces (check cache first)
+            const cachedForces = UserStorage.loadCachedForces();
+            let forcesData;
+            
+            if (cachedForces.valid) {
+                console.log('Using cached forces data');
+                forcesData = cachedForces.forces;
+            } else {
+                const forcesUrl = CrusadeConfig.getSheetUrl('forces');
+                if (!forcesUrl) {
+                    console.warn('Forces sheet URL not configured');
+                    return [];
+                }
+                
+                console.log('Loading forces from API...');
+                const response = await fetch(forcesUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                forcesData = await response.json();
+                
+                // Save to cache
+                UserStorage.saveForcesToCache(forcesData);
             }
             
-            return { success: true, forces: [] };
+            this.forcesData = forcesData;
+            
+            // Now load participants to filter forces
+            await this.loadParticipants();
+            
+            // Filter forces that are participating in this crusade
+            return this.filterParticipatingForces();
+            
         } catch (error) {
             console.error('Error loading participating forces:', error);
-            return { success: false, forces: [], error: error.message };
+            return [];
         }
     },
     
     /**
-     * Load available forces for registration
+     * Load crusade participants data
      */
-    async loadAvailableForces() {
-        const forcesUrl = CrusadeConfig.getSheetUrl('forces');
-        
-        if (!forcesUrl) {
-            throw new Error('Forces sheet not configured');
-        }
-        
-        // Try cached data first
-        const cachedData = this.getCachedForces();
-        if (cachedData) {
-            console.log('Using cached forces data');
-            return cachedData;
-        }
-        
-        // Fetch fresh data
-        console.log('Fetching fresh forces data...');
-        const response = await fetch(forcesUrl);
-        const responseData = await response.json();
-        
-        let data;
-        if (Array.isArray(responseData)) {
-            data = responseData;
-        } else if (responseData.success && Array.isArray(responseData.data)) {
-            data = responseData.data;
-        } else {
-            throw new Error('Unable to load forces data');
-        }
-        
-        // Cache for future use
-        this.cacheForces(data);
-        
-        return data;
-    },
-    
-    /**
-     * Register a force for a crusade using keys
-     */
-    async registerForce(registrationData) {
-        const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
-        
-        if (!participantsUrl) {
-            throw new Error('Crusade Participants sheet not configured');
-        }
-        
-        // Ensure we have keys
-        if (!registrationData.crusadeKey) {
-            registrationData.crusadeKey = this.generateCrusadeKey(registrationData.crusadeName);
-        }
-        if (!registrationData.forceKey && registrationData.forceName && registrationData.userName) {
-            registrationData.forceKey = this.generateForceKey(registrationData.forceName, registrationData.userName);
-        }
-        
-        console.log('Registering with keys:', {
-            crusadeKey: registrationData.crusadeKey,
-            forceKey: registrationData.forceKey
-        });
-        
-        // Create form for submission
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = participantsUrl;
-        form.target = 'register-submit-frame';
-        form.style.display = 'none';
-        
-        Object.entries(registrationData).forEach(([key, value]) => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = key;
-            input.value = value;
-            form.appendChild(input);
-        });
-        
-        // Create iframe for submission
-        let iframe = document.getElementById('register-submit-frame');
-        if (!iframe) {
-            iframe = document.createElement('iframe');
-            iframe.name = 'register-submit-frame';
-            iframe.id = 'register-submit-frame';
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-        }
-        
-        document.body.appendChild(form);
-        
-        return new Promise((resolve, reject) => {
-            const timeout = setTimeout(() => {
-                document.body.removeChild(form);
-                reject(new Error('Registration timeout'));
-            }, 15000);
-            
-            iframe.onload = () => {
-                clearTimeout(timeout);
-                try {
-                    const response = iframe.contentWindow.document.body.textContent;
-                    const result = JSON.parse(response);
-                    
-                    if (result.success) {
-                        resolve(result);
-                    } else {
-                        reject(new Error(result.error || 'Registration failed'));
-                    }
-                } catch (error) {
-                    // Assume success if we can't read response (CORS)
-                    console.log('Could not read response, assuming success');
-                    resolve({ success: true });
-                }
-                
-                document.body.removeChild(form);
-            };
-            
-            form.submit();
-        });
-    },
-    
-    /**
-     * Get cached forces data
-     */
-    getCachedForces() {
-        const cacheKey = 'forces_cache_global';
-        const cached = localStorage.getItem(cacheKey);
-        
-        if (cached) {
-            try {
-                const cachedData = JSON.parse(cached);
-                const cacheAge = Date.now() - cachedData.timestamp;
-                const cacheMaxAge = (CrusadeConfig.getCacheConfig('default') || 1440) * 60 * 1000;
-                
-                if (cacheAge < cacheMaxAge) {
-                    console.log(`Using cached forces data (${Math.round(cacheAge / 60000)} minutes old)`);
-                    return cachedData.data;
-                }
-            } catch (e) {
-                console.warn('Error reading forces cache:', e);
-            }
-        }
-        
-        return null;
-    },
-    
-    /**
-     * Cache forces data
-     */
-    cacheForces(data) {
-        const cacheKey = 'forces_cache_global';
+    async loadParticipants() {
         try {
-            localStorage.setItem(cacheKey, JSON.stringify({
-                data: data,
-                timestamp: Date.now()
-            }));
-            console.log('Forces data cached for future use');
-        } catch (e) {
-            console.warn('Error caching forces data:', e);
+            const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
+            
+            if (!participantsUrl) {
+                console.warn('Participants sheet URL not configured');
+                return [];
+            }
+            
+            const response = await fetch(participantsUrl);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            this.participantsData = data;
+            
+            return data;
+            
+        } catch (error) {
+            console.error('Error loading participants:', error);
+            return [];
         }
+    },
+    
+    /**
+     * Filter forces that are registered for this crusade
+     */
+    filterParticipatingForces() {
+        if (!this.forcesData || this.forcesData.length < 2) {
+            return [];
+        }
+        
+        if (!this.participantsData || this.participantsData.length < 2) {
+            // No participants yet, return empty
+            return [];
+        }
+        
+        // Get participant force keys for this crusade
+        // Participants structure: 0=Key, 1=Crusade Key, 2=Force Key
+        const participantForceKeys = this.participantsData
+            .slice(1) // Skip header
+            .filter(row => row[1] === this.crusadeKey) // Filter by crusade key
+            .map(row => row[2]); // Get force keys
+        
+        // Filter forces that are participating
+        const headers = this.forcesData[0];
+        const participatingForces = this.forcesData
+            .slice(1) // Skip header
+            .filter(row => participantForceKeys.includes(row[0])) // Filter by force key
+            .map(row => {
+                const force = {};
+                headers.forEach((header, index) => {
+                    force[header] = row[index];
+                });
+                return force;
+            });
+        
+        return participatingForces;
+    },
+    
+    /**
+     * Get all available forces for registration dropdown
+     */
+    getAllAvailableForces() {
+        if (!this.forcesData || this.forcesData.length < 2) {
+            return [];
+        }
+        
+        const headers = this.forcesData[0];
+        const forces = this.forcesData.slice(1).map(row => {
+            const force = {};
+            headers.forEach((header, index) => {
+                force[header] = row[index];
+            });
+            return force;
+        });
+        
+        return forces;
+    },
+    
+    /**
+     * Check if a force is already registered
+     */
+    isForceRegistered(forceKey) {
+        if (!this.participantsData || this.participantsData.length < 2) {
+            return false;
+        }
+        
+        return this.participantsData.slice(1).some(row => 
+            row[1] === this.crusadeKey && row[2] === forceKey
+        );
     }
 };
 
 // Make globally available
 window.CrusadeData = CrusadeData;
 
-// Export for modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = CrusadeData;
-}
-
-console.log('CrusadeData module loaded with key system support');
+console.log('CrusadeData module loaded with global caching support');
