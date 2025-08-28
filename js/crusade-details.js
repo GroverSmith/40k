@@ -62,17 +62,23 @@ class CrusadeDetailsApp {
             console.error('Error in loadCrusadeData:', error);
             CrusadeUI.showError('Failed to load crusade data: ' + error.message);
         }
-    }
+    }    
     
-    displayCrusadeContent() {
-        // Update header
-        CrusadeUI.updateHeader(this.crusadeData, this.crusadeData['Crusade Name']);
-        
-        // Display sections
-        CrusadeUI.displayIntroduction(this.crusadeData);
-        CrusadeUI.displayRules(this.crusadeData);
-        CrusadeUI.displayNarrative(this.crusadeData);
-    }
+
+	displayCrusadeContent() {
+		// Update header
+		CrusadeUI.updateHeader(this.crusadeData, this.crusadeData['Crusade Name']);
+		
+		// Display sections
+		CrusadeUI.displayIntroduction(this.crusadeData);
+		CrusadeUI.displayRules(this.crusadeData);
+		CrusadeUI.displayNarrative(this.crusadeData);
+		
+		// Show the crusade actions (battle button) with the crusade key
+		const crusadeKey = this.crusadeData.key || this.crusadeData.Key || 
+						  CrusadeData.generateCrusadeKey(this.crusadeData['Crusade Name']);
+		showCrusadeActions(crusadeKey);
+	}
     
     async loadParticipatingForces() {
         try {
@@ -224,6 +230,48 @@ function updateSortIndicators(activeColumn, direction) {
             indicator.style.color = '#cccccc';
         }
     });
+}
+
+function showCrusadeActions(crusadeKey) {
+    const actionsDiv = document.getElementById('crusade-actions');
+    if (actionsDiv) {
+        // Update the link to include the crusade key as a parameter
+        const battleLink = actionsDiv.querySelector('a[href*="add-battle-report"]');
+        if (battleLink && crusadeKey) {
+            // Add the crusade key as a URL parameter
+            const baseUrl = '../battle-reports/add-battle-report.html';
+            battleLink.href = `${baseUrl}?crusade=${encodeURIComponent(crusadeKey)}`;
+        }
+        actionsDiv.style.display = 'block';
+    }
+}
+
+// Also, to auto-select the crusade in the battle report form when coming from crusade details
+// Add this to battle-report-form.js in the init() method:
+
+function checkForCrusadeParameter() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const crusadeKey = urlParams.get('crusade');
+    
+    if (crusadeKey) {
+        // Wait for crusades to load, then select the matching one
+        const checkAndSelect = setInterval(() => {
+            const crusadeSelect = document.getElementById('crusade-select');
+            if (crusadeSelect && crusadeSelect.options.length > 1) {
+                for (let option of crusadeSelect.options) {
+                    if (option.value === crusadeKey) {
+                        crusadeSelect.value = crusadeKey;
+                        clearInterval(checkAndSelect);
+                        console.log('Auto-selected crusade:', crusadeKey);
+                        break;
+                    }
+                }
+            }
+        }, 100);
+        
+        // Stop checking after 5 seconds
+        setTimeout(() => clearInterval(checkAndSelect), 5000);
+    }
 }
 
 // Utility functions for crusade page

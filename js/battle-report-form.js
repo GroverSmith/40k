@@ -20,6 +20,7 @@ class BattleReportForm extends BaseForm {
         
         // Initialize base form functionality
         this.initBase();
+		this.checkForCrusadeParameter();
         
         // Load available forces and crusades
         this.loadForces();
@@ -43,7 +44,38 @@ class BattleReportForm extends BaseForm {
         
         // Set up player name auto-population from force selection
         this.setupPlayerAutoPopulation();
-    }
+    }	
+	
+	checkForCrusadeParameter() {
+		const urlParams = new URLSearchParams(window.location.search);
+		const crusadeKey = urlParams.get('crusade');
+		
+		if (crusadeKey) {
+			console.log('Found crusade parameter:', crusadeKey);
+			
+			// Wait for crusades to load, then select the matching one
+			const checkAndSelect = setInterval(() => {
+				const crusadeSelect = document.getElementById('crusade-select');
+				if (crusadeSelect && crusadeSelect.options.length > 1) {
+					for (let option of crusadeSelect.options) {
+						if (option.value === crusadeKey) {
+							crusadeSelect.value = crusadeKey;
+							clearInterval(checkAndSelect);
+							console.log('Auto-selected crusade:', crusadeKey);
+							break;
+						}
+					}
+					// If we've checked all options and didn't find it, stop trying
+					if (crusadeSelect.options.length > 1) {
+						clearInterval(checkAndSelect);
+					}
+				}
+			}, 100);
+			
+			// Stop checking after 5 seconds
+			setTimeout(() => clearInterval(checkAndSelect), 5000);
+		}
+	}
     
     async loadForces() {
         try {
@@ -102,6 +134,8 @@ class BattleReportForm extends BaseForm {
             // Not critical if crusades don't load
         }
     }
+	
+	
     
     populateCrusadeDropdown(data) {
         const select = document.getElementById('crusade-select');
