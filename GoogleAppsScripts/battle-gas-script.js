@@ -284,44 +284,45 @@ function getBattleByKey(battleKey) {
 }
 
 function getBattlesForForce(forceKey) {
-  if (!forceKey) {
-    throw new Error('Force key is required');
-  }
-  
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
-  if (!sheet) {
+    if (!forceKey) {
+        throw new Error('Force key is required');
+    }
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+        return ContentService
+            .createTextOutput(JSON.stringify({
+                success: true,
+                battles: []
+            }))
+            .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    // Filter battles where force is either Force 1 or Force 2
+    // Force 1 Key is column 3, Force 2 Key is column 4
+    const battles = data.slice(1)
+        .filter(row => row[3] === forceKey || row[4] === forceKey) // Fixed column indices
+        .map(row => {
+            const battle = {};
+            headers.forEach((header, index) => {
+                battle[header] = row[index];
+            });
+            return battle;
+        });
+    
+    console.log(`Found ${battles.length} battles for force key "${forceKey}"`);
+    
     return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        battles: []
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  
-  // Filter battles where force is either Force 1 or Force 2
-  const battles = data.slice(1)
-    .filter(row => row[2] === forceKey || row[3] === forceKey) // Force 1 Key or Force 2 Key
-    .map(row => {
-      const battle = {};
-      headers.forEach((header, index) => {
-        battle[header] = row[index];
-      });
-      return battle;
-    });
-  
-  console.log(`Found ${battles.length} battles for force key "${forceKey}"`);
-  
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      battles: battles
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
+        .createTextOutput(JSON.stringify({
+            success: true,
+            battles: battles
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
 }
 
 function getRecentBattles(limit = 10) {
