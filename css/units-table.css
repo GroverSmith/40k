@@ -1,0 +1,196 @@
+/* filename: css/units-table.css */
+/* Styling for Characters and Units display
+/* 40k Crusade Campaign Tracker */
+
+.units-container {
+    margin-top: 20px;
+}
+
+.unit-type-group {
+    margin-bottom: 30px;
+    background: rgba(26, 26, 26, 0.5);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #4a4a4a;
+}
+
+.unit-type-header {
+    color: #4ecdc4;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #4ecdc4;
+    font-size: 1.2em;
+}
+
+.units-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.units-table thead {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+.units-table th {
+    padding: 10px;
+    text-align: left;
+    color: #4ecdc4;
+    font-weight: bold;
+    border-bottom: 2px solid #4ecdc4;
+}
+
+.units-table th.text-center,
+.units-table td.text-center {
+    text-align: center;
+}
+
+.units-table tbody tr {
+    border-bottom: 1px solid #4a4a4a;
+    transition: background-color 0.2s;
+}
+
+.units-table tbody tr:hover {
+    background: rgba(78, 205, 196, 0.1);
+}
+
+.units-table td {
+    padding: 10px;
+    color: #ffffff;
+}
+
+.unit-name {
+    font-weight: bold;
+    color: #4ecdc4;
+}
+
+/* Badges for traits, scars, relics */
+.badge {
+    display: inline-block;
+    padding: 2px 6px;
+    margin-left: 5px;
+    border-radius: 3px;
+    font-size: 0.75em;
+    font-weight: bold;
+}
+
+.badge.trait {
+    background: #27ae60;
+    color: white;
+    title: "Has Battle Traits";
+}
+
+.badge.scar {
+    background: #e74c3c;
+    color: white;
+    title: "Has Battle Scars";
+}
+
+.badge.relic {
+    background: #f39c12;
+    color: white;
+    title: "Has Relics";
+}
+
+/* Rank badges */
+.rank-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85em;
+}
+
+.rank-battleready {
+    background: #7f8c8d;
+    color: white;
+}
+
+.rank-blooded {
+    background: #3498db;
+    color: white;
+}
+
+.rank-veteran {
+    background: #27ae60;
+    color: white;
+}
+
+.rank-heroic {
+    background: #9b59b6;
+    color: white;
+}
+
+.rank-legendary {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+    box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+}
+
+/* Unit details row */
+.unit-details-row td {
+    padding: 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.unit-details {
+    padding: 15px 20px;
+    border-left: 3px solid #4ecdc4;
+}
+
+.detail-item {
+    margin-bottom: 8px;
+    color: #ccc;
+    line-height: 1.5;
+}
+
+.detail-item strong {
+    color: #4ecdc4;
+    margin-right: 10px;
+}
+
+/* Units summary */
+.units-summary {
+    margin-top: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border-radius: 8px;
+    border: 1px solid #4ecdc4;
+    text-align: center;
+    color: #ffffff;
+    font-size: 1.1em;
+}
+
+.units-summary strong {
+    color: #4ecdc4;
+    margin-right: 10px;
+}
+
+/* No data message */
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #888;
+    font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .units-table {
+        font-size: 0.9em;
+    }
+    
+    .units-table th,
+    .units-table td {
+        padding: 5px;
+    }
+    
+    .badge {
+        font-size: 0.65em;
+        padding: 1px 4px;
+    }
+    
+    .unit-details {
+        padding: 10px;
+    }
+}

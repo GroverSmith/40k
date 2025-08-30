@@ -31,11 +31,18 @@ function doPost(e) {
       throw new Error('No data received');
     }
     
-    // Validate required fields
-    const required = ['userKey', 'forceKey', 'name', 'dataSheet', 'type'];
-    const missing = required.filter(field => !data[field]);
+    // Validate required fields (check for empty strings too)
+    const required = ['forceKey', 'name', 'dataSheet', 'type'];
+    const missing = required.filter(field => !data[field] || data[field].trim() === '');
     if (missing.length > 0) {
       throw new Error('Missing required fields: ' + missing.join(', '));
+    }
+    
+    // userKey is optional - if not provided, generate from userName
+    let userKey = data.userKey;
+    if (!userKey && data.userName) {
+      userKey = data.userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+      console.log('Generated userKey from userName:', userKey);
     }
     
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -127,7 +134,7 @@ function doPost(e) {
     // Prepare row data
     const rowData = [
       unitKey,                        // Key
-      data.userKey || '',             // User Key
+      userKey || '',                  // User Key (using the generated or provided userKey)
       data.forceKey || '',            // Force Key
       nameXrefKey,                    // Name Xref Key
       data.dataSheet || '',           // Data Sheet
