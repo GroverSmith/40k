@@ -208,46 +208,41 @@ class ForceDetailsApp {
    }
    
    displayBattleHistory(battles) {
-       const container = document.getElementById('battle-history-content');
-       
-       // New column order: Outcome, Date Played, Opponent Name, Battle Name, Battle Size
-       let html = '<div class="table-wrapper"><table class="data-table"><thead><tr>';
-       html += '<th>Outcome</th><th>Date Played</th><th>Opponent Name</th><th>Battle Name</th><th>Battle Size</th>';
-       html += '</tr></thead><tbody>';
-       
-       battles.forEach(battle => {
-           // Use the already computed fields from ForceData.loadBattleHistory()
-           // That function adds: result, opponent, opponentPlayer, forceScore, opponentScore
-           const outcome = battle.result || 'Unknown';
-           const outcomeClass = outcome === 'Victory' ? 'victory' : 
-                              outcome === 'Defeat' ? 'defeat' : 'draw';
-           
-           // Get date
-           const date = battle['Date Played'] ? new Date(battle['Date Played']).toLocaleDateString() : 'Unknown';
-           
-           // Use the already computed opponentPlayer field
-           const opponentName = battle.opponentPlayer || 'Unknown Opponent';
-           
-           // Get battle name
-           const battleName = battle['Battle Name'] || '-';
-           
-           // Get battle size
-           const battleSize = battle['Battle Size'] ? `${battle['Battle Size']} pts` : '-';
-           
-           html += `
-               <tr>
-                   <td class="${outcomeClass}">${outcome}</td>
-                   <td>${date}</td>
-                   <td>${opponentName}</td>
-                   <td>${battleName}</td>
-                   <td>${battleSize}</td>
-               </tr>
-           `;
-       });
-       
-       html += '</tbody></table></div>';
-       container.innerHTML = html;
-   }
+		const container = document.getElementById('battle-history-content');
+		
+		// Add Score column to the header
+		let html = '<div class="table-wrapper"><table class="data-table"><thead><tr>';
+		html += '<th>Outcome</th><th>Date Played</th><th>Opponent Name</th><th>Battle Name</th><th>Score</th><th>Battle Size</th>';
+		html += '</tr></thead><tbody>';
+		
+		battles.forEach(battle => {
+			const outcome = battle.result || 'Unknown';
+			const outcomeClass = outcome === 'Victory' ? 'victory' : 
+							   outcome === 'Defeat' ? 'defeat' : 'draw';
+			
+			const date = battle['Date Played'] ? new Date(battle['Date Played']).toLocaleDateString() : 'Unknown';
+			const opponentName = battle.opponentPlayer || 'Unknown Opponent';
+			const battleName = battle['Battle Name'] || '-';
+			const battleSize = battle['Battle Size'] ? `${battle['Battle Size']} pts` : '-';
+			
+			// Use the correct fields that were set in ForceData.loadBattleHistory()
+			const score = `${battle.forceScore || 0} - ${battle.opponentScore || 0}`;
+			
+			html += `
+				<tr>
+					<td class="${outcomeClass}">${outcome}</td>
+					<td>${date}</td>
+					<td>${opponentName}</td>
+					<td>${battleName}</td>
+					<td>${score}</td>
+					<td>${battleSize}</td>
+				</tr>
+			`;
+		});
+		
+		html += '</tbody></table></div>';
+		container.innerHTML = html;
+	}
    
    async loadParticipatingCrusades() {
        try {

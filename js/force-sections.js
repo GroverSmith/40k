@@ -33,6 +33,12 @@ const ForceSections = {
 				`force_${forceData.key}`
 			);
 			
+			console.log('Battle history result:', result);
+			console.log('Result has battles?:', result.battles);
+			if (result.battles && result.battles.length > 0) {
+				console.log('First battle:', result.battles[0]);
+			}
+			
 			if (result.success && result.battles && result.battles.length > 0) {
 				const battles = result.battles;
 				

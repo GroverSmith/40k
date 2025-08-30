@@ -244,7 +244,7 @@ const ForceUI = {
 		document.getElementById('battle-losses').textContent = defeats;
 		document.getElementById('battle-ties').textContent = draws;
 		
-		statsSection.style.display = 'flex';
+		statsSection.style.display = '';
 	},
 
 	/**
@@ -271,8 +271,11 @@ const ForceUI = {
 			const date = battle['Date Played'] ? new Date(battle['Date Played']).toLocaleDateString() : '-';
 			const battleName = battle['Battle Name'] || 'Unnamed Battle';
 			const battleSize = battle['Battle Size'] || '-';
-			const player1Score = battle['Player 1 Score'] || 0;
-			const player2Score = battle['Player 2 Score'] || 0;
+			
+			// FIX: Get the scores from the correct field names
+			const player1Score = battle['Player 1 score'] || 0;
+			const player2Score = battle['Player 2 score'] || 0;
+			
 			const force1Key = battle['Force 1 Key'];
 			const force2Key = battle['Force 2 Key'];
 			const victorForceKey = battle['Victor Force Key'];
@@ -297,8 +300,8 @@ const ForceUI = {
 				resultClass = 'result-defeat';
 			}
 			
-			// Format score with winner's score first
-			const score = victorForceKey === force1Key ? 
+			// Format score - show this force's score first
+			const score = isForce1 ? 
 				`${player1Score} - ${player2Score}` : 
 				`${player2Score} - ${player1Score}`;
 			
