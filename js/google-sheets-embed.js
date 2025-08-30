@@ -210,16 +210,23 @@ class GoogleSheetsEmbed {
             html += this.createPaginationControls(totalPages, totalDataRows);
         }
         
-        // Determine if we need scrolling
-        const needsScrolling = !this.options.pagination && 
-                             (!this.options.maxRows || totalDataRows > this.options.maxRows);
+        // Determine if we need scrolling based on actual content
+        // We need scrolling if pagination is off AND we have maxHeight set
+        const hasMaxHeight = !this.options.pagination && this.options.maxHeight;
         
-        // Create table wrapper with appropriate styling
-        const wrapperClass = needsScrolling ? 'sheets-table-wrapper' : 'sheets-table-wrapper no-scroll';
-        const wrapperStyle = needsScrolling ? 'max-height: ' + this.options.maxHeight + ';' : '';
+        // Create table wrapper - use auto overflow to let browser decide
+        const wrapperClass = 'sheets-table-wrapper';
+        let wrapperStyle = '';
+        
+        if (hasMaxHeight) {
+            // Use max-height with auto overflow - scrollbar only appears when needed
+            wrapperStyle = 'max-height: ' + this.options.maxHeight + '; overflow-y: auto; overflow-x: hidden; border: 1px solid #4a4a4a; border-radius: 4px 4px 0 0; background-color: #2a2a2a; position: relative; display: block;';
+        } else {
+            wrapperStyle = 'border: 1px solid #4a4a4a; border-radius: 4px; background-color: #2a2a2a;';
+        }
         
         html += '<div class="' + wrapperClass + '" style="' + wrapperStyle + '">';
-        html += '<table class="sheets-table">';
+        html += '<table class="sheets-table" style="width: 100%; margin: 0; border-collapse: collapse;">';
         
         // Header row with sorting
         if (displayRows.length > 0) {
@@ -285,6 +292,7 @@ class GoogleSheetsEmbed {
         html += '</table>';
         html += '</div>'; // Close table wrapper
         
+        // Add stats footer that adapts to whether scrolling is present
         if (this.options.showStats) {
             const displayedRows = displayRows.length - 1;
             const cachedData = this.getCachedData();
@@ -314,7 +322,12 @@ class GoogleSheetsEmbed {
                 statsText += ' | Page ' + this.currentPage;
             }
             
-            html += '<div class="sheets-stats">' + statsText + '</div>';
+            // Style stats based on whether we have maxHeight (potential scrolling)
+            const statsStyle = hasMaxHeight ? 
+                'margin-top: 0; padding: 8px 12px; background-color: #2a2a2a; border-radius: 0 0 4px 4px; font-size: 11px; color: #999; border: 1px solid #4a4a4a; border-top: 1px solid #3a3a3a;' :
+                'margin-top: 2px; padding: 8px 12px; background-color: #2a2a2a; border-radius: 4px; font-size: 11px; color: #999; border: 1px solid #3a3a3a;';
+            
+            html += '<div class="sheets-stats" style="' + statsStyle + '">' + statsText + '</div>';
         }
         
         this.contentDiv.innerHTML = html;
