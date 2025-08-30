@@ -1,0 +1,288 @@
+<!-- filename: stories/add-story.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Story - 40k Crusade Campaign Tracker</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/buttons-unified.css">
+    <link rel="stylesheet" href="../css/components-unified.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/user-dropdown.css">
+    <link rel="stylesheet" href="../css/modal.css">
+    <link rel="stylesheet" href="../css/user-field.css">
+    
+    <style>
+        .story-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            border: 1px solid #3a3a3a;
+        }
+        
+        .section-title {
+            color: #4ecdc4;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3a3a3a;
+        }
+        
+        .story-text-container {
+            margin-bottom: 20px;
+        }
+        
+        .story-text-field {
+            width: 100%;
+            min-height: 200px;
+            max-height: 500px;
+            resize: vertical;
+            background: #1a1a1a;
+            border: 1px solid #4a4a4a;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        
+        .media-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .optional-label {
+            color: #999;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+        
+        .character-count {
+            text-align: right;
+            color: #999;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+        
+        .character-count.warning {
+            color: #ffa500;
+        }
+        
+        .character-count.error {
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📜 Add Story</h1>
+            <p>Record narratives, battle reports, and lore for your Crusade forces</p>
+        </header>
+        
+        <nav class="breadcrumb">
+            <a href="../index.html">Home</a> &gt; 
+            <span>Add Story</span>
+        </nav>
+        
+        <main>
+            <form id="story-form" class="crusade-form">
+                <!-- Basic Information Section -->
+                <div class="story-section">
+                    <h2 class="section-title">📋 Basic Information</h2>
+                    
+                    <div class="form-group">
+                        <label for="user-name">Author Name <span class="required">*</span></label>
+                        <input type="text" id="user-name" name="userName" required 
+                               placeholder="Your name">
+                        <small class="help-text">Story author (auto-filled if user selected)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="story-type">Story Type <span class="required">*</span></label>
+                        <select id="story-type" name="storyType" required>
+                            <option value="">Select story type...</option>
+                            <option value="Battle Report">Battle Report</option>
+                            <option value="Character Story">Character Story</option>
+                            <option value="Campaign Narrative">Campaign Narrative</option>
+                            <option value="Force Background">Force Background</option>
+                            <option value="Unit History">Unit History</option>
+                            <option value="Victory Celebration">Victory Celebration</option>
+                            <option value="Defeat Analysis">Defeat Analysis</option>
+                            <option value="Strategic Planning">Strategic Planning</option>
+                            <option value="Personal Log">Personal Log</option>
+                            <option value="Propaganda">Propaganda</option>
+                            <option value="Technical Report">Technical Report</option>
+                            <option value="Field Report">Field Report</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="title">Title <span class="required">*</span></label>
+                        <input type="text" id="title" name="title" required maxlength="200"
+                               placeholder="e.g., The Siege of Hive Primus">
+                        <small class="help-text">A memorable title for your story</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="imperial-date">Imperial Date <span class="optional-label">(optional)</span></label>
+                        <input type="text" id="imperial-date" name="imperialDate" 
+                               placeholder="e.g., 0.123.999.M41">
+                        <small class="help-text">In-universe date for narrative purposes</small>
+                    </div>
+                </div>
+                
+                <!-- Associated Records Section -->
+                <div class="story-section">
+                    <h2 class="section-title">🔗 Associated Records <span class="optional-label">(optional)</span></h2>
+                    
+                    <div class="form-group">
+                        <label for="force-select">Associated Force</label>
+                        <select id="force-select" name="forceKey">
+                            <option value="">No force association</option>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                        <small class="help-text">Link this story to a specific force</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="crusade-select">Associated Crusade</label>
+                        <select id="crusade-select" name="crusadeKey">
+                            <option value="">No crusade association</option>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                        <small class="help-text">Link this story to a specific crusade campaign</small>
+                    </div>
+                </div>
+                
+                <!-- Story Content Section -->
+                <div class="story-section">
+                    <h2 class="section-title">📝 Story Content</h2>
+                    
+                    <div class="story-text-container">
+                        <div class="form-group">
+                            <label for="story-text-1">Story Text - Part 1 <span class="required">*</span></label>
+                            <textarea id="story-text-1" name="storyText1" required 
+                                      class="story-text-field" maxlength="10000"
+                                      placeholder="Begin your narrative here..."></textarea>
+                            <div class="character-count" id="count-1">0 / 10,000 characters</div>
+                        </div>
+                    </div>
+                    
+                    <div class="story-text-container">
+                        <div class="form-group">
+                            <label for="story-text-2">Story Text - Part 2 <span class="optional-label">(optional)</span></label>
+                            <textarea id="story-text-2" name="storyText2" 
+                                      class="story-text-field" maxlength="10000"
+                                      placeholder="Continue your story if needed..."></textarea>
+                            <div class="character-count" id="count-2">0 / 10,000 characters</div>
+                        </div>
+                    </div>
+                    
+                    <div class="story-text-container">
+                        <div class="form-group">
+                            <label for="story-text-3">Story Text - Part 3 <span class="optional-label">(optional)</span></label>
+                            <textarea id="story-text-3" name="storyText3" 
+                                      class="story-text-field" maxlength="10000"
+                                      placeholder="Additional content if needed..."></textarea>
+                            <div class="character-count" id="count-3">0 / 10,000 characters</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="text-link">External Text Link <span class="optional-label">(optional)</span></label>
+                        <input type="url" id="text-link" name="textLink" 
+                               placeholder="https://docs.google.com/document/...">
+                        <small class="help-text">Link to a longer narrative document</small>
+                    </div>
+                </div>
+                
+                <!-- Media Section -->
+                <div class="story-section">
+                    <h2 class="section-title">🎨 Media <span class="optional-label">(optional)</span></h2>
+                    
+                    <div class="media-links-grid">
+                        <div class="form-group">
+                            <label for="image-1">Image 1 URL</label>
+                            <input type="url" id="image-1" name="image1" 
+                                   placeholder="https://imgur.com/...">
+                            <small class="help-text">Link to an image</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="image-2">Image 2 URL</label>
+                            <input type="url" id="image-2" name="image2" 
+                                   placeholder="https://imgur.com/...">
+                            <small class="help-text">Link to an image</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="image-3">Image 3 URL</label>
+                            <input type="url" id="image-3" name="image3" 
+                                   placeholder="https://imgur.com/...">
+                            <small class="help-text">Link to an image</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="audio-link">Audio Link</label>
+                            <input type="url" id="audio-link" name="audioLink" 
+                                   placeholder="https://soundcloud.com/...">
+                            <small class="help-text">Link to audio narration or music</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Section -->
+                <div class="form-actions">
+                    <a href="../index.html" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" id="submit-btn" class="btn btn-primary">
+                        <span class="btn-text">Submit Story</span>
+                        <span class="btn-loading" style="display: none;">
+                            <div class="loading-spinner"></div>
+                            Submitting...
+                        </span>
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Success Message -->
+            <div id="success-message" class="success-message" style="display: none;">
+                <h2>📜 Story Submitted Successfully!</h2>
+                <p>Your narrative has been recorded in the archives.</p>
+                <div class="success-actions">
+                    <a href="../index.html" class="btn btn-secondary">Return Home</a>
+                    <a href="add-story.html" class="btn btn-primary">Add Another Story</a>
+                </div>
+            </div>
+            
+            <!-- Error Message -->
+            <div id="error-message" class="error-message" style="display: none;">
+                <h2>❌ Submission Failed</h2>
+                <p id="error-text">There was an error submitting your story. Please try again.</p>
+                <button onclick="document.getElementById('error-message').style.display='none'; document.getElementById('story-form').style.display='block';" 
+                        class="btn btn-primary">Try Again</button>
+            </div>
+        </main>
+    </div>
+    
+    <!-- JavaScript Files -->
+    <script src="../js/config.js"></script>
+    <script src="../js/cache-manager.js"></script>
+    <script src="../js/key-utils.js"></script>
+    <script src="../js/user-storage.js"></script>
+    <script src="../js/user-api.js"></script>
+    <script src="../js/user-ui.js"></script>
+    <script src="../js/user-modal.js"></script>
+    <script src="../js/user-manager.js"></script>
+    <script src="../js/form-base.js"></script>
+    <script src="../js/story-form.js"></script>
+</body>
+</html>

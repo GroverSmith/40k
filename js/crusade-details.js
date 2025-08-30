@@ -58,6 +58,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // Display battle history for this crusade
         await CrusadeUI.displayBattleHistory(crusadeKey);
+		
+		await CrusadeUI.displayStories(crusadeKey);
         
         // Load and display participating forces
         const participantsResult = await CrusadeData.loadParticipatingForces(crusadeKey);

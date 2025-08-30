@@ -54,8 +54,8 @@ const CrusadeConfig = {
         },
         
         stories: {
-            url: null,
-            sheetId: null,
+            url: 'https://script.google.com/macros/s/AKfycbza1Ir9QjydYpiUA3C4YXcJdeXd15gZ5HVuSk_mLnyMoyNmcUhQ82c49gHP5qSEp5Xp/exec',
+            sheetId: '1Abqj7jWKzeupZMBF48GgSWG-u1kpPKsQfXHrzIw2uwQ',
             sheetName: 'Stories'
         },
         
@@ -145,6 +145,30 @@ const CrusadeConfig = {
             keyColumn: 0,
             headers: ['Key', 'Crusade Key', 'Force Key', 'Crusade Name', 'Force Name', 
                      'User Name', 'Timestamp']
+        },
+		
+		stories: {
+            primaryKey: {
+                columns: ['userKey', 'title', 'timestamp'],
+                separator: '_',
+                formatter: (data) => {
+                    // Use user key as base, add title and timestamp
+                    const titlePart = data.title.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+                    const timestamp = new Date().getTime();
+                    const random = Math.random().toString(36).substring(2, 6);
+                    return `${data.userKey}_${titlePart}_${timestamp}_${random}`;
+                }
+            },
+            foreignKeys: {
+                userKey: 'users',
+                forceKey: 'forces',
+                crusadeKey: 'crusades'
+            },
+            keyColumn: 0,
+            headers: ['Key', 'Timestamp', 'User Key', 'Force Key', 'Crusade Key', 
+                     'Story Type', 'Title', 'Imperial Date', 'Story Text 1', 
+                     'Story Text 2', 'Story Text 3', 'Text Link', 'Image 1', 
+                     'Image 2', 'Image 3', 'Audio Link', 'Deleted Timestamp']
         }
     },
     
@@ -288,6 +312,22 @@ const CrusadeConfig = {
             '2023.3',
             '2023.2',
             '2023.1'
+        ],
+		
+		storyTypes: [
+            'Battle Report',
+            'Character Story',
+            'Campaign Narrative',
+            'Force Background',
+            'Unit History',
+            'Victory Celebration',
+            'Defeat Analysis',
+            'Strategic Planning',
+            'Personal Log',
+            'Propaganda',
+            'Technical Report',
+            'Field Report',
+            'Other'
         ]
     },
     
