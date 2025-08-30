@@ -4,6 +4,9 @@
 
 // Initialize sheets when the page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Check for success notifications from other pages
+    CrusadeApp.checkForSuccessNotifications();
+    
     // Wait for config to be available
     if (typeof CrusadeConfig === 'undefined') {
         console.error('CrusadeConfig not loaded! Make sure config.js is included before app.js');
@@ -51,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }
-		
-		// Initialize Forces sheet with form integration
+        
+        // Initialize Forces sheet with form integration
         const forcesUrl = CrusadeConfig.getSheetUrl('forces');
         if (forcesUrl) {
             const forcesEmbed = SheetsManager.embed('crusade-forces-sheet', 
@@ -119,6 +122,113 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Application-specific utility functions
 const CrusadeApp = {
+    // Check for success notifications from other pages
+    checkForSuccessNotifications() {
+        // Check for force creation success
+        const forceCreated = sessionStorage.getItem('force_created');
+        if (forceCreated) {
+            try {
+                const data = JSON.parse(forceCreated);
+                // Only show if created within last 10 seconds
+                if (Date.now() - data.timestamp < 10000) {
+                    this.showNotification(`Force "${data.forceName}" created successfully!`, 'success');
+                }
+            } catch (e) {
+                console.error('Error parsing force creation data:', e);
+            }
+            // Clear it so it doesn't show again
+            sessionStorage.removeItem('force_created');
+        }
+        
+        // Check for other success notifications (future expansion)
+        const userCreated = sessionStorage.getItem('user_created');
+        if (userCreated) {
+            try {
+                const data = JSON.parse(userCreated);
+                if (Date.now() - data.timestamp < 10000) {
+                    this.showNotification(`User "${data.userName}" created and selected!`, 'success');
+                }
+            } catch (e) {
+                console.error('Error parsing user creation data:', e);
+            }
+            sessionStorage.removeItem('user_created');
+        }
+    },
+    
+    // Show notification banner
+    showNotification(message, type = 'info') {
+        // Remove any existing notifications
+        const existing = document.querySelector('.app-notification');
+        if (existing) {
+            existing.remove();
+        }
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `app-notification ${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? 'linear-gradient(135deg, #1e4a3a 0%, #2c5f4f 100%)' : '#2a2a2a'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            max-width: 400px;
+            border-left: 4px solid ${type === 'success' ? '#4ecdc4' : '#ffa500'};
+            animation: slideInRight 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        `;
+        
+        // Add icon
+        const icon = document.createElement('span');
+        icon.style.fontSize = '20px';
+        icon.textContent = type === 'success' ? '✅' : 'ℹ️';
+        notification.appendChild(icon);
+        
+        // Add message
+        const messageEl = document.createElement('span');
+        messageEl.textContent = message;
+        notification.appendChild(messageEl);
+        
+        // Add close button
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = '×';
+        closeBtn.style.cssText = `
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            margin-left: 15px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        `;
+        closeBtn.onmouseover = () => closeBtn.style.opacity = '1';
+        closeBtn.onmouseout = () => closeBtn.style.opacity = '0.8';
+        closeBtn.onclick = () => notification.remove();
+        notification.appendChild(closeBtn);
+        
+        // Add to page
+        document.body.appendChild(notification);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                notification.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        notification.remove();
+                    }
+                }, 300);
+            }
+        }, 5000);
+    },
+    
     // Initialize error handling for the application
     initErrorHandling() {
         window.addEventListener('error', function(event) {

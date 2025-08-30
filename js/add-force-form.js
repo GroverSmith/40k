@@ -1,51 +1,97 @@
-// filename: add-force-form.js
-// Add Force Form - Extends BaseForm for Crusade Force creation
+// filename: js/add-force-form.js
+// Form handler for Add Crusade Force with cache management
 // 40k Crusade Campaign Tracker
 
 class AddForceForm extends BaseForm {
     constructor() {
         super('add-force-form', {
-            submitUrl: CrusadeConfig ? CrusadeConfig.getSheetUrl('forces') : '',
+            submitUrl: CrusadeConfig.getSheetUrl('forces'),
             successMessage: 'Crusade Force created successfully!',
-            errorMessage: 'Failed to create Crusade Force',
-            minNameLength: 3,
-            maxNameLength: 100,
-            maxNotesLength: 2000
+            errorMessage: 'Failed to create Crusade Force. Please try again.',
+            redirectUrl: '../index.html'
         });
         
         this.init();
     }
     
     init() {
-        console.log('Add Force Form initialized');
+        console.log('Initializing Add Force Form...');
         
-        // Initialize base form functionality
+        // Initialize base functionality
         this.initBase();
+        
+        // Additional force-specific initialization if needed
+        this.setupFactionChangeHandler();
     }
     
     /**
-     * Override to add specific field validation
+     * Setup faction change handler for dynamic detachment options
+     */
+    setupFactionChangeHandler() {
+        const factionSelect = document.getElementById('faction');
+        if (factionSelect) {
+            factionSelect.addEventListener('change', (e) => {
+                this.handleFactionChange(e.target.value);
+            });
+        }
+    }
+    
+    /**
+     * Handle faction change (placeholder for future faction-specific logic)
+     */
+    handleFactionChange(faction) {
+        console.log('Faction selected:', faction);
+        // Future: Could load faction-specific detachments here
+    }
+    
+    /**
+     * Get form instance name for onclick handlers
+     */
+    getFormInstanceName() {
+        return 'addForceForm';
+    }
+    
+    /**
+     * Gather form data for submission
+     */
+    gatherFormData() {
+        const formData = new FormData(this.form);
+        
+        return {
+            userName: formData.get('userName').trim(),
+            forceName: formData.get('forceName').trim(),
+            faction: formData.get('faction'),
+            detachment: formData.get('detachment').trim(),
+            notes: formData.get('notes').trim()
+        };
+    }
+    
+    /**
+     * Validate specific fields for force creation
      */
     validateSpecificField(field, value) {
-        if (field.id === 'force-name' && value) {
-            if (value.length < this.config.minNameLength) {
+        const fieldName = field.name;
+        
+        if (fieldName === 'forceName') {
+            if (value.length < 3) {
                 return {
                     isValid: false,
-                    errorMessage: `Force name must be at least ${this.config.minNameLength} characters long.`
+                    errorMessage: 'Force name must be at least 3 characters long.'
                 };
-            } else if (value.length > this.config.maxNameLength) {
+            }
+            if (value.length > 100) {
                 return {
                     isValid: false,
-                    errorMessage: `Force name must be no more than ${this.config.maxNameLength} characters long.`
+                    errorMessage: 'Force name must be less than 100 characters.'
                 };
             }
         }
         
-        if (field.id === 'notes' && value) {
-            if (value.length > this.config.maxNotesLength) {
+        if (fieldName === 'userName') {
+            if (value.length < 2) {
                 return {
                     isValid: false,
-                    errorMessage: `Notes must be no more than ${this.config.maxNotesLength} characters long.`
+                    errorMessage: 'Player name must be at least 2 characters long.'
                 };
             }
         }
@@ -54,27 +100,91 @@ class AddForceForm extends BaseForm {
     }
     
     /**
-     * Override to gather force specific data
+     * Override form submission to handle cache clearing
      */
-    gatherFormData() {
-        const form = document.getElementById(this.formId);
-        const formData = new FormData(form);
+    async handleSubmit(event) {
+        event.preventDefault();
         
-        return {
-            userName: formData.get('userName').trim(),
-            forceName: formData.get('forceName').trim(),
-            faction: formData.get('faction').trim(),
-            detachment: formData.get('detachment').trim() || '',
-            notes: formData.get('notes').trim() || '',
-            timestamp: new Date().toISOString()
-        };
+        if (this.isSubmitting) {
+            console.log('Already submitting, please wait');
+            return;
+        }
+        
+        console.log('Form submission started');
+        this.setLoadingState(true);
+        
+        try {
+            const isValid = this.validateForm();
+            if (!isValid) {
+                throw new Error('Please fix the form errors and try again.');
+            }
+            
+            const formData = this.gatherFormData();
+            console.log('Form data gathered:', formData);
+            
+            await this.submitToGoogleSheets(formData);
+            
+            // Clear ALL caches to ensure fresh data on main page
+            this.clearAllForcesRelatedCaches();
+            
+            // Store success message in sessionStorage to show on main page
+            sessionStorage.setItem('force_created', JSON.stringify({
+                forceName: formData.forceName,
+                timestamp: Date.now()
+            }));
+            
+            // Redirect immediately to main page
+            window.location.href = this.config.redirectUrl + '?refresh=' + Date.now();
+            
+        } catch (error) {
+            console.error('Form submission error:', error);
+            this.showError(error.message);
+            this.setLoadingState(false);
+        }
+        // Note: No finally block since we're redirecting on success
     }
     
     /**
-     * Override to return correct instance name
+     * Clear ALL forces-related caches to ensure fresh data loads
      */
-    getFormInstanceName() {
-        return 'addForceForm';
+    clearAllForcesRelatedCaches() {
+        console.log('Clearing ALL forces-related caches...');
+        
+        // Method 1: Clear using CacheManager
+        if (typeof CacheManager !== 'undefined') {
+            CacheManager.clear('forces');
+            CacheManager.clearType('forces');
+            // Also clear all caches as a nuclear option
+            const clearedCount = CacheManager.clearAll();
+            console.log(`Cleared ${clearedCount} CacheManager entries`);
+        }
+        
+        // Method 2: Clear using SheetsManager if available
+        if (typeof SheetsManager !== 'undefined') {
+            SheetsManager.clearAllCaches();
+            console.log('Cleared all SheetsManager caches');
+        }
+        
+        // Method 3: Clear ALL localStorage items related to sheets/forces
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && (
+                key.includes('sheets_cache') || 
+                key.includes('force') || 
+                key.includes('cache_') ||
+                key === 'forces_cache_global'
+            )) {
+                keysToRemove.push(key);
+            }
+        }
+        
+        keysToRemove.forEach(key => {
+            localStorage.removeItem(key);
+            console.log('Removed localStorage key:', key);
+        });
+        
+        console.log(`Total ${keysToRemove.length} cache entries cleared from localStorage`);
     }
 }
 
@@ -113,9 +223,13 @@ function hideMessages() {
 // Initialize the form when page loads
 let addForceForm;
 document.addEventListener('DOMContentLoaded', () => {
-    addForceForm = new AddForceForm();
-    console.log('Add Force Form page initialized');
+    // Wait a bit for all modules to load
+    setTimeout(() => {
+        addForceForm = new AddForceForm();
+        console.log('Add Force Form page initialized');
+    }, 100);
 });
 
 // Make globally available
 window.AddForceForm = AddForceForm;
+window.addForceForm = null; // Will be set on DOMContentLoaded

@@ -9,14 +9,39 @@
     
     <!-- CSS Files -->
     <link rel="stylesheet" href="css/variables.css">
-	<link rel="stylesheet" href="css/base.css">
-	<link rel="stylesheet" href="css/buttons-unified.css">
-	<link rel="stylesheet" href="css/components-unified.css">
-	<link rel="stylesheet" href="css/responsive.css">
-	<link rel="stylesheet" href="css/pages/home.css">
-	<link rel="stylesheet" href="css/user-dropdown.css">
-	<link rel="stylesheet" href="css/modal.css">
-	<link rel="stylesheet" href="css/user-field.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/buttons-unified.css">
+    <link rel="stylesheet" href="css/components-unified.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/pages/home.css">
+    <link rel="stylesheet" href="css/user-dropdown.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/user-field.css">
+    
+    <!-- Notification Animations -->
+    <style>
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -27,10 +52,10 @@
         
         <main>
             <div class="page-actions">
-				<a href="battle-reports/add-battle-report.html" class="btn-primary">⚔️ Record New Battle</a>
-				<button id="create-user-btn" class="create-user-main-btn">+ Create New User</button>
-			</div>
-			
+                <a href="battle-reports/add-battle-report.html" class="btn-primary">⚔️ Record New Battle</a>
+                <button id="create-user-btn" class="create-user-main-btn">+ Create New User</button>
+            </div>
+            
             <!-- Recent Battles Section (NEW) -->
             <section class="features">
                 <h2>Recent Battles (Last 60 Days)</h2>
@@ -47,11 +72,11 @@
             </section>
             
             <section class="features">
-				<h2>Crusade Forces</h2>
-				<div id="crusade-forces-sheet"></div>
-				
-				<div style="clear: both;"></div>
-			</section>
+                <h2>Crusade Forces</h2>
+                <div id="crusade-forces-sheet"></div>
+                
+                <div style="clear: both;"></div>
+            </section>
             
             <section class="features">
                 <h2>Stories</h2>
@@ -62,13 +87,13 @@
 
     <!-- JavaScript Files -->
     <script src="js/config.js"></script>
-	<script src="js/cache-manager.js"></script>
+    <script src="js/cache-manager.js"></script>
     <script src="js/key-utils.js"></script>
     <script src="js/user-storage.js"></script>
-	<script src="js/user-api.js"></script>
-	<script src="js/user-ui.js"></script>
-	<script src="js/user-modal.js"></script>
-	<script src="js/user-manager.js"></script>
+    <script src="js/user-api.js"></script>
+    <script src="js/user-ui.js"></script>
+    <script src="js/user-modal.js"></script>
+    <script src="js/user-manager.js"></script>
     <script src="js/google-sheets-embed.js"></script>
     <script src="js/sheets-manager.js"></script>
     <script src="js/battle-history-home.js"></script>
