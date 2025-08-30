@@ -103,6 +103,51 @@
   letter-spacing: 1px;
 }
 
+/* Add these to components-unified.css */
+/* ===============================
+   STORIES TABLE ENHANCEMENTS
+   =============================== */
+
+/* Stories section specific styling */
+#stories-sheet .sheets-table th {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+#stories-sheet .sheets-table tr:hover {
+    background: rgba(78, 205, 196, 0.05);
+}
+
+/* Story type column styling */
+#stories-sheet .sheets-table td:nth-child(2) {
+    font-weight: 500;
+    color: #4ecdc4;
+}
+
+/* Title column link styling */
+#stories-sheet .sheets-table a {
+    color: #4ecdc4;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+#stories-sheet .sheets-table a:hover {
+    color: #6edfd6;
+    text-decoration: underline;
+}
+
+/* Section actions for Stories */
+.section-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.section-actions .btn-primary {
+    /* Inherits from buttons-unified.css */
+}
+
 /* ===============================
    MESSAGES & ALERTS - Unified
    =============================== */

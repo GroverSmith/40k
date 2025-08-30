@@ -107,6 +107,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }
+		
+		// Initialize Stories sheet with table display
+		const storiesUrl = CrusadeConfig.getSheetUrl('stories');
+		if (storiesUrl) {
+			SheetsManager.embed('stories-sheet', 
+				storiesUrl, 
+				{
+					maxHeight: '350px',
+					showStats: true,
+					sortable: true,
+					linkColumn: 6,          // Display the Title column (index 6) as link
+					linkDataColumn: 0,      // Use the Key column (index 0) for link value
+					linkPattern: 'stories/view-story.html?key={slug}',
+					cacheMinutes: CrusadeConfig.getCacheConfig('default'),
+					hideColumns: [0, 1, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], // Hide technical columns
+					dateColumns: [1],       // Timestamp column
+					columnNames: {          // Custom column names for display
+						1: 'Date',
+						2: 'Author',
+						5: 'Type',
+						6: 'Title'
+					},
+					maxRows: 10            // Show only recent 10 stories
+				}
+			);
+		} else {
+			console.warn('Stories sheet URL not configured');
+			// Show placeholder content
+			document.getElementById('stories-sheet').innerHTML = `
+				<div class="no-data-message">
+					<p>📚 Stories and battle reports will be displayed here.</p>
+					<p><em>Configure stories URL in CrusadeConfig to enable this feature.</em></p>
+				</div>
+			`;
+		}
         
         console.log('Sheets initialized successfully');
         
