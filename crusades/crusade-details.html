@@ -26,11 +26,7 @@
 			<div class="loading-spinner"></div>
 			<span>Loading crusade data...</span>
 		</div>
-
-		<!-- Add this new section right after the crusade-header -->
-		<div class="crusade-actions" id="crusade-actions" style="display: none;">
-			<a href="../battle-reports/add-battle-report.html" class="btn-primary">⚔️ Record Battle for This Crusade</a>
-		</div>
+	
         
         <!-- Crusade Introduction -->
         <div class="data-section" id="introduction-section" style="display: none;">
@@ -62,29 +58,41 @@
             </div>
         </div>
 		
-		<!-- Battle History Section (NEW) -->
+		<!-- Battle History Section -->
         <div class="data-section" id="battle-history-section" style="display: none;">
-            <div class="section-header">
-                <h3>🎯 Battle History</h3>
-            </div>
-            <div class="section-content">
-                <div id="battle-history-content">
-                    <div class="loading-spinner"></div>
-                    <span>Loading battle history...</span>
-                </div>
-            </div>
-        </div>
+			<div class="section-header">
+				<h3>🎯 Battle History</h3>
+				<a href="../battle-reports/add-battle-report.html" id="record-battle-btn" class="section-action-btn">+ Record Battle</a>
+			</div>
+			<div class="section-content">
+				<div id="battle-history-content">
+					<div class="loading-spinner"></div>
+					<span>Loading battle history...</span>
+				</div>
+			</div>
+		</div>
         
         <!-- Participating Forces (from existing Crusade Forces sheet) -->
         <div class="data-section" id="forces-section" style="display: none;">
-            <div class="section-header">
-                <h3>⚔️ Participating Forces</h3>
-                <button id="register-force-btn" class="section-action-btn">+ Register Force</button>
-            </div>
-            <div class="section-content">
-                <div id="forces-content"></div>
-            </div>
-        </div>
+			<div class="section-header">
+				<h3>⚔️ Participating Forces</h3>
+				<button id="register-force-btn" class="section-action-btn">+ Register Force</button>
+			</div>
+			<div class="section-content">
+				<div id="forces-content"></div>
+			</div>
+		</div>
+
+		<!-- Also add Stories section to crusade-details.html if not present -->
+		<div class="data-section" id="stories-section" style="display: none;">
+			<div class="section-header">
+				<h3>📖 Campaign Stories</h3>
+				<a href="../stories/add-story.html" id="add-story-btn" class="section-action-btn">+ Write Story</a>
+			</div>
+			<div class="section-content">
+				<div id="stories-content"></div>
+			</div>
+		</div>
         
         <!-- Force Registration Modal -->
         <div id="register-force-modal" class="modal" style="display: none;">

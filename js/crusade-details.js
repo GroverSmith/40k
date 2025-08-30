@@ -6,7 +6,6 @@
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('Crusade Details page loading...');
     
-    // Get crusade key from URL
     const urlParams = new URLSearchParams(window.location.search);
     const crusadeKey = urlParams.get('key');
     
@@ -21,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log('Loading crusade with key:', crusadeKey);
     
     try {
-        // Load crusade data - using the CORRECT function name
         const crusadeData = await CrusadeData.loadCrusadeData(crusadeKey);
         
         if (!crusadeData) {
@@ -31,21 +29,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Update header with crusade information
         CrusadeUI.updateHeader(crusadeData, crusadeData['Crusade Name']);
         
-        // Show the action buttons section
-        const actionsSection = document.getElementById('crusade-actions');
-        if (actionsSection) {
-            actionsSection.style.display = 'block';
-            
-            // Update the battle recording button with crusade context
-            const battleBtn = actionsSection.querySelector('.btn-primary');
-            if (battleBtn) {
-                const params = new URLSearchParams({
-                    crusadeKey: crusadeKey,
-                    crusadeName: crusadeData['Crusade Name'] || ''
-                });
-                battleBtn.href = `../battle-reports/add-battle-report.html?${params.toString()}`;
-            }
-        }
+        // Set up action buttons in their respective sections
+        setupActionButtons(crusadeData);
+        
+        // Remove this block since we no longer have crusade-actions div:
+        // const actionsSection = document.getElementById('crusade-actions');
+        // if (actionsSection) { ... }
         
         // Display introduction
         CrusadeUI.displayIntroduction(crusadeData);
@@ -58,8 +47,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // Display battle history for this crusade
         await CrusadeUI.displayBattleHistory(crusadeKey);
-		
-		await CrusadeUI.displayStories(crusadeKey);
+        
+        // Display stories
+        await CrusadeUI.displayStories(crusadeKey);
         
         // Load and display participating forces
         const participantsResult = await CrusadeData.loadParticipatingForces(crusadeKey);
@@ -82,6 +72,34 @@ document.addEventListener('DOMContentLoaded', async function() {
 function closeRegisterModal() {
     ForceRegistration.closeModal();
 }
+
+// Add this method to crusade-details.js after the existing initialization:
+function setupActionButtons(crusadeData) {
+    const crusadeKey = crusadeData.key || crusadeData.Key;
+    const crusadeName = crusadeData['Crusade Name'] || '';
+    
+    // Set up Add Story button with crusade context
+    const addStoryBtn = document.getElementById('add-story-btn');
+    if (addStoryBtn) {
+        const params = new URLSearchParams({
+            crusadeKey: crusadeKey,
+            crusadeName: crusadeName
+        });
+        addStoryBtn.href = `../stories/add-story.html?${params.toString()}`;
+    }
+    
+    // Update the Record Battle button with crusade context
+    const recordBattleBtn = document.querySelector('.crusade-actions .btn-primary');
+    if (recordBattleBtn) {
+        const params = new URLSearchParams({
+            crusadeKey: crusadeKey,
+            crusadeName: crusadeName
+        });
+        recordBattleBtn.href = `../battle-reports/add-battle-report.html?${params.toString()}`;
+    }
+}
+
+
 
 // Function to sort participants table
 function sortParticipantsTable(columnIndex) {
@@ -145,4 +163,29 @@ function sortParticipantsTable(columnIndex) {
             indicator.textContent = '⇅';
         }
     });
+}
+
+function setupActionButtons(crusadeData) {
+    const crusadeKey = crusadeData.key || crusadeData.Key;
+    const crusadeName = crusadeData['Crusade Name'] || '';
+    
+    // Update Record Battle button (now in Battle History section)
+    const recordBattleBtn = document.getElementById('record-battle-btn');
+    if (recordBattleBtn) {
+        const params = new URLSearchParams({
+            crusadeKey: crusadeKey,
+            crusadeName: crusadeName
+        });
+        recordBattleBtn.href = `../battle-reports/add-battle-report.html?${params.toString()}`;
+    }
+    
+    // Update Add Story button (now in Stories section)
+    const addStoryBtn = document.getElementById('add-story-btn');
+    if (addStoryBtn) {
+        const params = new URLSearchParams({
+            crusadeKey: crusadeKey,
+            crusadeName: crusadeName
+        });
+        addStoryBtn.href = `../stories/add-story.html?${params.toString()}`;
+    }
 }

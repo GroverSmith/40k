@@ -32,27 +32,34 @@
   border-width: 4px;
 }
 
-/* Add this to components-unified.css */
+/* Update in components-unified.css */
 /* ===============================
-   SECTION HEADERS WITH ACTIONS
+   CONSISTENT ADD BUTTONS ACROSS ALL PAGES
    =============================== */
 
-/* Section header with action button */
-.section-header-with-action {
+/* Section header with action button - works for all pages */
+.section-header-with-action,
+.section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 15px 20px;
+    background-color: var(--color-bg-card-alt);
+    border-bottom: 2px solid var(--color-secondary);
 }
 
-.section-header-with-action h2 {
+.section-header-with-action h2,
+.section-header h2,
+.section-header h3 {
     margin: 0;
     color: var(--color-secondary);
-    font-size: var(--font-2xl);
+    font-size: var(--font-xl);
+    flex: 1;
 }
 
-/* Consistent Add buttons for all sections */
-.add-section-btn {
+/* Unified Add button style for ALL pages */
+.add-section-btn,
+.section-action-btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -70,7 +77,8 @@
     border: none;
 }
 
-.add-section-btn:hover {
+.add-section-btn:hover,
+.section-action-btn:hover {
     background-color: var(--color-primary-dark);
     color: white !important;
     transform: translateY(-2px);
@@ -78,49 +86,63 @@
     text-decoration: none !important;
 }
 
-.add-section-btn:visited {
+.add-section-btn:visited,
+.section-action-btn:visited {
     color: white !important;
 }
 
-/* Remove the old floating button styles since we're not using them anymore */
-/* Can delete these from your CSS: */
-/* 
-.sheets-refresh {
-    float: right;
-    margin-top: 10px;
+/* Ensure buttons work as both links and buttons */
+a.add-section-btn,
+a.section-action-btn,
+button.add-section-btn,
+button.section-action-btn {
+    /* All the same styles apply */
 }
 
-.add-force-btn {
-    float: left;
-    margin-top: 10px;
+/* Special case: Register Force button (modal trigger) */
+#register-force-btn {
+    /* Inherits all styles from .section-action-btn */
 }
-*/
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .section-header-with-action {
-        flex-direction: column;
-        align-items: flex-start;
+    .section-header-with-action,
+    .section-header {
+        flex-direction: row;
+        flex-wrap: wrap;
         gap: 10px;
     }
     
-    .section-header-with-action h2 {
+    .section-header-with-action h2,
+    .section-header h2,
+    .section-header h3 {
         font-size: var(--font-xl);
+        width: 100%;
     }
     
-    .add-section-btn {
-        align-self: flex-end;
+    .add-section-btn,
+    .section-action-btn {
+        margin-left: auto;
         font-size: 13px;
         padding: 6px 12px;
     }
 }
 
 @media (max-width: 480px) {
-    .add-section-btn {
+    .section-header-with-action,
+    .section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .add-section-btn,
+    .section-action-btn {
         width: 100%;
         justify-content: center;
         font-size: 14px;
         padding: 8px 12px;
+        margin-left: 0;
+        margin-top: 10px;
     }
 }
 
@@ -195,7 +217,7 @@
   letter-spacing: 1px;
 }
 
-/* Add these to components-unified.css */
+
 /* ===============================
    STORIES TABLE ENHANCEMENTS
    =============================== */

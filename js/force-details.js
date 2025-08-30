@@ -53,7 +53,7 @@ class ForceDetailsApp {
            
            // Show sections
            document.getElementById('overview-section').style.display = 'block';
-           document.getElementById('force-actions').style.display = 'flex';
+           
            
        } catch (error) {
            console.error('Error loading force data:', error);
@@ -92,21 +92,61 @@ class ForceDetailsApp {
        html += '</div>';
        overviewContent.innerHTML = html;
    }
-   
-   updateActionButtons() {
-       // Update the "Add Army List" button to include force key
-       const addArmyListBtn = document.getElementById('add-army-list-btn');
-       if (addArmyListBtn) {
-           addArmyListBtn.href = `../army-lists/add-army-list.html?forceKey=${encodeURIComponent(this.forceKey)}`;
-       }
-       
-       // Update the "Record Battle" button to pre-select this force
-       const recordBattleBtn = document.getElementById('record-battle-btn');
-       if (recordBattleBtn) {
-           recordBattleBtn.href = `../battle-reports/add-battle-report.html?force=${encodeURIComponent(this.forceKey)}`;
-       }
-   }
-   
+      
+	
+	updateActionButtons() {
+		const forceData = this.forceData;
+		const forceKey = forceData.key;
+		
+		// Update Add Army List button
+		const addArmyListBtn = document.getElementById('add-army-list-btn');
+		if (addArmyListBtn) {
+			const params = new URLSearchParams({
+				forceKey: forceKey,
+				forceName: forceData.forceName,
+				userName: forceData.playerName,
+				faction: forceData.faction,
+				detachment: forceData.detachment || ''
+			});
+			addArmyListBtn.href = `../army-lists/add-army-list.html?${params.toString()}`;
+		}
+		
+		// Update Add Unit button
+		const addUnitBtn = document.getElementById('add-unit-btn');
+		if (addUnitBtn) {
+			const params = new URLSearchParams({
+				forceKey: forceKey,
+				forceName: forceData.forceName,
+				userName: forceData.playerName,
+				faction: forceData.faction
+			});
+			addUnitBtn.href = `../units/add-unit.html?${params.toString()}`;
+		}
+		
+		// Update Record Battle button (now in Battle History section)
+		const recordBattleBtn = document.getElementById('record-battle-btn');
+		if (recordBattleBtn) {
+			const params = new URLSearchParams({
+				forceKey: forceKey,
+				forceName: forceData.forceName,
+				userName: forceData.playerName
+			});
+			recordBattleBtn.href = `../battle-reports/add-battle-report.html?${params.toString()}`;
+		}
+		
+		// Update Add Story button (now in Stories section)
+		const addStoryBtn = document.getElementById('add-story-btn');
+		if (addStoryBtn) {
+			const params = new URLSearchParams({
+				forceKey: forceKey,
+				forceName: forceData.forceName,
+				userName: forceData.playerName
+			});
+			addStoryBtn.href = `../stories/add-story.html?${params.toString()}`;
+		}
+	}
+
+
    async loadArmyLists() {
        try {
            // Show the section
@@ -297,7 +337,7 @@ class ForceDetailsApp {
        
        // Hide all sections
        ['overview-section', 'army-lists-section', 'battle-history-section', 
-        'crusades-section', 'force-actions'].forEach(id => {
+        'crusades-section'].forEach(id => {
            const element = document.getElementById(id);
            if (element) element.style.display = 'none';
        });

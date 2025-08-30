@@ -50,13 +50,15 @@
         
         <!-- Battle History -->
         <div class="data-section" id="battle-history-section" style="display: none;">
-            <div class="section-header">
-                <h3>⚔️ Battle History</h3>
-            </div>
-            <div class="section-content">
-                <div id="battle-history-content"></div>
-            </div>
-        </div>
+			<div class="section-header">
+				<h3>⚔️ Battle History</h3>
+				<a href="../battle-reports/add-battle-report.html" id="record-battle-btn" class="section-action-btn">+ Record New Battle</a>
+			</div>
+			<div class="section-content">
+				<div id="battle-history-content"></div>
+			</div>
+		</div>
+
         
         <!-- Army Lists -->
         <div class="data-section" id="army-lists-section" style="display: none;">
@@ -83,13 +85,14 @@
         
         <!-- Stories -->
         <div class="data-section" id="stories-section" style="display: none;">
-            <div class="section-header">
-                <h3>📖 Stories</h3>
-            </div>
-            <div class="section-content">
-                <div id="stories-sheet"></div>
-            </div>
-        </div>
+			<div class="section-header">
+				<h3>📖 Stories</h3>
+				<a href="../stories/add-story.html" id="add-story-btn" class="section-action-btn">+ Write New Story</a>
+			</div>
+			<div class="section-content">
+				<div id="stories-sheet"></div>
+			</div>
+		</div>
         
         <!-- Force Logs -->
         <div class="data-section" id="force-logs-section" style="display: none;">
@@ -130,29 +133,6 @@
 	<script src="../js/crusade-force.js"></script>
 	<script src="../js/stories-display.js"></script>
 	
-	<script>
-	// Set up the Add Army List button after force data loads
-	document.addEventListener('DOMContentLoaded', () => {
-	    // Wait for force data to be available
-	    const checkForceData = setInterval(() => {
-	        if (window.CrusadeForceApp && window.CrusadeForceApp.forceData) {
-	            clearInterval(checkForceData);
-	            const addArmyListBtn = document.getElementById('add-army-list-btn');
-	            if (addArmyListBtn) {
-	                const forceData = window.CrusadeForceApp.forceData;
-	                // Build URL with force context
-	                const params = new URLSearchParams({
-	                    forceKey: forceData.key,
-	                    forceName: forceData.forceName,
-	                    userName: forceData.playerName,
-	                    faction: forceData.faction,
-	                    detachment: forceData.detachment || ''
-	                });
-	                addArmyListBtn.href = `../army-lists/add-army-list.html?${params.toString()}`;
-	            }
-	        }
-	    }, 100);
-	});
-	</script>
+	
 </body>
 </html>
