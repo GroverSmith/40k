@@ -100,14 +100,20 @@
                         
                         <div class="form-group">
                             <label for="mfm-version">MFM Version</label>
-                            <select id="mfm-version" name="mfmVersion">
-                                <option value="">-- Select Version --</option>
-                                <option value="2024.2">2024.2 (Current)</option>
-                                <option value="2024.1">2024.1</option>
-                                <option value="2023.3">2023.3</option>
-                                <option value="2023.2">2023.2</option>
-                                <option value="2023.1">2023.1</option>
-                            </select>
+                            <input list="mfm-versions" id="mfm-version" name="mfmVersion" 
+                                   placeholder="e.g., 2025.08 or enter custom">
+                            <datalist id="mfm-versions">
+                                <option value="2025.08">August 2025 (Current)</option>
+                                <option value="2025.06">June 2025</option>
+                                <option value="2025.01">January 2025</option>
+                                <option value="2024.10">October 2024</option>
+                                <option value="2024.09">September 2024</option>
+                                <option value="2024.06">June 2024</option>
+                                <option value="2024.04">April 2024</option>
+                                <option value="2024.01">January 2024</option>
+                                <option value="2023.06">June 2023 (10th Edition Launch)</option>
+                            </datalist>
+                            <small class="help-text">Select from list or type custom version</small>
                         </div>
                     </div>
                 </fieldset>

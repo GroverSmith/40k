@@ -31,6 +31,9 @@ class AddUnitForm extends BaseForm {
         
         // Auto-populate fields from URL
         this.autoPopulateFromUrl();
+        
+        // Set default MFM version to latest
+        this.setDefaultMfmVersion();
     }
     
     /**
@@ -56,7 +59,7 @@ class AddUnitForm extends BaseForm {
         const forceNameField = document.getElementById('force-name');
         const userNameField = document.getElementById('user-name');
         
-        if (forceNameField) {
+        if (forceNameField && forceName) {
             forceNameField.value = forceName;
             forceNameField.readOnly = true;
         }
@@ -64,6 +67,17 @@ class AddUnitForm extends BaseForm {
         if (userNameField && userName) {
             userNameField.value = userName;
             userNameField.readOnly = true;
+        }
+    }
+    
+    /**
+     * Set default MFM version to the latest
+     */
+    setDefaultMfmVersion() {
+        const mfmField = document.getElementById('mfm-version');
+        if (mfmField && !mfmField.value) {
+            // Set to August 2025 as the latest version
+            mfmField.value = '2025.08';
         }
     }
     
