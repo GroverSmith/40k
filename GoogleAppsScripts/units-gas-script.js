@@ -38,11 +38,22 @@ function doPost(e) {
       throw new Error('Missing required fields: ' + missing.join(', '));
     }
     
-    // userKey is optional - if not provided, generate from userName
+    // Extract userKey from forceKey if not provided
+    // Force key format is "ForceName_UserName" so we take everything after the last underscore
     let userKey = data.userKey;
-    if (!userKey && data.userName) {
-      userKey = data.userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
-      console.log('Generated userKey from userName:', userKey);
+    if (!userKey || userKey.trim() === '') {
+      const forceKeyParts = data.forceKey.split('_');
+      if (forceKeyParts.length >= 2) {
+        // Take everything after the last underscore as the user key
+        userKey = forceKeyParts[forceKeyParts.length - 1];
+        console.log('Extracted userKey from forceKey:', userKey);
+      } else if (data.userName) {
+        // Fallback: generate from userName if can't extract from forceKey
+        userKey = data.userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+        console.log('Generated userKey from userName:', userKey);
+      } else {
+        throw new Error('Unable to determine userKey - forceKey format invalid and userName not provided');
+      }
     }
     
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -117,8 +128,10 @@ function doPost(e) {
     const unitKey = generateUnitKey(data.forceKey, data.name);
     console.log('Generated unit key:', unitKey);
     
-    // Create Name Xref Key for easier lookups (force_unitname without timestamp)
-    const nameXrefKey = `${data.forceKey}_${data.name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30)}`;
+    // Create Name Xref Key for easier lookups (userKey_unitName without timestamp)
+    // This uses userKey instead of forceKey to be consistent across different forces
+    const nameXrefKey = `${userKey}_${data.name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30)}`;
+    console.log('Generated name xref key:', nameXrefKey);
     
     // Determine rank based on XP if not provided
     let rank = data.rank || '';
