@@ -52,21 +52,44 @@ class AddUnitForm extends BaseForm {
         if (forceKeyField) forceKeyField.value = this.forceKey;
         if (userKeyField) userKeyField.value = this.userKey;
         
-        // Auto-populate visible fields
-        const forceName = urlParams.get('forceName') || '';
-        const userName = urlParams.get('userName') || '';
+        // Auto-populate visible fields - decode URI components in case they have spaces/special chars
+        const forceName = decodeURIComponent(urlParams.get('forceName') || '');
+        const userName = decodeURIComponent(urlParams.get('userName') || '');
+        
+        console.log('URL params - forceName:', forceName, 'userName:', userName); // Debug
         
         const forceNameField = document.getElementById('force-name');
         const userNameField = document.getElementById('user-name');
         
-        if (forceNameField && forceName) {
-            forceNameField.value = forceName;
-            forceNameField.readOnly = true;
+        if (forceNameField) {
+            if (forceName) {
+                forceNameField.value = forceName;
+                forceNameField.readOnly = true;
+            } else {
+                // If no force name in URL, try to extract from forceKey
+                if (this.forceKey && this.forceKey.includes('_')) {
+                    // Force key format is typically "ForceName_UserName"
+                    const keyParts = this.forceKey.split('_');
+                    if (keyParts.length > 0) {
+                        forceNameField.value = keyParts[0];
+                        forceNameField.readOnly = true;
+                    }
+                }
+            }
         }
         
-        if (userNameField && userName) {
-            userNameField.value = userName;
-            userNameField.readOnly = true;
+        if (userNameField) {
+            if (userName) {
+                userNameField.value = userName;
+                userNameField.readOnly = true;
+            } else if (this.forceKey && this.forceKey.includes('_')) {
+                // Try to extract from forceKey as fallback
+                const keyParts = this.forceKey.split('_');
+                if (keyParts.length > 1) {
+                    userNameField.value = keyParts[1];
+                    userNameField.readOnly = true;
+                }
+            }
         }
     }
     
