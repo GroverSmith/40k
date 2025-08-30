@@ -211,7 +211,121 @@ const ForceUI = {
             console.warn('Launch date formatting error:', error);
             return null;
         }
-    }
+    },
+	
+	/**
+	 * Update force statistics from battle array
+	 */
+	updateStatsFromBattles(battles, forceKey) {
+		const statsSection = document.getElementById('force-stats');
+		if (!statsSection) return;
+		
+		let battlesFought = 0;
+		let victories = 0;
+		let defeats = 0;
+		let draws = 0;
+		
+		battles.forEach(battle => {
+			battlesFought++;
+			
+			const victorForceKey = battle['Victor Force Key'] || '';
+			
+			if (victorForceKey === 'Draw') {
+				draws++;
+			} else if (victorForceKey === forceKey) {
+				victories++;
+			} else {
+				defeats++;
+			}
+		});
+		
+		document.getElementById('battles-fought').textContent = battlesFought;
+		document.getElementById('victories').textContent = victories;
+		document.getElementById('battle-losses').textContent = defeats;
+		document.getElementById('battle-ties').textContent = draws;
+		
+		statsSection.style.display = 'flex';
+	},
+
+	/**
+	 * Display battles in table format
+	 */
+	displayBattles(battles, container, forceKey) {
+		let html = `
+			<div class="sheets-table-wrapper" style="max-height: 400px; overflow-y: auto;">
+				<table class="sheets-table">
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Battle Name</th>
+							<th>Opponent</th>
+							<th>Result</th>
+							<th>Score</th>
+							<th>Battle Size</th>
+						</tr>
+					</thead>
+					<tbody>
+		`;
+		
+		battles.forEach(battle => {
+			const date = battle['Date Played'] ? new Date(battle['Date Played']).toLocaleDateString() : '-';
+			const battleName = battle['Battle Name'] || 'Unnamed Battle';
+			const battleSize = battle['Battle Size'] || '-';
+			const player1Score = battle['Player 1 Score'] || 0;
+			const player2Score = battle['Player 2 Score'] || 0;
+			const force1Key = battle['Force 1 Key'];
+			const force2Key = battle['Force 2 Key'];
+			const victorForceKey = battle['Victor Force Key'];
+			
+			// Determine which position this force is in
+			const isForce1 = force1Key === forceKey;
+			const opponent = isForce1 ? 
+				(battle['Force 2'] || battle['Player 2'] || 'Unknown') : 
+				(battle['Force 1'] || battle['Player 1'] || 'Unknown');
+			
+			// Determine result
+			let result = '';
+			let resultClass = '';
+			if (victorForceKey === 'Draw') {
+				result = 'Draw';
+				resultClass = 'result-draw';
+			} else if (victorForceKey === forceKey) {
+				result = 'Victory';
+				resultClass = 'result-victory';
+			} else {
+				result = 'Defeat';
+				resultClass = 'result-defeat';
+			}
+			
+			// Format score with winner's score first
+			const score = victorForceKey === force1Key ? 
+				`${player1Score} - ${player2Score}` : 
+				`${player2Score} - ${player1Score}`;
+			
+			html += `
+				<tr>
+					<td>${date}</td>
+					<td>${battleName}</td>
+					<td>${opponent}</td>
+					<td><span class="${resultClass}" style="
+						color: ${resultClass === 'result-victory' ? '#4ecdc4' : 
+								resultClass === 'result-defeat' ? '#ff6b6b' : '#ffa500'};
+						font-weight: bold;
+					">${result}</span></td>
+					<td class="text-center">${score}</td>
+					<td class="text-center">${battleSize}</td>
+				</tr>
+			`;
+		});
+		
+		html += `
+					</tbody>
+				</table>
+			</div>
+		`;
+		
+		container.innerHTML = html;
+	}
 };
 
 // Make globally available

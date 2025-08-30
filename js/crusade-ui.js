@@ -33,6 +33,25 @@ const CrusadeUI = {
             ${crusadeKey ? `<div class="crusade-key">Key: ${crusadeKey}</div>` : ''}
         `;
     },
+	
+	/**
+	 * Display stories for the crusade
+	 */
+	async displayStories(crusadeKey) {
+		const container = document.getElementById('stories-content') || document.getElementById('stories-sheet');
+		const section = document.getElementById('stories-section');
+		if (!container || !section) return;
+		
+		// Show the section
+		section.style.display = 'block';
+		
+		// Load stories using StoriesDisplay module
+		if (typeof StoriesDisplay !== 'undefined') {
+			await StoriesDisplay.loadCrusadeStories(crusadeKey, container);
+		} else {
+			container.innerHTML = '<p class="no-data">Stories module not loaded.</p>';
+		}
+	},
     
     /**
      * Display participants in table

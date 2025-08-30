@@ -6,34 +6,59 @@ const ForceSections = {
     /**
      * Load battle history section
      */
-    loadBattleHistory(forceData) {
-        ForceUI.showSection('battle-history-section');
-        const battleHistoryUrl = CrusadeConfig.getSheetUrl('battleHistory');
-        
-        if (battleHistoryUrl) {
-            // When implemented, this should filter by force key
-            SheetsManager.embed('battle-history-sheet', 
-                battleHistoryUrl, 
-                {
-                    maxHeight: '300px',
-                    showStats: true,
-                    sortable: true,
-                    cacheMinutes: CrusadeConfig.getCacheConfig('forcePage'),
-                    // Future: Add filter parameter for force key
-                    // filter: { forceKey: forceData.key }
-                }
-            );
-        } else {
-            ForceUI.displayPlaceholder(
-                'battle-history-sheet',
-                'battleHistory',
-                forceData.forceName,
-                '📊',
-                'tracking will be implemented here'
-            );
-        }
-    },
-    
+	async loadBattleHistory(forceData) {
+		const container = document.getElementById('battle-history-content');
+		const section = document.getElementById('battle-history-section');
+		if (!container || !section) return;
+		
+		try {
+			container.innerHTML = `
+				<div class="loading-spinner"></div>
+				<span>Loading battle history...</span>
+			`;
+			section.style.display = 'block';
+			
+			const battleUrl = CrusadeConfig.getSheetUrl('battleHistory');
+			if (!battleUrl) {
+				container.innerHTML = '<p class="no-data">Battle history not configured.</p>';
+				ForceUI.updateStatsFromBattles([], forceData.key);
+				return;
+			}
+			
+			// Use CacheManager for caching
+			const fetchUrl = `${battleUrl}?action=force-battles&forceKey=${encodeURIComponent(forceData.key)}`;
+			const result = await CacheManager.fetchWithCache(
+				fetchUrl,
+				'battleHistory',
+				`force_${forceData.key}`
+			);
+			
+			if (result.success && result.battles && result.battles.length > 0) {
+				const battles = result.battles;
+				
+				// Sort by date (most recent first)
+				battles.sort((a, b) => {
+					const dateA = new Date(a['Date Played'] || 0);
+					const dateB = new Date(b['Date Played'] || 0);
+					return dateB - dateA;
+				});
+				
+				// Update stats with the new function
+				ForceUI.updateStatsFromBattles(battles, forceData.key);
+				
+				// Display battles as table with force key
+				ForceUI.displayBattles(battles, container, forceData.key);
+			} else {
+				container.innerHTML = '<p class="no-data">No battles recorded yet for this force.</p>';
+				ForceUI.updateStatsFromBattles([], forceData.key);
+			}
+			
+		} catch (error) {
+			console.error('Error loading battle history:', error);
+			container.innerHTML = '<p class="error-message">Error loading battle history.</p>';
+			ForceUI.updateStatsFromBattles([], forceData.key);
+		}
+	},    
     /**
      * Load army lists section using force key
      */
