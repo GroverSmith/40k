@@ -96,13 +96,28 @@ const UserManager = {
         }
         
         UserModal.showCreateUserModal(async (userData) => {
-            // Refresh users after creation
-            await this.refreshUsers();
+            console.log('User created, refreshing and selecting:', userData.name);
             
-            // Auto-select the new user
+            // Clear cache and reload users
+            CacheManager.clear('users');
+            this.usersLoaded = false;
+            this.users = [];
+            
+            // Force reload users from server
+            await this.loadUsers();
+            
+            // Find and select the newly created user
             const newUser = this.users.find(u => u.name === userData.name);
             if (newUser) {
+                console.log('Found and selecting new user:', newUser);
                 this.selectUser(newUser);
+                
+                // Update dropdown immediately to show the new user
+                UserUI.populateUserDropdown(this.users, newUser, (user) => this.selectUser(user));
+            } else {
+                console.warn('Could not find newly created user in refreshed list');
+                // Still update the dropdown with the refreshed list
+                UserUI.populateUserDropdown(this.users, this.currentUser, (user) => this.selectUser(user));
             }
         });
     },

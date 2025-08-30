@@ -220,21 +220,24 @@ const UserModal = {
             
             // Use UserAPI to create the user
             if (typeof UserAPI !== 'undefined') {
-                await UserAPI.createUser(userData);
+                const result = await UserAPI.createUser(userData);
+                console.log('User creation result:', result);
+                
+                // Close modal first
+                this.closeCreateUserModal();
+                
+                // Call the callback with full user data
+                if (this.onUserCreatedCallback) {
+                    // Pass the userData since we know what was created
+                    await this.onUserCreatedCallback(userData);
+                }
+                
+                // Show success message
+                if (typeof UserUI !== 'undefined') {
+                    UserUI.showMessage(`User "${userData.name}" created and selected successfully!`, 'success');
+                }
             } else {
                 throw new Error('UserAPI module not loaded');
-            }
-            
-            // Success - call the callback if provided
-            this.closeCreateUserModal();
-            
-            if (this.onUserCreatedCallback) {
-                this.onUserCreatedCallback(userData);
-            }
-            
-            // Show success message
-            if (typeof UserUI !== 'undefined') {
-                UserUI.showMessage('User created successfully!', 'success');
             }
             
         } catch (error) {
@@ -242,8 +245,8 @@ const UserModal = {
             if (typeof UserUI !== 'undefined') {
                 UserUI.showMessage('Failed to create user: ' + error.message, 'error');
             }
-        } finally {
-            // Reset button state
+            
+            // Reset button state on error
             submitBtn.disabled = false;
             btnText.style.display = 'inline';
             btnText.classList.remove('hidden');

@@ -102,17 +102,37 @@ const UserAPI = {
                     const result = JSON.parse(response);
                     
                     if (result.success) {
-                        // Clear users cache to force reload
+                        // Clear ALL user-related caches to force reload
                         CacheManager.clear('users');
-                        resolve(result);
+                        CacheManager.clearType('users');
+                        
+                        // Include the user data in the response if available
+                        if (result.user) {
+                            resolve(result);
+                        } else {
+                            // Include the submitted data as the user object
+                            resolve({ 
+                                success: true, 
+                                user: userData,
+                                message: result.message || 'User created successfully'
+                            });
+                        }
                     } else {
                         reject(new Error(result.error || 'User creation failed'));
                     }
                 } catch (error) {
                     // Assume success if we can't read the response (CORS)
                     console.log('Could not read response, assuming success');
+                    
+                    // Clear ALL user-related caches
                     CacheManager.clear('users');
-                    resolve({ success: true });
+                    CacheManager.clearType('users');
+                    
+                    resolve({ 
+                        success: true,
+                        user: userData,
+                        message: 'User created (unconfirmed due to CORS)'
+                    });
                 }
                 
                 document.body.removeChild(form);
