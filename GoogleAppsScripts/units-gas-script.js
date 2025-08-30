@@ -189,18 +189,6 @@ function doPost(e) {
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
-}Type.JSON);
-      
-  } catch (error) {
-    console.error('Error processing unit submission:', error);
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: false,
-        error: error.message
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
 }
 
 function doGet(e) {
@@ -319,6 +307,8 @@ function getUnitsForForce(forceKey) {
       return unit;
     });
   
+  console.log(`Found ${units.length} units for force key "${forceKey}"`);
+  
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
@@ -358,10 +348,30 @@ function getUnitsForUser(userKey) {
       return unit;
     });
   
+  console.log(`Found ${units.length} units for user key "${userKey}"`);
+  
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
       units: units
     }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Test function
+function testUnitsScript() {
+  console.log('=== Testing Units Script ===');
+  
+  try {
+    // Test key generation
+    const testKey = generateUnitKey('TestForce_User', 'Captain Aurelius');
+    console.log('Test unit key:', testKey);
+    
+    // Test getting all units
+    const allUnits = getUnitsList({});
+    console.log('All units result:', JSON.parse(allUnits.getContent()));
+    
+  } catch (error) {
+    console.error('Test error:', error);
+  }
 }
