@@ -50,45 +50,47 @@
             <p>Welcome to your digital command center for Warhammer 40,000 Crusade campaigns!</p>
         </header>
         
-        <main>
-            <div class="page-actions">
-                <a href="battle-reports/add-battle-report.html" class="btn-primary">⚔️ Record New Battle</a>
-                <button id="create-user-btn" class="create-user-main-btn">+ Create New User</button>
-            </div>
+        <main>            
             
-            <!-- Recent Battles Section (NEW) -->
+            <!-- Recent Battles Section -->
             <section class="features">
-                <h2>Recent Battles (Last 60 Days)</h2>
-                <div id="recent-battles-container">
-                    <div class="loading-spinner"></div>
-                    <span>Loading recent battles...</span>
-                </div>
-            </section>
-            
-            <section class="features">
-                <h2>Crusades</h2>
-                <div id="crusades-sheet"></div>
-                <div style="clear: both;"></div>
-            </section>
-            
-            <section class="features">
-                <h2>Crusade Forces</h2>
-                <div id="crusade-forces-sheet"></div>
-                
-                <div style="clear: both;"></div>
-            </section>
-            
-            <section class="features">
-				<h2>Stories & Battle Reports</h2>
-				
-				<!-- Add Story button matching the pattern of other sections -->
-				<div class="section-actions" style="margin-bottom: 20px;">
-					<a href="stories/add-story.html" class="btn-primary">📝 Write New Story</a>
+				<div class="section-header-with-action">
+					<h2>Recent Battles (Last 60 Days)</h2>
+					<a href="battle-reports/add-battle-report.html" class="add-section-btn">+ Record New Battle</a>
 				</div>
-				
-				<!-- Stories display container -->
+				<div id="recent-battles-container">
+					<div class="loading-spinner"></div>
+					<span>Loading recent battles...</span>
+				</div>
+			</section>
+            
+            <!-- Crusades Section -->
+			<section class="features">
+				<div class="section-header-with-action">
+					<h2>Crusades</h2>
+					<!-- If you have an add crusade page, add button here -->
+				</div>
+				<div id="crusades-sheet"></div>
+				<div style="clear: both;"></div>
+			</section>
+
+			<!-- Crusade Forces Section -->
+			<section class="features">
+				<div class="section-header-with-action">
+					<h2>Crusade Forces</h2>
+					<a href="forces/add-force.html" class="add-section-btn">+ Add New Force</a>
+				</div>
+				<div id="crusade-forces-sheet"></div>
+				<div style="clear: both;"></div>
+			</section>
+
+			<!-- Stories Section -->
+			<section class="features">
+				<div class="section-header-with-action">
+					<h2>Stories & Battle Reports</h2>
+					<a href="stories/add-story.html" class="add-section-btn">+ Write New Story</a>
+				</div>
 				<div id="stories-sheet"></div>
-				
 				<div style="clear: both;"></div>
 			</section>
         </main>

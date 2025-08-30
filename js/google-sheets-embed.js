@@ -39,50 +39,33 @@ class GoogleSheetsEmbed {
     }
     
     init() {
-        this.container.classList.add('sheets-container');
-        
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'sheets-content';
-        this.container.appendChild(contentDiv);
-        this.contentDiv = contentDiv;
-        
-        // Create button container
-        const buttonContainer = document.createElement('div');
-        buttonContainer.style.marginTop = '10px';
-        buttonContainer.style.overflow = 'hidden'; // Clear float
-        
-        let hasButtons = false;
-        
-        // Add the "Add New Force" button (left-aligned) - only for Crusade Forces
-        if (this.container.id === 'crusade-forces-sheet') {
-            const addForceBtn = document.createElement('a');
-            addForceBtn.href = 'forces/add-force.html';
-            addForceBtn.className = 'add-force-btn';
-            addForceBtn.textContent = '+ Add New Force';
-            buttonContainer.appendChild(addForceBtn);
-            hasButtons = true;
-        }
-        
-        // Add refresh button if enabled (right-aligned)
-        if (this.options.showRefreshButton) {
-            const refreshBtn = document.createElement('button');
-            refreshBtn.className = 'sheets-refresh';
-            refreshBtn.textContent = 'Refresh Data';
-            refreshBtn.onclick = () => this.refresh();
-            buttonContainer.appendChild(refreshBtn);
-            this.refreshBtn = refreshBtn;
-            hasButtons = true;
-        }
-        
-        // Only append button container if we have buttons
-        if (hasButtons) {
-            this.container.appendChild(buttonContainer);
-        }
-        
-        if (this.options.autoLoad) {
-            this.loadData();
-        }
-    }
+		this.container.classList.add('sheets-container');
+		
+		const contentDiv = document.createElement('div');
+		contentDiv.className = 'sheets-content';
+		this.container.appendChild(contentDiv);
+		this.contentDiv = contentDiv;
+		
+		// Only add refresh button if explicitly enabled
+		if (this.options.showRefreshButton) {
+			const buttonContainer = document.createElement('div');
+			buttonContainer.style.marginTop = '10px';
+			buttonContainer.style.textAlign = 'right';
+			
+			const refreshBtn = document.createElement('button');
+			refreshBtn.className = 'sheets-refresh';
+			refreshBtn.textContent = 'Refresh Data';
+			refreshBtn.onclick = () => this.refresh();
+			buttonContainer.appendChild(refreshBtn);
+			this.refreshBtn = refreshBtn;
+			
+			this.container.appendChild(buttonContainer);
+		}
+		
+		if (this.options.autoLoad) {
+			this.loadData();
+		}
+	}
     
     async loadData() {
         this.showLoading();

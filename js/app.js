@@ -54,61 +54,53 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }
-        
-        // Initialize Forces sheet with form integration
-        const forcesUrl = CrusadeConfig.getSheetUrl('forces');
-        if (forcesUrl) {
-            const forcesEmbed = SheetsManager.embed('crusade-forces-sheet', 
-                forcesUrl, 
-                {
-                    maxHeight: '350px',
-                    showStats: true,
-                    sortable: true,
-                    linkColumn: 2,          // Display the Force Name column (index 2) as link
-                    linkDataColumn: 0,      // Use the Key column (index 0) for link value
-                    linkPattern: 'forces/force-details.html?key={slug}',
-                    cacheMinutes: CrusadeConfig.getCacheConfig('default'),
-                    hideColumns: [0, 6],    // Hide Key column (0) and Timestamp column (6)
-                    columnNames: {          // Custom column names for clarity
-                        1: 'User Name',
-                        2: 'Force Name',
-                        3: 'Faction',
-                        4: 'Detachment',
-                        5: 'Notes'
-                    }
-                }
-            );
-            
-            // After loading, also cache the data globally for other pages to use
-            const originalLoadData = forcesEmbed.loadData.bind(forcesEmbed);
-            forcesEmbed.loadData = async function() {
-                await originalLoadData();
                 
-                // Cache the raw data globally for the register force modal
-                if (this.rawData) {
-                    try {
-                        localStorage.setItem('forces_cache_global', JSON.stringify({
-                            data: this.rawData,
-                            timestamp: Date.now()
-                        }));
-                        console.log('Forces data cached globally for other pages');
-                    } catch (e) {
-                        console.warn('Error setting global forces cache:', e);
-                    }
-                }
-            };
-        } else {
-            console.warn('Forces sheet URL not configured');
-            // Show placeholder content
-            document.getElementById('crusade-forces-sheet').innerHTML = `
-                <div class="no-data-message">
-                    <p>⚔️ Crusade forces will be displayed here.</p>
-                    <p><em>Configure forces URL in CrusadeConfig to enable this feature.</em></p>
-                </div>
-            `;
-        }
-		
-		// Initialize Stories sheet with table display
+
+		// Initialize Forces sheet without add button (it's now in the section header)
+		const forcesUrl = CrusadeConfig.getSheetUrl('forces');
+		if (forcesUrl) {
+			const forcesEmbed = SheetsManager.embed('crusade-forces-sheet', 
+				forcesUrl, 
+				{
+					maxHeight: '350px',
+					showStats: true,
+					sortable: true,
+					showRefreshButton: false,  // Disable the refresh button
+					linkColumn: 2,          // Display the Force Name column (index 2) as link
+					linkDataColumn: 0,      // Use the Key column (index 0) for link value
+					linkPattern: 'forces/force-details.html?key={slug}',
+					cacheMinutes: CrusadeConfig.getCacheConfig('default'),
+					hideColumns: [0, 6],    // Hide Key column (0) and Timestamp column (6)
+					columnNames: {          // Custom column names for clarity
+						1: 'User Name',
+						2: 'Force Name',
+						3: 'Faction',
+						4: 'Detachment',
+						5: 'Notes'
+					}
+				}
+			);
+			
+			// Cache data globally for other pages
+			const originalLoadData = forcesEmbed.loadData.bind(forcesEmbed);
+			forcesEmbed.loadData = async function() {
+				await originalLoadData();
+				
+				if (this.rawData) {
+					try {
+						localStorage.setItem('forces_cache_global', JSON.stringify({
+							data: this.rawData,
+							timestamp: Date.now()
+						}));
+						console.log('Forces data cached globally for other pages');
+					} catch (e) {
+						console.warn('Error setting global forces cache:', e);
+					}
+				}
+			};
+		}
+
+		// Initialize Stories sheet without button (it's now in the section header)
 		const storiesUrl = CrusadeConfig.getSheetUrl('stories');
 		if (storiesUrl) {
 			SheetsManager.embed('stories-sheet', 
@@ -117,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					maxHeight: '350px',
 					showStats: true,
 					sortable: true,
+					showRefreshButton: false,  // Disable the refresh button
 					linkColumn: 6,          // Display the Title column (index 6) as link
 					linkDataColumn: 0,      // Use the Key column (index 0) for link value
 					linkPattern: 'stories/view-story.html?key={slug}',
@@ -132,17 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					maxRows: 10            // Show only recent 10 stories
 				}
 			);
-		} else {
-			console.warn('Stories sheet URL not configured');
-			// Show placeholder content
-			document.getElementById('stories-sheet').innerHTML = `
-				<div class="no-data-message">
-					<p>📚 Stories and battle reports will be displayed here.</p>
-					<p><em>Configure stories URL in CrusadeConfig to enable this feature.</em></p>
-				</div>
-			`;
 		}
-        
         console.log('Sheets initialized successfully');
         
     } catch (error) {

@@ -32,6 +32,98 @@
   border-width: 4px;
 }
 
+/* Add this to components-unified.css */
+/* ===============================
+   SECTION HEADERS WITH ACTIONS
+   =============================== */
+
+/* Section header with action button */
+.section-header-with-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header-with-action h2 {
+    margin: 0;
+    color: var(--color-secondary);
+    font-size: var(--font-2xl);
+}
+
+/* Consistent Add buttons for all sections */
+.add-section-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background-color: var(--color-primary);
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: normal;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    white-space: nowrap;
+    border: none;
+}
+
+.add-section-btn:hover {
+    background-color: var(--color-primary-dark);
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none !important;
+}
+
+.add-section-btn:visited {
+    color: white !important;
+}
+
+/* Remove the old floating button styles since we're not using them anymore */
+/* Can delete these from your CSS: */
+/* 
+.sheets-refresh {
+    float: right;
+    margin-top: 10px;
+}
+
+.add-force-btn {
+    float: left;
+    margin-top: 10px;
+}
+*/
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .section-header-with-action {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .section-header-with-action h2 {
+        font-size: var(--font-xl);
+    }
+    
+    .add-section-btn {
+        align-self: flex-end;
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-section-btn {
+        width: 100%;
+        justify-content: center;
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+}
+
 /* ===============================
    CARDS & SECTIONS - Unified
    =============================== */
