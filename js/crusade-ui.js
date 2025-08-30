@@ -445,6 +445,238 @@ const CrusadeUI = {
         if (container) {
             container.innerHTML = `<p class="error-message">${message}</p>`;
         }
+    },
+
+    /**
+     * Display battle history for the crusade
+     */
+    async displayBattleHistory(crusadeKey) {
+        const container = document.getElementById('battle-history-content');
+        const section = document.getElementById('battle-history-section');
+        if (!container || !section) return;
+
+        try {
+            // Show loading state
+            container.innerHTML = `
+                <div class="loading-spinner"></div>
+                <span>Loading battle history...</span>
+            `;
+            section.style.display = 'block';
+
+            // Get battle history URL
+            const battleUrl = CrusadeConfig.getSheetUrl('battleHistory');
+            if (!battleUrl) {
+                container.innerHTML = '<p class="no-data">Battle history not configured.</p>';
+                return;
+            }
+
+            // Fetch battle data using CacheManager
+            const response = await CacheManager.fetchWithCache(battleUrl, 'battleHistory');
+            
+            if (!response || response.length <= 1) {
+                container.innerHTML = '<p class="no-data">No battles recorded for this crusade yet.</p>';
+                return;
+            }
+
+            // Filter battles by crusade key (column 17)
+            const crusadeBattles = response.slice(1).filter(row => {
+                return row[17] === crusadeKey; // Crusade Key column
+            });
+
+            // Sort by date (most recent first)
+            crusadeBattles.sort((a, b) => {
+                const dateA = new Date(a[5] || 0); // Date Played column
+                const dateB = new Date(b[5] || 0);
+                return dateB - dateA;
+            });
+
+            // Display the battles
+            this.displayCrusadeBattles(crusadeBattles, container);
+
+        } catch (error) {
+            console.error('Error loading battle history:', error);
+            container.innerHTML = '<p class="error-message">Error loading battle history.</p>';
+        }
+    },
+
+    /**
+     * Display crusade battles in table format
+     */
+    displayCrusadeBattles(battles, container) {
+        if (!battles || battles.length === 0) {
+            container.innerHTML = '<p class="no-data">No battles recorded for this crusade yet.</p>';
+            return;
+        }
+
+        // Create table HTML
+        let html = `
+            <div class="sheets-table-wrapper" style="max-height: 400px; overflow-y: auto;">
+                <table class="sheets-table">
+                    <thead>
+                        <tr>
+                            <th onclick="CrusadeUI.sortBattleTable(0)" style="cursor: pointer;">
+                                Date <span class="sort-indicator">⇅</span>
+                            </th>
+                            <th onclick="CrusadeUI.sortBattleTable(1)" style="cursor: pointer;">
+                                Battle Name <span class="sort-indicator">⇅</span>
+                            </th>
+                            <th>Outcome</th>
+                            <th onclick="CrusadeUI.sortBattleTable(3)" style="cursor: pointer;">
+                                Score <span class="sort-indicator">⇅</span>
+                            </th>
+                            <th onclick="CrusadeUI.sortBattleTable(4)" style="cursor: pointer;">
+                                Battle Size <span class="sort-indicator">⇅</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="battle-table-body">
+        `;
+
+        // Store battle data for sorting
+        window.crusadeBattleTableData = [];
+
+        // Add rows for each battle
+        battles.forEach(battle => {
+            // Extract data from columns
+            const datePlayed = battle[5]; // Date Played
+            const battleName = battle[15] || 'Unnamed Battle'; // Battle Name
+            const battleSize = battle[2] || '-'; // Battle Size
+            const player1Score = battle[13] || 0; // Player 1 Score
+            const player2Score = battle[14] || 0; // Player 2 Score
+            const victor = battle[12] || ''; // Victor
+            const force1Name = battle[7] || battle[6] || 'Force 1'; // Force 1 name or Player 1
+            const force2Name = battle[10] || battle[9] || 'Force 2'; // Force 2 name or Player 2
+            const force1Key = battle[3]; // Force 1 Key
+            const force2Key = battle[4]; // Force 2 Key
+            
+            // Format outcome string with links to forces
+            let outcome = '';
+            const force1Link = force1Key ? 
+                `<a href="${CrusadeConfig.buildForceUrlFromSubdir(force1Key)}" style="color: #4ecdc4;">${force1Name}</a>` : 
+                force1Name;
+            const force2Link = force2Key ? 
+                `<a href="${CrusadeConfig.buildForceUrlFromSubdir(force2Key)}" style="color: #4ecdc4;">${force2Name}</a>` : 
+                force2Name;
+            
+            if (victor === 'Draw') {
+                outcome = `${force1Link} draws with ${force2Link}`;
+            } else if (victor === battle[6]) { // Player 1 won
+                outcome = `${force1Link} defeats ${force2Link}`;
+            } else if (victor === battle[9]) { // Player 2 won
+                outcome = `${force2Link} defeats ${force1Link}`;
+            } else {
+                outcome = 'Outcome unclear';
+            }
+
+            // Format score - larger number first
+            const p1Score = parseInt(player1Score) || 0;
+            const p2Score = parseInt(player2Score) || 0;
+            const score = p1Score >= p2Score ? `${p1Score} - ${p2Score}` : `${p2Score} - ${p1Score}`;
+            
+            // Store for sorting
+            window.crusadeBattleTableData.push([
+                datePlayed,
+                battleName,
+                outcome,
+                score,
+                battleSize
+            ]);
+
+            html += `
+                <tr>
+                    <td>${this.formatDate(datePlayed)}</td>
+                    <td>${battleName}</td>
+                    <td>${outcome}</td>
+                    <td class="text-center">${score}</td>
+                    <td class="text-center">${battleSize}</td>
+                </tr>
+            `;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        // Add summary stats
+        const totalBattles = battles.length;
+        html += `
+            <div class="battle-summary" style="margin-top: 10px; color: #888;">
+                <small>📊 ${totalBattles} battle${totalBattles !== 1 ? 's' : ''} recorded for this crusade</small>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    },
+
+    /**
+     * Sort battle table by column
+     */
+    sortBattleTable(columnIndex) {
+        if (!window.crusadeBattleTableData) return;
+        
+        // Track sort direction
+        if (!window.battleSortDirection) {
+            window.battleSortDirection = {};
+        }
+        
+        const currentDirection = window.battleSortDirection[columnIndex] || 'asc';
+        const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+        window.battleSortDirection[columnIndex] = newDirection;
+        
+        // Sort the data
+        window.crusadeBattleTableData.sort((a, b) => {
+            let aVal = a[columnIndex];
+            let bVal = b[columnIndex];
+            
+            // Handle date column specially
+            if (columnIndex === 0) {
+                aVal = new Date(aVal || 0);
+                bVal = new Date(bVal || 0);
+                return newDirection === 'asc' ? aVal - bVal : bVal - aVal;
+            }
+            
+            // Handle score column (extract first number)
+            if (columnIndex === 3) {
+                aVal = parseInt(aVal.split('-')[0]) || 0;
+                bVal = parseInt(bVal.split('-')[0]) || 0;
+                return newDirection === 'asc' ? aVal - bVal : bVal - aVal;
+            }
+            
+            // Handle battle size (extract number if present)
+            if (columnIndex === 4) {
+                aVal = parseInt(aVal) || 0;
+                bVal = parseInt(bVal) || 0;
+                return newDirection === 'asc' ? aVal - bVal : bVal - aVal;
+            }
+            
+            // String comparison for other columns
+            if (newDirection === 'asc') {
+                return String(aVal).localeCompare(String(bVal));
+            } else {
+                return String(bVal).localeCompare(String(aVal));
+            }
+        });
+        
+        // Rebuild table body
+        const tbody = document.getElementById('battle-table-body');
+        if (!tbody) return;
+        
+        let html = '';
+        window.crusadeBattleTableData.forEach(row => {
+            html += `
+                <tr>
+                    <td>${columnIndex === 0 ? this.formatDate(row[0]) : row[0]}</td>
+                    <td>${row[1]}</td>
+                    <td>${row[2]}</td>
+                    <td class="text-center">${row[3]}</td>
+                    <td class="text-center">${row[4]}</td>
+                </tr>
+            `;
+        });
+        
+        tbody.innerHTML = html;
     }
 };
 

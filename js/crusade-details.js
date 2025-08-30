@@ -1,300 +1,146 @@
-// filename: crusade-details.js
-// Main orchestration for Crusade Details Page using Key System
+// filename: js/crusade-details.js
+// Main entry point for Crusade Details page
 // 40k Crusade Campaign Tracker
 
-class CrusadeDetailsApp {
-    constructor() {
-        this.crusadeKey = null;
-        this.crusadeData = null;
-        this.init();
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('Crusade Details page loading...');
+    
+    // Get crusade key from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const crusadeKey = urlParams.get('key');
+    
+    if (!crusadeKey) {
+        console.error('No crusade key provided in URL');
+        document.getElementById('error-message').style.display = 'block';
+        document.getElementById('error-text').textContent = 'No crusade specified. Please select a crusade from the main page.';
+        document.getElementById('crusade-header').innerHTML = '<h1>Error: No Crusade Selected</h1>';
+        return;
     }
     
-    init() {
-        // Wait for config to be available
-        if (typeof CrusadeConfig === 'undefined') {
-            CrusadeUI.showError('Configuration not loaded. Please refresh the page.');
-            return;
+    console.log('Loading crusade with key:', crusadeKey);
+    
+    try {
+        // Load crusade data - using the CORRECT function name
+        const crusadeData = await CrusadeData.loadCrusadeData(crusadeKey);
+        
+        if (!crusadeData) {
+            throw new Error('Crusade not found');
         }
         
-        // Get crusade key from URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        this.crusadeKey = urlParams.get('key') || urlParams.get('crusade');
+        // Update header with crusade information
+        CrusadeUI.updateHeader(crusadeData, crusadeData['Crusade Name']);
         
-        if (!this.crusadeKey) {
-            // Try legacy name parameter for backward compatibility
-            const crusadeName = urlParams.get('name');
-            if (crusadeName) {
-                console.warn('Using legacy URL format, generating key from name');
-                this.crusadeKey = CrusadeData.generateCrusadeKey(decodeURIComponent(crusadeName));
-            } else {
-                CrusadeUI.showError('No crusade specified. Please select a crusade from the main page.');
-                return;
+        // Show the action buttons section
+        const actionsSection = document.getElementById('crusade-actions');
+        if (actionsSection) {
+            actionsSection.style.display = 'block';
+            
+            // Update the battle recording button with crusade context
+            const battleBtn = actionsSection.querySelector('.btn-primary');
+            if (battleBtn) {
+                const params = new URLSearchParams({
+                    crusadeKey: crusadeKey,
+                    crusadeName: crusadeData['Crusade Name'] || ''
+                });
+                battleBtn.href = `../battle-reports/add-battle-report.html?${params.toString()}`;
             }
         }
         
-        console.log('Loading data for crusade key:', this.crusadeKey);
-        this.loadCrusadeData();
-    }
-    
-    async loadCrusadeData() {
-        try {
-            console.log('Starting loadCrusadeData with key:', this.crusadeKey);
-            
-            // Load main crusade data
-            console.log('Loading main crusade data...');
-            this.crusadeData = await CrusadeData.loadCrusadeData(this.crusadeKey);
-            console.log('Main crusade data loaded successfully:', this.crusadeData);
-            
-            // Update UI with crusade data
-            this.displayCrusadeContent();
-            
-            // Initialize force registration with crusade key
-            ForceRegistration.init(this.crusadeData);
-            
-            // Load participating forces using crusade key
-            console.log('Loading participating forces...');
-            await this.loadParticipatingForces();
-            console.log('Participating forces loaded');
-            
-            console.log('All data loading complete!');
-            
-        } catch (error) {
-            console.error('Error in loadCrusadeData:', error);
-            CrusadeUI.showError('Failed to load crusade data: ' + error.message);
+        // Display introduction
+        CrusadeUI.displayIntroduction(crusadeData);
+        
+        // Display rules
+        CrusadeUI.displayRules(crusadeData);
+        
+        // Display narrative
+        CrusadeUI.displayNarrative(crusadeData);
+        
+        // Display battle history for this crusade
+        await CrusadeUI.displayBattleHistory(crusadeKey);
+        
+        // Load and display participating forces
+        const participantsResult = await CrusadeData.loadParticipatingForces(crusadeKey);
+        if (participantsResult.success) {
+            CrusadeUI.displayParticipatingForces(participantsResult.forces, crusadeData['Crusade Name']);
         }
-    }    
-    
-
-	displayCrusadeContent() {
-		// Update header
-		CrusadeUI.updateHeader(this.crusadeData, this.crusadeData['Crusade Name']);
-		
-		// Display sections
-		CrusadeUI.displayIntroduction(this.crusadeData);
-		CrusadeUI.displayRules(this.crusadeData);
-		CrusadeUI.displayNarrative(this.crusadeData);
-		
-		// Show the crusade actions (battle button) with the crusade key
-		const crusadeKey = this.crusadeData.key || this.crusadeData.Key || 
-						  CrusadeData.generateCrusadeKey(this.crusadeData['Crusade Name']);
-		showCrusadeActions(crusadeKey);
-	}
-    
-    async loadParticipatingForces() {
-        try {
-            // Use the crusade key
-            const crusadeKey = this.crusadeData.key || this.crusadeData.Key || 
-                              CrusadeData.generateCrusadeKey(this.crusadeData['Crusade Name']);
-            
-            const result = await CrusadeData.loadParticipatingForces(crusadeKey);
-            
-            if (result.success) {
-                CrusadeUI.displayParticipatingForces(result.forces, this.crusadeData['Crusade Name']);
-            } else {
-                CrusadeUI.showDataError('forces-content', result.error || 'Failed to load participating forces');
-            }
-            
-        } catch (error) {
-            console.error('Error loading participating forces:', error);
-            CrusadeUI.showDataError('forces-content', 'Failed to load participating forces');
-        }
+        
+        // Set up force registration
+        ForceRegistration.init(crusadeKey, crusadeData['Crusade Name']);
+        
+    } catch (error) {
+        console.error('Error loading crusade details:', error);
+        document.getElementById('error-message').style.display = 'block';
+        document.getElementById('error-text').textContent = 'Error loading crusade data: ' + error.message;
+        document.getElementById('crusade-header').innerHTML = '<h1>Error Loading Crusade</h1>';
     }
-    
-    // Public methods for debugging
-    refreshCrusade() {
-        console.log('Refreshing crusade data...');
-        this.loadCrusadeData();
-    }
-    
-    getCrusadeData() {
-        return this.crusadeData;
-    }
-    
-    getCrusadeKey() {
-        return this.crusadeKey;
-    }
-}
-
-// Initialize the crusade details app when page loads
-document.addEventListener('DOMContentLoaded', () => {
-    const crusadeApp = new CrusadeDetailsApp();
-    
-    // Make it globally available for debugging
-    window.CrusadeDetailsApp = crusadeApp;
-    
-    // Make loadParticipatingForces available globally for force registration callback
-    window.loadParticipatingForces = () => crusadeApp.loadParticipatingForces();
-    
-    console.log('Crusade Details page initialized with key system');
 });
 
-// Global sorting variables for participants table
-let participantsSortColumn = null;
-let participantsSortDirection = 'asc';
+// Function to close the register modal (global for onclick)
+function closeRegisterModal() {
+    ForceRegistration.closeModal();
+}
 
-// Global function for sorting participants table
+// Function to sort participants table
 function sortParticipantsTable(columnIndex) {
     if (!window.participantsTableData) return;
     
-    // Toggle sort direction if clicking the same column
-    if (participantsSortColumn === columnIndex) {
-        participantsSortDirection = participantsSortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-        participantsSortColumn = columnIndex;
-        participantsSortDirection = 'asc';
+    // Track sort direction
+    if (!window.sortDirection) {
+        window.sortDirection = {};
     }
     
+    const currentDirection = window.sortDirection[columnIndex] || 'asc';
+    const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+    window.sortDirection[columnIndex] = newDirection;
+    
     // Sort the data
-    const sortedData = [...window.participantsTableData];
-    sortedData.sort((a, b) => {
-        let aVal = a[columnIndex] || '';
-        let bVal = b[columnIndex] || '';
+    window.participantsTableData.sort((a, b) => {
+        let aVal = a[columnIndex];
+        let bVal = b[columnIndex];
         
-        // Special handling for dates (column 2 is timestamp)
+        // Handle date column specially
         if (columnIndex === 2) {
             aVal = new Date(aVal);
             bVal = new Date(bVal);
-            
-            if (participantsSortDirection === 'asc') {
-                return aVal - bVal;
-            } else {
-                return bVal - aVal;
-            }
+            return newDirection === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+        
+        // String comparison for other columns
+        if (newDirection === 'asc') {
+            return String(aVal).localeCompare(String(bVal));
         } else {
-            // String sort for other columns
-            aVal = String(aVal).toLowerCase();
-            bVal = String(bVal).toLowerCase();
-            
-            if (participantsSortDirection === 'asc') {
-                return aVal.localeCompare(bVal);
-            } else {
-                return bVal.localeCompare(aVal);
-            }
+            return String(bVal).localeCompare(String(aVal));
         }
     });
     
-    // Update the table display
-    updateParticipantsTableDisplay(sortedData);
-    
-    // Update sort indicators
-    updateSortIndicators(columnIndex, participantsSortDirection);
-}
-
-function updateParticipantsTableDisplay(sortedData) {
+    // Rebuild table HTML
     const tbody = document.querySelector('#participants-table tbody');
     if (!tbody) return;
     
-    // Clear existing rows
     tbody.innerHTML = '';
-    
-    // Add sorted rows
-    sortedData.forEach(rowData => {
-        const registrationDate = new Date(rowData[2]).toLocaleDateString();
-        const forceKey = rowData[3]; // Force key
-        const forceName = rowData[0]; // Force name
-        const userName = rowData[1];
-        
-        // Create link to force details page using key
+    window.participantsTableData.forEach(row => {
+        const forceKey = row[3];
         const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceKey);
         const forceNameLink = `<a href="${forceUrl}" 
-                                style="color: #4ecdc4; text-decoration: none; transition: color 0.3s ease;"
-                                onmouseover="this.style.color='#7fefea'" 
-                                onmouseout="this.style.color='#4ecdc4'"
-                                title="View ${forceName} details">${forceName}</a>`;
+                                style="color: #4ecdc4; text-decoration: none;"
+                                title="View ${row[0]} details">${row[0]}</a>`;
         
-        const row = document.createElement('tr');
-        row.style.borderBottom = '1px solid #4a4a4a';
-        row.style.color = '#ffffff';
-        row.onmouseover = () => row.style.backgroundColor = '#3a3a3a';
-        row.onmouseout = () => row.style.backgroundColor = '';
-        
-        row.innerHTML = `
-            <td style="padding: 8px 12px;">${forceNameLink}</td>
-            <td style="padding: 8px 12px;">${userName}</td>
-            <td style="padding: 8px 12px;">${registrationDate}</td>
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${forceNameLink}</td>
+            <td>${row[1]}</td>
+            <td>${new Date(row[2]).toLocaleDateString()}</td>
         `;
-        
-        tbody.appendChild(row);
+        tbody.appendChild(tr);
     });
-}
-
-function updateSortIndicators(activeColumn, direction) {
-    // Reset all indicators
-    const indicators = document.querySelectorAll('.sort-indicator');
-    indicators.forEach((indicator, index) => {
-        if (index === activeColumn) {
-            indicator.innerHTML = direction === 'asc' ? '▲' : '▼';
-            indicator.style.color = '#4ecdc4';
+    
+    // Update sort indicators
+    document.querySelectorAll('#participants-table th .sort-indicator').forEach((indicator, index) => {
+        if (index === columnIndex) {
+            indicator.textContent = newDirection === 'asc' ? '↑' : '↓';
         } else {
-            indicator.innerHTML = '⇅';
-            indicator.style.color = '#cccccc';
+            indicator.textContent = '⇅';
         }
     });
-}
-
-function showCrusadeActions(crusadeKey) {
-    const actionsDiv = document.getElementById('crusade-actions');
-    if (actionsDiv) {
-        // Update the link to include the crusade key as a parameter
-        const battleLink = actionsDiv.querySelector('a[href*="add-battle-report"]');
-        if (battleLink && crusadeKey) {
-            // Add the crusade key as a URL parameter
-            const baseUrl = '../battle-reports/add-battle-report.html';
-            battleLink.href = `${baseUrl}?crusade=${encodeURIComponent(crusadeKey)}`;
-        }
-        actionsDiv.style.display = 'block';
-    }
-}
-
-// Also, to auto-select the crusade in the battle report form when coming from crusade details
-// Add this to battle-report-form.js in the init() method:
-
-function checkForCrusadeParameter() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const crusadeKey = urlParams.get('crusade');
-    
-    if (crusadeKey) {
-        // Wait for crusades to load, then select the matching one
-        const checkAndSelect = setInterval(() => {
-            const crusadeSelect = document.getElementById('crusade-select');
-            if (crusadeSelect && crusadeSelect.options.length > 1) {
-                for (let option of crusadeSelect.options) {
-                    if (option.value === crusadeKey) {
-                        crusadeSelect.value = crusadeKey;
-                        clearInterval(checkAndSelect);
-                        console.log('Auto-selected crusade:', crusadeKey);
-                        break;
-                    }
-                }
-            }
-        }, 100);
-        
-        // Stop checking after 5 seconds
-        setTimeout(() => clearInterval(checkAndSelect), 5000);
-    }
-}
-
-// Utility functions for crusade page
-const CrusadePageUtils = {
-    // Convert crusade data to URL parameter using key
-    createCrusadeUrl(crusadeKey, basePath = 'crusades/') {
-        const encodedKey = encodeURIComponent(crusadeKey);
-        return `${basePath}crusade-details.html?key=${encodedKey}`;
-    },
-    
-    // Get current crusade key from URL
-    getCurrentCrusadeKey() {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('key') || urlParams.get('crusade');
-    },
-    
-    // Generate crusade key from name
-    generateCrusadeKey(crusadeName) {
-        return crusadeName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
-    }
-};
-
-// Export for use in other modules (if using module system)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { CrusadeDetailsApp, CrusadePageUtils };
 }
