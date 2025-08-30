@@ -47,10 +47,10 @@ const CrusadeConfig = {
             sheetName: 'Battle History'
         },
         
-        charactersUnits: {
-            url: null,
-            sheetId: null,
-            sheetName: 'Characters and Units'
+        units: {
+            url: 'https://script.google.com/macros/s/AKfycbz7xVqEw5qHx9r_fHTmIe8D5tSjL6b_LPxTqP3wzGH5KNMUI_ATXnSlzBQX0DzYyuBNXw/exec',
+            sheetId: '1u23pjxHFD5Z0bv8Tw_erlEo50f71gYtGCKSe0ukhtfA',
+            sheetName: 'Units'
         },
         
         stories: {
