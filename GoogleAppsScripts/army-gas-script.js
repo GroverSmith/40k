@@ -2,9 +2,28 @@
 // Google Apps Script for Army List Form Submissions with Composite Key System
 // Deploy this as a web app to handle form submissions
 // Updated to have Force Key as the second column (between Key and Timestamp)
+// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; 
 const SHEET_NAME = 'Army Lists';
+
+// Helper function to filter out deleted rows
+function filterActiveRows(data) {
+  if (!data || data.length <= 1) return data;
+  
+  const headers = data[0];
+  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  
+  // If no Deleted Timestamp column, return all data
+  if (deletedTimestampIndex === -1) return data;
+  
+  // Filter to only include rows where Deleted Timestamp is empty
+  const activeRows = [headers].concat(
+    data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
+  );
+  
+  return activeRows;
+}
 
 // Key generation functions
 function generateForceKey(forceName, userName) {
@@ -86,10 +105,10 @@ function doPost(e) {
       console.log('Creating new sheet:', SHEET_NAME);
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
-      // Add header row with Force Key as second column
+      // Add header row with Force Key as second column and Deleted Timestamp at end
       const headers = [
         'Key',           // Primary key (column 0)
-        'Force Key',     // Foreign key to Forces sheet (column 1) - NEW POSITION
+        'Force Key',     // Foreign key to Forces sheet (column 1)
         'Timestamp',     // Column 2
         'User Name',     // Column 3
         'Force Name',    // Column 4
@@ -99,7 +118,8 @@ function doPost(e) {
         'MFM Version',   // Column 8
         'Points Value',  // Column 9
         'Notes',         // Column 10
-        'Army List Text' // Column 11
+        'Army List Text',// Column 11
+        'Deleted Timestamp' // Column 12
       ];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
@@ -122,8 +142,9 @@ function doPost(e) {
       sheet.setColumnWidth(10, 100); // Points Value
       sheet.setColumnWidth(11, 300); // Notes
       sheet.setColumnWidth(12, 400); // Army List Text
+      sheet.setColumnWidth(13, 150); // Deleted Timestamp
       
-      console.log('Created new sheet with headers including Force Key as second column');
+      console.log('Created new sheet with headers including Force Key as second column and Deleted Timestamp');
     }
     
     // Generate or use provided force key
@@ -154,7 +175,7 @@ function doPost(e) {
     // Prepare the row data with Force Key as second column
     const rowData = [
       armyListKey,                 // Key (Primary Key) - Column 0
-      forceKey,                    // Force Key (Foreign Key) - Column 1 (NEW POSITION)
+      forceKey,                    // Force Key (Foreign Key) - Column 1
       timestamp,                   // Timestamp - Column 2
       data.userName,               // User Name - Column 3
       data.forceName,              // Force Name - Column 4
@@ -164,17 +185,11 @@ function doPost(e) {
       data.mfmVersion || '',       // MFM Version - Column 8
       data.pointsValue || '',      // Points Value - Column 9
       data.notes || '',            // Notes - Column 10
-      data.armyListText            // Army List Text - Column 11
+      data.armyListText,           // Army List Text - Column 11
+      ''                           // Deleted Timestamp - Column 12 (empty for new records)
     ];
     
-    console.log('Row data prepared with Force Key as second column - first few fields:', [
-      armyListKey, 
-      forceKey,
-      timestamp, 
-      data.userName, 
-      data.forceName, 
-      data.armyName
-    ]);
+    console.log('Row data prepared with Force Key as second column');
     
     // Find the next empty row and append the data
     const lastRow = sheet.getLastRow();
@@ -246,6 +261,8 @@ function doGet(e) {
         return getArmyListsForForce(e.parameter.forceKey);
       case 'test':
         return getRecentArmyLists();
+      case 'delete':
+        return softDeleteArmyList(e.parameter.key);
       default:
         return getArmyLists(e.parameter);
     }
@@ -275,10 +292,14 @@ function getArmyLists(params = {}) {
   
   // Get all data
   const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  let rows = data.slice(1);
   
-  console.log('getArmyLists - Total rows found:', rows.length);
+  // Filter out deleted rows
+  const activeData = filterActiveRows(data);
+  
+  const headers = activeData[0];
+  let rows = activeData.slice(1);
+  
+  console.log('getArmyLists - Total active rows found:', rows.length);
   console.log('getArmyLists - Headers:', headers);
   
   // Filter by force key if specified (Force Key is now column 1)
@@ -343,14 +364,19 @@ function getArmyListByKey(armyListKey) {
   const data = sheet.getDataRange().getValues();
   const headers = data[0];
   
+  // Check if row is deleted
+  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  
   // Find by key (Key is column 0)
   const armyListRow = data.find((row, index) => {
     if (index === 0) return false; // Skip header
+    // Check if not deleted
+    if (deletedTimestampIndex !== -1 && row[deletedTimestampIndex]) return false;
     return row[0] === armyListKey;
   });
   
   if (!armyListRow) {
-    console.error(`Army list with key "${armyListKey}" not found`);
+    console.error(`Army list with key "${armyListKey}" not found or deleted`);
     throw new Error('Army list not found');
   }
   
@@ -398,10 +424,12 @@ function getRecentArmyLists() {
       .setMimeType(ContentService.MimeType.JSON);
   }
   
-  // Get all data (limit to recent entries for testing)
+  // Get all data and filter out deleted
   const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  const rows = data.slice(1, 11); // Get last 10 entries for testing
+  const activeData = filterActiveRows(data);
+  
+  const headers = activeData[0];
+  const rows = activeData.slice(1, 11); // Get last 10 entries for testing
   
   const result = rows.map((row) => {
     const obj = { 
@@ -423,6 +451,68 @@ function getRecentArmyLists() {
       message: 'Recent army lists (test mode)'
     }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Soft delete function
+function softDeleteArmyList(armyListKey) {
+  try {
+    if (!armyListKey) {
+      throw new Error('Army list key is required');
+    }
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      throw new Error('Army Lists sheet not found');
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    // Find Deleted Timestamp column index
+    let deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    
+    // If column doesn't exist, add it
+    if (deletedTimestampIndex === -1) {
+      sheet.insertColumnAfter(headers.length);
+      sheet.getRange(1, headers.length + 1).setValue('Deleted Timestamp');
+      sheet.getRange(1, headers.length + 1).setFontWeight('bold');
+      sheet.getRange(1, headers.length + 1).setBackground('#4ecdc4');
+      sheet.getRange(1, headers.length + 1).setFontColor('#ffffff');
+      deletedTimestampIndex = headers.length;
+    }
+    
+    // Find the row with the matching key
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === armyListKey) { // Key is in column 0
+        // Set the Deleted Timestamp value
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setValue(new Date());
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+        
+        console.log('Soft deleted army list:', armyListKey);
+        
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: true,
+            message: 'Army list soft deleted successfully',
+            key: armyListKey
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    throw new Error('Army list not found');
+    
+  } catch (error) {
+    console.error('Error soft deleting army list:', error);
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 // Test functions

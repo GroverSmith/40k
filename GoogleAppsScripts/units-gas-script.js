@@ -1,9 +1,28 @@
 // filename: units-gas-script.js
 // Google Apps Script for Units Sheet
 // Deploy this as a web app to handle unit/character submissions and retrieval
+// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '1u23pjxHFD5Z0bv8Tw_erlEo50f71gYtGCKSe0ukhtfA';
 const SHEET_NAME = 'Units';
+
+// Helper function to filter out deleted rows
+function filterActiveRows(data) {
+  if (!data || data.length <= 1) return data;
+  
+  const headers = data[0];
+  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  
+  // If no Deleted Timestamp column, return all data
+  if (deletedTimestampIndex === -1) return data;
+  
+  // Filter to only include rows where Deleted Timestamp is empty
+  const activeRows = [headers].concat(
+    data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
+  );
+  
+  return activeRows;
+}
 
 // Generate unique unit key using force key, unit name, and timestamp
 function generateUnitKey(forceKey, unitName) {
@@ -87,7 +106,8 @@ function doPost(e) {
         'Times Killed',
         'Description',
         'Notable History',
-        'Notes'
+        'Notes',
+        'Deleted Timestamp'  // New column
       ];
       
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
@@ -122,6 +142,7 @@ function doPost(e) {
       sheet.setColumnWidth(21, 300); // Description
       sheet.setColumnWidth(22, 300); // Notable History
       sheet.setColumnWidth(23, 300); // Notes
+      sheet.setColumnWidth(24, 150); // Deleted Timestamp
     }
     
     // Generate unique key
@@ -168,7 +189,8 @@ function doPost(e) {
       data.timesKilled || 0,          // Times Killed
       data.description || '',         // Description
       data.notableHistory || '',      // Notable History
-      data.notes || ''                // Notes
+      data.notes || '',               // Notes
+      ''                              // Deleted Timestamp (empty for new records)
     ];
     
     const lastRow = sheet.getLastRow();
@@ -224,6 +246,8 @@ function doGet(e) {
         return getUnitsForForce(e.parameter.forceKey);
       case 'user-units':
         return getUnitsForUser(e.parameter.userKey);
+      case 'delete':
+        return softDeleteUnit(e.parameter.key);
       default:
         return getUnitsList(e.parameter);
     }
@@ -252,8 +276,11 @@ function getUnitsList(params = {}) {
   
   const data = sheet.getDataRange().getValues();
   
+  // Filter out deleted rows
+  const activeData = filterActiveRows(data);
+  
   return ContentService
-    .createTextOutput(JSON.stringify(data))
+    .createTextOutput(JSON.stringify(activeData))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -272,14 +299,19 @@ function getUnitByKey(unitKey) {
   const data = sheet.getDataRange().getValues();
   const headers = data[0];
   
+  // Check if row is deleted
+  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  
   // Find by key (column 0)
   const unitRow = data.find((row, index) => {
     if (index === 0) return false;
+    // Check if not deleted
+    if (deletedTimestampIndex !== -1 && row[deletedTimestampIndex]) return false;
     return row[0] === unitKey;
   });
   
   if (!unitRow) {
-    throw new Error('Unit not found');
+    throw new Error('Unit not found or deleted');
   }
   
   // Convert to object
@@ -314,10 +346,14 @@ function getUnitsForForce(forceKey) {
   }
   
   const data = sheet.getDataRange().getValues();
-  const headers = data[0];
+  
+  // Filter out deleted rows first
+  const activeData = filterActiveRows(data);
+  
+  const headers = activeData[0];
   
   // Filter units by force key (column 2)
-  const units = data.slice(1)
+  const units = activeData.slice(1)
     .filter(row => row[2] === forceKey)
     .map(row => {
       const unit = {};
@@ -327,7 +363,7 @@ function getUnitsForForce(forceKey) {
       return unit;
     });
   
-  console.log(`Found ${units.length} units for force key "${forceKey}"`);
+  console.log(`Found ${units.length} active units for force key "${forceKey}"`);
   
   return ContentService
     .createTextOutput(JSON.stringify({
@@ -355,10 +391,14 @@ function getUnitsForUser(userKey) {
   }
   
   const data = sheet.getDataRange().getValues();
-  const headers = data[0];
+  
+  // Filter out deleted rows first
+  const activeData = filterActiveRows(data);
+  
+  const headers = activeData[0];
   
   // Filter units by user key (column 1)
-  const units = data.slice(1)
+  const units = activeData.slice(1)
     .filter(row => row[1] === userKey)
     .map(row => {
       const unit = {};
@@ -368,7 +408,7 @@ function getUnitsForUser(userKey) {
       return unit;
     });
   
-  console.log(`Found ${units.length} units for user key "${userKey}"`);
+  console.log(`Found ${units.length} active units for user key "${userKey}"`);
   
   return ContentService
     .createTextOutput(JSON.stringify({
@@ -376,6 +416,68 @@ function getUnitsForUser(userKey) {
       units: units
     }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Soft delete function
+function softDeleteUnit(unitKey) {
+  try {
+    if (!unitKey) {
+      throw new Error('Unit key is required');
+    }
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      throw new Error('Units sheet not found');
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    // Find Deleted Timestamp column index
+    let deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    
+    // If column doesn't exist, add it
+    if (deletedTimestampIndex === -1) {
+      sheet.insertColumnAfter(headers.length);
+      sheet.getRange(1, headers.length + 1).setValue('Deleted Timestamp');
+      sheet.getRange(1, headers.length + 1).setFontWeight('bold');
+      sheet.getRange(1, headers.length + 1).setBackground('#4ecdc4');
+      sheet.getRange(1, headers.length + 1).setFontColor('#ffffff');
+      deletedTimestampIndex = headers.length;
+    }
+    
+    // Find the row with the matching key
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === unitKey) { // Key is in column 0
+        // Set the Deleted Timestamp value
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setValue(new Date());
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+        
+        console.log('Soft deleted unit:', unitKey);
+        
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: true,
+            message: 'Unit soft deleted successfully',
+            key: unitKey
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    throw new Error('Unit not found');
+    
+  } catch (error) {
+    console.error('Error soft deleting unit:', error);
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 // Test function

@@ -1,9 +1,28 @@
 // filename: users-gas-script.js
 // Google Apps Script for Users Sheet Management with Key System
 // Deploy this as a web app to handle user creation and retrieval
+// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '15q9EIPz2PswXwNsZ0aJAb9mgT0qy_NXUUQqELEdx3W4';
 const SHEET_NAME = 'Users';
+
+// Helper function to filter out deleted rows
+function filterActiveRows(data) {
+  if (!data || data.length <= 1) return data;
+  
+  const headers = data[0];
+  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  
+  // If no Deleted Timestamp column, return all data
+  if (deletedTimestampIndex === -1) return data;
+  
+  // Filter to only include rows where Deleted Timestamp is empty
+  const activeRows = [headers].concat(
+    data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
+  );
+  
+  return activeRows;
+}
 
 // Key generation function
 function generateUserKey(name) {
@@ -46,8 +65,8 @@ function doPost(e) {
       console.log('Creating users sheet');
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
-      // Add headers with Key column first
-      const headers = ['Key', 'Timestamp', 'Name', 'Discord Handle', 'Email', 'Notes', 'Self Rating', 'Years Experience', 'Games Per Year'];
+      // Add headers with Key column first and Deleted Timestamp at end
+      const headers = ['Key', 'Timestamp', 'Name', 'Discord Handle', 'Email', 'Notes', 'Self Rating', 'Years Experience', 'Games Per Year', 'Deleted Timestamp'];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
       // Format header row
@@ -66,23 +85,33 @@ function doPost(e) {
       sheet.setColumnWidth(7, 100); // Self Rating
       sheet.setColumnWidth(8, 120); // Years Experience
       sheet.setColumnWidth(9, 120); // Games Per Year
+      sheet.setColumnWidth(10, 150); // Deleted Timestamp
     }
     
     // Generate user key
     const userKey = generateUserKey(data.name);
     console.log('Generated user key:', userKey);
     
-    // Check if user key already exists
+    // Check if user key already exists (and is not deleted)
     if (sheet.getLastRow() > 1) {
-      const existingKeys = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues().flat();
+      const allData = sheet.getDataRange().getValues();
+      const headers = allData[0];
+      const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
       
-      if (existingKeys.includes(userKey)) {
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            success: false,
-            error: 'A user with this name already exists'
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
+      for (let i = 1; i < allData.length; i++) {
+        if (allData[i][0] === userKey) {
+          // Check if it's deleted
+          if (deletedTimestampIndex !== -1 && allData[i][deletedTimestampIndex]) {
+            console.log('User key exists but is deleted, allowing recreation');
+          } else {
+            return ContentService
+              .createTextOutput(JSON.stringify({
+                success: false,
+                error: 'A user with this name already exists'
+              }))
+              .setMimeType(ContentService.MimeType.JSON);
+          }
+        }
       }
     }
     
@@ -97,7 +126,8 @@ function doPost(e) {
       data.notes || '',                    // Notes
       data.selfRating || '',               // Self Rating
       data.yearsExperience || '',          // Years Experience
-      data.gamesPerYear || ''              // Games Per Year
+      data.gamesPerYear || '',             // Games Per Year
+      ''                                    // Deleted Timestamp (empty for new records)
     ];
     
     const lastRow = sheet.getLastRow();
@@ -152,6 +182,8 @@ function doGet(e) {
         return getUserByKey(e.parameter.key);
       case 'get-by-name':
         return getUserByName(e.parameter.name);
+      case 'delete':
+        return softDeleteUser(e.parameter.key);
       default:
         return getUsersList();
     }
@@ -176,17 +208,20 @@ function getUsersList() {
     if (!sheet) {
       // Return empty array with headers if no sheet exists yet
       return ContentService
-        .createTextOutput(JSON.stringify([['Key', 'Timestamp', 'Name', 'Discord Handle', 'Email', 'Notes', 'Self Rating', 'Years Experience', 'Games Per Year']]))
+        .createTextOutput(JSON.stringify([['Key', 'Timestamp', 'Name', 'Discord Handle', 'Email', 'Notes', 'Self Rating', 'Years Experience', 'Games Per Year', 'Deleted Timestamp']]))
         .setMimeType(ContentService.MimeType.JSON);
     }
     
     const data = sheet.getDataRange().getValues();
     
-    console.log('getUsersList - Total rows found:', data.length);
+    // Filter out deleted rows
+    const activeData = filterActiveRows(data);
+    
+    console.log('getUsersList - Total active rows found:', activeData.length);
     
     // Return raw data for compatibility with existing sheets system
     return ContentService
-      .createTextOutput(JSON.stringify(data))
+      .createTextOutput(JSON.stringify(activeData))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
@@ -219,14 +254,19 @@ function getUserByKey(userKey) {
     const data = sheet.getDataRange().getValues();
     const headers = data[0];
     
+    // Check if row is deleted
+    const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    
     // Find the user by key (Key is column 0)
     const userRow = data.find((row, index) => {
       if (index === 0) return false; // Skip header row
+      // Check if not deleted
+      if (deletedTimestampIndex !== -1 && row[deletedTimestampIndex]) return false;
       return row[0] === userKey;
     });
     
     if (!userRow) {
-      throw new Error(`User with key "${userKey}" not found`);
+      throw new Error(`User with key "${userKey}" not found or deleted`);
     }
     
     // Convert to object
@@ -280,6 +320,68 @@ function getUserByName(userName) {
   }
 }
 
+// Soft delete function
+function softDeleteUser(userKey) {
+  try {
+    if (!userKey) {
+      throw new Error('User key is required');
+    }
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      throw new Error('Users sheet not found');
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    // Find Deleted Timestamp column index
+    let deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    
+    // If column doesn't exist, add it
+    if (deletedTimestampIndex === -1) {
+      sheet.insertColumnAfter(headers.length);
+      sheet.getRange(1, headers.length + 1).setValue('Deleted Timestamp');
+      sheet.getRange(1, headers.length + 1).setFontWeight('bold');
+      sheet.getRange(1, headers.length + 1).setBackground('#4ecdc4');
+      sheet.getRange(1, headers.length + 1).setFontColor('#ffffff');
+      deletedTimestampIndex = headers.length;
+    }
+    
+    // Find the row with the matching key
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === userKey) { // Key is in column 0
+        // Set the Deleted Timestamp value
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setValue(new Date());
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+        
+        console.log('Soft deleted user:', userKey);
+        
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: true,
+            message: 'User soft deleted successfully',
+            key: userKey
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    throw new Error('User not found');
+    
+  } catch (error) {
+    console.error('Error soft deleting user:', error);
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
 // Test functions
 function testUsersScript() {
   console.log('=== Testing Users Script ===');
@@ -292,19 +394,6 @@ function testUsersScript() {
     // Test key generation
     const testKey = generateUserKey('John Smith');
     console.log('Test user key:', testKey);
-    
-    // Test creating a user (commented out to avoid creating test data)
-    // const testUser = {
-    //   name: 'Test User',
-    //   discordHandle: 'testuser#1234',
-    //   email: 'test@example.com',
-    //   notes: 'Test user for development',
-    //   selfRating: '3',
-    //   yearsExperience: '5',
-    //   gamesPerYear: '12'
-    // };
-    // const createResult = doPost({ parameter: testUser });
-    // console.log('Create user result:', JSON.parse(createResult.getContent()));
     
   } catch (error) {
     console.error('Test error:', error);

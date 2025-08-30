@@ -2,6 +2,7 @@
 // GoogleSheetsEmbed - A comprehensive class for embedding Google Sheets data
 // Features: caching, sorting, pagination, responsive design, error handling, custom column names
 // Updated to support linkDataColumn for using hidden columns as link values
+// Updated to filter out soft-deleted rows (rows with Deleted Timestamp values)
 
 class GoogleSheetsEmbed {
     constructor(containerSelector, appsScriptUrl, options = {}) {
@@ -145,11 +146,47 @@ class GoogleSheetsEmbed {
         }
     }
     
+    /**
+     * Filter out rows that have been soft-deleted (have a Deleted Timestamp value)
+     * This happens client-side as an additional safety measure
+     */
+    filterActiveRows(rows) {
+        if (!rows || rows.length <= 1) return rows;
+        
+        const headers = rows[0];
+        const deletedTimestampIndex = headers.findIndex(h => 
+            h && (h === 'Deleted Timestamp' || h.toLowerCase() === 'deleted timestamp')
+        );
+        
+        // If no Deleted Timestamp column, return all rows
+        if (deletedTimestampIndex === -1) return rows;
+        
+        // Filter to only include rows where Deleted Timestamp is empty
+        const activeRows = [headers].concat(
+            rows.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
+        );
+        
+        const deletedCount = rows.length - activeRows.length;
+        if (deletedCount > 0) {
+            console.log(`Filtered ${deletedCount} deleted rows`);
+        }
+        
+        // Also add Deleted Timestamp to hideColumns if not already there
+        if (!this.options.hideColumns.includes(deletedTimestampIndex)) {
+            this.options.hideColumns.push(deletedTimestampIndex);
+        }
+        
+        return activeRows;
+    }
+    
     displayData(rows) {
         if (!rows || rows.length === 0) {
             this.showError('No data found');
             return;
         }
+        
+        // Filter out soft-deleted rows
+        rows = this.filterActiveRows(rows);
         
         // Apply row limit if specified
         let displayRows = rows;
@@ -256,7 +293,7 @@ class GoogleSheetsEmbed {
             // Count visible columns (excluding hidden ones)
             const visibleColumns = rows[0] && rows[0].length ? rows[0].length - this.options.hideColumns.length : 0;
             
-            let statsText = '⚔️ Showing ' + displayedRows + ' of ' + totalDataRows + ' rows, ' + visibleColumns + ' columns | Last updated: ' + new Date().toLocaleString();
+            let statsText = '⚔️ Showing ' + displayedRows + ' of ' + totalDataRows + ' active rows, ' + visibleColumns + ' columns | Last updated: ' + new Date().toLocaleString();
             
             if (isFromCache) {
                 const cacheAgeHours = Math.round((Date.now() - cachedData.timestamp) / 3600000);
@@ -317,11 +354,13 @@ class GoogleSheetsEmbed {
     goToPage(pageNumber) {
         if (!this.rawData) return;
         
-        const totalDataRows = this.rawData.length - 1;
+        // Re-filter active rows when changing pages
+        const activeData = this.filterActiveRows(this.rawData);
+        const totalDataRows = activeData.length - 1;
         const totalPages = Math.ceil(totalDataRows / this.options.rowsPerPage);
         
         this.currentPage = Math.max(1, Math.min(pageNumber, totalPages));
-        this.displayData(this.rawData);
+        this.displayData(activeData);
     }
     
     changeRowsPerPage(newRowsPerPage) {
@@ -333,6 +372,9 @@ class GoogleSheetsEmbed {
     sortBy(columnIndex) {
         if (!this.rawData || this.rawData.length <= 1) return;
         
+        // Filter active rows before sorting
+        let activeData = this.filterActiveRows(this.rawData);
+        
         // Toggle sort direction if clicking the same column
         if (this.sortColumn === columnIndex) {
             this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -342,8 +384,8 @@ class GoogleSheetsEmbed {
         }
         
         // Create a copy of the data to sort
-        const headerRow = this.rawData[0];
-        const dataRows = this.rawData.slice(1);
+        const headerRow = activeData[0];
+        const dataRows = activeData.slice(1);
         
         // Sort the data rows
         dataRows.sort((a, b) => {

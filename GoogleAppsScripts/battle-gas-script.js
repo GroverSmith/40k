@@ -1,9 +1,28 @@
 // filename: battle-gas-script.js
 // Google Apps Script for Battle History Sheet
 // Deploy this as a web app to handle battle report submissions and retrieval
+// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '1ybyOYvN_7hHJ2lT5iK3wMOuY3grlUwGTooxbttgmJyk';
 const SHEET_NAME = 'Battle History';
+
+// Helper function to filter out deleted rows
+function filterActiveRows(data) {
+  if (!data || data.length <= 1) return data;
+  
+  const headers = data[0];
+  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  
+  // If no Deleted Timestamp column, return all data
+  if (deletedTimestampIndex === -1) return data;
+  
+  // Filter to only include rows where Deleted Timestamp is empty
+  const activeRows = [headers].concat(
+    data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
+  );
+  
+  return activeRows;
+}
 
 // Generate unique battle key using timestamp + random suffix
 function generateBattleKey() {
@@ -65,7 +84,8 @@ function doPost(e) {
         'Battle Name',
         'Summary Notes',
         'Crusade Key',
-        'Victor Force Key'  // New column
+        'Victor Force Key',
+        'Deleted Timestamp'  // New column
       ];
       
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
@@ -79,10 +99,10 @@ function doPost(e) {
       // Set column widths
       sheet.setColumnWidth(1, 150); // Key
       sheet.setColumnWidth(2, 150); // Timestamp
-      sheet.setColumnWidth(3, 150); // Force 1 Key
-      sheet.setColumnWidth(4, 150); // Force 2 Key
-      sheet.setColumnWidth(5, 100); // Date Played
-      sheet.setColumnWidth(6, 100); // Battle Size
+      sheet.setColumnWidth(3, 150); // Battle Size
+      sheet.setColumnWidth(4, 150); // Force 1 Key
+      sheet.setColumnWidth(5, 150); // Force 2 Key
+      sheet.setColumnWidth(6, 100); // Date Played
       sheet.setColumnWidth(7, 120); // Player 1
       sheet.setColumnWidth(8, 150); // Force 1
       sheet.setColumnWidth(9, 150); // Army 1
@@ -96,6 +116,7 @@ function doPost(e) {
       sheet.setColumnWidth(17, 300); // Summary Notes
       sheet.setColumnWidth(18, 200); // Crusade Key
       sheet.setColumnWidth(19, 150); // Victor Force Key
+      sheet.setColumnWidth(20, 150); // Deleted Timestamp
     }
     
     // Generate unique key
@@ -150,7 +171,8 @@ function doPost(e) {
       data.battleName || '',        // Column 15: Battle Name
       data.summaryNotes || '',      // Column 16: Summary Notes
       data.crusadeKey || '',        // Column 17: Crusade Key
-      victorForceKey                // Column 18: Victor Force Key
+      victorForceKey,               // Column 18: Victor Force Key
+      ''                            // Column 19: Deleted Timestamp (empty for new records)
     ];
     
     const lastRow = sheet.getLastRow();
@@ -161,7 +183,7 @@ function doPost(e) {
     // Format the new row
     sheet.getRange(newRowNumber, 1).setFontWeight('bold'); // Key
     sheet.getRange(newRowNumber, 2).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
-    sheet.getRange(newRowNumber, 5).setNumberFormat('yyyy-mm-dd'); // Date Played
+    sheet.getRange(newRowNumber, 6).setNumberFormat('yyyy-mm-dd'); // Date Played
     
     // Format score columns as numbers
     if (data.player1Score) {
@@ -210,6 +232,8 @@ function doGet(e) {
         return getBattlesForForce(e.parameter.forceKey);
       case 'recent':
         return getRecentBattles(e.parameter.limit);
+      case 'delete':
+        return softDeleteBattle(e.parameter.key);
       default:
         return getBattlesList(e.parameter);
     }
@@ -238,9 +262,12 @@ function getBattlesList(params = {}) {
   
   const data = sheet.getDataRange().getValues();
   
+  // Filter out deleted rows
+  const activeData = filterActiveRows(data);
+  
   // Return raw data for compatibility with sheets system
   return ContentService
-    .createTextOutput(JSON.stringify(data))
+    .createTextOutput(JSON.stringify(activeData))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -259,14 +286,19 @@ function getBattleByKey(battleKey) {
   const data = sheet.getDataRange().getValues();
   const headers = data[0];
   
+  // Check if row is deleted
+  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  
   // Find by key (column 0)
   const battleRow = data.find((row, index) => {
     if (index === 0) return false;
+    // Check if not deleted
+    if (deletedTimestampIndex !== -1 && row[deletedTimestampIndex]) return false;
     return row[0] === battleKey;
   });
   
   if (!battleRow) {
-    throw new Error('Battle report not found');
+    throw new Error('Battle report not found or deleted');
   }
   
   // Convert to object
@@ -301,12 +333,16 @@ function getBattlesForForce(forceKey) {
     }
     
     const data = sheet.getDataRange().getValues();
-    const headers = data[0];
+    
+    // Filter out deleted rows first
+    const activeData = filterActiveRows(data);
+    
+    const headers = activeData[0];
     
     // Filter battles where force is either Force 1 or Force 2
     // Force 1 Key is column 3, Force 2 Key is column 4
-    const battles = data.slice(1)
-        .filter(row => row[3] === forceKey || row[4] === forceKey) // Fixed column indices
+    const battles = activeData.slice(1)
+        .filter(row => row[3] === forceKey || row[4] === forceKey)
         .map(row => {
             const battle = {};
             headers.forEach((header, index) => {
@@ -315,7 +351,7 @@ function getBattlesForForce(forceKey) {
             return battle;
         });
     
-    console.log(`Found ${battles.length} battles for force key "${forceKey}"`);
+    console.log(`Found ${battles.length} active battles for force key "${forceKey}"`);
     
     return ContentService
         .createTextOutput(JSON.stringify({
@@ -339,11 +375,15 @@ function getRecentBattles(limit = 10) {
   }
   
   const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  const maxRows = Math.min(parseInt(limit), data.length - 1);
+  
+  // Filter out deleted rows
+  const activeData = filterActiveRows(data);
+  
+  const headers = activeData[0];
+  const maxRows = Math.min(parseInt(limit), activeData.length - 1);
   
   // Get the most recent battles (assuming they're at the bottom)
-  const recentRows = data.slice(Math.max(1, data.length - maxRows));
+  const recentRows = activeData.slice(Math.max(1, activeData.length - maxRows));
   
   const battles = recentRows.map(row => {
     const battle = {};
@@ -359,4 +399,66 @@ function getRecentBattles(limit = 10) {
       battles: battles
     }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Soft delete function
+function softDeleteBattle(battleKey) {
+  try {
+    if (!battleKey) {
+      throw new Error('Battle key is required');
+    }
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      throw new Error('Battle History sheet not found');
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    // Find Deleted Timestamp column index
+    let deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    
+    // If column doesn't exist, add it
+    if (deletedTimestampIndex === -1) {
+      sheet.insertColumnAfter(headers.length);
+      sheet.getRange(1, headers.length + 1).setValue('Deleted Timestamp');
+      sheet.getRange(1, headers.length + 1).setFontWeight('bold');
+      sheet.getRange(1, headers.length + 1).setBackground('#4ecdc4');
+      sheet.getRange(1, headers.length + 1).setFontColor('#ffffff');
+      deletedTimestampIndex = headers.length;
+    }
+    
+    // Find the row with the matching key
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === battleKey) { // Key is in column 0
+        // Set the Deleted Timestamp value
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setValue(new Date());
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+        
+        console.log('Soft deleted battle:', battleKey);
+        
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: true,
+            message: 'Battle soft deleted successfully',
+            key: battleKey
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    throw new Error('Battle not found');
+    
+  } catch (error) {
+    console.error('Error soft deleting battle:', error);
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }

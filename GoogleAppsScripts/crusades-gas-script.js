@@ -1,9 +1,28 @@
 // filename: crusades-gas-script.js
 // Google Apps Script for Crusades Sheet Access with Key System
 // Deploy this as a web app to handle crusade data requests
+// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '1Nzjg5YsL4i63r1cXVzVtF6AW3a2YseUCL_gV6tv9JmU'; 
 const SHEET_NAME = 'Crusades';
+
+// Helper function to filter out deleted rows
+function filterActiveRows(data) {
+  if (!data || data.length <= 1) return data;
+  
+  const headers = data[0];
+  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  
+  // If no Deleted Timestamp column, return all data
+  if (deletedTimestampIndex === -1) return data;
+  
+  // Filter to only include rows where Deleted Timestamp is empty
+  const activeRows = [headers].concat(
+    data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
+  );
+  
+  return activeRows;
+}
 
 // Key generation function
 function generateCrusadeKey(crusadeName) {
@@ -22,6 +41,8 @@ function doGet(e) {
         return getCrusadeByKey(e.parameter.key);
       case 'get-by-name':
         return getCrusadeByName(e.parameter.name);
+      case 'delete':
+        return softDeleteCrusade(e.parameter.key);
       default:
         return getCrusadesList();
     }
@@ -54,8 +75,12 @@ function getCrusadesList() {
       throw new Error('No data found in sheet');
     }
     
-    // Check if we need to add a key column (if first column isn't "Key")
-    if (data[0][0] !== 'Key') {
+    // Check if we need to add columns
+    const headers = data[0];
+    let needsUpdate = false;
+    
+    // Check if Key column exists
+    if (headers[0] !== 'Key') {
       console.log('Adding Key column to existing Crusades sheet');
       
       // Insert a new column at the beginning
@@ -79,25 +104,37 @@ function getCrusadesList() {
       
       // Set column width
       sheet.setColumnWidth(1, 200);
-      
-      // Refresh data after adding keys
-      const updatedData = sheet.getDataRange().getValues();
-      
-      console.log('getCrusadesList - Total rows with keys:', updatedData.length);
-      console.log('getCrusadesList - Headers:', updatedData[0]);
-      
-      return ContentService
-        .createTextOutput(JSON.stringify(updatedData))
-        .setMimeType(ContentService.MimeType.JSON);
+      needsUpdate = true;
     }
     
-    console.log('getCrusadesList - Total rows found:', data.length);
-    console.log('getCrusadesList - Headers:', data[0]);
+    // Check if Deleted Timestamp column exists
+    const updatedData = sheet.getDataRange().getValues();
+    const updatedHeaders = updatedData[0];
+    
+    if (!updatedHeaders.includes('Deleted Timestamp')) {
+      const newColumnIndex = sheet.getLastColumn() + 1;
+      sheet.getRange(1, newColumnIndex).setValue('Deleted Timestamp');
+      sheet.getRange(1, newColumnIndex).setFontWeight('bold');
+      sheet.getRange(1, newColumnIndex).setBackground('#4ecdc4');
+      sheet.getRange(1, newColumnIndex).setFontColor('#ffffff');
+      sheet.setColumnWidth(newColumnIndex, 150);
+      console.log('Added Deleted Timestamp column to Crusades sheet');
+      needsUpdate = true;
+    }
+    
+    // Get fresh data if we made updates
+    const finalData = needsUpdate ? sheet.getDataRange().getValues() : updatedData;
+    
+    // Filter out deleted rows
+    const activeData = filterActiveRows(finalData);
+    
+    console.log('getCrusadesList - Total active rows:', activeData.length);
+    console.log('getCrusadesList - Headers:', activeData[0]);
     
     // Return the raw data array format (like the other sheets)
     // This will be compatible with the existing GoogleSheetsEmbed component
     return ContentService
-      .createTextOutput(JSON.stringify(data))
+      .createTextOutput(JSON.stringify(activeData))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
@@ -131,24 +168,30 @@ function getCrusadeByKey(crusadeKey) {
     const data = sheet.getDataRange().getValues();
     const headers = data[0];
     
+    // Check if row is deleted
+    const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    
     console.log('getCrusadeByKey - Headers:', headers);
     console.log('getCrusadeByKey - Looking for crusade key:', crusadeKey);
     
     // Find the crusade by key (Key should be in column 0)
     const crusadeRow = data.find((row, index) => {
       if (index === 0) return false; // Skip header row
+      // Check if not deleted
+      if (deletedTimestampIndex !== -1 && row[deletedTimestampIndex]) return false;
       return row[0] === crusadeKey; // Key column
     });
     
     if (!crusadeRow) {
       // Show available keys for debugging
       const availableKeys = data.slice(1)
+        .filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
         .map(row => row[0])
         .filter(key => key)
         .slice(0, 10); // Limit to first 10 for logging
       
       console.log('Available crusade keys:', availableKeys);
-      throw new Error(`Crusade with key "${crusadeKey}" not found. Available keys: ${availableKeys.join(', ')}`);
+      throw new Error(`Crusade with key "${crusadeKey}" not found or deleted. Available keys: ${availableKeys.join(', ')}`);
     }
     
     // Convert to object
@@ -238,17 +281,26 @@ function doPost(e) {
     const crusadeKey = generateCrusadeKey(data.crusadeName);
     console.log('Generated crusade key:', crusadeKey);
     
-    // Check if crusade already exists
+    // Check if crusade already exists (and is not deleted)
     if (sheet.getLastRow() > 1) {
-      const existingKeys = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues().flat();
+      const allData = sheet.getDataRange().getValues();
+      const headers = allData[0];
+      const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
       
-      if (existingKeys.includes(crusadeKey)) {
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            success: false,
-            error: 'A crusade with this name already exists'
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
+      for (let i = 1; i < allData.length; i++) {
+        if (allData[i][0] === crusadeKey) {
+          // Check if it's deleted
+          if (deletedTimestampIndex !== -1 && allData[i][deletedTimestampIndex]) {
+            console.log('Crusade key exists but is deleted, allowing recreation');
+          } else {
+            return ContentService
+              .createTextOutput(JSON.stringify({
+                success: false,
+                error: 'A crusade with this name already exists'
+              }))
+              .setMimeType(ContentService.MimeType.JSON);
+          }
+        }
       }
     }
     
@@ -265,7 +317,8 @@ function doPost(e) {
       data.rulesBlock2 || '',              // Rules Block 2
       data.rulesBlock3 || '',              // Rules Block 3
       data.narrativeBlock1 || '',          // Narrative Block 1
-      data.narrativeBlock2 || ''           // Narrative Block 2
+      data.narrativeBlock2 || '',          // Narrative Block 2
+      ''                                    // Deleted Timestamp (empty for new records)
     ];
     
     const lastRow = sheet.getLastRow();
@@ -296,6 +349,68 @@ function doPost(e) {
   }
 }
 
+// Soft delete function
+function softDeleteCrusade(crusadeKey) {
+  try {
+    if (!crusadeKey) {
+      throw new Error('Crusade key is required');
+    }
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      throw new Error('Crusades sheet not found');
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    // Find Deleted Timestamp column index
+    let deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    
+    // If column doesn't exist, add it
+    if (deletedTimestampIndex === -1) {
+      sheet.insertColumnAfter(headers.length);
+      sheet.getRange(1, headers.length + 1).setValue('Deleted Timestamp');
+      sheet.getRange(1, headers.length + 1).setFontWeight('bold');
+      sheet.getRange(1, headers.length + 1).setBackground('#4ecdc4');
+      sheet.getRange(1, headers.length + 1).setFontColor('#ffffff');
+      deletedTimestampIndex = headers.length;
+    }
+    
+    // Find the row with the matching key
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === crusadeKey) { // Key is in column 0
+        // Set the Deleted Timestamp value
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setValue(new Date());
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+        
+        console.log('Soft deleted crusade:', crusadeKey);
+        
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: true,
+            message: 'Crusade soft deleted successfully',
+            key: crusadeKey
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    throw new Error('Crusade not found');
+    
+  } catch (error) {
+    console.error('Error soft deleting crusade:', error);
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
 // Test function to verify the script works
 function testCrusadesScript() {
   console.log('=== Testing Crusades Script ===');
@@ -308,10 +423,6 @@ function testCrusadesScript() {
     // Test key generation
     const testKey = generateCrusadeKey('Summer Campaign 2024');
     console.log('Test crusade key:', testKey);
-    
-    // Test getting a specific crusade (you'll need to update this with an actual crusade key)
-    // const singleCrusade = getCrusadeByKey('SummerCampaign2024');
-    // console.log('Single crusade result:', JSON.parse(singleCrusade.getContent()));
     
   } catch (error) {
     console.error('Test error:', error);

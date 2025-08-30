@@ -1,9 +1,28 @@
 // filename: forces-gas-script.js
 // Google Apps Script for Forces Sheet with Composite Key System
 // Deploy this as a web app to handle force creation and retrieval
+// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '13n56kfJPSMoeV9VyiTXYajWT1LuBmnpj2oSwcek_osg';
 const SHEET_NAME = 'Forces';
+
+// Helper function to filter out deleted rows
+function filterActiveRows(data) {
+  if (!data || data.length <= 1) return data;
+  
+  const headers = data[0];
+  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  
+  // If no Deleted Timestamp column, return all data
+  if (deletedTimestampIndex === -1) return data;
+  
+  // Filter to only include rows where Deleted Timestamp is empty
+  const activeRows = [headers].concat(
+    data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
+  );
+  
+  return activeRows;
+}
 
 // Key generation function
 function generateForceKey(forceName, userName) {
@@ -61,7 +80,7 @@ function doPost(e) {
       sheet = spreadsheet.insertSheet(SHEET_NAME);
     }
     
-    // Check if sheet has the correct headers (with Key column first)
+    // Check if sheet has the correct headers (with Key column first and Deleted Timestamp at end)
     let needsHeaderUpdate = false;
     if (sheet.getLastRow() === 0) {
       needsHeaderUpdate = true;
@@ -73,7 +92,7 @@ function doPost(e) {
     }
     
     if (needsHeaderUpdate) {
-      console.log('Updating headers to include Key column');
+      console.log('Updating headers to include Key column and Deleted Timestamp');
       
       // If sheet has existing data without Key column, we need to migrate it
       if (sheet.getLastRow() > 0 && sheet.getRange(1, 1).getValue() !== 'Key') {
@@ -85,8 +104,8 @@ function doPost(e) {
         // Clear the sheet
         sheet.clear();
         
-        // Set new headers
-        const headers = ['Key', 'User Name', 'Force Name', 'Faction', 'Detachment', 'Notes', 'Timestamp'];
+        // Set new headers with Deleted Timestamp
+        const headers = ['Key', 'User Name', 'Force Name', 'Faction', 'Detachment', 'Notes', 'Timestamp', 'Deleted Timestamp'];
         sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
         
         // Migrate existing data with generated keys
@@ -106,23 +125,24 @@ function doPost(e) {
               row[2] || '', // Faction
               row[3] || '', // Detachment
               row[4] || '', // Notes
-              row[5] || new Date() // Timestamp
+              row[5] || new Date(), // Timestamp
+              '' // Deleted Timestamp (empty for existing records)
             ]);
           }
           
           if (migratedData.length > 0) {
-            sheet.getRange(2, 1, migratedData.length, 7).setValues(migratedData);
+            sheet.getRange(2, 1, migratedData.length, 8).setValues(migratedData);
             console.log(`Migrated ${migratedData.length} existing forces`);
           }
         }
       } else {
         // Just add headers to empty sheet
-        const headers = ['Key', 'User Name', 'Force Name', 'Faction', 'Detachment', 'Notes', 'Timestamp'];
+        const headers = ['Key', 'User Name', 'Force Name', 'Faction', 'Detachment', 'Notes', 'Timestamp', 'Deleted Timestamp'];
         sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       }
       
       // Format header row
-      const headerRange = sheet.getRange(1, 1, 1, 7);
+      const headerRange = sheet.getRange(1, 1, 1, 8);
       headerRange.setFontWeight('bold');
       headerRange.setBackground('#4ecdc4');
       headerRange.setFontColor('#ffffff');
@@ -135,24 +155,34 @@ function doPost(e) {
       sheet.setColumnWidth(5, 150); // Detachment
       sheet.setColumnWidth(6, 300); // Notes
       sheet.setColumnWidth(7, 150); // Timestamp
+      sheet.setColumnWidth(8, 150); // Deleted Timestamp
     }
     
     // Generate the force key
     const forceKey = generateForceKey(data.forceName, data.userName);
     console.log('Generated force key:', forceKey);
     
-    // Check if force key already exists
+    // Check if force key already exists (and is not deleted)
     if (sheet.getLastRow() > 1) {
-      const existingKeys = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues().flat();
+      const allData = sheet.getDataRange().getValues();
+      const headers = allData[0];
+      const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
       
-      if (existingKeys.includes(forceKey)) {
-        console.log('Force key already exists:', forceKey);
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            success: false,
-            error: 'A force with this name already exists for this user'
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
+      for (let i = 1; i < allData.length; i++) {
+        if (allData[i][0] === forceKey) {
+          // Check if it's deleted
+          if (deletedTimestampIndex !== -1 && allData[i][deletedTimestampIndex]) {
+            console.log('Force key exists but is deleted, allowing recreation');
+          } else {
+            console.log('Force key already exists and is active:', forceKey);
+            return ContentService
+              .createTextOutput(JSON.stringify({
+                success: false,
+                error: 'A force with this name already exists for this user'
+              }))
+              .setMimeType(ContentService.MimeType.JSON);
+          }
+        }
       }
     }
     
@@ -165,7 +195,7 @@ function doPost(e) {
     }
     console.log('Using timestamp:', timestamp);
     
-    // Prepare the row data with key
+    // Prepare the row data with key and deleted timestamp
     const rowData = [
       forceKey,                                // Key (column A)
       data.userName,                           // User Name (column B)
@@ -173,7 +203,8 @@ function doPost(e) {
       data.faction,                            // Faction (column D)
       data.detachment || '',                   // Detachment (column E)
       data.notes || '',                        // Notes (column F)
-      timestamp                                 // Timestamp (column G)
+      timestamp,                                // Timestamp (column G)
+      ''                                        // Deleted Timestamp (column H) - empty for new records
     ];
     
     console.log('Row data prepared with key:', rowData);
@@ -241,6 +272,8 @@ function doGet(e) {
         return getForceByName(e.parameter.name, e.parameter.user);
       case 'user-forces':
         return getUserForces(e.parameter.user);
+      case 'delete':
+        return softDeleteForce(e.parameter.key);
       default:
         return getForcesList(e.parameter);
     }
@@ -266,62 +299,18 @@ function ensureSheetStructure() {
       return; // Sheet will be created when needed
     }
     
-    // Check if first row has Key column
-    if (sheet.getLastRow() > 0) {
-      const firstCell = sheet.getRange(1, 1).getValue();
-      if (firstCell !== 'Key') {
-        console.log('Sheet needs structure update - first column is not Key');
-        
-        // Get all existing data
-        const existingData = sheet.getDataRange().getValues();
-        
-        // Clear and rebuild with Key column
-        sheet.clear();
-        
-        // Add proper headers
-        const headers = ['Key', 'User Name', 'Force Name', 'Faction', 'Detachment', 'Notes', 'Timestamp'];
-        sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-        
-        // Format headers
-        const headerRange = sheet.getRange(1, 1, 1, headers.length);
-        headerRange.setFontWeight('bold');
-        headerRange.setBackground('#4ecdc4');
-        headerRange.setFontColor('#ffffff');
-        
-        // Migrate data if it exists (skip header row)
-        if (existingData.length > 1) {
-          const migratedData = [];
-          for (let i = 1; i < existingData.length; i++) {
-            const row = existingData[i];
-            const userName = row[0] || '';
-            const forceName = row[1] || '';
-            const forceKey = generateForceKey(forceName, userName);
-            
-            migratedData.push([
-              forceKey,
-              userName,
-              forceName,
-              row[2] || '', // Faction
-              row[3] || '', // Detachment
-              row[4] || '', // Notes
-              row[5] || new Date() // Timestamp
-            ]);
-          }
-          
-          if (migratedData.length > 0) {
-            sheet.getRange(2, 1, migratedData.length, 7).setValues(migratedData);
-            
-            // Format timestamp column
-            sheet.getRange(2, 7, migratedData.length, 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
-            
-            // Format key column
-            sheet.getRange(2, 1, migratedData.length, 1).setFontWeight('bold');
-            
-            console.log(`Migrated ${migratedData.length} forces to new structure`);
-          }
-        }
-      }
+    // Check if Deleted Timestamp column exists
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    if (!headers.includes('Deleted Timestamp')) {
+      const newColumnIndex = sheet.getLastColumn() + 1;
+      sheet.getRange(1, newColumnIndex).setValue('Deleted Timestamp');
+      sheet.getRange(1, newColumnIndex).setFontWeight('bold');
+      sheet.getRange(1, newColumnIndex).setBackground('#4ecdc4');
+      sheet.getRange(1, newColumnIndex).setFontColor('#ffffff');
+      sheet.setColumnWidth(newColumnIndex, 150);
+      console.log('Added Deleted Timestamp column to Forces sheet');
     }
+    
   } catch (error) {
     console.error('Error ensuring sheet structure:', error);
   }
@@ -336,18 +325,21 @@ function getForcesList(params = {}) {
       // Return empty array with headers if sheet doesn't exist
       return ContentService
         .createTextOutput(JSON.stringify([
-          ['Key', 'User Name', 'Force Name', 'Faction', 'Detachment', 'Notes', 'Timestamp']
+          ['Key', 'User Name', 'Force Name', 'Faction', 'Detachment', 'Notes', 'Timestamp', 'Deleted Timestamp']
         ]))
         .setMimeType(ContentService.MimeType.JSON);
     }
     
     const data = sheet.getDataRange().getValues();
     
-    console.log('getForcesList - Total rows found:', data.length);
+    // Filter out deleted rows
+    const activeData = filterActiveRows(data);
+    
+    console.log('getForcesList - Total active rows found:', activeData.length);
     
     // Return raw data for compatibility with existing sheets system
     return ContentService
-      .createTextOutput(JSON.stringify(data))
+      .createTextOutput(JSON.stringify(activeData))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
@@ -380,14 +372,19 @@ function getForceByKey(forceKey) {
     const data = sheet.getDataRange().getValues();
     const headers = data[0];
     
+    // Check if row is deleted
+    const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    
     // Find the force by key (Key is in column 0)
     const forceRow = data.find((row, index) => {
       if (index === 0) return false; // Skip header
+      // Check if not deleted
+      if (deletedTimestampIndex !== -1 && row[deletedTimestampIndex]) return false;
       return row[0] === forceKey; // Key column
     });
     
     if (!forceRow) {
-      throw new Error(`Force with key "${forceKey}" not found`);
+      throw new Error(`Force with key "${forceKey}" not found or deleted`);
     }
     
     // Convert to object
@@ -464,10 +461,14 @@ function getUserForces(userName) {
     }
     
     const data = sheet.getDataRange().getValues();
-    const headers = data[0];
+    
+    // Filter out deleted rows first
+    const activeData = filterActiveRows(data);
+    
+    const headers = activeData[0];
     
     // Filter for this user's forces (User Name is now column 1)
-    const userForces = data.slice(1)
+    const userForces = activeData.slice(1)
       .filter(row => row[1] && row[1].toString().toLowerCase().trim() === userName.toLowerCase().trim())
       .map(row => {
         const force = {};
@@ -477,7 +478,7 @@ function getUserForces(userName) {
         return force;
       });
     
-    console.log(`Found ${userForces.length} forces for user "${userName}"`);
+    console.log(`Found ${userForces.length} active forces for user "${userName}"`);
     
     return ContentService
       .createTextOutput(JSON.stringify({
@@ -489,6 +490,68 @@ function getUserForces(userName) {
   } catch (error) {
     console.error('Error getting user forces:', error);
     
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Soft delete function
+function softDeleteForce(forceKey) {
+  try {
+    if (!forceKey) {
+      throw new Error('Force key is required');
+    }
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      throw new Error('Forces sheet not found');
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    // Find Deleted Timestamp column index
+    let deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    
+    // If column doesn't exist, add it
+    if (deletedTimestampIndex === -1) {
+      sheet.insertColumnAfter(headers.length);
+      sheet.getRange(1, headers.length + 1).setValue('Deleted Timestamp');
+      sheet.getRange(1, headers.length + 1).setFontWeight('bold');
+      sheet.getRange(1, headers.length + 1).setBackground('#4ecdc4');
+      sheet.getRange(1, headers.length + 1).setFontColor('#ffffff');
+      deletedTimestampIndex = headers.length;
+    }
+    
+    // Find the row with the matching key
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === forceKey) { // Key is in column 0
+        // Set the Deleted Timestamp value
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setValue(new Date());
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+        
+        console.log('Soft deleted force:', forceKey);
+        
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: true,
+            message: 'Force soft deleted successfully',
+            key: forceKey
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    throw new Error('Force not found');
+    
+  } catch (error) {
+    console.error('Error soft deleting force:', error);
     return ContentService
       .createTextOutput(JSON.stringify({
         success: false,

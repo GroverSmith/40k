@@ -2,9 +2,28 @@
 // Google Apps Script for Crusade Participants Sheet (Junction Table)
 // Deploy this as a web app to handle participant registrations and lookups
 // This is a junction table - no primary key needed, the combination of crusadeKey + forceKey is unique
+// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '17jJO939FWthVaLCO091CQzx0hAmtNn8zE5zlqBf10JQ';
 const SHEET_NAME = 'Participants';
+
+// Helper function to filter out deleted rows
+function filterActiveRows(data) {
+  if (!data || data.length <= 1) return data;
+  
+  const headers = data[0];
+  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  
+  // If no Deleted Timestamp column, return all data
+  if (deletedTimestampIndex === -1) return data;
+  
+  // Filter to only include rows where Deleted Timestamp is empty
+  const activeRows = [headers].concat(
+    data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
+  );
+  
+  return activeRows;
+}
 
 // Key generation helpers (must match the format from other sheets)
 function generateCrusadeKey(crusadeName) {
@@ -63,7 +82,7 @@ function doPost(e) {
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
       // Headers - no primary key column needed for junction table
-      const headers = ['Crusade Key', 'Force Key', 'Crusade Name', 'Force Name', 'User Name', 'Timestamp'];
+      const headers = ['Crusade Key', 'Force Key', 'Crusade Name', 'Force Name', 'User Name', 'Timestamp', 'Deleted Timestamp'];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
       // Format header row
@@ -79,15 +98,26 @@ function doPost(e) {
       sheet.setColumnWidth(4, 180); // Force Name
       sheet.setColumnWidth(5, 150); // User Name
       sheet.setColumnWidth(6, 150); // Timestamp
+      sheet.setColumnWidth(7, 150); // Deleted Timestamp
     }
     
-    // Check if this combination already exists
+    // Check if this combination already exists (and is not deleted)
     const data_range = sheet.getDataRange();
     const values = data_range.getValues();
+    const headers = values[0];
+    const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
     
     const existingEntry = values.find((row, index) => {
       if (index === 0) return false; // Skip header
-      return row[0] === crusadeKey && row[1] === forceKey;
+      // Check if same crusade and force key
+      if (row[0] === crusadeKey && row[1] === forceKey) {
+        // Check if it's deleted
+        if (deletedTimestampIndex !== -1 && row[deletedTimestampIndex]) {
+          return false; // It's deleted, so we can recreate it
+        }
+        return true; // It exists and is not deleted
+      }
+      return false;
     });
     
     if (existingEntry) {
@@ -107,7 +137,8 @@ function doPost(e) {
       data.crusadeName || '',              // Crusade Name (for human readability)
       data.forceName || '',                // Force Name (for human readability)
       data.userName || '',                 // User Name (for human readability)
-      timestamp                            // Timestamp
+      timestamp,                           // Timestamp
+      ''                                   // Deleted Timestamp (empty for new records)
     ];
     
     const lastRow = sheet.getLastRow();
@@ -154,6 +185,8 @@ function doGet(e) {
         return getCrusadesForForce(e.parameter.forceKey);
       case 'check-registration':
         return checkRegistration(e.parameter.crusadeKey, e.parameter.forceKey);
+      case 'delete':
+        return softDeleteParticipant(e.parameter.crusadeKey, e.parameter.forceKey);
       default:
         return getParticipantsList(e.parameter);
     }
@@ -182,9 +215,12 @@ function getParticipantsList(params = {}) {
   
   const data = sheet.getDataRange().getValues();
   
+  // Filter out deleted rows
+  const activeData = filterActiveRows(data);
+  
   // Return raw data for compatibility with existing sheets system
   return ContentService
-    .createTextOutput(JSON.stringify(data))
+    .createTextOutput(JSON.stringify(activeData))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -219,10 +255,14 @@ function getForcesForCrusade(crusadeKeyOrName) {
   }
   
   const data = sheet.getDataRange().getValues();
-  const headers = data[0];
+  
+  // Filter out deleted rows first
+  const activeData = filterActiveRows(data);
+  
+  const headers = activeData[0];
   
   // Filter for this crusade (Crusade Key is column 0)
-  const participants = data.slice(1)
+  const participants = activeData.slice(1)
   .filter(row => row[0] === crusadeKey)
   .map(row => ({
     'Crusade Key': row[0],
@@ -233,7 +273,7 @@ function getForcesForCrusade(crusadeKeyOrName) {
     'Timestamp': row[5] 
   }));
   
-  console.log(`Found ${participants.length} forces for crusade key "${crusadeKey}"`);
+  console.log(`Found ${participants.length} active forces for crusade key "${crusadeKey}"`);
   
   return ContentService
     .createTextOutput(JSON.stringify({
@@ -264,8 +304,11 @@ function getCrusadesForForce(forceKey) {
   
   const data = sheet.getDataRange().getValues();
   
+  // Filter out deleted rows first
+  const activeData = filterActiveRows(data);
+  
   // Filter for this force key (Force Key is column 1)
-  const crusades = data.slice(1)
+  const crusades = activeData.slice(1)
     .filter(row => row[1] === forceKey)
     .map(row => ({
       crusadeKey: row[0],
@@ -276,7 +319,7 @@ function getCrusadesForForce(forceKey) {
       timestamp: row[5]
     }));
   
-  console.log(`Found ${crusades.length} crusades for force key "${forceKey}"`);
+  console.log(`Found ${crusades.length} active crusades for force key "${forceKey}"`);
   
   return ContentService
     .createTextOutput(JSON.stringify({
@@ -306,9 +349,13 @@ function checkRegistration(crusadeKey, forceKey) {
   }
   
   const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
   
   const registration = data.find((row, index) => {
     if (index === 0) return false; // Skip header
+    // Check if not deleted
+    if (deletedTimestampIndex !== -1 && row[deletedTimestampIndex]) return false;
     return row[0] === crusadeKey && row[1] === forceKey;
   });
   
@@ -328,6 +375,69 @@ function checkRegistration(crusadeKey, forceKey) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+// Soft delete function (requires both keys since this is a junction table)
+function softDeleteParticipant(crusadeKey, forceKey) {
+  try {
+    if (!crusadeKey || !forceKey) {
+      throw new Error('Both crusade key and force key are required');
+    }
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      throw new Error('Participants sheet not found');
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    // Find Deleted Timestamp column index
+    let deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    
+    // If column doesn't exist, add it
+    if (deletedTimestampIndex === -1) {
+      sheet.insertColumnAfter(headers.length);
+      sheet.getRange(1, headers.length + 1).setValue('Deleted Timestamp');
+      sheet.getRange(1, headers.length + 1).setFontWeight('bold');
+      sheet.getRange(1, headers.length + 1).setBackground('#4ecdc4');
+      sheet.getRange(1, headers.length + 1).setFontColor('#ffffff');
+      deletedTimestampIndex = headers.length;
+    }
+    
+    // Find the row with the matching keys
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === crusadeKey && data[i][1] === forceKey) {
+        // Set the Deleted Timestamp value
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setValue(new Date());
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+        
+        console.log('Soft deleted participant:', crusadeKey, forceKey);
+        
+        return ContentService
+          .createTextOutput(JSON.stringify({
+            success: true,
+            message: 'Participant soft deleted successfully',
+            crusadeKey: crusadeKey,
+            forceKey: forceKey
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    throw new Error('Participant registration not found');
+    
+  } catch (error) {
+    console.error('Error soft deleting participant:', error);
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
 // Test functions
 function testParticipantsScript() {
   console.log('=== Testing Participants Script ===');
@@ -342,10 +452,6 @@ function testParticipantsScript() {
     const testForceKey = generateForceKey('Ultramarines 2nd Company', 'John Smith');
     console.log('Test crusade key:', testCrusadeKey);
     console.log('Test force key:', testForceKey);
-    
-    // Test getting forces for a specific crusade
-    // const crusadeForces = getForcesForCrusade('SummerCampaign2024');
-    // console.log('Crusade forces result:', JSON.parse(crusadeForces.getContent()));
     
   } catch (error) {
     console.error('Test error:', error);
