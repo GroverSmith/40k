@@ -1,15 +1,11 @@
 // filename: force-ui.js
-// UI rendering and DOM manipulation for Force Details using Key System
+// Complete Force UI with all required methods
 // 40k Crusade Campaign Tracker
-// REFACTORED: Using CoreUtils for common utilities
 
 const ForceUI = {
-    /**
-     * Update the force header with data
-     */
     updateHeader(forceData) {
         const header = document.getElementById('force-header');
-        const launchDate = CoreUtils.dates.toShort(forceData.timestamp);
+        const launchDate = UIHelpers.formatDate(forceData.timestamp);
 
         header.innerHTML = `
             <h1>${forceData.forceName}</h1>
@@ -17,211 +13,187 @@ const ForceUI = {
                 ${forceData.faction}${forceData.detachment ? ` - ${forceData.detachment}` : ''} • Commanded by ${forceData.playerName}
             </div>
             ${launchDate ? `<div class="force-launch-date">Crusade Force Launched on ${launchDate}</div>` : ''}
-            <div class="force-key-display" style="font-size: 0.8em; color: #888; margin-top: 5px;">
-                Force Key: <code style="background: #333; padding: 2px 6px; border-radius: 3px;">${forceData.key}</code>
+            <div class="force-key-display">
+                Force Key: <code>${forceData.key}</code>
             </div>
         `;
 
-        // Update page title
         document.title = `${forceData.forceName} - Crusade Force`;
     },
 
     /**
-     * Update force statistics display
+     * Show a section by ID
      */
-    updateStats(forceData) {
-        const totalBattles = (forceData.battlesWon || 0) +
-                          (forceData.battlesLost || 0) +
-                          (forceData.battlesTied || 0);
-
-        document.getElementById('battles-fought').textContent = totalBattles || 0;
-        document.getElementById('victories').textContent = forceData.battlesWon || 0;
-        document.getElementById('battle-losses').textContent = forceData.battlesLost || 0;
-        document.getElementById('battle-ties').textContent = forceData.battlesTied || 0;
-
-        // Show the stats section
-        CoreUtils.dom.show('force-stats', 'grid');
-    },
-
-    /**
-     * Display army lists in a table format using keys
-     */
-    displayArmyLists(armyLists, forceName, forceKey) {
-        const container = document.getElementById('army-lists-sheet');
-        console.log('Displaying army lists data:', armyLists);
-        console.log('Force key:', forceKey);
-
-        let html = '<div class="army-lists-display">';
-
-        if (armyLists.length === 0) {
-            html += `
-                <div class="no-data-message">
-                    <p>📋 No army lists found for <strong>${forceName}</strong>.</p>
-                    <p><a href="../army-lists/add-army-list.html" style="color: #4ecdc4;">Add your first army list</a> to get started!</p>
-                </div>
-            `;
-        } else {
-            html += '<div class="army-lists-table-wrapper" style="max-height: 400px; overflow-y: auto; border: 1px solid #4a4a4a; border-radius: 4px; background-color: #2a2a2a;">';
-            html += '<table class="sheets-table" style="width: 100%; border-collapse: collapse;">';
-
-            // Header
-            html += `
-                <tr style="background-color: #3a3a3a; position: sticky; top: 0;">
-                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Army Name</th>
-                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Detachment</th>
-                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">MFM</th>
-                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Points</th>
-                    <th style="padding: 8px 12px; color: #4ecdc4; border-bottom: 2px solid #4ecdc4;">Date Added</th>
-                </tr>
-            `;
-
-            // Data rows
-            armyLists.forEach((armyList, index) => {
-                console.log(`Army List ${index}:`, armyList);
-
-                const timestamp = armyList.Timestamp ? CoreUtils.dates.toDisplay(armyList.Timestamp) : 'Unknown';
-                const points = armyList['Points Value'] || '-';
-                const detachment = armyList.Detachment || '-';
-                const mfmVersion = armyList['MFM Version'] || '-';
-                const armyName = armyList['Army Name'] || 'Unnamed List';
-
-                // Use the key field for linking
-                let armyListKey = armyList.Key || armyList.key || armyList.id;
-
-                console.log(`Army "${armyName}" has key:`, armyListKey);
-
-                if (!armyListKey) {
-                    console.warn(`No key found for army list "${armyName}". This will cause linking issues.`);
-                    armyListKey = `missing-key-${index}`;
-                }
-
-                // Create link to view army list using key
-                const armyNameLink = `<a href="../army-lists/view-army-list.html?key=${encodeURIComponent(armyListKey)}"
-                                        style="color: #4ecdc4; text-decoration: none; transition: color 0.3s ease;"
-                                        onmouseover="this.style.color='#7fefea'"
-                                        onmouseout="this.style.color='#4ecdc4'"
-                                        title="View full army list details">${armyName}</a>`;
-
-                html += `
-                    <tr style="border-bottom: 1px solid #4a4a4a; color: #ffffff;">
-                        <td style="padding: 8px 12px;">${armyNameLink}</td>
-                        <td style="padding: 8px 12px;">${detachment}</td>
-                        <td style="padding: 8px 12px;">${mfmVersion}</td>
-                        <td style="padding: 8px 12px;">${points}</td>
-                        <td style="padding: 8px 12px;">${timestamp}</td>
-                    </tr>
-                `;
-            });
-
-            html += '</table>';
-            html += '</div>';
-
-            html += `<div class="sheets-stats" style="margin-top: 10px; padding: 10px; background-color: #3a3a3a; border-radius: 4px; color: #cccccc; font-size: 12px;">
-                📋 Showing ${armyLists.length} army list${armyLists.length !== 1 ? 's' : ''} for ${forceName}
-            </div>`;
+    showSection(sectionId, displayType = 'block') {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.style.display = displayType;
         }
-
-        html += '</div>';
-        container.innerHTML = html;
-
-        // Show the section
-        CoreUtils.dom.show('army-lists-section');
     },
 
     /**
-     * Display placeholder for unimplemented sections
+     * Hide a section by ID
      */
-    displayPlaceholder(containerId, sheetType, forceName, icon = '📊', description = '') {
-        const container = document.getElementById(containerId);
-        const sheetTypeDisplay = sheetType.replace(/([A-Z])/g, ' $1').trim();
-
-        container.innerHTML = `
-            <div class="no-data-message">
-                <p>${icon} ${sheetTypeDisplay} ${description || 'will be displayed here'}.</p>
-                <p>This would show data for <strong>${forceName}</strong>.</p>
-                <p><em>Configure ${sheetType} URL in CrusadeConfig to enable this feature.</em></p>
-            </div>
-        `;
+    hideSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.style.display = 'none';
+        }
     },
 
     /**
-     * Show section
+     * Show loading state in a section
      */
-    showSection(sectionId) {
-        CoreUtils.dom.show(sectionId);
+    showLoading(containerId, message = 'Loading...') {
+        UIHelpers.showLoading(containerId, message);
     },
 
     /**
-     * Show error state
+     * Show no data message in a section
      */
-    showError(message) {
-        CoreUtils.dom.show('error-message');
-        document.getElementById('error-text').textContent = message;
-
-        // Hide other sections
-        const sectionsToHide = [
-            'force-header', 'force-stats', 'battle-history-section',
-            'army-lists-section', 'characters-units-section',
-            'stories-section', 'force-logs-section'
-        ];
-        sectionsToHide.forEach(id => CoreUtils.dom.hide(id));
+    showNoData(containerId, message) {
+        UIHelpers.showNoData(containerId, message);
     },
 
     /**
-     * Show data error in specific container
+     * Show error in a section
      */
-    showDataError(containerId, message) {
-        const container = document.getElementById(containerId);
+    showError(containerId, message) {
+        UIHelpers.showError(containerId, message);
+    },
+
+    /**
+     * Display placeholder content (for sections without data yet)
+     */
+    displayPlaceholder(containerId, message = 'Coming soon...') {
+        const container = typeof containerId === 'string' ?
+            document.getElementById(containerId) : containerId;
+
         if (container) {
             container.innerHTML = `
-                <div class="sheets-error">
-                    <strong>Error:</strong> ${message}
+                <div class="placeholder-message">
+                    <p class="text-muted">${message}</p>
                 </div>
             `;
         }
     },
 
-    /**
-     * Update force statistics from battle array
-     */
     updateStatsFromBattles(battles, forceKey) {
-        const statsSection = document.getElementById('force-stats');
-        if (!statsSection) return;
-
-        let battlesFought = 0;
-        let victories = 0;
-        let defeats = 0;
-        let draws = 0;
+        const stats = {
+            battlesFought: battles.length,
+            victories: 0,
+            defeats: 0,
+            draws: 0
+        };
 
         battles.forEach(battle => {
-            battlesFought++;
-
             const victorForceKey = battle['Victor Force Key'] || '';
 
             if (victorForceKey === 'Draw') {
-                draws++;
+                stats.draws++;
             } else if (victorForceKey === forceKey) {
-                victories++;
+                stats.victories++;
             } else {
-                defeats++;
+                stats.defeats++;
             }
         });
 
-        document.getElementById('battles-fought').textContent = battlesFought;
-        document.getElementById('victories').textContent = victories;
-        document.getElementById('battle-losses').textContent = defeats;
-        document.getElementById('battle-ties').textContent = draws;
+        // Update DOM
+        const elements = {
+            'battles-fought': stats.battlesFought,
+            'victories': stats.victories,
+            'battle-losses': stats.defeats,
+            'battle-ties': stats.draws
+        };
 
-        CoreUtils.dom.show(statsSection, '');
+        Object.entries(elements).forEach(([id, value]) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+        });
+
+        // Use the original CoreUtils.dom.show with 'grid' display type
+        if (typeof CoreUtils !== 'undefined' && CoreUtils.dom) {
+            CoreUtils.dom.show('force-stats', 'grid');
+        } else {
+            // Fallback - set display to grid instead of block
+            const statsEl = document.getElementById('force-stats');
+            if (statsEl) {
+                statsEl.style.display = 'grid';
+            }
+        }
     },
 
-    /**
-     * Display battles in table format
-     */
-    displayBattles(battles, container, forceKey) {
+    displayArmyLists(armyLists, forceName, forceKey) {
+        const container = document.getElementById('army-lists-sheet');
+
+        if (!armyLists || armyLists.length === 0) {
+            this.showNoData('army-lists-sheet', `No army lists found for ${forceName}.`);
+            this.showSection('army-lists-section');
+            return;
+        }
+
+        // Create table
         let html = `
-            <div class="sheets-table-wrapper" style="max-height: 400px; overflow-y: auto;">
-                <table class="sheets-table">
+            <div class="table-wrapper">
+                <table class="data-table" id="army-lists-table">
+                    <thead>
+                        <tr>
+                            <th>Army Name</th>
+                            <th>Detachment</th>
+                            <th>MFM Version</th>
+                            <th>Points</th>
+                            <th>Date Added</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        armyLists.forEach(armyList => {
+            const armyListKey = armyList.Key || armyList.key || armyList.id;
+            const armyName = armyList['Army Name'] || 'Unnamed List';
+            const viewUrl = `../army-lists/view-army-list.html?key=${encodeURIComponent(armyListKey)}`;
+
+            html += `
+                <tr>
+                    <td><a href="${viewUrl}">${armyName}</a></td>
+                    <td>${armyList.Detachment || '-'}</td>
+                    <td>${armyList['MFM Version'] || '-'}</td>
+                    <td>${armyList['Points Value'] || '-'}</td>
+                    <td>${UIHelpers.formatDate(armyList.Timestamp)}</td>
+                </tr>
+            `;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        container.innerHTML = html;
+        this.showSection('army-lists-section');
+
+        // Make table sortable
+        UIHelpers.makeSortable('army-lists-table');
+    },
+
+    displayBattles(battles, container, forceKey) {
+        // Ensure container is an element
+        if (typeof container === 'string') {
+            container = document.getElementById(container);
+        }
+
+        if (!battles || battles.length === 0) {
+            const containerId = container?.id || 'battle-history-sheet';
+            this.showNoData(containerId, 'No battles recorded yet.');
+            this.showSection('battle-history-section');
+            return;
+        }
+
+        // Create table
+        let html = `
+            <div class="table-wrapper">
+                <table class="data-table" id="battles-table">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -236,54 +208,41 @@ const ForceUI = {
         `;
 
         battles.forEach(battle => {
-            const date = battle['Date Played'] ? CoreUtils.dates.toDisplay(battle['Date Played']) : '-';
+            const date = UIHelpers.formatDate(battle['Date Played']);
             const battleName = battle['Battle Name'] || 'Unnamed Battle';
-            const battleSize = battle['Battle Size'] || '-';
-
-            const player1Score = battle['Player 1 score'] || 0;
-            const player2Score = battle['Player 2 score'] || 0;
-
-            const force1Key = battle['Force 1 Key'];
-            const force2Key = battle['Force 2 Key'];
-            const victorForceKey = battle['Victor Force Key'];
-
-            // Determine which position this force is in
-            const isForce1 = force1Key === forceKey;
+            const isForce1 = battle['Force 1 Key'] === forceKey;
             const opponent = isForce1 ?
-                (battle['Force 2'] || battle['Player 2'] || 'Unknown') :
-                (battle['Force 1'] || battle['Player 1'] || 'Unknown');
+                (battle['Force 2'] || battle['Player 2']) :
+                (battle['Force 1'] || battle['Player 1']);
 
             // Determine result
+            const victorForceKey = battle['Victor Force Key'];
             let result = '';
             let resultClass = '';
+
             if (victorForceKey === 'Draw') {
                 result = 'Draw';
-                resultClass = 'result-draw';
+                resultClass = 'text-warning';
             } else if (victorForceKey === forceKey) {
                 result = 'Victory';
-                resultClass = 'result-victory';
+                resultClass = 'text-success';
             } else {
                 result = 'Defeat';
-                resultClass = 'result-defeat';
+                resultClass = 'text-error';
             }
 
-            // Format score - show this force's score first
             const score = isForce1 ?
-                `${player1Score} - ${player2Score}` :
-                `${player2Score} - ${player1Score}`;
+                `${battle['Player 1 Score'] || 0} - ${battle['Player 2 Score'] || 0}` :
+                `${battle['Player 2 Score'] || 0} - ${battle['Player 1 Score'] || 0}`;
 
             html += `
                 <tr>
                     <td>${date}</td>
                     <td>${battleName}</td>
                     <td>${opponent}</td>
-                    <td><span class="${resultClass}" style="
-                        color: ${resultClass === 'result-victory' ? '#4ecdc4' :
-                                resultClass === 'result-defeat' ? '#ff6b6b' : '#ffa500'};
-                        font-weight: bold;
-                    ">${result}</span></td>
+                    <td class="${resultClass}">${result}</td>
                     <td class="text-center">${score}</td>
-                    <td class="text-center">${battleSize}</td>
+                    <td class="text-center">${battle['Battle Size'] || '-'}</td>
                 </tr>
             `;
         });
@@ -294,7 +253,182 @@ const ForceUI = {
             </div>
         `;
 
-        container.innerHTML = html;
+        if (container) {
+            container.innerHTML = html;
+        }
+
+        this.showSection('battle-history-section');
+
+        // Make table sortable
+        UIHelpers.makeSortable('battles-table');
+    },
+
+    displayUnits(units, container) {
+        // Ensure container is an element
+        if (typeof container === 'string') {
+            container = document.getElementById(container);
+        }
+
+        if (!units || units.length === 0) {
+            const containerId = container?.id || 'units-sheet';
+            this.showNoData(containerId, 'No units added yet.');
+            this.showSection('units-section');
+            return;
+        }
+
+        let html = `
+            <div class="table-wrapper">
+                <table class="data-table" id="units-table">
+                    <thead>
+                        <tr>
+                            <th>Unit Name</th>
+                            <th>Type</th>
+                            <th>Role</th>
+                            <th>Power Level</th>
+                            <th>Points</th>
+                            <th>Experience</th>
+                            <th>Rank</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        units.forEach(unit => {
+            const unitName = unit['Unit Name'] || 'Unnamed Unit';
+            const unitType = unit['Unit Type'] || '-';
+            const role = unit['Battlefield Role'] || '-';
+            const powerLevel = unit['Power Level'] || '-';
+            const points = unit['Points Cost'] || '-';
+            const xp = unit['Experience Points'] || 0;
+            const rank = unit['Rank'] || 'Battle-ready';
+
+            html += `
+                <tr>
+                    <td>${unitName}</td>
+                    <td>${unitType}</td>
+                    <td>${role}</td>
+                    <td class="text-center">${powerLevel}</td>
+                    <td class="text-center">${points}</td>
+                    <td class="text-center">${xp}</td>
+                    <td class="rank-${rank.toLowerCase()}">${rank}</td>
+                </tr>
+            `;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        if (container) {
+            container.innerHTML = html;
+        }
+
+        this.showSection('units-section');
+
+        // Make table sortable
+        UIHelpers.makeSortable('units-table');
+    },
+
+    displayStories(stories, container) {
+        // Ensure container is an element
+        if (typeof container === 'string') {
+            container = document.getElementById(container);
+        }
+
+        if (!stories || stories.length === 0) {
+            const containerId = container?.id || 'stories-sheet';
+            this.showNoData(containerId, 'No stories written yet.');
+            this.showSection('stories-section');
+            return;
+        }
+
+        let html = '<div class="stories-list">';
+
+        stories.forEach(story => {
+            const storyKey = story.Key || story.key;
+            const title = story['Story Title'] || 'Untitled Story';
+            const author = story['Author Name'] || 'Unknown Author';
+            const date = UIHelpers.formatDate(story.Timestamp);
+            const content = story['Story Content'] || '';
+            const preview = content.substring(0, 200) + (content.length > 200 ? '...' : '');
+
+            const viewUrl = `../stories/view-story.html?key=${encodeURIComponent(storyKey)}`;
+
+            html += `
+                <div class="story-card">
+                    <h3><a href="${viewUrl}">${title}</a></h3>
+                    <div class="story-meta">By ${author} • ${date}</div>
+                    <div class="story-preview">${preview}</div>
+                    <a href="${viewUrl}" class="btn btn-small btn-primary">Read More</a>
+                </div>
+            `;
+        });
+
+        html += '</div>';
+
+        if (container) {
+            container.innerHTML = html;
+        }
+
+        this.showSection('stories-section');
+    },
+
+    displayForceLogs(logs, container) {
+        // Ensure container is an element
+        if (typeof container === 'string') {
+            container = document.getElementById(container);
+        }
+
+        if (!logs || logs.length === 0) {
+            const containerId = container?.id || 'force-logs-sheet';
+            this.showNoData(containerId, 'No force logs recorded yet.');
+            this.showSection('force-logs-section');
+            return;
+        }
+
+        let html = `
+            <div class="table-wrapper">
+                <table class="data-table" id="logs-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Event Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        logs.forEach(log => {
+            const date = UIHelpers.formatDate(log.Timestamp || log.Date);
+            const eventType = log['Event Type'] || 'Update';
+            const description = log.Description || log.Notes || '-';
+
+            html += `
+                <tr>
+                    <td>${date}</td>
+                    <td>${eventType}</td>
+                    <td>${description}</td>
+                </tr>
+            `;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        if (container) {
+            container.innerHTML = html;
+        }
+
+        this.showSection('force-logs-section');
+
+        // Make table sortable
+        UIHelpers.makeSortable('logs-table');
     }
 };
 
@@ -305,5 +439,3 @@ window.ForceUI = ForceUI;
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = ForceUI;
 }
-
-console.log('ForceUI module loaded with CoreUtils integration');

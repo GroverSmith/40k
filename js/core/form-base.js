@@ -1,314 +1,290 @@
-// filename: form-base.js
-// Base form functionality shared across all forms
+// filename: js/core/form-base.js
+// Enhanced base form class with deduplication
 // 40k Crusade Campaign Tracker
 
 class BaseForm {
     constructor(formId, config = {}) {
         this.formId = formId;
         this.form = document.getElementById(formId);
+        this.isSubmitting = false;
+
         this.config = {
-            submitUrl: '',
-            requiredFields: [],
-            successMessage: 'Form submitted successfully!',
-            errorMessage: 'Submission failed. Please try again.',
-            redirectUrl: '../index.html',
+            submitUrl: config.submitUrl || '',
+            successMessage: config.successMessage || 'Form submitted successfully!',
+            errorMessage: config.errorMessage || 'Submission failed. Please try again.',
+            redirectUrl: config.redirectUrl || null,
+            redirectDelay: config.redirectDelay || 2000,
+            maxCharacters: config.maxCharacters || 50000,
+            minCharacters: config.minCharacters || 0,
+            validateOnBlur: config.validateOnBlur !== false,
+            validateOnSubmit: config.validateOnSubmit !== false,
+            scrollToError: config.scrollToError !== false,
+            clearCacheOnSuccess: config.clearCacheOnSuccess || [],
             ...config
         };
-        
-        this.userChangeListenerAdded = false;
-        this.isSubmitting = false;
+
+        if (!this.form) {
+            console.error(`Form with ID "${formId}" not found`);
+            return;
+        }
     }
-    
+
     /**
      * Initialize base form functionality
      */
     initBase() {
-        if (!this.form) {
-            console.error(`Form with ID '${this.formId}' not found`);
-            return;
-        }
-        
-        // Set up form submission handler
+        // Set up form submission
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-        
+
         // Set up field validation
-        this.setupFieldValidation();
-        
-        // Auto-resize textareas
-        this.setupTextareaAutoResize();
-        
-        // Wait for UserManager and auto-populate
-        this.waitForUserManager();
-    }
-    
-    /**
-     * Wait for UserManager to be available
-     */
-    waitForUserManager() {
-        if (typeof UserManager !== 'undefined') {
-            setTimeout(() => {
-                this.autoPopulateUserName();
-            }, 200);
-        } else {
-            setTimeout(() => {
-                this.waitForUserManager();
-            }, 100);
+        if (this.config.validateOnBlur) {
+            this.setupFieldValidation();
         }
+
+        // Auto-populate user name if UserManager is available
+        if (window.UserManager) {
+            this.autoPopulateUserName();
+        }
+
+        // Setup any character counters
+        this.setupCharacterCounters();
     }
-    
+
+    /**
+     * Setup character counters for textareas with counters
+     */
+    setupCharacterCounters() {
+        this.form.querySelectorAll('textarea').forEach(textarea => {
+            const counterId = textarea.dataset.counterId || `${textarea.id}-count`;
+            const counter = document.getElementById(counterId);
+
+            if (counter) {
+                FormUtilities.setupCharacterCounter(textarea.id, counterId, {
+                    maxCharacters: this.config.maxCharacters,
+                    minCharacters: this.config.minCharacters
+                });
+            }
+        });
+    }
+
     /**
      * Auto-populate user name field
      */
     autoPopulateUserName() {
-        const userNameField = document.getElementById('user-name');
-        if (!userNameField) return;
-        
-        if (typeof UserManager === 'undefined') {
-            console.log('UserManager not available yet');
-            return;
-        }
-        
-        const currentUser = UserManager.getCurrentUser();
-        
-        if (currentUser) {
-            userNameField.value = currentUser.name;
-            userNameField.readOnly = true;
-            userNameField.style.display = 'none';
-            userNameField.required = true;
-            
-            this.addUserFieldIndicator(currentUser);
-            console.log('Auto-populated user name:', currentUser.name);
-        } else {
-            userNameField.style.display = '';
-            userNameField.readOnly = false;
-            userNameField.placeholder = 'Enter your name or select a user from top right';
-            userNameField.title = 'Select a user from the dropdown in the top right for auto-population';
-            
-            this.addNoUserWarning();
-        }
-        
-        // Listen for user changes
-        if (!this.userChangeListenerAdded) {
-            window.addEventListener('userChanged', (event) => {
-                this.handleUserChange(event.detail.user);
-            });
-            this.userChangeListenerAdded = true;
-        }
-    }
-    
-    /**
-     * Add user field indicator
-     */
-    addUserFieldIndicator(user) {
-        const existingIndicator = document.querySelector('.user-field-indicator');
-        if (existingIndicator) {
-            existingIndicator.remove();
-        }
-        
-        const formGroup = document.querySelector('#user-name').closest('.form-group');
-        if (!formGroup) return;
-        
-        const indicator = document.createElement('div');
-        indicator.className = 'user-field-indicator selected';
-        indicator.innerHTML = `
-            <div class="user-display">
-                <span class="indicator-icon">👤</span>
-                <span class="indicator-text">
-                    <span class="label">Submitting as:</span>
-                    <strong>${user.name}</strong>
-                </span>
-                <a href="#" class="change-user-link" onclick="${this.getFormInstanceName()}.promptUserChange(event)">Change user</a>
-            </div>
-        `;
-        
-        const userNameField = document.getElementById('user-name');
-        userNameField.parentNode.insertBefore(indicator, userNameField.nextSibling);
-    }
-    
-    /**
-     * Add no user warning
-     */
-    addNoUserWarning() {
-        const existingWarning = document.querySelector('.user-field-indicator');
-        if (existingWarning) {
-            existingWarning.remove();
-        }
-        
-        const formGroup = document.querySelector('#user-name').closest('.form-group');
-        if (!formGroup) return;
-        
-        const warning = document.createElement('div');
-        warning.className = 'user-field-indicator warning';
-        warning.innerHTML = `
-            <span class="indicator-icon">⚠️</span>
-            <span class="indicator-text">No user selected</span>
-            <a href="#" class="change-user-link" onclick="${this.getFormInstanceName()}.promptUserChange(event)">Select user</a>
-        `;
-        
-        const userNameField = document.getElementById('user-name');
-        userNameField.parentNode.insertBefore(warning, userNameField.nextSibling);
-    }
-    
-    /**
-     * Handle user change
-     */
-    handleUserChange(user) {
-        const userNameField = document.getElementById('user-name');
-        if (!userNameField) return;
-        
-        if (user) {
-            userNameField.value = user.name;
-            userNameField.readOnly = true;
-            userNameField.style.display = 'none';
-            
-            this.addUserFieldIndicator(user);
-            this.clearFieldError(userNameField);
-        } else {
-            userNameField.value = '';
-            userNameField.style.display = '';
-            userNameField.readOnly = false;
-            userNameField.placeholder = 'Enter your name or select a user from top right';
-            
-            this.addNoUserWarning();
-        }
-    }
-    
-    /**
-     * Prompt user change
-     */
-    promptUserChange(event) {
-        event.preventDefault();
-        
-        if (typeof UserManager !== 'undefined') {
-            const dropdownTrigger = document.getElementById('user-dropdown-trigger');
-            if (dropdownTrigger) {
-                dropdownTrigger.click();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                this.showTooltip('Select a user from the dropdown above ↗️');
-            } else if (UserManager.showCreateUserModal) {
-                UserManager.showCreateUserModal();
+        const userField = this.form.querySelector('[name="userName"], #user-name');
+        if (!userField) return;
+
+        const currentUser = UserStorage.getCurrentUser();
+        if (currentUser && currentUser.name) {
+            userField.value = currentUser.name;
+            userField.setAttribute('title', 'Auto-populated from selected user');
+
+            // Make read-only if specified
+            if (this.config.lockUserField) {
+                userField.readOnly = true;
+                userField.classList.add('user-field-locked');
             }
         }
     }
-    
+
     /**
      * Setup field validation
      */
     setupFieldValidation() {
-        const requiredInputs = this.form.querySelectorAll('[required]');
-        requiredInputs.forEach(input => {
-            input.addEventListener('blur', () => this.validateField(input));
-            input.addEventListener('input', () => this.clearFieldError(input));
+        const fields = this.form.querySelectorAll('input, select, textarea');
+
+        fields.forEach(field => {
+            field.addEventListener('blur', () => {
+                this.validateField(field);
+            });
+
+            // Clear error on input
+            field.addEventListener('input', () => {
+                this.clearFieldError(field);
+            });
         });
     }
-    
+
     /**
-     * Setup textarea auto-resize
-     */
-    setupTextareaAutoResize() {
-        const textareas = this.form.querySelectorAll('textarea');
-        textareas.forEach(textarea => {
-            textarea.addEventListener('input', () => this.autoResizeTextarea(textarea));
-        });
-    }
-    
-    /**
-     * Auto-resize textarea
-     */
-    autoResizeTextarea(textarea) {
-        textarea.style.height = 'auto';
-        const newHeight = Math.min(Math.max(textarea.scrollHeight, 60), 600);
-        textarea.style.height = newHeight + 'px';
-    }
-    
-    /**
-     * Validate field
+     * Validate single field
      */
     validateField(field) {
+        // Skip if field is disabled or readonly
+        if (field.disabled || field.readOnly) return true;
+
         const value = field.value.trim();
         let isValid = true;
         let errorMessage = '';
-        
-        this.clearFieldError(field);
-        
+
+        // Required field validation
         if (field.required && !value) {
             isValid = false;
             errorMessage = 'This field is required.';
         }
-        
-        // Call child class validation if it exists
-        if (this.validateSpecificField) {
-            const specificValidation = this.validateSpecificField(field, value);
-            if (!specificValidation.isValid) {
+
+        // Email validation
+        if (field.type === 'email' && value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
                 isValid = false;
-                errorMessage = specificValidation.errorMessage;
+                errorMessage = 'Please enter a valid email address.';
             }
         }
-        
+
+        // Number validation
+        if (field.type === 'number' && value) {
+            const num = parseFloat(value);
+            const min = parseFloat(field.min);
+            const max = parseFloat(field.max);
+
+            if (isNaN(num)) {
+                isValid = false;
+                errorMessage = 'Please enter a valid number.';
+            } else if (!isNaN(min) && num < min) {
+                isValid = false;
+                errorMessage = `Value must be at least ${min}.`;
+            } else if (!isNaN(max) && num > max) {
+                isValid = false;
+                errorMessage = `Value must be no more than ${max}.`;
+            }
+        }
+
+        // Custom validation (override in subclass)
+        const customValidation = this.validateSpecificField(field, value);
+        if (customValidation && !customValidation.isValid) {
+            isValid = false;
+            errorMessage = customValidation.errorMessage;
+        }
+
+        // Display validation result
         if (!isValid) {
             this.showFieldError(field, errorMessage);
+        } else {
+            this.clearFieldError(field);
         }
-        
+
         return isValid;
     }
-    
+
+    /**
+     * Override in subclass for specific field validation
+     */
+    validateSpecificField(field, value) {
+        return { isValid: true };
+    }
+
     /**
      * Show field error
      */
     showFieldError(field, message) {
-        field.style.borderColor = '#ff6b6b';
-        
-        let errorElement = field.parentNode.querySelector('.field-error');
-        if (!errorElement) {
-            errorElement = document.createElement('small');
-            errorElement.className = 'field-error';
-            errorElement.style.color = '#ff6b6b';
-            errorElement.style.fontSize = '0.85em';
-            errorElement.style.marginTop = '5px';
-            errorElement.style.display = 'block';
-            field.parentNode.appendChild(errorElement);
+        // Add error class to field
+        field.classList.add('error');
+        field.style.borderColor = 'var(--color-error)';
+
+        // Remove existing error message
+        const existingError = field.parentElement.querySelector('.field-error');
+        if (existingError) {
+            existingError.remove();
         }
-        errorElement.textContent = message;
+
+        // Add error message
+        const errorEl = document.createElement('div');
+        errorEl.className = 'field-error form-error';
+        errorEl.textContent = message;
+        errorEl.style.color = 'var(--color-error)';
+        errorEl.style.fontSize = 'var(--font-sm)';
+        errorEl.style.marginTop = '5px';
+        field.parentElement.appendChild(errorEl);
+
+        // Add error class to form group
+        const formGroup = field.closest('.form-group');
+        if (formGroup) {
+            formGroup.classList.add('has-error');
+        }
     }
-    
+
     /**
      * Clear field error
      */
     clearFieldError(field) {
-        field.style.borderColor = '#4a4a4a';
-        const errorElement = field.parentNode.querySelector('.field-error');
-        if (errorElement) {
-            errorElement.remove();
+        field.classList.remove('error');
+        field.style.borderColor = '';
+
+        const errorEl = field.parentElement.querySelector('.field-error');
+        if (errorEl) {
+            errorEl.remove();
+        }
+
+        const formGroup = field.closest('.form-group');
+        if (formGroup) {
+            formGroup.classList.remove('has-error');
         }
     }
-    
+
+    /**
+     * Validate entire form
+     */
+    validateForm() {
+        let isValid = true;
+        const fields = this.form.querySelectorAll('input, select, textarea');
+
+        fields.forEach(field => {
+            if (!this.validateField(field)) {
+                isValid = false;
+            }
+        });
+
+        // Scroll to first error
+        if (!isValid && this.config.scrollToError) {
+            const firstError = this.form.querySelector('.has-error, .error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        return isValid;
+    }
+
     /**
      * Handle form submission
      */
     async handleSubmit(event) {
         event.preventDefault();
-        
+
         if (this.isSubmitting) {
             console.log('Already submitting, please wait');
             return;
         }
-        
-        console.log('Form submission started');
+
         this.setLoadingState(true);
-        
+
         try {
-            const isValid = this.validateForm();
-            if (!isValid) {
+            // Validate form
+            if (this.config.validateOnSubmit && !this.validateForm()) {
                 throw new Error('Please fix the form errors and try again.');
             }
-            
+
+            // Gather form data
             const formData = this.gatherFormData();
-            console.log('Form data gathered:', formData);
-            
+
+            // Submit to Google Sheets
             await this.submitToGoogleSheets(formData);
-            
+
+            // Clear specified caches
+            this.clearCachesOnSuccess();
+
+            // Show success
             this.showSuccess();
-            
+
+            // Handle redirect or reset
+            if (this.config.redirectUrl) {
+                setTimeout(() => {
+                    window.location.href = this.config.redirectUrl;
+                }, this.config.redirectDelay);
+            } else {
+                this.form.style.display = 'none';
+            }
+
         } catch (error) {
             console.error('Form submission error:', error);
             this.showError(error.message);
@@ -316,186 +292,105 @@ class BaseForm {
             this.setLoadingState(false);
         }
     }
-    
-    /**
-     * Validate entire form
-     */
-    validateForm() {
-        const requiredFields = this.form.querySelectorAll('[required]');
-        let isValid = true;
-        
-        requiredFields.forEach(field => {
-            if (!this.validateField(field)) {
-                isValid = false;
-            }
-        });
-        
-        return isValid;
-    }
-    
-    /**
-     * Submit to Google Sheets via hidden form
-     */
-    async submitToGoogleSheets(data) {
-        if (!this.config.submitUrl) {
-            throw new Error('Submit URL not configured');
-        }
-        
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = this.config.submitUrl;
-        form.target = `${this.formId}-submit-frame`;
-        form.style.display = 'none';
-        
-        Object.entries(data).forEach(([key, value]) => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = key;
-            input.value = value || '';
-            form.appendChild(input);
-        });
-        
-        let iframe = document.getElementById(`${this.formId}-submit-frame`);
-        if (!iframe) {
-            iframe = document.createElement('iframe');
-            iframe.name = `${this.formId}-submit-frame`;
-            iframe.id = `${this.formId}-submit-frame`;
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-        }
-        
-        document.body.appendChild(form);
-        
-        return new Promise((resolve, reject) => {
-            const timeout = setTimeout(() => {
-                reject(new Error('Form submission timeout - please try again'));
-            }, 30000);
-            
-            iframe.onload = () => {
-                clearTimeout(timeout);
-                
-                try {
-                    const response = iframe.contentWindow.document.body.textContent;
-                    const result = JSON.parse(response);
-                    
-                    if (result.success) {
-                        resolve(result);
-                    } else {
-                        reject(new Error(result.error || 'Unknown error occurred'));
-                    }
-                } catch (error) {
-                    console.log('Could not read iframe response (likely due to CORS), assuming success');
-                    resolve({ success: true });
-                }
-                
-                document.body.removeChild(form);
-            };
-            
-            iframe.onerror = () => {
-                clearTimeout(timeout);
-                reject(new Error('Form submission failed'));
-                document.body.removeChild(form);
-            };
-            
-            form.submit();
-        });
-    }
-    
+
     /**
      * Set loading state
      */
     setLoadingState(isLoading) {
         this.isSubmitting = isLoading;
-        const submitBtn = document.getElementById('submit-btn');
-        if (!submitBtn) return;
-        
-        const btnText = submitBtn.querySelector('.btn-text');
-        const btnLoading = submitBtn.querySelector('.btn-loading');
-        
-        if (isLoading) {
-            submitBtn.disabled = true;
-            if (btnText) btnText.style.display = 'none';
-            if (btnLoading) btnLoading.style.display = 'flex';
-        } else {
-            submitBtn.disabled = false;
-            if (btnText) btnText.style.display = 'inline';
-            if (btnLoading) btnLoading.style.display = 'none';
+
+        const submitBtn = this.form.querySelector('[type="submit"]');
+        if (submitBtn) {
+            FormUtilities.setButtonLoading(submitBtn, isLoading);
         }
     }
-    
+
+    /**
+     * Submit to Google Sheets
+     */
+    async submitToGoogleSheets(data) {
+        if (!this.config.submitUrl) {
+            throw new Error('Submit URL not configured');
+        }
+
+        const response = await fetch(this.config.submitUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(data).toString()
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error || this.config.errorMessage);
+        }
+
+        return result;
+    }
+
+    /**
+     * Gather form data (override in subclass)
+     */
+    gatherFormData() {
+        const formData = new FormData(this.form);
+        const data = {};
+
+        for (let [key, value] of formData.entries()) {
+            data[key] = value.trim();
+        }
+
+        // Add timestamp
+        data.timestamp = new Date().toISOString();
+
+        return data;
+    }
+
+    /**
+     * Clear caches on success
+     */
+    clearCachesOnSuccess() {
+        if (this.config.clearCacheOnSuccess && Array.isArray(this.config.clearCacheOnSuccess)) {
+            this.config.clearCacheOnSuccess.forEach(cacheType => {
+                if (typeof CacheManager !== 'undefined') {
+                    CacheManager.clearType(cacheType);
+                    console.log(`Cleared ${cacheType} cache`);
+                }
+            });
+        }
+    }
+
     /**
      * Show success message
      */
     showSuccess() {
-        if (this.form) this.form.style.display = 'none';
-        const successEl = document.getElementById('success-message');
-        const errorEl = document.getElementById('error-message');
-        
-        if (successEl) successEl.style.display = 'block';
-        if (errorEl) errorEl.style.display = 'none';
-        if (successEl) successEl.scrollIntoView({ behavior: 'smooth' });
+        FormUtilities.showSuccess(this.config.successMessage);
     }
-    
+
     /**
      * Show error message
      */
     showError(message) {
-        const errorTextEl = document.getElementById('error-text');
-        const errorEl = document.getElementById('error-message');
-        const successEl = document.getElementById('success-message');
-        
-        if (errorTextEl) errorTextEl.textContent = message;
-        if (errorEl) errorEl.style.display = 'block';
-        if (successEl) successEl.style.display = 'none';
-        if (errorEl) errorEl.scrollIntoView({ behavior: 'smooth' });
+        FormUtilities.showError(message || this.config.errorMessage);
     }
-    
+
     /**
-     * Show tooltip
+     * Reset form
      */
-    showTooltip(message) {
-        const tooltip = document.createElement('div');
-        tooltip.className = 'user-select-tooltip';
-        tooltip.textContent = message;
-        tooltip.style.cssText = `
-            position: fixed;
-            top: 70px;
-            right: 20px;
-            background: linear-gradient(135deg, #2c5aa0 0%, #1e4080 100%);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            animation: slideInRight 0.3s ease-out;
-            font-weight: bold;
-        `;
-        
-        document.body.appendChild(tooltip);
-        
-        setTimeout(() => {
-            tooltip.style.animation = 'slideOutRight 0.3s ease-out';
-            setTimeout(() => {
-                if (document.body.contains(tooltip)) {
-                    document.body.removeChild(tooltip);
-                }
-            }, 300);
-        }, 3000);
-    }
-    
-    /**
-     * Get form instance name for onclick handlers
-     * Override this in child classes
-     */
-    getFormInstanceName() {
-        return 'formInstance';
-    }
-    
-    /**
-     * Gather form data - override in child classes
-     */
-    gatherFormData() {
-        throw new Error('gatherFormData must be implemented in child class');
+    reset() {
+        FormUtilities.resetForm(this.formId, {
+            onReset: () => {
+                // Trigger character counter updates
+                this.setupCharacterCounters();
+                // Re-populate user name
+                this.autoPopulateUserName();
+            }
+        });
     }
 }
 
@@ -506,5 +401,3 @@ window.BaseForm = BaseForm;
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = BaseForm;
 }
-
-console.log('BaseForm module loaded');

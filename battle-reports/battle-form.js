@@ -1,794 +1,393 @@
-// filename: js/battle-report-form.js
-// Battle Report Form - Extends BaseForm for battle report submissions
-// 40k Crusade Campaign Tracker - Updated with unified CacheManager
+// filename: battle-form.js
+// Simplified Battle Report Form using base class
+// 40k Crusade Campaign Tracker
 
 class BattleReportForm extends BaseForm {
-   constructor() {
-       super('battle-report-form', {
-           submitUrl: CrusadeConfig ? CrusadeConfig.getSheetUrl('battleHistory') : '',
-           successMessage: 'Battle report submitted successfully!',
-           errorMessage: 'Failed to submit battle report'
-       });
-       
-       this.forcesData = [];
-       this.crusadesData = [];
-       this.usersData = [];
-       this.armyListsData = [];
-       this.init();
-   }
-   
-   init() {
-       console.log('Battle Report Form initialized');
-       
-       // Initialize base form functionality
-       this.initBase();
-       this.checkForCrusadeParameter();
-       
-       // Set up date field to default to today
-       const dateField = document.getElementById('date-played');
-       if (dateField) {
-           const today = new Date().toISOString().split('T')[0];
-           dateField.value = today;
-       }
-       
-       // Set up custom battle size functionality
-       this.setupCustomBattleSize();
-       
-       // IMPORTANT: Set up player dropdowns FIRST (convert inputs to selects)
-       this.setupPlayerDropdowns();
-       
-       // THEN load data (which will populate the dropdowns)
-       this.loadAllData();
-   }
-   
-   async loadAllData() {
-       console.log('Starting loadAllData...');
-       
-       // Load all data in parallel for better performance
-       const results = await Promise.allSettled([
-           this.loadUsers(),
-           this.loadForces(), 
-           this.loadCrusades(),
-           this.loadArmyLists()
-       ]);
-       
-       // Log results for debugging
-       results.forEach((result, index) => {
-           const names = ['Users', 'Forces', 'Crusades', 'Army Lists'];
-           if (result.status === 'rejected') {
-               console.error(`Failed to load ${names[index]}:`, result.reason);
-           } else {
-               console.log(`Successfully loaded ${names[index]}`);
-           }
-       });
-   }
-   
-   setupCustomBattleSize() {
-       const battleSizeSelect = document.getElementById('battle-size');
-       
-       // Create custom input field
-       const customInput = document.createElement('input');
-       customInput.type = 'number';
-       customInput.id = 'custom-battle-size';
-       customInput.name = 'customBattleSize';
-       customInput.placeholder = 'Enter points';
-       customInput.min = '100';
-       customInput.max = '10000';
-       customInput.step = '50';
-       customInput.style.cssText = `
-           display: none;
-           width: 120px;
-           margin-left: 10px;
-           padding: 8px;
-           font-size: 14px;
-           background-color: var(--color-bg-main);
-           color: var(--color-text);
-           border: 1px solid var(--color-border);
-           border-radius: var(--radius-sm);
-       `;
-       
-       // Insert after the select
-       battleSizeSelect.parentNode.insertBefore(customInput, battleSizeSelect.nextSibling);
-       
-       // Set default to Custom
-       battleSizeSelect.value = 'Custom';
-       customInput.style.display = 'inline-block';
-       customInput.value = '1000'; // Default custom value
-       
-       // Handle select change
-       battleSizeSelect.addEventListener('change', (e) => {
-           if (e.target.value === 'Custom') {
-               customInput.style.display = 'inline-block';
-               customInput.focus();
-           } else {
-               customInput.style.display = 'none';
-           }
-       });
-       
-       // Update the option text from "Other" to "Custom"
-       const options = battleSizeSelect.options;
-       for (let i = 0; i < options.length; i++) {
-           if (options[i].value === 'Other') {
-               options[i].value = 'Custom';
-               options[i].text = 'Custom';
-               break;
-           }
-       }
-   }
-   
-   setupPlayerDropdowns() {
-       // Convert player name text inputs to dropdowns
-       const player1Field = document.getElementById('player1-name');
-       const player2Field = document.getElementById('player2-name');
-       
-       console.log('Setting up player dropdowns. Found player1Field:', !!player1Field, 'player2Field:', !!player2Field);
-       
-       if (player1Field && player1Field.tagName === 'INPUT') {
-           this.convertToPlayerDropdown(player1Field, 'player1-name', 1);
-       } else if (player1Field && player1Field.tagName === 'SELECT') {
-           console.log('Player 1 field is already a select element');
-       }
-       
-       if (player2Field && player2Field.tagName === 'INPUT') {
-           this.convertToPlayerDropdown(player2Field, 'player2-name', 2);
-       } else if (player2Field && player2Field.tagName === 'SELECT') {
-           console.log('Player 2 field is already a select element');
-       }
-       
-       // Convert army list inputs to dropdowns
-       const army1Field = document.getElementById('army1-name');
-       const army2Field = document.getElementById('army2-name');
-       
-       if (army1Field && army1Field.tagName === 'INPUT') {
-           this.convertToArmyListDropdown(army1Field, 'army1-select', 1);
-       }
-       
-       if (army2Field && army2Field.tagName === 'INPUT') {
-           this.convertToArmyListDropdown(army2Field, 'army2-select', 2);
-       }
-       
-       // Set up force selection change handlers
-       const force1Select = document.getElementById('force1-select');
-       const force2Select = document.getElementById('force2-select');
-       
-       if (force1Select) {
-           force1Select.addEventListener('change', (e) => {
-               this.handleForceSelection(1, e.target.value);
-           });
-       }
-       
-       if (force2Select) {
-           force2Select.addEventListener('change', (e) => {
-               this.handleForceSelection(2, e.target.value);
-           });
-       }
-   }
-   
-   convertToPlayerDropdown(inputField, fieldId, playerNum) {
-       // Create select element
-       const select = document.createElement('select');
-       select.id = fieldId;
-       select.name = inputField.name;
-       select.required = inputField.required;
-       select.className = inputField.className;
-       
-       // Copy any data attributes
-       for (let attr of inputField.attributes) {
-           if (attr.name.startsWith('data-')) {
-               select.setAttribute(attr.name, attr.value);
-           }
-       }
-       
-       // Add placeholder option
-       const placeholderOption = document.createElement('option');
-       placeholderOption.value = '';
-       placeholderOption.textContent = 'Select player...';
-       select.appendChild(placeholderOption);
-       
-       // Replace input with select
-       inputField.parentNode.replaceChild(select, inputField);
-       
-       // Set up change handler
-       select.addEventListener('change', (e) => {
-           this.handlePlayerSelection(playerNum, e.target.value);
-       });
-   }
-   
-   convertToArmyListDropdown(inputField, fieldId, playerNum) {
-       // Create select element
-       const select = document.createElement('select');
-       select.id = fieldId;
-       select.name = inputField.name;
-       select.className = inputField.className;
-       
-       // Add placeholder option
-       const placeholderOption = document.createElement('option');
-       placeholderOption.value = '';
-       placeholderOption.textContent = 'Select army list (optional)...';
-       select.appendChild(placeholderOption);
-       
-       // Replace input with select
-       inputField.parentNode.replaceChild(select, inputField);
-   }
-   
-   /**
-	 * Override submitToGoogleSheets to clear battle caches after submission
-	 */
-	async submitToGoogleSheets(data) {
-		// Call the parent method to do the actual submission
-		const result = await super.submitToGoogleSheets(data);
-		
-		// Clear battle history cache for both forces after successful submission
-		if (data.force1Key) {
-			CacheManager.clear('battleHistory', `force_${data.force1Key}`);
-			console.log('Cleared battle cache for force 1:', data.force1Key);
-		}
-		if (data.force2Key) {
-			CacheManager.clear('battleHistory', `force_${data.force2Key}`);
-			console.log('Cleared battle cache for force 2:', data.force2Key);
-		}
-		
-		// Also clear any generic battle history cache
-		CacheManager.clearType('battleHistory');
-		console.log('Cleared all battle history caches after submission');
-		
-		return result;
-	}
-   
-   async loadUsers() {
-       try {
-           console.log('Loading users for battle report...');
-           
-           // Initialize as empty array to prevent errors
-           this.usersData = [];
-           
-           // Use UserAPI which now uses CacheManager internally
-           const users = await UserAPI.loadUsers();
-           
-           if (users && Array.isArray(users)) {
-               console.log('Loaded users from API/cache:', users);
-               this.usersData = users;
-               this.populatePlayerDropdowns();
-           } else {
-               console.warn('No users loaded');
-               this.populatePlayerDropdowns(); // Call with empty array
-           }
-           
-       } catch (error) {
-           console.error('Error loading users:', error);
-           // Still populate dropdowns even if empty
-           this.populatePlayerDropdowns();
-       }
-   }
-   
-   populatePlayerDropdowns() {
-       const player1Select = document.getElementById('player1-name');
-       const player2Select = document.getElementById('player2-name');
-       
-       // Check if dropdowns exist and are SELECT elements (not INPUT)
-       if (!player1Select || !player2Select || 
-           player1Select.tagName !== 'SELECT' || player2Select.tagName !== 'SELECT') {
-           console.log('Player dropdowns not ready yet (may still be input fields)');
-           return;
-       }
-       
-       // Check if we have users data
-       if (!this.usersData || !Array.isArray(this.usersData)) {
-           console.warn('usersData not ready yet:', this.usersData);
-           return;
-       }
-       
-       // Clear existing options (except placeholder)
-       while (player1Select.options.length > 1) {
-           player1Select.remove(1);
-       }
-       while (player2Select.options.length > 1) {
-           player2Select.remove(1);
-       }
-       
-       if (this.usersData.length === 0) {
-           console.warn('No users available for dropdowns');
-           return;
-       }
-       
-       // Add user options to both dropdowns
-       this.usersData.forEach(user => {
-           if (!user || !user.name) {
-               console.warn('Invalid user data:', user);
-               return;
-           }
-           
-           const option1 = document.createElement('option');
-           option1.value = user.name;
-           option1.textContent = user.name;
-           player1Select.appendChild(option1);
-           
-           const option2 = document.createElement('option');
-           option2.value = user.name;
-           option2.textContent = user.name;
-           player2Select.appendChild(option2);
-       });
-       
-       console.log(`Populated player dropdowns with ${this.usersData.length} users`);
-       
-       // Auto-select current user if available
-       if (window.UserManager && window.UserManager.currentUser) {
-           const currentUserName = window.UserManager.currentUser.name;
-           
-           // Set Player 1 to current user by default
-           player1Select.value = currentUserName;
-           // Trigger change event to update forces
-           this.handlePlayerSelection(1, currentUserName);
-       }
-   }
-   
-   handlePlayerSelection(playerNum, playerName) {
-       if (!playerName) {
-           // Clear force dropdown if no player selected
-           this.updateForceDropdown(playerNum, []);
-           return;
-       }
-       
-       // Filter forces for this player
-       const playerForces = this.forcesData.slice(1).filter(row => {
-           const userName = row[1]; // User Name is column 1
-           return userName === playerName;
-       });
-       
-       // Update force dropdown
-       this.updateForceDropdown(playerNum, playerForces);
-       
-       // Auto-select most recent force
-       if (playerForces.length > 0) {
-           // Sort by timestamp (column 6) and get most recent
-           const sortedForces = [...playerForces].sort((a, b) => {
-               const dateA = new Date(a[6] || 0);
-               const dateB = new Date(b[6] || 0);
-               return dateB - dateA; // Most recent first
-           });
-           
-           const mostRecentForce = sortedForces[0];
-           const forceSelect = document.getElementById(`force${playerNum}-select`);
-           if (forceSelect) {
-               forceSelect.value = mostRecentForce[0]; // Force key is column 0
-               this.handleForceSelection(playerNum, mostRecentForce[0]);
-           }
-       }
-   }
-   
-   updateForceDropdown(playerNum, forces) {
-       const select = document.getElementById(`force${playerNum}-select`);
-       if (!select) return;
-       
-       // Clear existing options
-       select.innerHTML = '<option value="">Select force...</option>';
-       
-       // Add filtered forces
-       forces.forEach(row => {
-           const forceKey = row[0];    // Key column
-           const userName = row[1];    // User Name column
-           const forceName = row[2];   // Force Name column
-           const faction = row[3];     // Faction column
-           
-           if (!forceKey || !forceName) {
-               console.warn('Skipping force with missing key or name:', row);
-               return;
-           }
-           
-           const option = document.createElement('option');
-           option.value = forceKey;
-           option.textContent = `${forceName} - ${faction}`;
-           
-           // Set data attributes for later use
-           option.dataset.forceName = forceName;
-           option.dataset.userName = userName;
-           option.dataset.faction = faction;
-           
-           select.appendChild(option);
-       });
-       
-       if (forces.length === 0) {
-           select.innerHTML = '<option value="">No forces for this player</option>';
-       }
-       
-       console.log(`Force dropdown ${playerNum} populated with ${forces.length} forces`);
-   }
-   
-   handleForceSelection(playerNum, forceKey) {
-       if (!forceKey) {
-           // Clear army list dropdown and force name
-           this.updateArmyListDropdown(playerNum, []);
-           const forceNameField = document.getElementById(`force${playerNum}-name`);
-           if (forceNameField) {
-               forceNameField.value = '';
-           }
-           return;
-       }
-       
-       const select = document.getElementById(`force${playerNum}-select`);
-       const selectedOption = select.options[select.selectedIndex];
-       
-       // Store force name in hidden field - this is CRITICAL for the form submission
-       const forceNameField = document.getElementById(`force${playerNum}-name`);
-       if (forceNameField) {
-           // Get the force name from the dataset
-           const forceName = selectedOption.dataset.forceName || '';
-           console.log(`Setting force${playerNum} name to:`, forceName);
-           forceNameField.value = forceName;
-       } else {
-           console.error(`Hidden field force${playerNum}-name not found!`);
-       }
-       
-       // Check if armyListsData is properly loaded and is an array
-       if (!this.armyListsData || !Array.isArray(this.armyListsData)) {
-           console.warn('Army lists data not available or not an array:', this.armyListsData);
-           this.updateArmyListDropdown(playerNum, []);
-           return;
-       }
-       
-       // Filter army lists for this force
-       // Skip header row if present
-       const dataToFilter = this.armyListsData.length > 0 && Array.isArray(this.armyListsData[0]) 
-           ? this.armyListsData.slice(1)  // Skip header row for raw sheet data
-           : this.armyListsData;           // Use as-is for processed data
-       
-       const forceArmyLists = dataToFilter.filter(row => {
-           // Handle both array format and object format
-           if (Array.isArray(row)) {
-               const armyForceKey = row[1]; // Force Key is column 1
-               return armyForceKey === forceKey;
-           } else if (row && typeof row === 'object') {
-               return row['Force Key'] === forceKey || row.forceKey === forceKey;
-           }
-           return false;
-       });
-       
-       console.log(`Found ${forceArmyLists.length} army lists for force ${forceKey}`);
-       
-       // Update army list dropdown
-       this.updateArmyListDropdown(playerNum, forceArmyLists);
-   }
-   
-   updateArmyListDropdown(playerNum, armyLists) {
-       const select = document.getElementById(`army${playerNum}-select`);
-       if (!select) return;
-       
-       // Clear existing options
-       select.innerHTML = '<option value="">Select army list (optional)...</option>';
-       
-       // Add filtered army lists
-       armyLists.forEach(row => {
-           let armyKey, armyName, points;
-           
-           // Handle both array and object formats
-           if (Array.isArray(row)) {
-               armyKey = row[0];       // Key is column 0
-               armyName = row[5];      // Army Name is column 5
-               points = row[9];        // Points Value is column 9
-           } else if (row && typeof row === 'object') {
-               armyKey = row.Key || row.key || row.id;
-               armyName = row['Army Name'] || row.armyName || row.name;
-               points = row['Points Value'] || row.pointsValue || row.points;
-           }
-           
-           if (!armyName) {
-               console.warn('Army list missing name:', row);
-               return;
-           }
-           
-           const option = document.createElement('option');
-           option.value = armyName;
-           option.textContent = points ? `${armyName} (${points} pts)` : armyName;
-           option.dataset.armyKey = armyKey || '';
-           option.dataset.points = points || '';
-           select.appendChild(option);
-       });
-       
-       if (armyLists.length === 0) {
-           select.innerHTML = '<option value="">No army lists for this force</option>';
-       }
-   }
-   
-   async loadForces() {
-       try {
-           console.log('Loading forces for battle report...');
-           
-           const forceSheetUrl = CrusadeConfig.getSheetUrl('forces');
-           if (!forceSheetUrl) {
-               throw new Error('Forces sheet URL not configured');
-           }
-           
-           // Use CacheManager for unified caching
-           const data = await CacheManager.fetchWithCache(forceSheetUrl, 'forces');
-           this.forcesData = data;
-           
-           console.log(`Loaded ${data.length - 1} forces`);
-           
-       } catch (error) {
-           console.error('Error loading forces:', error);
-           this.showError('Failed to load forces. Please refresh the page and try again.');
-       }
-   }
-   
-   async loadCrusades() {
-       try {
-           console.log('Loading crusades for battle report...');
-           
-           const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
-           if (!crusadesUrl) {
-               console.log('Crusades sheet URL not configured, skipping');
-               return;
-           }
-           
-           // Use CacheManager for unified caching
-           const data = await CacheManager.fetchWithCache(crusadesUrl, 'crusades');
-           this.crusadesData = data;
-           
-           // Populate crusade dropdown
-           this.populateCrusadeDropdown(data);
-           
-           console.log(`Loaded ${data.length - 1} crusades`);
-           
-       } catch (error) {
-           console.error('Error loading crusades:', error);
-           // Not critical if crusades don't load
-       }
-   }
-   
-   async loadArmyLists() {
-       try {
-           console.log('Loading army lists for battle report...');
-           
-           const armyListsUrl = CrusadeConfig.getSheetUrl('armyLists');
-           if (!armyListsUrl) {
-               console.log('Army Lists sheet URL not configured, skipping');
-               this.armyListsData = [];
-               return;
-           }
-           
-           // Use CacheManager for unified caching
-           const responseData = await CacheManager.fetchWithCache(armyListsUrl, 'armyLists');
-           
-           // Handle different response formats
-           if (Array.isArray(responseData)) {
-               this.armyListsData = responseData;
-           } else if (responseData.success && Array.isArray(responseData.data)) {
-               // If it's wrapped in a success response, use the data array
-               this.armyListsData = responseData.data;
-           } else if (responseData.data && Array.isArray(responseData.data)) {
-               // Sometimes just has data property
-               this.armyListsData = responseData.data;
-           } else {
-               console.warn('Unexpected army lists response format:', responseData);
-               this.armyListsData = [];
-           }
-           
-           console.log(`Loaded ${Array.isArray(this.armyListsData) ? this.armyListsData.length - 1 : 0} army lists`);
-           
-       } catch (error) {
-           console.error('Error loading army lists:', error);
-           this.armyListsData = [];
-           // Not critical if army lists don't load
-       }
-   }
-   
-   checkForCrusadeParameter() {
-       const urlParams = new URLSearchParams(window.location.search);
-       const crusadeKey = urlParams.get('crusade');
-       
-       if (crusadeKey) {
-           console.log('Found crusade parameter:', crusadeKey);
-           
-           // Wait for crusades to load, then select the matching one
-           const checkAndSelect = setInterval(() => {
-               const crusadeSelect = document.getElementById('crusade-select');
-               if (crusadeSelect && crusadeSelect.options.length > 1) {
-                   for (let option of crusadeSelect.options) {
-                       if (option.value === crusadeKey) {
-                           crusadeSelect.value = crusadeKey;
-                           clearInterval(checkAndSelect);
-                           console.log('Auto-selected crusade:', crusadeKey);
-                           break;
-                       }
-                   }
-                   // If we've checked all options and didn't find it, stop trying
-                   if (crusadeSelect.options.length > 1) {
-                       clearInterval(checkAndSelect);
-                   }
-               }
-           }, 100);
-           
-           // Stop checking after 5 seconds
-           setTimeout(() => clearInterval(checkAndSelect), 5000);
-       }
-   }
-   
-   populateCrusadeDropdown(data) {
-       const select = document.getElementById('crusade-select');
-       if (!select) return;
-       
-       select.innerHTML = '<option value="">Select crusade (optional)...</option>';
-       
-       // Skip header row, process crusades
-       // Column structure: 0=Key, 1=State, 2=Crusade Name, 3=Type
-       data.slice(1).forEach(row => {
-           const crusadeKey = row[0];
-           const state = row[1];
-           const crusadeName = row[2];
-           const crusadeType = row[3];
-           
-           if (crusadeKey && crusadeName) {
-               const option = document.createElement('option');
-               option.value = crusadeKey;
-               option.textContent = `${crusadeName} (${state})`;
-               option.dataset.crusadeName = crusadeName;
-               option.dataset.state = state;
-               select.appendChild(option);
-           }
-       });
-   }
-   
-   /**
-    * Override to add specific field validation
-    */
-   validateSpecificField(field, value) {
-       // Check that different forces are selected
-       if (field.id === 'force2-select' && value) {
-           const force1 = document.getElementById('force1-select').value;
-           if (force1 === value) {
-               return {
-                   isValid: false,
-                   errorMessage: 'Please select different forces for each player.'
-               };
-           }
-       }
-       
-       // Validate scores
-       if ((field.id === 'player1-score' || field.id === 'player2-score') && value) {
-           const score = parseInt(value);
-           if (score < 0 || score > 100) {
-               return {
-                   isValid: false,
-                   errorMessage: 'Score must be between 0 and 100.'
-               };
-           }
-       }
-       
-       // Validate custom battle size if selected
-       if (field.id === 'custom-battle-size' && 
-           document.getElementById('battle-size').value === 'Custom') {
-           const size = parseInt(value);
-           if (!value || size < 100 || size > 10000) {
-               return {
-                   isValid: false,
-                   errorMessage: 'Custom battle size must be between 100 and 10,000 points.'
-               };
-           }
-       }
-       
-       return { isValid: true };
-   }
-   
-   /**
-    * Override to gather battle report specific data
-    */
-   gatherFormData() {
-       const form = document.getElementById(this.formId);
-       const formData = new FormData(form);
-       
-       // Handle custom battle size
-       let battleSize = formData.get('battleSize');
-       if (battleSize === 'Custom') {
-           battleSize = formData.get('customBattleSize') || '';
-       }
-       
-       // Get army list names from dropdowns
-       const army1Select = document.getElementById('army1-select');
-       const army2Select = document.getElementById('army2-select');
-       const army1 = army1Select ? army1Select.value : formData.get('army1');
-       const army2 = army2Select ? army2Select.value : formData.get('army2');
-       
-       // The order here MUST match the column order expected by the Google Apps Script
-       // From battle-gas-script.js, the expected order is:
-       // timestamp, crusadeKey, battleName, datePlayed, battleSize,
-       // player1, force1Key, force1, army1, player1Score,
-       // player2, force2Key, force2, army2, player2Score,
-       // victor, summaryNotes
-       
-       return {
-           timestamp: new Date().toISOString(),
-           crusadeKey: formData.get('crusadeKey') || '',
-           battleName: formData.get('battleName').trim(),
-           datePlayed: formData.get('datePlayed'),
-           battleSize: battleSize,
-           
-           player1: formData.get('player1').trim(),
-           force1Key: formData.get('force1Key'),
-           force1: formData.get('force1').trim(),
-           army1: army1 || '',
-           player1Score: formData.get('player1Score') || '',
-           
-           player2: formData.get('player2').trim(),
-           force2Key: formData.get('force2Key'), 
-           force2: formData.get('force2').trim(),
-           army2: army2 || '',
-           player2Score: formData.get('player2Score') || '',
-           
-           victor: formData.get('victor') || '',
-           summaryNotes: formData.get('summaryNotes').trim()
-       };
-   }
-   
-   /**
-    * Override to return correct instance name
-    */
-   getFormInstanceName() {
-       return 'battleReportForm';
-   }
+    constructor() {
+        super('battle-report-form', {
+            submitUrl: CrusadeConfig.getSheetUrl('battleHistory'),
+            successMessage: 'Battle report submitted successfully!',
+            errorMessage: 'Failed to submit battle report',
+            clearCacheOnSuccess: ['battleHistory', 'forces']
+        });
+
+        this.dataLoaders = {
+            forces: null,
+            crusades: null,
+            users: null,
+            armyLists: null
+        };
+
+        this.init();
+    }
+
+    async init() {
+        // Initialize base functionality
+        this.initBase();
+
+        // Set default date
+        this.setDefaultDate();
+
+        // Setup custom battle size
+        this.setupCustomBattleSize();
+
+        // Setup dropdowns
+        this.setupDropdowns();
+
+        // Load all data
+        await this.loadAllData();
+
+        // Check for URL parameters
+        this.checkUrlParameters();
+    }
+
+    setDefaultDate() {
+        const dateField = document.getElementById('date-played');
+        if (dateField) {
+            dateField.value = new Date().toISOString().split('T')[0];
+        }
+    }
+
+    setupCustomBattleSize() {
+        const battleSizeSelect = document.getElementById('battle-size');
+        const container = battleSizeSelect.parentNode;
+
+        // Create custom input
+        const customInput = document.createElement('input');
+        customInput.type = 'number';
+        customInput.id = 'custom-battle-size';
+        customInput.name = 'customBattleSize';
+        customInput.placeholder = 'Enter points';
+        customInput.min = '100';
+        customInput.max = '10000';
+        customInput.step = '50';
+        customInput.value = '1000';
+        customInput.classList.add('d-none');
+
+        container.appendChild(customInput);
+
+        // Show/hide based on selection
+        battleSizeSelect.addEventListener('change', (e) => {
+            customInput.classList.toggle('d-none', e.target.value !== 'Custom');
+            if (e.target.value === 'Custom') {
+                customInput.focus();
+            }
+        });
+
+        // Set default to Custom
+        battleSizeSelect.value = 'Custom';
+        customInput.classList.remove('d-none');
+    }
+
+    setupDropdowns() {
+        // Convert player inputs to selects
+        ['player1-name', 'player2-name'].forEach((id, index) => {
+            const input = document.getElementById(id);
+            if (input && input.tagName === 'INPUT') {
+                const select = this.createSelect(id, input.name, input.required);
+                input.parentNode.replaceChild(select, input);
+
+                select.addEventListener('change', (e) => {
+                    this.handlePlayerSelection(index + 1, e.target.value);
+                });
+            }
+        });
+
+        // Setup force selection handlers
+        ['force1-select', 'force2-select'].forEach((id, index) => {
+            const select = document.getElementById(id);
+            if (select) {
+                select.addEventListener('change', (e) => {
+                    this.handleForceSelection(index + 1, e.target.value);
+                });
+            }
+        });
+    }
+
+    createSelect(id, name, required) {
+        const select = document.createElement('select');
+        select.id = id;
+        select.name = name;
+        select.required = required;
+
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Select player...';
+        select.appendChild(placeholder);
+
+        return select;
+    }
+
+    async loadAllData() {
+        UIHelpers.showLoading('battle-report-form', 'Loading battle data...');
+
+        try {
+            await Promise.all([
+                this.loadUsers(),
+                this.loadForces(),
+                this.loadCrusades(),
+                this.loadArmyLists()
+            ]);
+        } catch (error) {
+            console.error('Error loading data:', error);
+        } finally {
+            UIHelpers.hideLoading('battle-report-form');
+        }
+    }
+
+    async loadUsers() {
+        try {
+            const users = await UserAPI.loadUsers();
+            this.dataLoaders.users = users || [];
+            this.populatePlayerDropdowns();
+        } catch (error) {
+            console.error('Error loading users:', error);
+            this.dataLoaders.users = [];
+        }
+    }
+
+    async loadForces() {
+        try {
+            const url = CrusadeConfig.getSheetUrl('forces');
+            if (url) {
+                this.dataLoaders.forces = await CacheManager.fetchWithCache(url, 'forces');
+            }
+        } catch (error) {
+            console.error('Error loading forces:', error);
+            this.dataLoaders.forces = [];
+        }
+    }
+
+    async loadCrusades() {
+        try {
+            const url = CrusadeConfig.getSheetUrl('crusades');
+            if (url) {
+                const data = await CacheManager.fetchWithCache(url, 'crusades');
+                this.dataLoaders.crusades = data;
+                this.populateCrusadeDropdown(data);
+            }
+        } catch (error) {
+            console.error('Error loading crusades:', error);
+        }
+    }
+
+    async loadArmyLists() {
+        try {
+            const url = CrusadeConfig.getSheetUrl('armyLists');
+            if (url) {
+                const data = await CacheManager.fetchWithCache(url, 'armyLists');
+                this.dataLoaders.armyLists = Array.isArray(data) ? data :
+                    (data.data ? data.data : []);
+            }
+        } catch (error) {
+            console.error('Error loading army lists:', error);
+            this.dataLoaders.armyLists = [];
+        }
+    }
+
+    populatePlayerDropdowns() {
+        ['player1-name', 'player2-name'].forEach(id => {
+            const select = document.getElementById(id);
+            if (!select || select.tagName !== 'SELECT') return;
+
+            // Clear and repopulate
+            select.innerHTML = '<option value="">Select player...</option>';
+
+            this.dataLoaders.users.forEach(user => {
+                if (user && user.name) {
+                    const option = document.createElement('option');
+                    option.value = user.name;
+                    option.textContent = user.name;
+                    select.appendChild(option);
+                }
+            });
+        });
+
+        // Auto-select current user for player 1
+        if (window.UserManager && window.UserManager.currentUser) {
+            const player1Select = document.getElementById('player1-name');
+            if (player1Select) {
+                player1Select.value = window.UserManager.currentUser.name;
+                this.handlePlayerSelection(1, window.UserManager.currentUser.name);
+            }
+        }
+    }
+
+    populateCrusadeDropdown(data) {
+        const select = document.getElementById('crusade-select');
+        if (!select) return;
+
+        select.innerHTML = '<option value="">Select crusade (optional)...</option>';
+
+        data.slice(1).forEach(row => {
+            if (row[0] && row[2]) { // Key and Name
+                const option = document.createElement('option');
+                option.value = row[0];
+                option.textContent = `${row[2]} (${row[1] || 'Active'})`;
+                select.appendChild(option);
+            }
+        });
+    }
+
+    handlePlayerSelection(playerNum, playerName) {
+        if (!playerName || !this.dataLoaders.forces) return;
+
+        const playerForces = this.dataLoaders.forces.slice(1).filter(row =>
+            row[1] === playerName // User Name column
+        );
+
+        this.updateForceDropdown(playerNum, playerForces);
+    }
+
+    updateForceDropdown(playerNum, forces) {
+        const select = document.getElementById(`force${playerNum}-select`);
+        if (!select) return;
+
+        select.innerHTML = '<option value="">Select force...</option>';
+
+        forces.forEach(row => {
+            if (row[0] && row[2]) { // Key and Force Name
+                const option = document.createElement('option');
+                option.value = row[0];
+                option.textContent = `${row[2]} - ${row[3] || 'Unknown Faction'}`;
+                option.dataset.forceName = row[2];
+                select.appendChild(option);
+            }
+        });
+
+        // Auto-select if only one force
+        if (forces.length === 1) {
+            select.value = forces[0][0];
+            this.handleForceSelection(playerNum, forces[0][0]);
+        }
+    }
+
+    handleForceSelection(playerNum, forceKey) {
+        // Store force name in hidden field
+        const select = document.getElementById(`force${playerNum}-select`);
+        const hiddenField = document.getElementById(`force${playerNum}-name`);
+
+        if (select && hiddenField) {
+            const selectedOption = select.options[select.selectedIndex];
+            hiddenField.value = selectedOption.dataset.forceName || '';
+        }
+
+        // Update army list dropdown
+        this.updateArmyListDropdown(playerNum, forceKey);
+    }
+
+    updateArmyListDropdown(playerNum, forceKey) {
+        const select = document.getElementById(`army${playerNum}-select`);
+        if (!select || !this.dataLoaders.armyLists) return;
+
+        select.innerHTML = '<option value="">Select army list (optional)...</option>';
+
+        const forceArmyLists = this.dataLoaders.armyLists.filter(item => {
+            if (Array.isArray(item)) {
+                return item[1] === forceKey; // Force Key column
+            } else {
+                return item['Force Key'] === forceKey || item.forceKey === forceKey;
+            }
+        });
+
+        forceArmyLists.forEach(item => {
+            const name = Array.isArray(item) ? item[5] : (item['Army Name'] || item.armyName);
+            const points = Array.isArray(item) ? item[9] : (item['Points Value'] || item.pointsValue);
+
+            if (name) {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = points ? `${name} (${points} pts)` : name;
+                select.appendChild(option);
+            }
+        });
+    }
+
+    checkUrlParameters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const crusadeKey = urlParams.get('crusade') || urlParams.get('crusadeKey');
+
+        if (crusadeKey) {
+            const crusadeSelect = document.getElementById('crusade-select');
+            if (crusadeSelect) {
+                // Wait for options to load
+                setTimeout(() => {
+                    crusadeSelect.value = crusadeKey;
+                }, 500);
+            }
+        }
+    }
+
+    validateSpecificField(field, value) {
+        if (field.id === 'force2-select' && value) {
+            const force1 = document.getElementById('force1-select').value;
+            if (force1 === value) {
+                return {
+                    isValid: false,
+                    errorMessage: 'Please select different forces for each player.'
+                };
+            }
+        }
+
+        if ((field.id === 'player1-score' || field.id === 'player2-score') && value) {
+            const score = parseInt(value);
+            if (score < 0 || score > 100) {
+                return {
+                    isValid: false,
+                    errorMessage: 'Score must be between 0 and 100.'
+                };
+            }
+        }
+
+        return { isValid: true };
+    }
+
+    gatherFormData() {
+        const formData = super.gatherFormData();
+
+        // Handle custom battle size
+        if (formData.battleSize === 'Custom') {
+            formData.battleSize = formData.customBattleSize || '';
+        }
+
+        // Get army list names
+        const army1Select = document.getElementById('army1-select');
+        const army2Select = document.getElementById('army2-select');
+
+        return {
+            ...formData,
+            army1: army1Select ? army1Select.value : '',
+            army2: army2Select ? army2Select.value : ''
+        };
+    }
+
+    async submitToGoogleSheets(data) {
+        const result = await super.submitToGoogleSheets(data);
+
+        // Clear specific battle caches
+        if (data.force1Key) {
+            CacheManager.clear('battleHistory', `force_${data.force1Key}`);
+        }
+        if (data.force2Key) {
+            CacheManager.clear('battleHistory', `force_${data.force2Key}`);
+        }
+
+        return result;
+    }
 }
 
-// Global utility functions
+// Global functions for backward compatibility
 function resetForm() {
-   const form = document.getElementById('battle-report-form');
-   if (form) {
-       form.reset();
-       
-       // Reset date to today
-       const dateField = document.getElementById('date-played');
-       if (dateField) {
-           const today = new Date().toISOString().split('T')[0];
-           dateField.value = today;
-       }
-       
-       // Reset custom battle size to default
-       const battleSize = document.getElementById('battle-size');
-       const customSize = document.getElementById('custom-battle-size');
-       if (battleSize && customSize) {
-           battleSize.value = 'Custom';
-           customSize.style.display = 'inline-block';
-           customSize.value = '1000';
-       }
-       
-       form.style.display = 'block';
-   }
-   
-   document.getElementById('success-message').style.display = 'none';
-   document.getElementById('error-message').style.display = 'none';
-   
-   const errorElements = document.querySelectorAll('.field-error');
-   errorElements.forEach(element => element.remove());
-   
-   const fields = document.querySelectorAll('input, select, textarea');
-   fields.forEach(field => {
-       field.style.borderColor = '#4a4a4a';
-   });
-   
-   window.scrollTo({ top: 0, behavior: 'smooth' });
-   
-   // Clear caches when resetting form to ensure fresh data
-   if (typeof CacheManager !== 'undefined') {
-       CacheManager.clearType('forces');
-       CacheManager.clearType('armyLists');
-   }
+    if (window.battleReportForm) {
+        window.battleReportForm.reset();
+    }
 }
 
 function hideMessages() {
-   document.getElementById('success-message').style.display = 'none';
-   document.getElementById('error-message').style.display = 'none';
-   document.getElementById('battle-report-form').style.display = 'block';
+    FormUtilities.hideAllMessages();
 }
 
-// Initialize the form when page loads
-let battleReportForm;
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
-   // Check if CacheManager is available
-   if (typeof CacheManager === 'undefined') {
-       console.error('CacheManager not loaded! Make sure cache-manager.js is included before this script.');
-   }
-   
-   battleReportForm = new BattleReportForm();
-   console.log('Battle Report Form page initialized with unified caching');
+    window.battleReportForm = new BattleReportForm();
 });
-
-// Make globally available
-window.BattleReportForm = BattleReportForm;

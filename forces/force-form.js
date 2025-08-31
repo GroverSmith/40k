@@ -1,235 +1,214 @@
-// filename: js/add-force-form.js
-// Form handler for Add Crusade Force with cache management
+// filename: force-form.js
+// Simplified Force Form using base class
 // 40k Crusade Campaign Tracker
 
-class AddForceForm extends BaseForm {
+class ForceForm extends BaseForm {
     constructor() {
-        super('add-force-form', {
+        super('create-force-form', {
             submitUrl: CrusadeConfig.getSheetUrl('forces'),
-            successMessage: 'Crusade Force created successfully!',
-            errorMessage: 'Failed to create Crusade Force. Please try again.',
-            redirectUrl: '../index.html'
+            successMessage: 'Force created successfully!',
+            errorMessage: 'Failed to create force',
+            clearCacheOnSuccess: ['forces', 'users'],
+            lockUserField: true,
+            redirectUrl: '../index.html',
+            redirectDelay: 2000
         });
-        
+
         this.init();
     }
-    
+
     init() {
-        console.log('Initializing Add Force Form...');
-        
         // Initialize base functionality
         this.initBase();
-        
-        // Additional force-specific initialization if needed
-        this.setupFactionChangeHandler();
+
+        // Setup subfaction handling
+        this.setupSubfactionHandling();
+
+        // Pre-select current user if available
+        this.preselectCurrentUser();
     }
-    
-    /**
-     * Setup faction change handler for dynamic detachment options
-     */
-    setupFactionChangeHandler() {
+
+    setupSubfactionHandling() {
         const factionSelect = document.getElementById('faction');
-        if (factionSelect) {
-            factionSelect.addEventListener('change', (e) => {
-                this.handleFactionChange(e.target.value);
-            });
+        const subfactionGroup = document.getElementById('subfaction-group');
+        const subfactionSelect = document.getElementById('subfaction');
+
+        if (!factionSelect || !subfactionGroup || !subfactionSelect) return;
+
+        // Subfaction data
+        const subfactions = {
+            'Space Marines': [
+                'Ultramarines', 'Imperial Fists', 'Blood Angels', 'Dark Angels',
+                'Space Wolves', 'Iron Hands', 'Salamanders', 'Raven Guard',
+                'White Scars', 'Black Templars', 'Crimson Fists', 'Deathwatch',
+                'Other Chapter'
+            ],
+            'Chaos Space Marines': [
+                'Black Legion', 'Word Bearers', 'Night Lords', 'Iron Warriors',
+                'Alpha Legion', 'World Eaters', 'Emperor\'s Children', 'Death Guard',
+                'Thousand Sons', 'Red Corsairs', 'Other Warband'
+            ],
+            'Aeldari': [
+                'Ulthwé', 'Biel-Tan', 'Iyanden', 'Saim-Hann', 'Alaitoc',
+                'Ynnari', 'Harlequins', 'Other Craftworld'
+            ],
+            'Drukhari': [
+                'Kabal of the Black Heart', 'Kabal of the Flayed Skull',
+                'Kabal of the Poisoned Tongue', 'Cult of Strife',
+                'Cult of the Red Grief', 'Other Kabal/Cult'
+            ],
+            'Orks': [
+                'Goffs', 'Bad Moons', 'Evil Sunz', 'Deathskulls', 'Blood Axes',
+                'Snakebites', 'Freebooterz', 'Other Clan'
+            ],
+            'Necrons': [
+                'Sautekh', 'Mephrit', 'Nephrekh', 'Nihilakh', 'Novokh',
+                'Thokt', 'Other Dynasty'
+            ],
+            'T\'au Empire': [
+                'T\'au Sept', 'Vior\'la', 'Dal\'yth', 'Sa\'cea', 'Bork\'an',
+                'Farsight Enclaves', 'Other Sept'
+            ],
+            'Tyranids': [
+                'Behemoth', 'Kraken', 'Leviathan', 'Jormungandr', 'Hydra',
+                'Kronos', 'Other Hive Fleet'
+            ],
+            'Genestealer Cults': [
+                'Cult of the Four-Armed Emperor', 'The Hivecult', 'The Pauper Princes',
+                'The Rusted Claw', 'Other Cult'
+            ],
+            'Adeptus Mechanicus': [
+                'Mars', 'Graia', 'Metalica', 'Lucius', 'Agripinaa', 'Stygies VIII',
+                'Ryza', 'Other Forge World'
+            ],
+            'Imperial Knights': [
+                'House Terryn', 'House Cadmus', 'House Griffith', 'House Hawkshroud',
+                'House Mortan', 'House Raven', 'House Taranis', 'House Krast',
+                'House Vulker', 'Other House'
+            ],
+            'Chaos Knights': [
+                'House Lucaris', 'House Herpetrax', 'House Khymere', 'House Vextrix',
+                'Other House'
+            ],
+            'Astra Militarum': [
+                'Cadian', 'Catachan', 'Mordian', 'Tallarn', 'Valhallan', 'Vostroyan',
+                'Armageddon', 'Death Korps of Krieg', 'Other Regiment'
+            ],
+            'Adepta Sororitas': [
+                'Order of Our Martyred Lady', 'Order of the Valorous Heart',
+                'Order of the Bloody Rose', 'Order of the Ebon Chalice',
+                'Order of the Argent Shroud', 'Order of the Sacred Rose',
+                'Other Order'
+            ],
+            'Custodes': [
+                'Shadowkeepers', 'Dread Host', 'Aquilan Shield', 'Solar Watch',
+                'Emissaries Imperatus', 'Other Shield Host'
+            ],
+            'Grey Knights': [
+                'Swordbearers', 'Blades of Victory', 'Wardmakers', 'Prescient Brethren',
+                'Preservers', 'Rapiers', 'Exactors', 'Silver Blades', 'Other Brotherhood'
+            ]
+        };
+
+        factionSelect.addEventListener('change', (e) => {
+            const faction = e.target.value;
+
+            if (subfactions[faction]) {
+                // Show subfaction field
+                CoreUtils.dom.show(subfactionGroup);
+
+                // Clear and populate options
+                subfactionSelect.innerHTML = '<option value="">Select subfaction...</option>';
+
+                subfactions[faction].forEach(subfaction => {
+                    const option = document.createElement('option');
+                    option.value = subfaction;
+                    option.textContent = subfaction;
+                    subfactionSelect.appendChild(option);
+                });
+            } else {
+                // Hide subfaction field
+                CoreUtils.dom.hide(subfactionGroup);
+                subfactionSelect.value = '';
+            }
+        });
+    }
+
+    preselectCurrentUser() {
+        const userField = document.getElementById('user-name');
+        if (!userField) return;
+
+        const currentUser = UserStorage.getCurrentUser();
+        if (currentUser && currentUser.name) {
+            userField.value = currentUser.name;
+            userField.readOnly = true;
+            userField.classList.add('user-field-locked');
         }
     }
-    
-    /**
-     * Handle faction change (placeholder for future faction-specific logic)
-     */
-    handleFactionChange(faction) {
-        console.log('Faction selected:', faction);
-        // Future: Could load faction-specific detachments here
-    }
-    
-    /**
-     * Get form instance name for onclick handlers
-     */
-    getFormInstanceName() {
-        return 'addForceForm';
-    }
-    
-    /**
-     * Gather form data for submission
-     */
-    gatherFormData() {
-        const formData = new FormData(this.form);
-        
-        return {
-            userName: formData.get('userName').trim(),
-            forceName: formData.get('forceName').trim(),
-            faction: formData.get('faction'),
-            detachment: formData.get('detachment').trim(),
-            notes: formData.get('notes').trim()
-        };
-    }
-    
-    /**
-     * Validate specific fields for force creation
-     */
+
     validateSpecificField(field, value) {
-        const fieldName = field.name;
-        
-        if (fieldName === 'forceName') {
+        // Force name validation
+        if (field.id === 'force-name' && value) {
             if (value.length < 3) {
                 return {
                     isValid: false,
-                    errorMessage: 'Force name must be at least 3 characters long.'
+                    errorMessage: 'Force name must be at least 3 characters.'
                 };
             }
-            if (value.length > 100) {
+            if (value.length > 50) {
                 return {
                     isValid: false,
-                    errorMessage: 'Force name must be less than 100 characters.'
+                    errorMessage: 'Force name must be no more than 50 characters.'
                 };
             }
         }
-        
-        if (fieldName === 'userName') {
-            if (value.length < 2) {
+
+        // Starting supply limit
+        if (field.id === 'starting-supply-limit' && value) {
+            const supply = parseInt(value);
+            if (supply < 5 || supply > 100) {
                 return {
                     isValid: false,
-                    errorMessage: 'Player name must be at least 2 characters long.'
+                    errorMessage: 'Starting supply must be between 5 and 100.'
                 };
             }
         }
-        
+
         return { isValid: true };
     }
-    
-    /**
-     * Override form submission to handle cache clearing
-     */
-    async handleSubmit(event) {
-        event.preventDefault();
-        
-        if (this.isSubmitting) {
-            console.log('Already submitting, please wait');
-            return;
-        }
-        
-        console.log('Form submission started');
-        this.setLoadingState(true);
-        
-        try {
-            const isValid = this.validateForm();
-            if (!isValid) {
-                throw new Error('Please fix the form errors and try again.');
-            }
-            
-            const formData = this.gatherFormData();
-            console.log('Form data gathered:', formData);
-            
-            await this.submitToGoogleSheets(formData);
-            
-            // Clear ALL caches to ensure fresh data on main page
-            this.clearAllForcesRelatedCaches();
-            
-            // Store success message in sessionStorage to show on main page
-            sessionStorage.setItem('force_created', JSON.stringify({
-                forceName: formData.forceName,
-                timestamp: Date.now()
-            }));
-            
-            // Redirect immediately to main page
-            window.location.href = this.config.redirectUrl + '?refresh=' + Date.now();
-            
-        } catch (error) {
-            console.error('Form submission error:', error);
-            this.showError(error.message);
-            this.setLoadingState(false);
-        }
-        // Note: No finally block since we're redirecting on success
-    }
-    
-    /**
-     * Clear ALL forces-related caches to ensure fresh data loads
-     */
-    clearAllForcesRelatedCaches() {
-        console.log('Clearing ALL forces-related caches...');
-        
-        // Method 1: Clear using CacheManager
-        if (typeof CacheManager !== 'undefined') {
-            CacheManager.clear('forces');
-            CacheManager.clearType('forces');
-            // Also clear all caches as a nuclear option
-            const clearedCount = CacheManager.clearAll();
-            console.log(`Cleared ${clearedCount} CacheManager entries`);
-        }
-        
-        // Method 2: Clear using SheetsManager if available
-        if (typeof SheetsManager !== 'undefined') {
-            SheetsManager.clearAllCaches();
-            console.log('Cleared all SheetsManager caches');
-        }
-        
-        // Method 3: Clear ALL localStorage items related to sheets/forces
-        const keysToRemove = [];
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && (
-                key.includes('sheets_cache') || 
-                key.includes('force') || 
-                key.includes('cache_') ||
-                key === 'forces_cache_global'
-            )) {
-                keysToRemove.push(key);
-            }
-        }
-        
-        keysToRemove.forEach(key => {
-            localStorage.removeItem(key);
-            console.log('Removed localStorage key:', key);
-        });
-        
-        console.log(`Total ${keysToRemove.length} cache entries cleared from localStorage`);
+
+    gatherFormData() {
+        const formData = super.gatherFormData();
+
+        // Generate force key
+        const forceKey = KeyUtils.generateForceKey(
+            formData.forceName,
+            formData.userName
+        );
+
+        // Add key and ensure all fields
+        return {
+            key: forceKey,
+            ...formData,
+            subfaction: formData.subfaction || '',
+            crusadeName: formData.crusadeName || '',
+            notes: formData.notes || ''
+        };
     }
 }
 
-// Global utility functions
+// Global functions for backward compatibility
 function resetForm() {
-    const form = document.getElementById('add-force-form');
-    if (form) {
-        form.reset();
-        form.style.display = 'block';
+    if (window.forceForm) {
+        window.forceForm.reset();
     }
-    
-    document.getElementById('success-message').style.display = 'none';
-    document.getElementById('error-message').style.display = 'none';
-    
-    if (addForceForm) {
-        addForceForm.autoPopulateUserName();
-    }
-    
-    const errorElements = document.querySelectorAll('.field-error');
-    errorElements.forEach(element => element.remove());
-    
-    const fields = document.querySelectorAll('input, select, textarea');
-    fields.forEach(field => {
-        field.style.borderColor = '#4a4a4a';
-    });
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function hideMessages() {
-    document.getElementById('success-message').style.display = 'none';
-    document.getElementById('error-message').style.display = 'none';
-    document.getElementById('add-force-form').style.display = 'block';
+    FormUtilities.hideAllMessages();
 }
 
-// Initialize the form when page loads
-let addForceForm;
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    // Wait a bit for all modules to load
-    setTimeout(() => {
-        addForceForm = new AddForceForm();
-        console.log('Add Force Form page initialized');
-    }, 100);
+    window.forceForm = new ForceForm();
 });
-
-// Make globally available
-window.AddForceForm = AddForceForm;
-window.addForceForm = null; // Will be set on DOMContentLoaded
