@@ -52,7 +52,7 @@
         <div class="data-section" id="battle-history-section" style="display: none;">
 			<div class="section-header">
 				<h3>⚔️ Battle History</h3>
-				<a href="../battle-reports/add-battle-report.html" id="record-battle-btn" class="section-action-btn">+ Record New Battle</a>
+				<a href="../battles/battle-add.html" id="record-battle-btn" class="section-action-btn">+ Record New Battle</a>
 			</div>
 			<div class="section-content">
 				<div id="battle-history-content"></div>
@@ -75,7 +75,7 @@
         <div class="data-section" id="characters-units-section" style="display: none;">
             <div class="section-header">
                 <h3>🛡️ Characters and Units</h3>
-                <a href="../units/add-unit.html" id="add-unit-btn" class="section-action-btn" 
+                <a href="../units/unit-add.html" id="add-unit-btn" class="section-action-btn"
                    onclick="this.href = this.href.includes('?') ? this.href : this.href + '?forceKey=' + new URLSearchParams(window.location.search).get('key')">+ Add Unit</a>
             </div>
             <div class="section-content">
@@ -87,7 +87,7 @@
         <div class="data-section" id="stories-section" style="display: none;">
 			<div class="section-header">
 				<h3>📖 Stories</h3>
-				<a href="../stories/add-story.html" id="add-story-btn" class="section-action-btn">+ Write New Story</a>
+				<a href="../stories/story-add.html" id="add-story-btn" class="section-action-btn">+ Write New Story</a>
 			</div>
 			<div class="section-content">
 				<div id="stories-sheet"></div>
@@ -127,16 +127,16 @@
     <!-- Sheets and data modules -->
     <script src="../js/core/google-sheets-embed.js"></script>
     <script src="../js/core/sheets-manager.js"></script>
-    <script src="../stories/story-display.js"></script>
+    <script src="../stories/story-table.js"></script>
 
     <!-- Force page modules -->
     <script src="force-data.js"></script>
     <script src="force-ui.js"></script>
     <script src="force-sections.js"></script>
-    <script src="crusade-force.js"></script>
+    <script src="force.js"></script>
 
-    <script src="../battle-reports/battle-display.js"></script>
-	<script src="../stories/story-viewer.js"></script>
+    <script src="../battles/battle-table.js"></script>
+	<script src="../stories/story-details.js"></script>
 	
 	
 </body>

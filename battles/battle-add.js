@@ -1,4 +1,4 @@
-// filename: battle-form.js
+// filename: battles/battle-add.js
 // Simplified Battle Report Form using base class
 // 40k Crusade Campaign Tracker
 

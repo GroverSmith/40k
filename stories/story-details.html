@@ -1,0 +1,41 @@
+<!-- filename: stories/story-details.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Story - 40k Crusade Campaign Tracker</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/buttons-unified.css">
+    <link rel="stylesheet" href="../css/components-unified.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/user-dropdown.css">
+    <link rel="stylesheet" href="../css/story-page.css">
+    
+
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-button">← Back to Campaign Tracker</a>
+        
+        <div class="story-container">
+            <!-- Story will be loaded here -->
+            <div id="story-content">
+                <div class="loading-spinner"></div>
+                <span>Loading story...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="../js/core/config.js"></script>
+    <script src="../js/core/utils.js"></script>
+    <script src="../js/core/cache-manager.js"></script>
+    <script src="../js/core/ui-helpers.js"></script>
+    <script src="story-details.js"></script>
+
+</body>
+</html>

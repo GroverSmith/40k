@@ -1,4 +1,4 @@
-// filename: force-sections.js
+// filename: forces/force-sections.js
 // Section loaders for Force Details using SheetsManager with Key System
 // 40k Crusade Campaign Tracker
 
@@ -7,65 +7,18 @@ const ForceSections = {
      * Load battle history section
      */
     async loadBattleHistory(forceData) {
-        const container = document.getElementById('battle-history-content');
         const section = document.getElementById('battle-history-section');
-        if (!container || !section) return;
-
-        try {
-            // Show loading state
-            container.innerHTML = `
-                <div class="loading-spinner"></div>
-                <span>Loading battle history...</span>
-            `;
+        if (section) {
             section.style.display = 'block';
-
-            // Fetch battle data
-            const battleUrl = CrusadeConfig.getSheetUrl('battleHistory');
-            if (!battleUrl) {
-                container.innerHTML = '<p class="no-data">Battle history not configured.</p>';
-                ForceUI.updateStatsFromBattles([], forceData.key);
-                return;
+            if (window.BattleDisplay) {
+                await BattleDisplay.loadAndDisplayForForce(forceData.key, 'battle-history-content');
             }
 
-            // Use CacheManager for caching
-            const fetchUrl = `${battleUrl}?action=force-battles&forceKey=${encodeURIComponent(forceData.key)}`;
-            const result = await CacheManager.fetchWithCache(
-                fetchUrl,
-                'battleHistory',
-                `force_${forceData.key}`
-            );
-
-            console.log('Battle history result:', result);
-
-            if (result.success && result.battles && result.battles.length > 0) {
-                const battles = result.battles;
-
-                // Sort by date (most recent first)
-                battles.sort((a, b) => {
-                    const dateA = new Date(a['Date Played'] || 0);
-                    const dateB = new Date(b['Date Played'] || 0);
-                    return dateB - dateA;
-                });
-
-                // Update stats
-                ForceUI.updateStatsFromBattles(battles, forceData.key);
-
-                // Display battles using BattleDisplay module
-                if (window.BattleDisplay) {
-                    BattleDisplay.displayBattlesForForce(battles, container, forceData.key);
-                } else {
-                    console.error('BattleDisplay module not loaded');
-                    container.innerHTML = '<p class="error-message">Failed to display battles.</p>';
-                }
-            } else {
-                container.innerHTML = '<p class="no-data">No battles recorded yet for this force.</p>';
-                ForceUI.updateStatsFromBattles([], forceData.key);
+            // Update stats separately
+            const result = await BattleDisplay.fetchBattles('force', forceData.key);
+            if (result.success && result.battles) {
+                ForceUI.updateStatsFromBattles(result.battles, forceData.key);
             }
-
-        } catch (error) {
-            console.error('Error loading battle history:', error);
-            container.innerHTML = '<p class="error-message">Error loading battle history.</p>';
-            ForceUI.updateStatsFromBattles([], forceData.key);
         }
     },
     /**
@@ -126,42 +79,11 @@ const ForceSections = {
     
     async loadStories(forceKey) {
         const section = document.getElementById('stories-section');
-        const container = document.getElementById('stories-sheet');
-
-        if (!section || !container) return;
-
-        try {
-            const storiesUrl = CrusadeConfig.getSheetUrl('stories');
-            if (!storiesUrl) {
-                container.innerHTML = '<p class="no-data">Stories tracking not configured.</p>';
-                section.style.display = 'block';
-                return;
-            }
-
-            const fetchUrl = `${storiesUrl}?action=force-stories&forceKey=${encodeURIComponent(forceKey)}`;
-            const response = await CacheManager.fetchWithCache(
-                fetchUrl,
-                'stories',
-                `force_${forceKey}`
-            );
-
-            if (response.success && response.stories && response.stories.length > 0) {
-                if (window.StoryDisplay) {
-                    StoryDisplay.displayForceStories(response.stories, container);
-                } else {
-                    console.error('StoryDisplay module not loaded');
-                    container.innerHTML = '<p class="error-message">Failed to display stories.</p>';
-                }
-            } else {
-                container.innerHTML = '<p class="no-data">No stories written for this force yet.</p>';
-            }
-
+        if (section) {
             section.style.display = 'block';
-
-        } catch (error) {
-            console.error('Error loading stories:', error);
-            container.innerHTML = '<p class="error-message">Error loading stories.</p>';
-            section.style.display = 'block';
+            if (window.StoryDisplay) {
+                await StoryDisplay.loadAndDisplayForForce(forceKey, 'stories-sheet');
+            }
         }
     },
     

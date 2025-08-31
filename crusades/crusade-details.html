@@ -1,4 +1,4 @@
-<!-- filename: crusade-details.html -->
+<!-- filename: crusades/crusade-details.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,7 +62,7 @@
         <div class="data-section" id="battle-history-section" style="display: none;">
 			<div class="section-header">
 				<h3>🎯 Battle History</h3>
-				<a href="../battle-reports/add-battle-report.html" id="record-battle-btn" class="section-action-btn">+ Record Battle</a>
+				<a href="../battles/battle-add.html" id="record-battle-btn" class="section-action-btn">+ Record Battle</a>
 			</div>
 			<div class="section-content">
 				<div id="battle-history-content">
@@ -88,7 +88,7 @@
 		<div class="data-section" id="campaign-stories-section" style="display: none;">
 			<div class="section-header">
 				<h3>📖 Campaign Stories</h3>
-				<a href="../stories/add-story.html" id="add-story-btn" class="section-action-btn">+ Write Story</a>
+				<a href="../stories/story-add.html" id="add-story-btn" class="section-action-btn">+ Write Story</a>
 			</div>
 			<div class="section-content">
                 <div id="campaign-stories-content">
@@ -164,15 +164,15 @@
     <script src="../js/core/google-sheets-embed.js"></script>
     <script src="../js/core/sheets-manager.js"></script>
 
-    <script src="../battle-reports/battle-display.js"></script>
-    <script src="../forces/force-display.js"></script>
-    <script src="../stories/story-display.js"></script>
+    <script src="../battles/battle-table.js"></script>
+    <script src="../forces/force-table.js"></script>
+    <script src="../stories/story-table.js"></script>
     <!-- Crusade page modules -->
     <script src="crusade-data.js"></script>
     <script src="crusade-ui.js"></script>
     <script src="crusade-registration.js"></script>
-    <script src="crusade-controller.js"></script>
-    <script src="../stories/story-viewer.js"></script>
+    <script src="crusade-details.js"></script>
+    <script src="../stories/story-details.js"></script>
 
 </body>
 </html>

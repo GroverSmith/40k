@@ -1,4 +1,4 @@
-// filename: army-form.js
+// filename: armies/army-add.js
 // Simplified Army List Form using base class
 // 40k Crusade Campaign Tracker
 

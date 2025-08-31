@@ -1,4 +1,4 @@
-// filename: battle-reports/battle-details.js
+// filename: battles/battle-details.js
 // Battle Details Viewer
 // 40k Crusade Campaign Tracker
 

@@ -1,4 +1,4 @@
-// filename: force-ui.js
+// filename: forces/force-ui.js
 // Complete Force UI with all required methods
 // 40k Crusade Campaign Tracker
 
@@ -151,7 +151,7 @@ const ForceUI = {
         armyLists.forEach(armyList => {
             const armyListKey = armyList.Key || armyList.key || armyList.id;
             const armyName = armyList['Army Name'] || 'Unnamed List';
-            const viewUrl = `../army-lists/view-army-list.html?key=${encodeURIComponent(armyListKey)}`;
+            const viewUrl = `../armies/view-army-list.html?key=${encodeURIComponent(armyListKey)}`;
 
             html += `
                 <tr>

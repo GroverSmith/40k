@@ -1,4 +1,4 @@
-// filename: js/force-details.js
+// filename: forces/force-details.js
 // Main orchestrator for Force Details page - coordinates existing modules
 // 40k Crusade Campaign Tracker
 
@@ -108,7 +108,7 @@ class ForceDetailsApp {
 				faction: forceData.faction,
 				detachment: forceData.detachment || ''
 			});
-			addArmyListBtn.href = `../army-lists/add-army-list.html?${params.toString()}`;
+			addArmyListBtn.href = `../armies/add-army-list.html?${params.toString()}`;
 		}
 		
 		// Update Add Unit button
@@ -131,7 +131,7 @@ class ForceDetailsApp {
 				forceName: forceData.forceName,
 				userName: forceData.playerName
 			});
-			recordBattleBtn.href = `../battle-reports/add-battle-report.html?${params.toString()}`;
+			recordBattleBtn.href = `../battles/add-battle-report.html?${params.toString()}`;
 		}
 		
 		// Update Add Story button (now in Stories section)
@@ -170,7 +170,7 @@ class ForceDetailsApp {
            } else {
                container.innerHTML = `
                    <p class="no-data-message">No army lists uploaded yet.</p>
-                   <p><a href="../army-lists/add-army-list.html?forceKey=${encodeURIComponent(this.forceKey)}" 
+                   <p><a href="../armies/add-army-list.html?forceKey=${encodeURIComponent(this.forceKey)}"
                          style="color: #4ecdc4;">Add your first army list →</a></p>
                `;
            }
@@ -202,7 +202,7 @@ class ForceDetailsApp {
            } else {
                container.innerHTML = `
                    <p class="no-data-message">No battles recorded yet.</p>
-                   <p><a href="../battle-reports/add-battle-report.html?force=${encodeURIComponent(this.forceKey)}" 
+                   <p><a href="../battles/add-battle-report.html?force=${encodeURIComponent(this.forceKey)}"
                          style="color: #4ecdc4;">Record your first battle →</a></p>
                `;
            }

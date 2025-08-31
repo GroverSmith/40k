@@ -1,4 +1,4 @@
-// filename: js/stories-display.js
+// filename: stories/story-details.js
 // Stories display component for homepage
 // 40k Crusade Campaign Tracker
 

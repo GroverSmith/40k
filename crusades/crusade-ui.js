@@ -1,4 +1,4 @@
-// filename: crusade-ui.js
+// filename: crusades/crusade-ui.js
 // Simplified Crusade UI using UIHelpers
 // 40k Crusade Campaign Tracker
 

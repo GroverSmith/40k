@@ -1,4 +1,4 @@
-// filename: army-list-viewer.js
+// filename: armies/army-details.js
 // Army List Viewer - Display full army list content
 // 40k Crusade Campaign Tracker
 
@@ -86,7 +86,7 @@ class ArmyListViewer {
         // Set up back to force button
         const backBtn = document.getElementById('back-to-force-btn');
         if (forceName && forceName !== 'Unknown Force') {
-            // Use CrusadeConfig to build the URL with proper relative path from army-lists directory
+            // Use CrusadeConfig to build the URL with proper relative path from armies directory
             const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceName);
             backBtn.href = forceUrl;
             backBtn.textContent = `← Back to ${forceName}`;

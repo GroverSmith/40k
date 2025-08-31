@@ -1,4 +1,4 @@
-// filename: force-registration.js
+// filename: crusades/crusade-registration.js
 // Force registration modal and logic for Crusade Details using Key System
 // 40k Crusade Campaign Tracker
 

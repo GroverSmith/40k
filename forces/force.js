@@ -1,4 +1,4 @@
-// filename: crusade-force.js
+// filename: forces/force.js
 // Unified Force Details Controller
 // 40k Crusade Campaign Tracker
 
@@ -67,7 +67,7 @@ const CrusadeForceApp = {
             detachment: this.forceData.detachment || ''
         });
 
-        window.location.href = `../army-lists/add-army-list.html?${params.toString()}`;
+        window.location.href = `../armies/add-army-list.html?${params.toString()}`;
     },
 
     navigateToAddUnit() {

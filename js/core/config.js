@@ -253,12 +253,12 @@ const CrusadeConfig = {
         home: 'index.html',
         forceDetails: 'forces/force-details.html',
         crusadeDetails: 'crusades/crusade-details.html',
-        addArmyList: 'army-lists/add-army-list.html',
+        addArmyList: 'armies/add-army-list.html',
         
         // Dynamic patterns - now using keys instead of names
         forceDetailsPattern: 'forces/force-details.html?key={key}',
         crusadeDetailsPattern: 'crusades/crusade-details.html?key={key}',
-        armyListViewPattern: 'army-lists/view-army-list.html?key={key}',
+        armyListViewPattern: 'armies/view-army-list.html?key={key}',
         
         // External links
         addForceForm: 'forces/add-force.html'

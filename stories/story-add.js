@@ -1,4 +1,4 @@
-// filename: add-story.js
+// filename: stories/story-add.js
 // Simplified Story Form using base class
 // 40k Crusade Campaign Tracker
 
