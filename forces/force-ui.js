@@ -177,90 +177,17 @@ const ForceUI = {
         UIHelpers.makeSortable('army-lists-table');
     },
 
+    // In force-ui.js, update the displayBattles method:
+
     displayBattles(battles, container, forceKey) {
-        // Ensure container is an element
-        if (typeof container === 'string') {
-            container = document.getElementById(container);
-        }
-
-        if (!battles || battles.length === 0) {
-            const containerId = container?.id || 'battle-history-sheet';
-            this.showNoData(containerId, 'No battles recorded yet.');
+        // Delegate to BattleDisplay module
+        if (window.BattleDisplay) {
+            BattleDisplay.displayBattlesForForce(battles, container, forceKey);
             this.showSection('battle-history-section');
-            return;
+        } else {
+            console.error('BattleDisplay module not loaded');
+            this.showError(container, 'Failed to display battles');
         }
-
-        // Create table
-        let html = `
-            <div class="table-wrapper">
-                <table class="data-table" id="battles-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Battle Name</th>
-                            <th>Opponent</th>
-                            <th>Result</th>
-                            <th>Score</th>
-                            <th>Battle Size</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
-
-        battles.forEach(battle => {
-            const date = UIHelpers.formatDate(battle['Date Played']);
-            const battleName = battle['Battle Name'] || 'Unnamed Battle';
-            const isForce1 = battle['Force 1 Key'] === forceKey;
-            const opponent = isForce1 ?
-                (battle['Force 2'] || battle['Player 2']) :
-                (battle['Force 1'] || battle['Player 1']);
-
-            // Determine result
-            const victorForceKey = battle['Victor Force Key'];
-            let result = '';
-            let resultClass = '';
-
-            if (victorForceKey === 'Draw') {
-                result = 'Draw';
-                resultClass = 'text-warning';
-            } else if (victorForceKey === forceKey) {
-                result = 'Victory';
-                resultClass = 'text-success';
-            } else {
-                result = 'Defeat';
-                resultClass = 'text-error';
-            }
-
-            const score = isForce1 ?
-                `${battle['Player 1 Score'] || 0} - ${battle['Player 2 Score'] || 0}` :
-                `${battle['Player 2 Score'] || 0} - ${battle['Player 1 Score'] || 0}`;
-
-            html += `
-                <tr>
-                    <td>${date}</td>
-                    <td>${battleName}</td>
-                    <td>${opponent}</td>
-                    <td class="${resultClass}">${result}</td>
-                    <td class="text-center">${score}</td>
-                    <td class="text-center">${battle['Battle Size'] || '-'}</td>
-                </tr>
-            `;
-        });
-
-        html += `
-                    </tbody>
-                </table>
-            </div>
-        `;
-
-        if (container) {
-            container.innerHTML = html;
-        }
-
-        this.showSection('battle-history-section');
-
-        // Make table sortable
-        UIHelpers.makeSortable('battles-table');
     },
 
     displayUnits(units, container) {

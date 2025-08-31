@@ -66,31 +66,34 @@
 			</div>
 			<div class="section-content">
 				<div id="battle-history-content">
-					<div class="loading-spinner"></div>
-					<span>Loading battle history...</span>
+                    <!-- Will be populated by JavaScript -->
 				</div>
 			</div>
 		</div>
         
         <!-- Participating Forces (from existing Crusade Forces sheet) -->
-        <div class="data-section" id="forces-section" style="display: none;">
+        <div class="data-section" id="participating-forces-section" style="display: none;">
 			<div class="section-header">
 				<h3>⚔️ Participating Forces</h3>
 				<button id="register-force-btn" class="section-action-btn">+ Register Force</button>
 			</div>
 			<div class="section-content">
-				<div id="forces-content"></div>
+                <div id="participating-forces-content">
+                    <!-- Will be populated by JavaScript -->
+                </div>
 			</div>
 		</div>
 
 		<!-- Also add Stories section to crusade-details.html if not present -->
-		<div class="data-section" id="stories-section" style="display: none;">
+		<div class="data-section" id="campaign-stories-section" style="display: none;">
 			<div class="section-header">
 				<h3>📖 Campaign Stories</h3>
 				<a href="../stories/add-story.html" id="add-story-btn" class="section-action-btn">+ Write Story</a>
 			</div>
 			<div class="section-content">
-				<div id="stories-content"></div>
+                <div id="campaign-stories-content">
+                    <!-- Will be populated by JavaScript -->
+                </div>
 			</div>
 		</div>
         
@@ -161,11 +164,15 @@
     <script src="../js/core/google-sheets-embed.js"></script>
     <script src="../js/core/sheets-manager.js"></script>
 
+    <script src="../battle-reports/battle-display.js"></script>
+    <script src="../forces/force-display.js"></script>
+    <script src="../stories/story-display.js"></script>
     <!-- Crusade page modules -->
     <script src="crusade-data.js"></script>
     <script src="crusade-ui.js"></script>
     <script src="crusade-registration.js"></script>
     <script src="crusade-controller.js"></script>
     <script src="../stories/story-viewer.js"></script>
+
 </body>
 </html>

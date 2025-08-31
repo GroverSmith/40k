@@ -230,6 +230,8 @@ function doGet(e) {
         return getBattleByKey(e.parameter.key);
       case 'force-battles':
         return getBattlesForForce(e.parameter.forceKey);
+    case 'crusade-battles':
+        return getBattlesForCrusade(e.parameter.crusadeKey);
       case 'recent':
         return getRecentBattles(e.parameter.limit);
       case 'delete':
@@ -248,6 +250,51 @@ function doGet(e) {
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+function getBattlesForCrusade(crusadeKey) {
+    if (!crusadeKey) {
+        throw new Error('Crusade key is required');
+    }
+
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+
+    if (!sheet) {
+        return ContentService
+            .createTextOutput(JSON.stringify({
+                success: true,
+                battles: []
+            }))
+            .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const data = sheet.getDataRange().getValues();
+
+    // Filter out deleted rows first
+    const activeData = filterActiveRows(data);
+
+    const headers = activeData[0];
+
+    // Filter battles where Crusade Key matches (column 17)
+    const battles = activeData.slice(1)
+        .filter(row => row[17] === crusadeKey)
+        .map(row => {
+            const battle = {};
+            headers.forEach((header, index) => {
+                battle[header] = row[index];
+            });
+            return battle;
+        });
+
+    console.log(`Found ${battles.length} active battles for crusade key "${crusadeKey}"`);
+
+    return ContentService
+        .createTextOutput(JSON.stringify({
+            success: true,
+            battles: battles
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
 }
 
 function getBattlesList(params = {}) {
