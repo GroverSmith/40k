@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					maxHeight: '350px',
 					showStats: true,
 					sortable: true,
-					showRefreshButton: false,  // Disable the refresh button
 					linkColumn: 2,          // Display the Force Name column (index 2) as link
 					linkDataColumn: 0,      // Use the Key column (index 0) for link value
 					linkPattern: 'forces/force-details.html?key={slug}',
@@ -109,7 +108,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					maxHeight: '350px',
 					showStats: true,
 					sortable: true,
-					showRefreshButton: false,  // Disable the refresh button
 					linkColumn: 6,          // Display the Title column (index 6) as link
 					linkDataColumn: 0,      // Use the Key column (index 0) for link value
 					linkPattern: 'stories/view-story.html?key={slug}',

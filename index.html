@@ -18,30 +18,8 @@
     <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/user-field.css">
     
-    <!-- Notification Animations -->
-    <style>
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-    </style>
+    
+    
 </head>
 <body>
     <div class="container">
@@ -50,7 +28,17 @@
             <p>Welcome to your digital command center for Warhammer 40,000 Crusade campaigns!</p>
         </header>
         
-        <main>            
+        <main>           
+
+			<!-- Crusades Section -->
+			<section class="features">
+				<div class="section-header-with-action">
+					<h2>Crusades</h2>
+					<!-- If you have an add crusade page, add button here -->
+				</div>
+				<div id="crusades-sheet"></div>
+				<div style="clear: both;"></div>
+			</section>
             
             <!-- Recent Battles Section -->
             <section class="features">
@@ -64,15 +52,7 @@
 				</div>
 			</section>
             
-            <!-- Crusades Section -->
-			<section class="features">
-				<div class="section-header-with-action">
-					<h2>Crusades</h2>
-					<!-- If you have an add crusade page, add button here -->
-				</div>
-				<div id="crusades-sheet"></div>
-				<div style="clear: both;"></div>
-			</section>
+            
 
 			<!-- Crusade Forces Section -->
 			<section class="features">

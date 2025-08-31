@@ -8,8 +8,7 @@ class GoogleSheetsEmbed {
     constructor(containerSelector, appsScriptUrl, options = {}) {
         this.container = document.querySelector(containerSelector);
         this.appsScriptUrl = appsScriptUrl;
-        this.options = {
-            showRefreshButton: true,
+        this.options = {            
             autoLoad: true,
             showStats: true,
             sortable: true,
@@ -45,23 +44,7 @@ class GoogleSheetsEmbed {
 		contentDiv.className = 'sheets-content';
 		this.container.appendChild(contentDiv);
 		this.contentDiv = contentDiv;
-		
-		// Only add refresh button if explicitly enabled
-		if (this.options.showRefreshButton) {
-			const buttonContainer = document.createElement('div');
-			buttonContainer.style.marginTop = '10px';
-			buttonContainer.style.textAlign = 'right';
-			
-			const refreshBtn = document.createElement('button');
-			refreshBtn.className = 'sheets-refresh';
-			refreshBtn.textContent = 'Refresh Data';
-			refreshBtn.onclick = () => this.refresh();
-			buttonContainer.appendChild(refreshBtn);
-			this.refreshBtn = refreshBtn;
-			
-			this.container.appendChild(buttonContainer);
-		}
-		
+				
 		if (this.options.autoLoad) {
 			this.loadData();
 		}
@@ -111,22 +94,14 @@ class GoogleSheetsEmbed {
         }
     }
     
-    showLoading() {
-        if (this.refreshBtn) {
-            this.refreshBtn.disabled = true;
-            this.refreshBtn.textContent = 'Loading...';
-        }
+    showLoading() {        
         
         this.contentDiv.innerHTML = '<div class="sheets-loading">Loading data...</div>';
     }
     
     showError(message) {
-        this.contentDiv.innerHTML = '<div class="sheets-error"><strong>Error loading data:</strong> ' + message + '</div>';
+        this.contentDiv.innerHTML = '<div class="sheets-error"><strong>Error loading data:</strong> ' + message + '</div>';        
         
-        if (this.refreshBtn) {
-            this.refreshBtn.disabled = false;
-            this.refreshBtn.textContent = 'Refresh Data';
-        }
     }
     
     /**
@@ -318,10 +293,7 @@ class GoogleSheetsEmbed {
         // Store reference to this embed instance for sorting
         this.container.sheetsEmbed = this;
         
-        if (this.refreshBtn) {
-            this.refreshBtn.disabled = false;
-            this.refreshBtn.textContent = 'Refresh Data';
-        }
+        
     }
     
     createPaginationControls(totalPages, totalRows) {
