@@ -1,0 +1,136 @@
+/* filename: css/story-form.css */
+/* Story Form Specific Styles */
+
+.story-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.story-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.story-header h1 {
+    color: var(--color-primary);
+    margin-bottom: 10px;
+}
+
+.story-context {
+    color: var(--color-text-dim);
+    font-size: var(--font-lg);
+}
+
+/* Story content textarea */
+#story-content {
+    min-height: 400px;
+    font-family: 'Georgia', serif;
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+.char-counter {
+    text-align: right;
+    margin-top: 5px;
+    font-size: var(--font-sm);
+}
+
+.char-counter.warning {
+    color: var(--color-warning);
+}
+
+.char-counter.error {
+    color: var(--color-error);
+}
+
+/* Story type selector */
+.story-type-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.story-type-option {
+    padding: 10px;
+    text-align: center;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.story-type-option:hover {
+    border-color: var(--color-secondary);
+    background-color: var(--color-bg-card);
+}
+
+.story-type-option.selected {
+    border-color: var(--color-secondary);
+    background-color: var(--color-secondary);
+    color: var(--color-bg-main);
+}
+
+/* Tags input */
+.tags-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    min-height: 45px;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background-color: var(--color-secondary);
+    color: var(--color-bg-main);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-sm);
+}
+
+.tag-remove {
+    margin-left: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tag-remove:hover {
+    color: var(--color-error);
+}
+
+/* Related entity cards */
+.related-entity-card {
+    padding: 15px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: 15px;
+}
+
+.related-entity-card.selected {
+    border-color: var(--color-secondary);
+    background-color: var(--color-bg-card);
+}
+
+/* Preview section */
+.story-preview {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.story-preview h3 {
+    color: var(--color-secondary);
+    margin-bottom: 15px;
+}
+
+.preview-content {
+    font-family: 'Georgia', serif;
+    line-height: 1.8;
+    white-space: pre-wrap;
+}
