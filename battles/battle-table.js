@@ -4,27 +4,18 @@
 
 const BattleDisplay = {
     /**
-     * Get scores from battle data regardless of format (array or object)
+     * Get scores from battle data - now always object format
      */
     getScores(battle) {
-            let player1Score, player2Score;
+        // All responses now return objects with normalized headers
+        const player1Score = battle['Player 1 Score'];
+        const player2Score = battle['Player 2 Score'];
 
-            if (Array.isArray(battle)) {
-                // Array format (from raw sheet data)
-                player1Score = battle[13]; // Player 1 Score column
-                player2Score = battle[14]; // Player 2 Score column
-            } else {
-                // Object format (from API responses)
-                // Note: The field names have lowercase 'score'
-                player1Score = battle['Player 1 score'] || battle['Player 1 Score'];
-                player2Score = battle['Player 2 score'] || battle['Player 2 Score'];
-            }
-
-            return {
-                player1: parseInt(player1Score) || 0,
-                player2: parseInt(player2Score) || 0
-            };
-        },
+        return {
+            player1: parseInt(player1Score) || 0,
+            player2: parseInt(player2Score) || 0
+        };
+    },
 
     /**
      * Format score display consistently
@@ -34,9 +25,7 @@ const BattleDisplay = {
 
         // If we have a forceKey, determine which score belongs to this force
         if (forceKey) {
-            const isForce1 = Array.isArray(battle) ?
-                battle[3] === forceKey : // Force 1 Key in array
-                battle['Force 1 Key'] === forceKey; // Force 1 Key in object
+            const isForce1 = battle['Force 1 Key'] === forceKey;
 
             if (isForce1) {
                 return `${scores.player1}-${scores.player2}`;
@@ -53,9 +42,7 @@ const BattleDisplay = {
      * Get battle result for a specific force
      */
     getBattleResult(battle, forceKey) {
-        const victorForceKey = Array.isArray(battle) ?
-            battle[18] : // Victor Force Key column in array
-            battle['Victor Force Key']; // Victor Force Key in object
+        const victorForceKey = battle['Victor Force Key'];
 
         if (victorForceKey === 'Draw') {
             return { result: 'Draw', class: 'draw' };
@@ -341,6 +328,7 @@ const BattleDisplay = {
         }
     },
 
+
     /**
      * Load and display recent battles (homepage)
      */
@@ -352,15 +340,16 @@ const BattleDisplay = {
             UIHelpers.showLoading(container, 'Loading recent battles...');
 
             const response = await this.fetchBattles('recent');
-            console.log('Recent battles API response:', response);
 
-            if (!response || response.length <= 1) {
+            // Now expecting JSON response with battles array
+            if (!response || !response.success || !response.battles || response.battles.length === 0) {
                 UIHelpers.showNoData(container, 'No battles recorded yet.');
                 return;
             }
 
-            const recentBattles = response.slice(1)
-                .sort((a, b) => new Date(b[5] || 0) - new Date(a[5] || 0))
+            // Sort by date and limit to 10 most recent
+            const recentBattles = response.battles
+                .sort((a, b) => new Date(b['Date Played'] || 0) - new Date(a['Date Played'] || 0))
                 .slice(0, 10);
 
             this.displayRecentBattles(recentBattles, container);
@@ -380,9 +369,6 @@ const BattleDisplay = {
             return;
         }
 
-        console.log('Displaying recent battles');
-        console.log('First battle data:', battles[0]);
-
         let html = `
             <table class="data-table">
                 <thead>
@@ -398,19 +384,20 @@ const BattleDisplay = {
         `;
 
         battles.forEach(battle => {
-            const date = UIHelpers.formatDate(battle[5]); // Date Played
-            const battleName = battle[15] || 'Unnamed Battle';
-            const force1 = battle[7] || battle[6]; // Force 1 name or Player 1
-            const force2 = battle[10] || battle[9]; // Force 2 name or Player 2
-            const size = battle[2] ? `${battle[2]}pts` : '-';
+            // Now using object properties instead of array indices
+            const date = UIHelpers.formatDate(battle['Date Played']);
+            const battleName = battle['Battle Name'] || 'Unnamed Battle';
+            const force1 = battle['Force 1'] || battle['Player 1'];
+            const force2 = battle['Force 2'] || battle['Player 2'];
+            const size = battle['Battle Size'] ? `${battle['Battle Size']}pts` : '-';
 
-            // Use unified score method
+            // Use unified score method - now all data is in object format
             const score = this.formatScore(battle);
 
             // Create links
-            const battleLink = this.createBattleLink(battleName, battle[0]);
-            const force1Link = this.createForceLink(force1, battle[3]);
-            const force2Link = this.createForceLink(force2, battle[4]);
+            const battleLink = this.createBattleLink(battleName, battle.Key);
+            const force1Link = this.createForceLink(force1, battle['Force 1 Key']);
+            const force2Link = this.createForceLink(force2, battle['Force 2 Key']);
 
             html += `
                 <tr>

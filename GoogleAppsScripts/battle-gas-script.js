@@ -1,7 +1,7 @@
 // filename: battle-gas-script.js
-// Google Apps Script for Battle History Sheet
+// Google Apps Script for Battle History Sheet - Standardized API responses
 // Deploy this as a web app to handle battle report submissions and retrieval
-// Updated to include Deleted Timestamp column for soft deletion
+// Updated to always return consistent JSON responses
 
 const SPREADSHEET_ID = '1ybyOYvN_7hHJ2lT5iK3wMOuY3grlUwGTooxbttgmJyk';
 const SHEET_NAME = 'Battle History';
@@ -9,19 +9,43 @@ const SHEET_NAME = 'Battle History';
 // Helper function to filter out deleted rows
 function filterActiveRows(data) {
   if (!data || data.length <= 1) return data;
-  
+
   const headers = data[0];
   const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
-  
+
   // If no Deleted Timestamp column, return all data
   if (deletedTimestampIndex === -1) return data;
-  
+
   // Filter to only include rows where Deleted Timestamp is empty
   const activeRows = [headers].concat(
     data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
   );
-  
+
   return activeRows;
+}
+
+// Helper function to normalize headers for consistency
+function normalizeHeaders(headers) {
+  return headers.map(header => {
+    // Normalize score fields to uppercase 'Score'
+    if (header === 'Player 1 score') return 'Player 1 Score';
+    if (header === 'Player 2 score') return 'Player 2 Score';
+    return header;
+  });
+}
+
+// Helper function to convert array data to objects with normalized headers
+function convertToObjects(data) {
+  if (!data || data.length <= 1) return [];
+
+  const headers = normalizeHeaders(data[0]);
+  return data.slice(1).map(row => {
+    const obj = {};
+    headers.forEach((header, index) => {
+      obj[header] = row[index];
+    });
+    return obj;
+  });
 }
 
 // Generate unique battle key using timestamp + random suffix
@@ -35,9 +59,9 @@ function doPost(e) {
   try {
     console.log('doPost called for battle report');
     console.log('Parameters:', e.parameter);
-    
+
     let data;
-    
+
     if (e.parameter) {
       data = e.parameter;
     } else if (e.postData && e.postData.contents) {
@@ -49,22 +73,22 @@ function doPost(e) {
     } else {
       throw new Error('No data received');
     }
-    
+
     // Validate required fields
     const required = ['force1Key', 'force2Key', 'datePlayed', 'player1', 'player2'];
     const missing = required.filter(field => !data[field]);
     if (missing.length > 0) {
       throw new Error('Missing required fields: ' + missing.join(', '));
     }
-    
+
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
     let sheet = spreadsheet.getSheetByName(SHEET_NAME);
-    
+
     // Create sheet if it doesn't exist
     if (!sheet) {
       console.log('Creating Battle History sheet');
       sheet = spreadsheet.insertSheet(SHEET_NAME);
-      
+
       const headers = [
         'Key',
         'Timestamp',
@@ -79,23 +103,23 @@ function doPost(e) {
         'Force 2',
         'Army 2',
         'Victor',
-        'Player 1 Score',
-        'Player 2 Score',
+        'Player 1 Score',  // Uppercase 'Score'
+        'Player 2 Score',  // Uppercase 'Score'
         'Battle Name',
         'Summary Notes',
         'Crusade Key',
         'Victor Force Key',
-        'Deleted Timestamp'  // New column
+        'Deleted Timestamp'
       ];
-      
+
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-      
+
       // Format header row
       const headerRange = sheet.getRange(1, 1, 1, headers.length);
       headerRange.setFontWeight('bold');
       headerRange.setBackground('#4ecdc4');
       headerRange.setFontColor('#ffffff');
-      
+
       // Set column widths
       sheet.setColumnWidth(1, 150); // Key
       sheet.setColumnWidth(2, 150); // Timestamp
@@ -118,18 +142,18 @@ function doPost(e) {
       sheet.setColumnWidth(19, 150); // Victor Force Key
       sheet.setColumnWidth(20, 150); // Deleted Timestamp
     }
-    
+
     // Generate unique key
     const battleKey = generateBattleKey();
     console.log('Generated battle key:', battleKey);
-    
+
     // Parse timestamp
     const timestamp = new Date();
-    
+
     // Determine victor and victor force key
     let victor = data.victor || '';
     let victorForceKey = '';
-    
+
     if (!victor && data.player1Score && data.player2Score) {
       const p1Score = parseInt(data.player1Score);
       const p2Score = parseInt(data.player2Score);
@@ -150,8 +174,8 @@ function doPost(e) {
     } else if (victor === 'Draw') {
       victorForceKey = 'Draw';
     }
-    
-    // Prepare row data - ORDER MUST MATCH YOUR SHEET COLUMNS!
+
+    // Prepare row data
     const rowData = [
       battleKey,                    // Column 0: Key
       timestamp,                    // Column 1: Timestamp
@@ -172,19 +196,19 @@ function doPost(e) {
       data.summaryNotes || '',      // Column 16: Summary Notes
       data.crusadeKey || '',        // Column 17: Crusade Key
       victorForceKey,               // Column 18: Victor Force Key
-      ''                            // Column 19: Deleted Timestamp (empty for new records)
+      ''                            // Column 19: Deleted Timestamp
     ];
-    
+
     const lastRow = sheet.getLastRow();
     const newRowNumber = lastRow + 1;
-    
+
     sheet.getRange(newRowNumber, 1, 1, rowData.length).setValues([rowData]);
-    
+
     // Format the new row
     sheet.getRange(newRowNumber, 1).setFontWeight('bold'); // Key
     sheet.getRange(newRowNumber, 2).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
     sheet.getRange(newRowNumber, 6).setNumberFormat('yyyy-mm-dd'); // Date Played
-    
+
     // Format score columns as numbers
     if (data.player1Score) {
       sheet.getRange(newRowNumber, 14).setNumberFormat('#,##0');
@@ -192,12 +216,12 @@ function doPost(e) {
     if (data.player2Score) {
       sheet.getRange(newRowNumber, 15).setNumberFormat('#,##0');
     }
-    
+
     // Set text wrapping for notes
     sheet.getRange(newRowNumber, 17).setWrap(true);
-    
+
     console.log('Battle report saved successfully');
-    
+
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
@@ -206,10 +230,10 @@ function doPost(e) {
         timestamp: timestamp.toISOString()
       }))
       .setMimeType(ContentService.MimeType.JSON);
-      
+
   } catch (error) {
     console.error('Error processing battle report:', error);
-    
+
     return ContentService
       .createTextOutput(JSON.stringify({
         success: false,
@@ -222,7 +246,7 @@ function doPost(e) {
 function doGet(e) {
   try {
     const action = e.parameter.action || 'list';
-    
+
     switch(action) {
       case 'list':
         return getBattlesList(e.parameter);
@@ -230,7 +254,7 @@ function doGet(e) {
         return getBattleByKey(e.parameter.key);
       case 'force-battles':
         return getBattlesForForce(e.parameter.forceKey);
-    case 'crusade-battles':
+      case 'crusade-battles':
         return getBattlesForCrusade(e.parameter.crusadeKey);
       case 'recent':
         return getRecentBattles(e.parameter.limit);
@@ -239,10 +263,10 @@ function doGet(e) {
       default:
         return getBattlesList(e.parameter);
     }
-    
+
   } catch (error) {
     console.error('Error handling GET request:', error);
-    
+
     return ContentService
       .createTextOutput(JSON.stringify({
         success: false,
@@ -252,69 +276,35 @@ function doGet(e) {
   }
 }
 
-function getBattlesForCrusade(crusadeKey) {
-    if (!crusadeKey) {
-        throw new Error('Crusade key is required');
-    }
-
-    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-
-    if (!sheet) {
-        return ContentService
-            .createTextOutput(JSON.stringify({
-                success: true,
-                battles: []
-            }))
-            .setMimeType(ContentService.MimeType.JSON);
-    }
-
-    const data = sheet.getDataRange().getValues();
-
-    // Filter out deleted rows first
-    const activeData = filterActiveRows(data);
-
-    const headers = activeData[0];
-
-    // Filter battles where Crusade Key matches (column 17)
-    const battles = activeData.slice(1)
-        .filter(row => row[17] === crusadeKey)
-        .map(row => {
-            const battle = {};
-            headers.forEach((header, index) => {
-                battle[header] = row[index];
-            });
-            return battle;
-        });
-
-    console.log(`Found ${battles.length} active battles for crusade key "${crusadeKey}"`);
-
-    return ContentService
-        .createTextOutput(JSON.stringify({
-            success: true,
-            battles: battles
-        }))
-        .setMimeType(ContentService.MimeType.JSON);
-}
-
+// UPDATED: Always return JSON with consistent structure
 function getBattlesList(params = {}) {
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
+
   if (!sheet) {
     return ContentService
-      .createTextOutput(JSON.stringify([]))
+      .createTextOutput(JSON.stringify({
+        success: true,
+        battles: [],
+        count: 0
+      }))
       .setMimeType(ContentService.MimeType.JSON);
   }
-  
+
   const data = sheet.getDataRange().getValues();
-  
+
   // Filter out deleted rows
   const activeData = filterActiveRows(data);
-  
-  // Return raw data for compatibility with sheets system
+
+  // Convert to objects with normalized headers
+  const battles = convertToObjects(activeData);
+
   return ContentService
-    .createTextOutput(JSON.stringify(activeData))
+    .createTextOutput(JSON.stringify({
+      success: true,
+      battles: battles,
+      count: battles.length
+    }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -322,20 +312,20 @@ function getBattleByKey(battleKey) {
   if (!battleKey) {
     throw new Error('Battle key is required');
   }
-  
+
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
+
   if (!sheet) {
     throw new Error('Battle History sheet not found');
   }
-  
+
   const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  
+  const headers = normalizeHeaders(data[0]);
+
   // Check if row is deleted
   const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
-  
+
   // Find by key (column 0)
   const battleRow = data.find((row, index) => {
     if (index === 0) return false;
@@ -343,17 +333,17 @@ function getBattleByKey(battleKey) {
     if (deletedTimestampIndex !== -1 && row[deletedTimestampIndex]) return false;
     return row[0] === battleKey;
   });
-  
+
   if (!battleRow) {
     throw new Error('Battle report not found or deleted');
   }
-  
-  // Convert to object
+
+  // Convert to object with normalized headers
   const battle = {};
   headers.forEach((header, index) => {
     battle[header] = battleRow[index];
   });
-  
+
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
@@ -362,88 +352,121 @@ function getBattleByKey(battleKey) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function getBattlesForForce(forceKey) {
-    if (!forceKey) {
-        throw new Error('Force key is required');
-    }
-    
-    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-    
-    if (!sheet) {
-        return ContentService
-            .createTextOutput(JSON.stringify({
-                success: true,
-                battles: []
-            }))
-            .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    const data = sheet.getDataRange().getValues();
-    
-    // Filter out deleted rows first
-    const activeData = filterActiveRows(data);
-    
-    const headers = activeData[0];
-    
-    // Filter battles where force is either Force 1 or Force 2
-    // Force 1 Key is column 3, Force 2 Key is column 4
-    const battles = activeData.slice(1)
-        .filter(row => row[3] === forceKey || row[4] === forceKey)
-        .map(row => {
-            const battle = {};
-            headers.forEach((header, index) => {
-                battle[header] = row[index];
-            });
-            return battle;
-        });
-    
-    console.log(`Found ${battles.length} active battles for force key "${forceKey}"`);
-    
+function getBattlesForCrusade(crusadeKey) {
+  if (!crusadeKey) {
+    throw new Error('Crusade key is required');
+  }
+
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+
+  if (!sheet) {
     return ContentService
-        .createTextOutput(JSON.stringify({
-            success: true,
-            battles: battles
-        }))
-        .setMimeType(ContentService.MimeType.JSON);
+      .createTextOutput(JSON.stringify({
+        success: true,
+        battles: [],
+        count: 0
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const data = sheet.getDataRange().getValues();
+
+  // Filter out deleted rows first
+  const activeData = filterActiveRows(data);
+
+  // Convert to objects with normalized headers
+  const allBattles = convertToObjects(activeData);
+
+  // Filter for this crusade
+  const battles = allBattles.filter(battle => battle['Crusade Key'] === crusadeKey);
+
+  console.log(`Found ${battles.length} active battles for crusade key "${crusadeKey}"`);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: true,
+      battles: battles,
+      count: battles.length
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getBattlesForForce(forceKey) {
+  if (!forceKey) {
+    throw new Error('Force key is required');
+  }
+
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        battles: [],
+        count: 0
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const data = sheet.getDataRange().getValues();
+
+  // Filter out deleted rows first
+  const activeData = filterActiveRows(data);
+
+  // Convert to objects with normalized headers
+  const allBattles = convertToObjects(activeData);
+
+  // Filter battles where force is either Force 1 or Force 2
+  const battles = allBattles.filter(battle =>
+    battle['Force 1 Key'] === forceKey || battle['Force 2 Key'] === forceKey
+  );
+
+  console.log(`Found ${battles.length} active battles for force key "${forceKey}"`);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: true,
+      battles: battles,
+      count: battles.length
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function getRecentBattles(limit = 10) {
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
+
   if (!sheet) {
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
-        battles: []
+        battles: [],
+        count: 0
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
-  
+
   const data = sheet.getDataRange().getValues();
-  
+
   // Filter out deleted rows
   const activeData = filterActiveRows(data);
-  
-  const headers = activeData[0];
-  const maxRows = Math.min(parseInt(limit), activeData.length - 1);
-  
-  // Get the most recent battles (assuming they're at the bottom)
-  const recentRows = activeData.slice(Math.max(1, activeData.length - maxRows));
-  
-  const battles = recentRows.map(row => {
-    const battle = {};
-    headers.forEach((header, index) => {
-      battle[header] = row[index];
-    });
-    return battle;
-  }).reverse(); // Most recent first
-  
+
+  // Convert to objects with normalized headers
+  const allBattles = convertToObjects(activeData);
+
+  // Sort by timestamp (most recent first) and limit
+  const battles = allBattles
+    .sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp))
+    .slice(0, parseInt(limit));
+
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
-      battles: battles
+      battles: battles,
+      count: battles.length,
+      totalCount: allBattles.length
     }))
     .setMimeType(ContentService.MimeType.JSON);
 }
