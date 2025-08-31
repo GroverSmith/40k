@@ -114,9 +114,9 @@ const ForceRegistration = {
             const forceName = selectedOption.getAttribute('data-force-name');
             const userName = selectedOption.getAttribute('data-user-name');
             
-            // Get crusade key
-            const crusadeKey = this.crusadeData.key || this.crusadeData.Key || 
-                              CrusadeData.generateCrusadeKey(this.crusadeData['Crusade Name']);
+            
+
+			const crusadeKey = this.crusadeData;
             
             // Prepare registration data with keys
             const registrationData = {
