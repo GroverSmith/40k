@@ -27,7 +27,8 @@ const StoryDisplay = {
     },
 
     /**
-     * Display stories in a table format
+     * Display stories in a table format with standard columns:
+     * Date Added, Title, Author, Type
      */
     displayStoriesTable(stories, container, options = {}) {
         if (typeof container === 'string') {
@@ -39,10 +40,6 @@ const StoryDisplay = {
             return;
         }
 
-        const showType = options.showType !== false;
-        const showForce = options.showForce !== false;
-        const showDate = options.showDate !== false;
-        const showImperialDate = options.showImperialDate !== false;
         const tableId = options.tableId || 'stories-table';
 
         let html = `
@@ -50,11 +47,10 @@ const StoryDisplay = {
                 <table class="data-table" id="${tableId}">
                     <thead>
                         <tr>
-                            ${showType ? '<th>Type</th>' : ''}
+                            <th>Date Added</th>
                             <th>Title</th>
-                            ${showForce ? '<th>Force</th>' : ''}
-                            ${showImperialDate ? '<th>Imperial Date</th>' : ''}
-                            ${showDate ? '<th>Date Added</th>' : ''}
+                            <th>Author</th>
+                            <th>Type</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,24 +60,20 @@ const StoryDisplay = {
             const storyKey = story['Key'] || story.key;
             const title = story['Title'] || 'Untitled Story';
             const storyType = story['Story Type'] || 'Story';
-            const forceName = story['Force Name'] || '-';
-            const forceKey = story['Force Key'];
-            const imperialDate = story['Imperial Date'] || '-';
-            const timestamp = story['Timestamp'];
+            const timestamp = story['Timestamp'] || story.timestamp;
+            const dateAdded = timestamp ? UIHelpers.formatDate(timestamp) : '-';
+
+            // Get author from User Key or Force Name or fallback
+            const author = story['User Name'] || story['Force Name'] || story['User Key'] || 'Unknown';
 
             const storyLink = this.createStoryLink(title, storyKey, options.baseUrl);
-            const forceLink = forceKey && window.ForceDisplay ?
-                ForceDisplay.createForceLink(forceName, forceKey, options.forceBaseUrl) :
-                forceName;
-            const dateAdded = timestamp ? UIHelpers.formatDate(timestamp) : '-';
 
             html += `
                 <tr>
-                    ${showType ? `<td>${storyType}</td>` : ''}
+                    <td>${dateAdded}</td>
                     <td>${storyLink}</td>
-                    ${showForce ? `<td>${forceLink}</td>` : ''}
-                    ${showImperialDate ? `<td>${imperialDate}</td>` : ''}
-                    ${showDate ? `<td>${dateAdded}</td>` : ''}
+                    <td>${author}</td>
+                    <td>${storyType}</td>
                 </tr>
             `;
         });
@@ -101,17 +93,22 @@ const StoryDisplay = {
     },
 
     /**
+     * Display all stories (homepage)
+     */
+    displayAllStories(stories, container) {
+        this.displayStoriesTable(stories, container, {
+            tableId: 'all-stories-table',
+            baseUrl: 'stories/'
+        });
+    },
+
+    /**
      * Display stories for a crusade
      */
     displayCrusadeStories(stories, container) {
         this.displayStoriesTable(stories, container, {
-            showType: true,
-            showForce: true,
-            showImperialDate: true,
-            showDate: false,
             tableId: 'crusade-stories-table',
-            baseUrl: '../stories/',
-            forceBaseUrl: '../forces/'
+            baseUrl: '../stories/'
         });
     },
 
@@ -120,15 +117,73 @@ const StoryDisplay = {
      */
     displayForceStories(stories, container) {
         this.displayStoriesTable(stories, container, {
-            showType: true,
-            showForce: false,
-            showImperialDate: true,
-            showDate: true,
             tableId: 'force-stories-table',
             baseUrl: '../stories/'
         });
+    },
+
+    /**
+     * Load and display recent stories for homepage
+     */
+    async loadRecentStories() {
+        const container = document.getElementById('stories-sheet');
+        if (!container) return;
+
+        try {
+            UIHelpers.showLoading(container, 'Loading stories...');
+
+            const storiesUrl = CrusadeConfig.getSheetUrl('stories');
+            if (!storiesUrl) {
+                UIHelpers.showNoData(container, 'Stories not configured.');
+                return;
+            }
+
+            // Fetch all stories
+            const response = await CacheManager.fetchWithCache(storiesUrl, 'stories');
+
+            if (!response || response.length <= 1) {
+                UIHelpers.showNoData(container, 'No stories written yet.');
+                return;
+            }
+
+            // Convert array data to objects
+            const headers = response[0];
+            const stories = response.slice(1).map(row => {
+                const story = {};
+                headers.forEach((header, index) => {
+                    story[header] = row[index];
+                });
+                return story;
+            });
+
+            // Sort by timestamp (most recent first)
+            stories.sort((a, b) => {
+                const dateA = new Date(a['Timestamp'] || 0);
+                const dateB = new Date(b['Timestamp'] || 0);
+                return dateB - dateA;
+            });
+
+            // Display all stories (or limit if you want)
+            this.displayAllStories(stories, container);
+
+        } catch (error) {
+            console.error('Error loading stories:', error);
+            UIHelpers.showError(container, 'Failed to load stories.');
+        }
     }
 };
+
+// Initialize on homepage
+document.addEventListener('DOMContentLoaded', () => {
+    // Only load on homepage
+    if (window.location.pathname === '/' || window.location.pathname.endsWith('index.html')) {
+        setTimeout(() => {
+            if (window.StoryDisplay) {
+                StoryDisplay.loadRecentStories();
+            }
+        }, 100);
+    }
+});
 
 // Make globally available
 window.StoryDisplay = StoryDisplay;
