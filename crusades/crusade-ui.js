@@ -11,8 +11,8 @@ const CrusadeUI = {
         
         const name = crusadeData['Crusade Name'] || crusadeName;
         const crusadeType = crusadeData['Crusade Type'] || '';
-        const startDate = this.formatDate(crusadeData['Start Date']);
-        const endDate = this.formatDate(crusadeData['End Date']);
+        const startDate = formatDate(crusadeData['Start Date']);
+        const endDate = formatDate(crusadeData['End Date']);
         const state = crusadeData['State'] || 'Unknown';
         const crusadeKey = crusadeData.key || crusadeData.Key || '';
         
@@ -88,8 +88,8 @@ const CrusadeUI = {
             const forceName = row[1] || '';
             const userName = row[2] || '';
             const faction = row[3] || '';
-            const createDate = this.formatDate(row[4]);
-            const lastBattle = this.formatDate(row[5]);
+            const createDate = formatDate(row[4]);
+            const lastBattle = formatDate(row[5]);
             const battleCount = row[6] || 0;
             
             if (forceKey && forceName) {
@@ -181,7 +181,7 @@ const CrusadeUI = {
         
         // Skip header row
         scheduleData.slice(1).forEach(row => {
-            const date = this.formatDate(row[0]);
+            const date = formatDate(row[0]);
             const event = row[1];
             const location = row[2];
             const notes = row[3];
@@ -292,27 +292,7 @@ const CrusadeUI = {
             container.innerHTML = `<div class="error-message">${message}</div>`;
         }
     },
-    
-    /**
-     * Format date for display
-     */
-    formatDate(dateString) {
-        if (!dateString) return '';
-        
-        try {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return dateString;
-            
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-        } catch (e) {
-            return dateString;
-        }
-    },	
-	
+
 
    /**
 	 * Display introduction section
@@ -603,7 +583,7 @@ const CrusadeUI = {
 
             html += `
                 <tr>
-                    <td>${this.formatDate(datePlayed)}</td>
+                    <td>${formatDate(datePlayed)}</td>
                     <td>${battleName}</td>
                     <td>${outcome}</td>
                     <td class="text-center">${score}</td>
@@ -686,7 +666,7 @@ const CrusadeUI = {
         window.crusadeBattleTableData.forEach(row => {
             html += `
                 <tr>
-                    <td>${columnIndex === 0 ? this.formatDate(row[0]) : row[0]}</td>
+                    <td>${columnIndex === 0 ? formatDate(row[0]) : row[0]}</td>
                     <td>${row[1]}</td>
                     <td>${row[2]}</td>
                     <td class="text-center">${row[3]}</td>

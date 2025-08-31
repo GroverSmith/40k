@@ -390,16 +390,7 @@ class GoogleSheetsEmbed {
         this.clearCache(); // Clear cache before loading fresh data
         this.loadData();
     }
-    
-    // Create URL-friendly slug from text
-    createSlug(text) {
-        return String(text)
-            .toLowerCase()                    // Convert to lowercase
-            .trim()                          // Remove leading/trailing spaces
-            .replace(/[^\w\s-]/g, '')       // Remove special characters except spaces and hyphens
-            .replace(/[\s_-]+/g, '-')       // Replace spaces, underscores, multiple hyphens with single hyphen
-            .replace(/^-+|-+$/g, '');       // Remove leading/trailing hyphens
-    }
+
     
     // Format date to yyyy-MM-dd
     formatDate(dateValue) {
