@@ -96,16 +96,13 @@ const BattleDisplay = {
     },
 
     /**
-     * Display battles for a specific force
+     * Display battles for a specific force (with colored results)
      */
     displayBattlesForForce(battles, container, forceKey) {
         if (!battles || battles.length === 0) {
             UIHelpers.showNoData(container, 'No battles recorded yet.');
             return;
         }
-
-        console.log('Displaying battles for force:', forceKey);
-        console.log('First battle data:', battles[0]);
 
         let html = `
             <div class="table-wrapper">
@@ -124,12 +121,10 @@ const BattleDisplay = {
         `;
 
         battles.forEach(battle => {
-            // Determine if this force was Force 1 or Force 2
             const isForce1 = battle['Force 1 Key'] === forceKey;
             const opponentName = isForce1 ? battle['Force 2'] : battle['Force 1'];
             const opponentKey = isForce1 ? battle['Force 2 Key'] : battle['Force 1 Key'];
 
-            // Use unified methods
             const resultInfo = this.getBattleResult(battle, forceKey);
             const score = this.formatScore(battle, forceKey);
 
@@ -139,12 +134,22 @@ const BattleDisplay = {
             const opponentLink = this.createForceLink(opponentName, opponentKey);
             const size = battle['Battle Size'] ? `${battle['Battle Size']}pts` : '-';
 
+            // Set color styles for result
+            let resultStyle = '';
+            if (resultInfo.result === 'Victory') {
+                resultStyle = 'style="color: #069101; font-weight: bold;"'; // Green
+            } else if (resultInfo.result === 'Defeat') {
+                resultStyle = 'style="color: #cc6666; font-weight: bold;"'; // Red
+            } else {
+                resultStyle = 'style="color: #999999;"'; // Gray for draw
+            }
+
             html += `
                 <tr>
                     <td>${date}</td>
                     <td>${battleLink}</td>
                     <td>${opponentLink}</td>
-                    <td class="${resultInfo.class}">${resultInfo.result}</td>
+                    <td ${resultStyle}>${resultInfo.result}</td>
                     <td>${score}</td>
                     <td>${size}</td>
                 </tr>
@@ -173,9 +178,6 @@ const BattleDisplay = {
             return;
         }
 
-        console.log('Displaying battles for crusade');
-        console.log('First battle data:', battles[0]);
-
         let html = `
             <div class="table-wrapper">
                 <table class="data-table" id="crusade-battles-table">
@@ -183,9 +185,7 @@ const BattleDisplay = {
                         <tr>
                             <th>Date</th>
                             <th>Battle</th>
-                            <th>Force 1</th>
-                            <th>Force 2</th>
-                            <th>Result</th>
+                            <th>Outcome</th>
                             <th>Score</th>
                         </tr>
                     </thead>
@@ -196,24 +196,14 @@ const BattleDisplay = {
             const date = UIHelpers.formatDate(battle['Date Played']);
             const battleName = battle['Battle Name'] || 'Unnamed Battle';
             const battleLink = this.createBattleLink(battleName, battle.Key || battle['Key']);
-            const force1Link = this.createForceLink(battle['Force 1'], battle['Force 1 Key']);
-            const force2Link = this.createForceLink(battle['Force 2'], battle['Force 2 Key']);
-
-            let resultText = 'Draw';
-            if (battle['Victor'] && battle['Victor'] !== 'Draw') {
-                resultText = `${battle['Victor']} Victory`;
-            }
-
-            // Use unified score method
             const score = this.formatScore(battle);
+            const outcome = this.formatOutcome(battle);
 
             html += `
                 <tr>
                     <td>${date}</td>
                     <td>${battleLink}</td>
-                    <td>${force1Link}</td>
-                    <td>${force2Link}</td>
-                    <td>${resultText}</td>
+                    <td>${outcome}</td>
                     <td>${score}</td>
                 </tr>
             `;
@@ -361,7 +351,37 @@ const BattleDisplay = {
     },
 
     /**
-     * Display recent battles table
+     * Format outcome text for battle display
+     */
+    formatOutcome(battle) {
+        const force1 = battle['Force 1'] || battle['Player 1'];
+        const force2 = battle['Force 2'] || battle['Player 2'];
+        const force1Key = battle['Force 1 Key'];
+        const force2Key = battle['Force 2 Key'];
+        const victorKey = battle['Victor Force Key'];
+
+        if (victorKey === 'Draw') {
+            const force1Link = this.createForceLink(force1, force1Key);
+            const force2Link = this.createForceLink(force2, force2Key);
+            return `${force1Link} draws ${force2Link}`;
+        } else if (victorKey === force1Key) {
+            const winnerLink = this.createForceLink(force1, force1Key);
+            const loserLink = this.createForceLink(force2, force2Key);
+            return `${winnerLink} defeats ${loserLink}`;
+        } else if (victorKey === force2Key) {
+            const winnerLink = this.createForceLink(force2, force2Key);
+            const loserLink = this.createForceLink(force1, force1Key);
+            return `${winnerLink} defeats ${loserLink}`;
+        } else {
+            // Fallback if no victor determined
+            const force1Link = this.createForceLink(force1, force1Key);
+            const force2Link = this.createForceLink(force2, force2Key);
+            return `${force1Link} vs ${force2Link}`;
+        }
+    },
+
+    /**
+     * Display recent battles table (homepage)
      */
     displayRecentBattles(battles, container) {
         if (!battles || battles.length === 0) {
@@ -375,8 +395,8 @@ const BattleDisplay = {
                     <tr>
                         <th>Date</th>
                         <th>Battle Name</th>
-                        <th>Forces</th>
-                        <th>Result</th>
+                        <th>Outcome</th>
+                        <th>Score</th>
                         <th>Size</th>
                     </tr>
                 </thead>
@@ -384,26 +404,18 @@ const BattleDisplay = {
         `;
 
         battles.forEach(battle => {
-            // Now using object properties instead of array indices
             const date = UIHelpers.formatDate(battle['Date Played']);
             const battleName = battle['Battle Name'] || 'Unnamed Battle';
-            const force1 = battle['Force 1'] || battle['Player 1'];
-            const force2 = battle['Force 2'] || battle['Player 2'];
             const size = battle['Battle Size'] ? `${battle['Battle Size']}pts` : '-';
-
-            // Use unified score method - now all data is in object format
             const score = this.formatScore(battle);
-
-            // Create links
+            const outcome = this.formatOutcome(battle);
             const battleLink = this.createBattleLink(battleName, battle.Key);
-            const force1Link = this.createForceLink(force1, battle['Force 1 Key']);
-            const force2Link = this.createForceLink(force2, battle['Force 2 Key']);
 
             html += `
                 <tr>
                     <td>${date}</td>
                     <td>${battleLink}</td>
-                    <td>${force1Link} vs ${force2Link}</td>
+                    <td>${outcome}</td>
                     <td>${score}</td>
                     <td>${size}</td>
                 </tr>
