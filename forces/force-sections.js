@@ -11,7 +11,7 @@ const ForceSections = {
         if (section) {
             section.style.display = 'block';
             if (window.BattleDisplay) {
-                await BattleDisplay.loadAndDisplayForForce(forceData.key, 'battle-history-content');
+                await BattleDisplay.loadForForce(forceData.key, 'battle-history-content');
             }
 
             // Update stats separately

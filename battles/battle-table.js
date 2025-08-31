@@ -4,37 +4,69 @@
 
 const BattleDisplay = {
     /**
-     * Get scores from battle data - now always object format
+     * Resolve relative path based on current location
+     */
+    getRelativePath(targetDir) {
+        const currentPath = window.location.pathname;
+
+        // Map of current directory to target paths
+        const pathMap = {
+            'battles': { battles: '', forces: '../forces/', crusades: '../crusades/' },
+            'forces': { battles: '../battles/', forces: '', crusades: '../crusades/' },
+            'crusades': { battles: '../battles/', forces: '../forces/', crusades: '' },
+            'default': { battles: 'battles/', forces: 'forces/', crusades: 'crusades/' }
+        };
+
+        // Determine current directory
+        let currentDir = 'default';
+        if (currentPath.includes('/battles/')) currentDir = 'battles';
+        else if (currentPath.includes('/forces/')) currentDir = 'forces';
+        else if (currentPath.includes('/crusades/')) currentDir = 'crusades';
+
+        return pathMap[currentDir][targetDir];
+    },
+
+    /**
+     * Create a hyperlinked battle name
+     */
+    createBattleLink(battleName, battleKey) {
+        if (!battleKey) return battleName || 'Unnamed Battle';
+        const path = this.getRelativePath('battles');
+        return `<a href="${path}battle-details.html?key=${encodeURIComponent(battleKey)}">${battleName}</a>`;
+    },
+
+    /**
+     * Create a hyperlinked force name
+     */
+    createForceLink(forceName, forceKey) {
+        if (!forceKey) return forceName || 'Unknown Force';
+        const path = this.getRelativePath('forces');
+        return `<a href="${path}force-details.html?key=${encodeURIComponent(forceKey)}">${forceName}</a>`;
+    },
+
+    /**
+     * Get scores from battle data
      */
     getScores(battle) {
-        // All responses now return objects with normalized headers
-        const player1Score = battle['Player 1 Score'];
-        const player2Score = battle['Player 2 Score'];
-
         return {
-            player1: parseInt(player1Score) || 0,
-            player2: parseInt(player2Score) || 0
+            player1: parseInt(battle['Player 1 Score']) || 0,
+            player2: parseInt(battle['Player 2 Score']) || 0
         };
     },
 
     /**
-     * Format score display consistently
+     * Format score display
      */
     formatScore(battle, forceKey = null) {
         const scores = this.getScores(battle);
 
-        // If we have a forceKey, determine which score belongs to this force
         if (forceKey) {
             const isForce1 = battle['Force 1 Key'] === forceKey;
-
-            if (isForce1) {
-                return `${scores.player1}-${scores.player2}`;
-            } else {
-                return `${scores.player2}-${scores.player1}`;
-            }
+            return isForce1 ?
+                `${scores.player1}-${scores.player2}` :
+                `${scores.player2}-${scores.player1}`;
         }
 
-        // Default format (no specific force perspective)
         return `${scores.player1}-${scores.player2}`;
     },
 
@@ -54,171 +86,26 @@ const BattleDisplay = {
     },
 
     /**
-     * Create a hyperlinked battle name
+     * Format outcome text for battle display
      */
-    createBattleLink(battleName, battleKey) {
-        if (!battleKey) return battleName || 'Unnamed Battle';
+    formatOutcome(battle) {
+        const force1 = battle['Force 1'] || battle['Player 1'];
+        const force2 = battle['Force 2'] || battle['Player 2'];
+        const force1Key = battle['Force 1 Key'];
+        const force2Key = battle['Force 2 Key'];
+        const victorKey = battle['Victor Force Key'];
 
-        // Determine the correct path based on current location
-        let path = '';
-        if (window.location.pathname.includes('/battles/')) {
-            path = ''; // Same directory
-        } else if (window.location.pathname.includes('/forces/')) {
-            path = '../battles/';
-        } else if (window.location.pathname.includes('/crusades/')) {
-            path = '../battles/';
+        const force1Link = this.createForceLink(force1, force1Key);
+        const force2Link = this.createForceLink(force2, force2Key);
+
+        if (victorKey === 'Draw') {
+            return `${force1Link} draws ${force2Link}`;
+        } else if (victorKey === force1Key) {
+            return `${force1Link} defeats ${force2Link}`;
+        } else if (victorKey === force2Key) {
+            return `${force2Link} defeats ${force1Link}`;
         } else {
-            path = 'battles/'; // From root/index
-        }
-
-        return `<a href="${path}battle-details.html?key=${encodeURIComponent(battleKey)}">${battleName}</a>`;
-    },
-
-    /**
-     * Create a hyperlinked force name
-     */
-    createForceLink(forceName, forceKey) {
-        if (!forceKey) return forceName || 'Unknown Force';
-
-        // Determine the correct path based on current location
-        let path = '';
-        if (window.location.pathname.includes('/forces/')) {
-            path = ''; // Same directory
-        } else if (window.location.pathname.includes('/battles/')) {
-            path = '../forces/';
-        } else if (window.location.pathname.includes('/crusades/')) {
-            path = '../forces/';
-        } else {
-            path = 'forces/'; // From root/index
-        }
-
-        return `<a href="${path}force-details.html?key=${encodeURIComponent(forceKey)}">${forceName}</a>`;
-    },
-
-    /**
-     * Display battles for a specific force (with colored results)
-     */
-    displayBattlesForForce(battles, container, forceKey) {
-        if (!battles || battles.length === 0) {
-            UIHelpers.showNoData(container, 'No battles recorded yet.');
-            return;
-        }
-
-        let html = `
-            <div class="table-wrapper">
-                <table class="data-table" id="force-battles-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Battle</th>
-                            <th>Opponent</th>
-                            <th>Result</th>
-                            <th>Score</th>
-                            <th>Size</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
-
-        battles.forEach(battle => {
-            const isForce1 = battle['Force 1 Key'] === forceKey;
-            const opponentName = isForce1 ? battle['Force 2'] : battle['Force 1'];
-            const opponentKey = isForce1 ? battle['Force 2 Key'] : battle['Force 1 Key'];
-
-            const resultInfo = this.getBattleResult(battle, forceKey);
-            const score = this.formatScore(battle, forceKey);
-
-            const date = UIHelpers.formatDate(battle['Date Played']);
-            const battleName = battle['Battle Name'] || 'Unnamed Battle';
-            const battleLink = this.createBattleLink(battleName, battle.Key || battle['Key']);
-            const opponentLink = this.createForceLink(opponentName, opponentKey);
-            const size = battle['Battle Size'] ? `${battle['Battle Size']}pts` : '-';
-
-            // Set color styles for result
-            let resultStyle = '';
-            if (resultInfo.result === 'Victory') {
-                resultStyle = 'style="color: #069101; font-weight: bold;"'; // Green
-            } else if (resultInfo.result === 'Defeat') {
-                resultStyle = 'style="color: #cc6666; font-weight: bold;"'; // Red
-            } else {
-                resultStyle = 'style="color: #999999;"'; // Gray for draw
-            }
-
-            html += `
-                <tr>
-                    <td>${date}</td>
-                    <td>${battleLink}</td>
-                    <td>${opponentLink}</td>
-                    <td ${resultStyle}>${resultInfo.result}</td>
-                    <td>${score}</td>
-                    <td>${size}</td>
-                </tr>
-            `;
-        });
-
-        html += `
-                    </tbody>
-                </table>
-            </div>
-        `;
-
-        container.innerHTML = html;
-
-        if (window.UIHelpers && UIHelpers.makeSortable) {
-            UIHelpers.makeSortable('force-battles-table');
-        }
-    },
-
-    /**
-     * Display battles for a crusade
-     */
-    displayBattlesForCrusade(battles, container) {
-        if (!battles || battles.length === 0) {
-            UIHelpers.showNoData(container, 'No battles recorded yet for this crusade.');
-            return;
-        }
-
-        let html = `
-            <div class="table-wrapper">
-                <table class="data-table" id="crusade-battles-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Battle</th>
-                            <th>Outcome</th>
-                            <th>Score</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
-
-        battles.forEach(battle => {
-            const date = UIHelpers.formatDate(battle['Date Played']);
-            const battleName = battle['Battle Name'] || 'Unnamed Battle';
-            const battleLink = this.createBattleLink(battleName, battle.Key || battle['Key']);
-            const score = this.formatScore(battle);
-            const outcome = this.formatOutcome(battle);
-
-            html += `
-                <tr>
-                    <td>${date}</td>
-                    <td>${battleLink}</td>
-                    <td>${outcome}</td>
-                    <td>${score}</td>
-                </tr>
-            `;
-        });
-
-        html += `
-                    </tbody>
-                </table>
-            </div>
-        `;
-
-        container.innerHTML = html;
-
-        if (window.UIHelpers && UIHelpers.makeSortable) {
-            UIHelpers.makeSortable('crusade-battles-table');
+            return `${force1Link} vs ${force2Link}`;
         }
     },
 
@@ -231,157 +118,160 @@ const BattleDisplay = {
             throw new Error('Battle history not configured');
         }
 
-        let fetchUrl, cacheKey;
+        const fetchConfigs = {
+            'force': {
+                url: `${battleUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`,
+                cacheKey: `force_${key}`
+            },
+            'crusade': {
+                url: `${battleUrl}?action=crusade-battles&crusadeKey=${encodeURIComponent(key)}`,
+                cacheKey: `crusade_${key}`
+            },
+            'recent': {
+                url: battleUrl,
+                cacheKey: 'recent'
+            }
+        };
 
-        switch(action) {
-            case 'force':
-                fetchUrl = `${battleUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`;
-                cacheKey = `force_${key}`;
-                break;
-            case 'crusade':
-                fetchUrl = `${battleUrl}?action=crusade-battles&crusadeKey=${encodeURIComponent(key)}`;
-                cacheKey = `crusade_${key}`;
-                break;
-            case 'recent':
-                fetchUrl = battleUrl;
-                cacheKey = 'recent';
-                break;
-            default:
-                fetchUrl = battleUrl;
-                cacheKey = 'all';
-        }
-
-        return await CacheManager.fetchWithCache(fetchUrl, 'battleHistory', cacheKey);
+        const config = fetchConfigs[action] || fetchConfigs['recent'];
+        return await CacheManager.fetchWithCache(config.url, 'battleHistory', config.cacheKey);
     },
 
     /**
-     * Load and display battles for a force
+     * Generic loader for battles
      */
-    async loadAndDisplayForForce(forceKey, containerId) {
+    async loadBattles(type, key, containerId) {
         const container = typeof containerId === 'string' ?
             document.getElementById(containerId) : containerId;
 
         if (!container) return;
 
         try {
-            UIHelpers.showLoading(container, 'Loading battle history...');
-
-            const result = await this.fetchBattles('force', forceKey);
-            console.log('Force battles API response:', result);
+            UIHelpers.showLoading(container, 'Loading battles...');
+            const result = await this.fetchBattles(type, key);
 
             if (result.success && result.battles && result.battles.length > 0) {
-                const battles = result.battles.sort((a, b) =>
+                const sortedBattles = result.battles.sort((a, b) =>
                     new Date(b['Date Played'] || 0) - new Date(a['Date Played'] || 0)
                 );
-                this.displayBattlesForForce(battles, container, forceKey);
+
+                // Call appropriate display method
+                switch(type) {
+                    case 'force':
+                        this.displayBattlesForForce(sortedBattles, container, key);
+                        break;
+                    case 'crusade':
+                        this.displayBattlesForCrusade(sortedBattles, container);
+                        break;
+                    case 'recent':
+                        this.displayRecentBattles(sortedBattles.slice(0, 10), container);
+                        break;
+                }
             } else {
-                UIHelpers.showNoData(container, 'No battles recorded yet for this force.');
+                const messages = {
+                    'force': 'No battles recorded yet for this force.',
+                    'crusade': 'No battles recorded yet for this crusade.',
+                    'recent': 'No battles recorded yet.'
+                };
+                UIHelpers.showNoData(container, messages[type]);
             }
         } catch (error) {
-            console.error('Error loading battles:', error);
-            UIHelpers.showError(container, 'Failed to load battle history.');
-        }
-    },
-
-    /**
-     * Load and display battles for a crusade
-     */
-    async loadForCrusade(crusadeKey, containerId) {
-        const container = document.getElementById(containerId);
-        if (!container) {
-            console.error('Container not found:', containerId);
-            return;
-        }
-
-        try {
-            UIHelpers.showLoading(container, 'Loading battles...');
-
-            const battleUrl = CrusadeConfig.getSheetUrl('battleHistory');
-            const fetchUrl = `${battleUrl}?action=crusade-battles&crusadeKey=${encodeURIComponent(crusadeKey)}`;
-
-            const result = await CacheManager.fetchWithCache(
-                fetchUrl,
-                'battleHistory',
-                `crusade_${crusadeKey}`
-            );
-
-            console.log('Crusade battles API response:', result);
-
-            if (result.success && result.battles && result.battles.length > 0) {
-                this.displayBattlesForCrusade(result.battles, container);
-            } else {
-                UIHelpers.showNoData(container, 'No battles recorded yet for this crusade.');
-            }
-        } catch (error) {
-            console.error('Error in loadForCrusade:', error);
+            console.error(`Error loading ${type} battles:`, error);
             UIHelpers.showError(container, 'Failed to load battles.');
         }
     },
 
+    /**
+     * Load battles for a force
+     */
+    async loadForForce(forceKey, containerId) {
+        return this.loadBattles('force', forceKey, containerId);
+    },
 
     /**
-     * Load and display recent battles (homepage)
+     * Load battles for a crusade
+     */
+    async loadForCrusade(crusadeKey, containerId) {
+        return this.loadBattles('crusade', crusadeKey, containerId);
+    },
+
+    /**
+     * Load recent battles (homepage)
      */
     async loadRecentBattles() {
         const container = document.getElementById('recent-battles-container');
-        if (!container) return;
-
-        try {
-            UIHelpers.showLoading(container, 'Loading recent battles...');
-
-            const response = await this.fetchBattles('recent');
-
-            // Now expecting JSON response with battles array
-            if (!response || !response.success || !response.battles || response.battles.length === 0) {
-                UIHelpers.showNoData(container, 'No battles recorded yet.');
-                return;
-            }
-
-            // Sort by date and limit to 10 most recent
-            const recentBattles = response.battles
-                .sort((a, b) => new Date(b['Date Played'] || 0) - new Date(a['Date Played'] || 0))
-                .slice(0, 10);
-
-            this.displayRecentBattles(recentBattles, container);
-
-        } catch (error) {
-            console.error('Error loading recent battles:', error);
-            UIHelpers.showError(container, 'Failed to load recent battles.');
+        if (container) {
+            return this.loadBattles('recent', null, container);
         }
     },
 
     /**
-     * Format outcome text for battle display
+     * Display battles for a specific force
      */
-    formatOutcome(battle) {
-        const force1 = battle['Force 1'] || battle['Player 1'];
-        const force2 = battle['Force 2'] || battle['Player 2'];
-        const force1Key = battle['Force 1 Key'];
-        const force2Key = battle['Force 2 Key'];
-        const victorKey = battle['Victor Force Key'];
-
-        if (victorKey === 'Draw') {
-            const force1Link = this.createForceLink(force1, force1Key);
-            const force2Link = this.createForceLink(force2, force2Key);
-            return `${force1Link} draws ${force2Link}`;
-        } else if (victorKey === force1Key) {
-            const winnerLink = this.createForceLink(force1, force1Key);
-            const loserLink = this.createForceLink(force2, force2Key);
-            return `${winnerLink} defeats ${loserLink}`;
-        } else if (victorKey === force2Key) {
-            const winnerLink = this.createForceLink(force2, force2Key);
-            const loserLink = this.createForceLink(force1, force1Key);
-            return `${winnerLink} defeats ${loserLink}`;
-        } else {
-            // Fallback if no victor determined
-            const force1Link = this.createForceLink(force1, force1Key);
-            const force2Link = this.createForceLink(force2, force2Key);
-            return `${force1Link} vs ${force2Link}`;
+    displayBattlesForForce(battles, container, forceKey) {
+        if (!battles || battles.length === 0) {
+            UIHelpers.showNoData(container, 'No battles recorded yet.');
+            return;
         }
+
+        const rows = battles.map(battle => {
+            const isForce1 = battle['Force 1 Key'] === forceKey;
+            const opponentName = isForce1 ? battle['Force 2'] : battle['Force 1'];
+            const opponentKey = isForce1 ? battle['Force 2 Key'] : battle['Force 1 Key'];
+
+            const resultInfo = this.getBattleResult(battle, forceKey);
+            const resultStyle = this.getResultStyle(resultInfo.result);
+
+            return `
+                <tr>
+                    <td>${UIHelpers.formatDate(battle['Date Played'])}</td>
+                    <td>${this.createBattleLink(battle['Battle Name'] || 'Unnamed Battle', battle.Key)}</td>
+                    <td>${this.createForceLink(opponentName, opponentKey)}</td>
+                    <td style="${resultStyle}">${resultInfo.result}</td>
+                    <td>${this.formatScore(battle, forceKey)}</td>
+                    <td>${battle['Battle Size'] ? `${battle['Battle Size']}pts` : '-'}</td>
+                </tr>
+            `;
+        }).join('');
+
+        container.innerHTML = this.wrapInTable(
+            ['Date', 'Battle', 'Opponent', 'Result', 'Score', 'Size'],
+            rows,
+            'force-battles-table'
+        );
+
+        this.makeSortable('force-battles-table');
     },
 
     /**
-     * Display recent battles table (homepage)
+     * Display battles for a crusade
+     */
+    displayBattlesForCrusade(battles, container) {
+        if (!battles || battles.length === 0) {
+            UIHelpers.showNoData(container, 'No battles recorded yet for this crusade.');
+            return;
+        }
+
+        const rows = battles.map(battle => `
+            <tr>
+                <td>${UIHelpers.formatDate(battle['Date Played'])}</td>
+                <td>${this.createBattleLink(battle['Battle Name'] || 'Unnamed Battle', battle.Key)}</td>
+                <td>${this.formatOutcome(battle)}</td>
+                <td>${this.formatScore(battle)}</td>
+            </tr>
+        `).join('');
+
+        container.innerHTML = this.wrapInTable(
+            ['Date', 'Battle', 'Outcome', 'Score'],
+            rows,
+            'crusade-battles-table'
+        );
+
+        this.makeSortable('crusade-battles-table');
+    },
+
+    /**
+     * Display recent battles (homepage)
      */
     displayRecentBattles(battles, container) {
         if (!battles || battles.length === 0) {
@@ -389,45 +279,62 @@ const BattleDisplay = {
             return;
         }
 
-        let html = `
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Battle Name</th>
-                        <th>Outcome</th>
-                        <th>Score</th>
-                        <th>Size</th>
-                    </tr>
-                </thead>
-                <tbody>
+        const rows = battles.map(battle => `
+            <tr>
+                <td>${UIHelpers.formatDate(battle['Date Played'])}</td>
+                <td>${this.createBattleLink(battle['Battle Name'] || 'Unnamed Battle', battle.Key)}</td>
+                <td>${this.formatOutcome(battle)}</td>
+                <td>${this.formatScore(battle)}</td>
+                <td>${battle['Battle Size'] ? `${battle['Battle Size']}pts` : '-'}</td>
+            </tr>
+        `).join('');
+
+        container.innerHTML = this.wrapInTable(
+            ['Date', 'Battle Name', 'Outcome', 'Score', 'Size'],
+            rows,
+            'recent-battles-table'
+        );
+    },
+
+    /**
+     * Get result style string
+     */
+    getResultStyle(result) {
+        const styles = {
+            'Victory': 'color: #069101; font-weight: bold;',
+            'Defeat': 'color: #cc6666; font-weight: bold;',
+            'Draw': 'color: #999999;'
+        };
+        return styles[result] || '';
+    },
+
+    /**
+     * Wrap rows in table HTML
+     */
+    wrapInTable(headers, rowsHtml, tableId = '') {
+        return `
+            <div class="table-wrapper">
+                <table class="data-table" ${tableId ? `id="${tableId}"` : ''}>
+                    <thead>
+                        <tr>
+                            ${headers.map(h => `<th>${h}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+            </div>
         `;
+    },
 
-        battles.forEach(battle => {
-            const date = UIHelpers.formatDate(battle['Date Played']);
-            const battleName = battle['Battle Name'] || 'Unnamed Battle';
-            const size = battle['Battle Size'] ? `${battle['Battle Size']}pts` : '-';
-            const score = this.formatScore(battle);
-            const outcome = this.formatOutcome(battle);
-            const battleLink = this.createBattleLink(battleName, battle.Key);
-
-            html += `
-                <tr>
-                    <td>${date}</td>
-                    <td>${battleLink}</td>
-                    <td>${outcome}</td>
-                    <td>${score}</td>
-                    <td>${size}</td>
-                </tr>
-            `;
-        });
-
-        html += `
-                </tbody>
-            </table>
-        `;
-
-        container.innerHTML = html;
+    /**
+     * Make table sortable if UIHelpers available
+     */
+    makeSortable(tableId) {
+        if (window.UIHelpers && UIHelpers.makeSortable) {
+            UIHelpers.makeSortable(tableId);
+        }
     },
 
     /**
@@ -449,7 +356,9 @@ const BattleDisplay = {
         battles.forEach(battle => {
             const victorForceKey = battle['Victor Force Key'];
             const isForce1 = battle['Force 1 Key'] === forceKey;
+            const scores = this.getScores(battle);
 
+            // Update win/loss/draw counts
             if (victorForceKey === 'Draw') {
                 stats.draws++;
             } else if (victorForceKey === forceKey) {
@@ -458,18 +367,12 @@ const BattleDisplay = {
                 stats.defeats++;
             }
 
-            // Handle both lowercase and uppercase 'score'/'Score'
-            const player1Score = battle['Player 1 score'] || battle['Player 1 Score'];
-            const player2Score = battle['Player 2 score'] || battle['Player 2 Score'];
-
-            const forceScore = parseInt(isForce1 ? player1Score : player2Score) || 0;
-            const opponentScore = parseInt(isForce1 ? player2Score : player1Score) || 0;
-
-            stats.totalPointsScored += forceScore;
-            stats.totalPointsConceded += opponentScore;
+            // Update score totals
+            stats.totalPointsScored += isForce1 ? scores.player1 : scores.player2;
+            stats.totalPointsConceded += isForce1 ? scores.player2 : scores.player1;
         });
 
-        // Calculate averages and win rate
+        // Calculate averages
         if (stats.totalBattles > 0) {
             stats.winRate = Math.round((stats.victories / stats.totalBattles) * 100);
             stats.averagePointsScored = Math.round(stats.totalPointsScored / stats.totalBattles);
@@ -480,14 +383,10 @@ const BattleDisplay = {
     }
 };
 
-// Initialize when DOM is ready - but check if the container exists first
+// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    // Only try to load recent battles if we're on a page that has the container
     if (document.getElementById('recent-battles-container')) {
-        // Use a small delay to ensure all other modules are loaded
-        setTimeout(() => {
-            BattleDisplay.loadRecentBattles();
-        }, 100);
+        setTimeout(() => BattleDisplay.loadRecentBattles(), 100);
     }
 });
 
