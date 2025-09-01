@@ -200,11 +200,22 @@ class CrusadeDetailsController {
         const section = document.getElementById('battle-history-section');
         if (section) {
             section.style.display = 'block';
-            if (window.BattleDisplay) {
-                await BattleDisplay.loadForCrusade(this.crusadeKey, 'battle-history-content');
+            if (window.BattleTable) {
+                await BattleTable.loadForCrusade(this.crusadeKey, 'battle-history-content');
             }
         }
     }
+
+    async loadCampaignStories() {
+        const section = document.getElementById('campaign-stories-section');
+        if (section) {
+            section.style.display = 'block';
+            if (window.StoryTable) {
+                await StoryTable.loadForCrusade(this.crusadeKey, 'campaign-stories-content');
+            }
+        }
+    }
+
 
 
     formatText(text) {

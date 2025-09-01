@@ -10,12 +10,12 @@ const ForceSections = {
         const section = document.getElementById('battle-history-section');
         if (section) {
             section.style.display = 'block';
-            if (window.BattleDisplay) {
-                await BattleDisplay.loadForForce(forceData.key, 'battle-history-content');
+            if (window.BattleTable) {
+                await BattleTable.loadForForce(forceData.key, 'battle-history-content');
             }
 
             // Update stats separately
-            const result = await BattleDisplay.fetchBattles('force', forceData.key);
+            const result = await BattleTable.fetchBattles('force', forceData.key);
             if (result.success && result.battles) {
                 ForceUI.updateStatsFromBattles(result.battles, forceData.key);
             }
@@ -81,8 +81,8 @@ const ForceSections = {
         const section = document.getElementById('stories-section');
         if (section) {
             section.style.display = 'block';
-            if (window.StoryDisplay) {
-                await StoryDisplay.loadForForce(forceKey, 'stories-sheet');
+            if (window.StoryTable) {
+                await StoryTable.loadForForce(forceKey, 'stories-sheet');
             }
         }
     },

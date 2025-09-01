@@ -180,12 +180,12 @@ const ForceUI = {
     // In force-ui.js, update the displayBattles method:
 
     displayBattles(battles, container, forceKey) {
-        // Delegate to BattleDisplay module
-        if (window.BattleDisplay) {
-            BattleDisplay.displayBattlesForForce(battles, container, forceKey);
+        // Delegate to BattleTable module
+        if (window.BattleTable) {
+            BattleTable.displayBattlesForForce(battles, container, forceKey);
             this.showSection('battle-history-section');
         } else {
-            console.error('BattleDisplay module not loaded');
+            console.error('BattleTable module not loaded');
             this.showError(container, 'Failed to display battles');
         }
     },

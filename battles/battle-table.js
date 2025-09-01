@@ -2,7 +2,7 @@
 // Unified battle display module with integrated data fetching
 // 40k Crusade Campaign Tracker
 
-const BattleDisplay = {
+const BattleTable = {
     /**
      * Resolve relative path based on current location
      */
@@ -386,9 +386,9 @@ const BattleDisplay = {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('recent-battles-container')) {
-        setTimeout(() => BattleDisplay.loadRecentBattles(), 100);
+        setTimeout(() => BattleTable.loadRecentBattles(), 100);
     }
 });
 
 // Make globally available
-window.BattleDisplay = BattleDisplay;
+window.BattleTable = BattleTable;

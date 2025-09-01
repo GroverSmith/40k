@@ -2,7 +2,7 @@
 // Unified story display module with integrated data fetching
 // 40k Crusade Campaign Tracker
 
-const StoryDisplay = {
+const StoryTable = {
     /**
      * Resolve relative path based on current location
      */
@@ -341,9 +341,9 @@ const StoryDisplay = {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('recent-stories-container')) {
-        setTimeout(() => StoryDisplay.loadRecentStories(), 100);
+        setTimeout(() => StoryTable.loadRecentStories(), 100);
     }
 });
 
 // Make globally available
-window.StoryDisplay = StoryDisplay;
+window.StoryTable = StoryTable;
