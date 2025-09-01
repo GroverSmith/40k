@@ -82,7 +82,7 @@ const ForceSections = {
         if (section) {
             section.style.display = 'block';
             if (window.StoryDisplay) {
-                await StoryDisplay.loadAndDisplayForForce(forceKey, 'stories-sheet');
+                await StoryDisplay.loadForForce(forceKey, 'stories-sheet');
             }
         }
     },

@@ -206,24 +206,6 @@ class CrusadeDetailsController {
         }
     }
 
-    async loadCampaignStories() {
-        const section = document.getElementById('campaign-stories-section');
-        if (section) {
-            section.style.display = 'block';
-            if (window.StoryDisplay) {
-                await StoryDisplay.loadForCrusade(this.crusadeKey, 'campaign-stories-content');
-            }
-        }
-    }
-
-    displayCampaignStories(stories, container) {
-            if (window.StoryDisplay) {
-                StoryDisplay.displayCrusadeStories(stories, container);
-            } else {
-                console.error('StoryDisplay module not loaded');
-                container.innerHTML = '<p class="error-message">Failed to display stories.</p>';
-            }
-        }
 
     formatText(text) {
         if (!text) return '';
