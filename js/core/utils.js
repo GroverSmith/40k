@@ -535,6 +535,31 @@ const CoreUtils = {
                 return false;
             }
         }
+    },
+
+    path: {
+
+        /**
+         * Resolve relative path based on current location
+         */
+        getRelativePath(targetDir) {
+            const currentPath = window.location.pathname;
+            const pathMap = {
+                'battles': { battles: '', forces: '../forces/', crusades: '../crusades/', stories: '../stories/' },
+                'forces': { battles: '../battles/', forces: '', crusades: '../crusades/', stories: '../stories/' },
+                'crusades': { battles: '../battles/', forces: '../forces/', crusades: '', stories: '../stories/' },
+                'stories': { battles: '../battles/', forces: '../forces/', crusades: '../crusades/', stories: '' },
+                'default': { battles: 'battles/', forces: 'forces/', crusades: 'crusades/', stories: 'stories/' }
+            };
+
+            let currentDir = 'default';
+            ['battles', 'forces', 'crusades', 'stories'].forEach(dir => {
+                if (currentPath.includes(`/${dir}/`)) currentDir = dir;
+            });
+
+            return pathMap[currentDir][targetDir];
+        }
+
     }
 };
 
@@ -546,6 +571,7 @@ window.escapeHtml = CoreUtils.strings.escapeHtml;
 window.formatDate = CoreUtils.dates.toDisplay;
 window.createSlug = CoreUtils.strings.createSlug;
 window.showNotification = CoreUtils.notifications.show;
+window.getRelativePath = CoreUtils.path.getRelativePath;
 
 // Export for modules
 if (typeof module !== 'undefined' && module.exports) {

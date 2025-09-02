@@ -1,44 +1,23 @@
 // filename: battles/battle-table.js
-// Unified battle display module with integrated data fetching
+// Battle display module using TableBase utility
 // 40k Crusade Campaign Tracker
 
 const BattleTable = {
-    /**
-     * Resolve relative path based on current location
-     */
-    getRelativePath(targetDir) {
-        const currentPath = window.location.pathname;
-        const pathMap = {
-            'battles': { battles: '', forces: '../forces/', crusades: '../crusades/' },
-            'forces': { battles: '../battles/', forces: '', crusades: '../crusades/' },
-            'crusades': { battles: '../battles/', forces: '../forces/', crusades: '' },
-            'default': { battles: 'battles/', forces: 'forces/', crusades: 'crusades/' }
-        };
 
-        let currentDir = 'default';
-        if (currentPath.includes('/battles/')) currentDir = 'battles';
-        else if (currentPath.includes('/forces/')) currentDir = 'forces';
-        else if (currentPath.includes('/crusades/')) currentDir = 'crusades';
 
-        return pathMap[currentDir][targetDir];
+    // Simplified link creators using base
+    createBattleLink(name, key) {
+        return TableBase.createEntityLink('battle', name || 'Unnamed Battle', key);
+    },
+    createForceLink(name, key) {
+        return TableBase.createEntityLink('force', name || 'Unknown Force', key);
+    },
+    createCrusadeLink(name, key) {
+        return TableBase.createEntityLink('crusade', name || 'Unknown Crusade', key);
     },
 
     /**
-     * Create hyperlinks for various entities
-     */
-    createLink(type, name, key) {
-        if (!key) return name || `Unknown ${type}`;
-        const paths = { battle: 'battles', force: 'forces', crusade: 'crusades' };
-        const path = this.getRelativePath(paths[type]);
-        return `<a href="${path}${type}-details.html?key=${encodeURIComponent(key)}">${name}</a>`;
-    },
-
-    createBattleLink(name, key) { return this.createLink('battle', name || 'Unnamed Battle', key); },
-    createForceLink(name, key) { return this.createLink('force', name || 'Unknown Force', key); },
-    createCrusadeLink(name, key) { return this.createLink('crusade', name || 'Unknown Crusade', key); },
-
-    /**
-     * Get scores from battle data
+     * Battle-specific methods
      */
     getScores(battle) {
         return {
@@ -47,29 +26,22 @@ const BattleTable = {
         };
     },
 
-    /**
-     * Format score display
-     */
     formatScore(battle, forceKey = null) {
         const scores = this.getScores(battle);
-        if (!forceKey) return `${scores.player1}-${scores.player2}`;
+        if (!forceKey) return TableBase.formatters.score(scores.player1, scores.player2);
 
         const isForce1 = battle['Force 1 Key'] === forceKey;
-        return isForce1 ? `${scores.player1}-${scores.player2}` : `${scores.player2}-${scores.player1}`;
+        return isForce1 ?
+            TableBase.formatters.score(scores.player1, scores.player2) :
+            TableBase.formatters.score(scores.player2, scores.player1);
     },
 
-    /**
-     * Get battle result for a specific force
-     */
     getBattleResult(battle, forceKey) {
         const victorKey = battle['Victor Force Key'];
         if (victorKey === 'Draw') return 'Draw';
         return victorKey === forceKey ? 'Victory' : 'Defeat';
     },
 
-    /**
-     * Format outcome text for battle display
-     */
     formatOutcome(battle) {
         const force1Link = this.createForceLink(battle['Force 1'] || battle['Player 1'], battle['Force 1 Key']);
         const force2Link = this.createForceLink(battle['Force 2'] || battle['Player 2'], battle['Force 2 Key']);
@@ -82,114 +54,109 @@ const BattleTable = {
     },
 
     /**
-     * Build a battle row with specified columns
+     * Build battle row
      */
-    buildBattleRow(battle, columns, forceKey = null) {
-        const date = UIHelpers.formatDate(battle['Date Played']);
-        const battleLink = this.createBattleLink(battle['Battle Name'], battle.Key);
-        const size = battle['Battle Size'] ? `${battle['Battle Size']}pts` : '-';
-
-        // Build column data map
+    buildBattleRow(battle, columns, context = {}) {
         const columnData = {
-            date,
-            battle: battleLink,
+            date: TableBase.formatters.date(battle['Date Played']),
+            battle: this.createBattleLink(battle['Battle Name'], battle.Key),
             outcome: this.formatOutcome(battle),
-            score: this.formatScore(battle, forceKey),
-            size
+            score: this.formatScore(battle, context.forceKey),
+            size: TableBase.formatters.points(battle['Battle Size'])
         };
 
         // Add force-specific columns if needed
-        if (forceKey) {
-            const isForce1 = battle['Force 1 Key'] === forceKey;
+        if (context.forceKey) {
+            const isForce1 = battle['Force 1 Key'] === context.forceKey;
             columnData.opponent = this.createForceLink(
                 isForce1 ? battle['Force 2'] : battle['Force 1'],
                 isForce1 ? battle['Force 2 Key'] : battle['Force 1 Key']
             );
 
-            const result = this.getBattleResult(battle, forceKey);
-            const styles = {
-                'Victory': 'color: #069101; font-weight: bold;',
-                'Defeat': 'color: #cc6666; font-weight: bold;',
-                'Draw': 'color: #999999;'
-            };
-            columnData.result = `<span style="${styles[result] || ''}">${result}</span>`;
+            const result = this.getBattleResult(battle, context.forceKey);
+            columnData.result = `<span style="${TableBase.styles[result.toLowerCase()] || ''}">${result}</span>`;
         }
 
-        const cells = columns.map(col => `<td>${columnData[col] || '-'}</td>`).join('');
-        return `<tr>${cells}</tr>`;
+        return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
     },
 
     /**
-     * Fetch battles with caching
+     * Fetch battles configuration
      */
-    async fetchBattles(action, key) {
+    getFetchConfig(type, key) {
         const battleUrl = CrusadeConfig.getSheetUrl('battleHistory');
-        if (!battleUrl) throw new Error('Battle history not configured');
-
         const configs = {
-            'force': { url: `${battleUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`, cacheKey: `force_${key}` },
-            'crusade': { url: `${battleUrl}?action=crusade-battles&crusadeKey=${encodeURIComponent(key)}`, cacheKey: `crusade_${key}` },
-            'recent': { url: battleUrl, cacheKey: 'recent' }
+            'force': {
+                url: `${battleUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`,
+                cacheType: 'battleHistory',
+                cacheKey: `force_${key}`,
+                dataKey: 'battles',
+                loadingMessage: 'Loading battles...'
+            },
+            'crusade': {
+                url: `${battleUrl}?action=crusade-battles&crusadeKey=${encodeURIComponent(key)}`,
+                cacheType: 'battleHistory',
+                cacheKey: `crusade_${key}`,
+                dataKey: 'battles',
+                loadingMessage: 'Loading battles...'
+            },
+            'recent': {
+                url: battleUrl,
+                cacheType: 'battleHistory',
+                cacheKey: 'recent',
+                dataKey: 'battles',
+                loadingMessage: 'Loading recent battles...'
+            }
         };
-
-        const config = configs[action] || configs['recent'];
-        return await CacheManager.fetchWithCache(config.url, 'battleHistory', config.cacheKey);
+        return configs[type] || configs['recent'];
     },
 
     /**
-     * Generic loader for battles
+     * Get display configuration
+     */
+    getDisplayConfig(type, key) {
+        const configs = {
+            'force': {
+                columns: ['date', 'battle', 'opponent', 'result', 'score', 'size'],
+                headers: ['Date', 'Battle', 'Opponent', 'Result', 'Score', 'Size'],
+                tableId: 'force-battles-table',
+                context: { forceKey: key },
+                buildRow: this.buildBattleRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('Date Played'),
+                noDataMessage: 'No battles recorded yet for this force.',
+                errorMessage: 'Failed to load battles.'
+            },
+            'crusade': {
+                columns: ['date', 'battle', 'outcome', 'score'],
+                headers: ['Date', 'Battle', 'Outcome', 'Score'],
+                tableId: 'crusade-battles-table',
+                buildRow: this.buildBattleRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('Date Played'),
+                noDataMessage: 'No battles recorded yet for this crusade.',
+                errorMessage: 'Failed to load battles.'
+            },
+            'recent': {
+                columns: ['date', 'battle', 'outcome', 'score', 'size'],
+                headers: ['Date', 'Battle Name', 'Outcome', 'Score', 'Size'],
+                tableId: 'recent-battles-table',
+                buildRow: this.buildBattleRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('Date Played'),
+                limit: 10,
+                noDataMessage: 'No battles recorded yet.',
+                errorMessage: 'Failed to load recent battles.'
+            }
+        };
+        return configs[type] || configs['recent'];
+    },
+
+    /**
+     * Generic loader using base utility
      */
     async loadBattles(type, key, containerId) {
-        const container = typeof containerId === 'string' ?
-            document.getElementById(containerId) : containerId;
-        if (!container) return;
+        const fetchConfig = this.getFetchConfig(type, key);
+        const displayConfig = this.getDisplayConfig(type, key);
 
-        try {
-            UIHelpers.showLoading(container, 'Loading battles...');
-            const result = await this.fetchBattles(type, key);
-
-            if (result.success && result.battles?.length > 0) {
-                const battles = result.battles.sort((a, b) =>
-                    new Date(b['Date Played'] || 0) - new Date(a['Date Played'] || 0)
-                );
-
-                // Display configuration for each type
-                const configs = {
-                    'force': {
-                        columns: ['date', 'battle', 'opponent', 'result', 'score', 'size'],
-                        headers: ['Date', 'Battle', 'Opponent', 'Result', 'Score', 'Size'],
-                        tableId: 'force-battles-table',
-                        forceKey: key
-                    },
-                    'crusade': {
-                        columns: ['date', 'battle', 'outcome', 'score'],
-                        headers: ['Date', 'Battle', 'Outcome', 'Score'],
-                        tableId: 'crusade-battles-table'
-                    },
-                    'recent': {
-                        columns: ['date', 'battle', 'outcome', 'score', 'size'],
-                        headers: ['Date', 'Battle Name', 'Outcome', 'Score', 'Size'],
-                        tableId: 'recent-battles-table',
-                        limit: 10
-                    }
-                };
-
-                const config = configs[type] || configs['recent'];
-                const displayBattles = config.limit ? battles.slice(0, config.limit) : battles;
-
-                this.displayBattles(displayBattles, container, config);
-            } else {
-                const messages = {
-                    'force': 'No battles recorded yet for this force.',
-                    'crusade': 'No battles recorded yet for this crusade.',
-                    'recent': 'No battles recorded yet.'
-                };
-                UIHelpers.showNoData(container, messages[type] || 'No battles found.');
-            }
-        } catch (error) {
-            console.error(`Error loading ${type} battles:`, error);
-            UIHelpers.showError(container, 'Failed to load battles.');
-        }
+        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId);
     },
 
     // Convenience methods
@@ -207,32 +174,11 @@ const BattleTable = {
     },
 
     /**
-     * Display battles in a table
+     * Fetch battles (for external use, like calculating stats)
      */
-    displayBattles(battles, container, config) {
-        if (!battles?.length) {
-            UIHelpers.showNoData(container, 'No battles recorded yet.');
-            return;
-        }
-
-        const rows = battles.map(battle =>
-            this.buildBattleRow(battle, config.columns, config.forceKey)
-        ).join('');
-
-        container.innerHTML = `
-            <div class="table-wrapper">
-                <table class="data-table" ${config.tableId ? `id="${config.tableId}"` : ''}>
-                    <thead>
-                        <tr>${config.headers.map(h => `<th>${h}</th>`).join('')}</tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>
-            </div>
-        `;
-
-        if (config.tableId && window.UIHelpers?.makeSortable) {
-            UIHelpers.makeSortable(config.tableId);
-        }
+    async fetchBattles(action, key) {
+        const config = this.getFetchConfig(action, key);
+        return await TableBase.fetchWithCache(config.url, config.cacheType, config.cacheKey);
     },
 
     /**
@@ -270,12 +216,8 @@ const BattleTable = {
     }
 };
 
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('recent-battles-container')) {
-        setTimeout(() => BattleTable.loadRecentBattles(), 100);
-    }
-});
+// Initialize auto-loading
+TableBase.initAutoLoad('recent-battles-container', () => BattleTable.loadRecentBattles());
 
 // Make globally available
 window.BattleTable = BattleTable;
