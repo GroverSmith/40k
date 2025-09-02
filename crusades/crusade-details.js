@@ -181,17 +181,17 @@ class CrusadeDetailsController {
         const section = document.getElementById('participating-forces-section');
         if (section) {
             section.style.display = 'block';
-            if (window.ForceDisplay) {
-                await ForceDisplay.loadForCrusade(this.crusadeKey, 'participating-forces-content');
+            if (window.ForceTable) {
+                await ForceTable.loadForCrusade(this.crusadeKey, 'participating-forces-content');
             }
         }
     }
 
     displayParticipatingForces(forces, container) {
-        if (window.ForceDisplay) {
-            ForceDisplay.displayCrusadeForces(forces, container);
+        if (window.ForceTable) {
+            ForceTable.displayCrusadeForces(forces, container);
         } else {
-            console.error('ForceDisplay module not loaded');
+            console.error('ForceTable module not loaded');
             container.innerHTML = '<p class="error-message">Failed to display forces.</p>';
         }
     }
