@@ -93,32 +93,24 @@ document.addEventListener('DOMContentLoaded', function() {
             };
         }
 
-        // Initialize Stories sheet
-        const storiesUrl = CrusadeConfig.getSheetUrl('stories');
-        if (storiesUrl) {
-            SheetsManager.embed('stories-sheet',
-                storiesUrl,
-                {
-                    maxHeight: '350px',
-                    showStats: true,
-                    sortable: true,
-                    linkColumn: 6,
-                    linkDataColumn: 0,
-                    linkPattern: 'stories/view-story.html?key={slug}',
-                    cacheMinutes: CrusadeConfig.getCacheConfig('default'),
-                    hideColumns: [0, 1, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-                    dateColumns: [1],
-                    columnNames: {
-                        1: 'Date',
-                        2: 'Author',
-                        5: 'Type',
-                        6: 'Title'
-                    },
-                    maxRows: 10
-                }
-            );
+        // Initialize Stories display using StoryTable
+        const storiesContainer = document.getElementById('stories-sheet');
+        if (storiesContainer) {
+            // Use StoryTable for consistent story display
+            if (window.StoryTable) {
+                StoryTable.loadStories('recent', null, storiesContainer);
+            } else {
+                // Fallback if StoryTable not loaded yet
+                setTimeout(() => {
+                    if (window.StoryTable) {
+                        StoryTable.loadStories('recent', null, storiesContainer);
+                    } else {
+                        console.warn('StoryTable module not available');
+                        storiesContainer.innerHTML = '<p class="no-data">📚 Stories will be displayed here.</p>';
+                    }
+                }, 100);
+            }
         }
-
         console.log('Sheets initialized successfully');
 
     } catch (error) {

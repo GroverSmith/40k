@@ -244,22 +244,26 @@ const StoryTable = {
             const author = story.Author || story['User Name'] || 'Unknown';
             const forceName = story['Force Name'] || '';
             const forceKey = story['Force Key'] || '';
+            const storyType = story['Story Type'] || story.Type || '';
 
             return `
                 <tr>
                     <td>${date}</td>
                     <td>${this.createStoryLink(title, story.Key)}</td>
                     <td>${author}</td>
+                    <td>${storyType}</td>
                     <td>${forceName ? this.createForceLink(forceName, forceKey) : '-'}</td>
                 </tr>
             `;
         }).join('');
 
         container.innerHTML = this.wrapInTable(
-            ['Date', 'Title', 'Author', 'Force'],
+            ['Date', 'Title', 'Author', 'Type', 'Force'],
             rows,
             'recent-stories-table'
         );
+
+        this.makeSortable('recent-stories-table');
     },
 
     /**
