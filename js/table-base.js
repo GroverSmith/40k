@@ -97,7 +97,10 @@ const TableBase = {
         if (typeof container === 'string') {
             container = document.getElementById(container);
         }
-        if (!container) return;
+        if (!container) {
+            console.error('Container not found:', containerId);
+            return;
+        }
 
         try {
             UIHelpers.showLoading(container, fetchConfig.loadingMessage || 'Loading...');

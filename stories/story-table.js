@@ -118,8 +118,7 @@ const StoryTable = {
      */
     async loadStories(type, key, containerId) {
         const fetchConfig = this.getFetchConfig(type, key);
-        const displayConfig = this.getDisplayConfig(type);
-
+        const displayConfig = this.getDisplayConfig(type, key);
         await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId);
     },
 

@@ -237,16 +237,16 @@ const CacheManager = {
      */
     getCacheKey(dataType, identifier) {
         const config = this.cacheConfig[dataType];
-        
+
         if (!config) {
-            // Generic URL cache
-            return `cache_url_${btoa(identifier).replace(/[^a-zA-Z0-9]/g, '').substring(0, 20)}`;
+            // Don't truncate - use full identifier with dataType prefix
+            return `cache_${dataType}_${identifier}`;
         }
-        
+
         if (identifier) {
             return `${config.key || config.prefix}_${identifier}`;
         }
-        
+
         return config.key || `${config.prefix}${dataType}`;
     },
     
