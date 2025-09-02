@@ -1,150 +1,105 @@
-// filename: units/unit-table.js
-// Unit display module using TableBase utility
+// filename: armies/army-table.js
+// Army List display module using TableBase utility
 // 40k Crusade Campaign Tracker
 
-const UnitTable = {
+const ArmyTable = {
     // Use base utility for common methods
     getRelativePath: (dir) => TableBase.getRelativePath(dir),
 
     // Simplified link creators using base
-    createUnitLink(name, key) {
-        return TableBase.createEntityLink('unit', name || 'Unnamed Unit', key);
+    createArmyLink(name, key) {
+        return TableBase.createEntityLink('army', name || 'Unnamed Army List', key);
     },
     createForceLink(name, key) {
         return TableBase.createEntityLink('force', name || 'Unknown Force', key);
     },
 
     /**
-     * Calculate rank from XP
+     * Format points value
      */
-    calculateRank(xp) {
-        const xpValue = parseInt(xp) || 0;
-        if (xpValue >= 51) return 'Legendary';
-        if (xpValue >= 31) return 'Heroic';
-        if (xpValue >= 16) return 'Veteran';
-        if (xpValue >= 6) return 'Blooded';
-        return 'Battle-ready';
+    formatPoints(points) {
+        if (!points) return '-';
+        const value = parseInt(points);
+        if (isNaN(value)) return points;
+        return value.toLocaleString() + ' pts';
     },
 
     /**
-     * Format unit badges
+     * Build army list row
      */
-    formatBadges(unit) {
-        let badges = '';
-        if (unit['Battle Traits'] || unit['Battle Honours']) badges += '<span class="badge trait">T</span>';
-        if (unit['Battle Scars']) badges += '<span class="badge scar">S</span>';
-        if (unit['Relics'] || unit['Equipment']) badges += '<span class="badge relic">R</span>';
-        return badges;
-    },
-
-    /**
-     * Build unit row
-     */
-    buildUnitRow(unit, columns, context = {}) {
-        const rank = unit.Rank || this.calculateRank(unit.XP || unit['Experience Points']);
-        const rankClass = `rank-${rank.toLowerCase().replace(/[^a-z]/g, '')}`;
+    buildArmyRow(army, columns, context = {}) {
+        const armyKey = army.Key || army.key || army.id;
+        const armyName = army['Army Name'] || 'Unnamed List';
+        const forceName = army['Force Name'] || army.forceName || '';
+        const forceKey = army['Force Key'] || army.forceKey || '';
+        const faction = army.Faction || army.faction || 'Unknown';
+        const detachment = army.Detachment || army.detachment || '-';
+        const points = army['Points Value'] || army.pointsValue || '';
+        const mfmVersion = army['MFM Version'] || army.mfmVersion || '-';
+        const userName = army['User Name'] || army.userName || 'Unknown';
+        const timestamp = army.Timestamp || army.timestamp;
+        const notes = army.Notes || army.notes || '';
 
         const columnData = {
-            name: `<strong>${unit.Name || unit['Unit Name'] || 'Unnamed'}</strong> ${this.formatBadges(unit)}`,
-            datasheet: unit['Data Sheet'] || unit['Unit Type'] || '-',
-            role: unit['Battlefield Role'] || unit.Role || '-',
-            points: unit.Points || unit['Points Cost'] || '0',
-            power: unit['Power Level'] || unit.PL || '-',
-            cp: unit['Crusade Points'] || unit.CP || '0',
-            xp: unit.XP || unit['Experience Points'] || '0',
-            rank: `<span class="rank-badge ${rankClass}">${rank}</span>`,
-            battles: unit['Battle Count'] || unit.Battles || '0',
-            kills: unit['Kill Count'] || unit.Kills || '0',
-            deaths: unit['Times Killed'] || unit.Deaths || '0',
-            force: unit['Force Name'] ? this.createForceLink(unit['Force Name'], unit['Force Key']) : '-'
+            army: this.createArmyLink(armyName, armyKey),
+            force: forceName ? this.createForceLink(forceName, forceKey) : '-',
+            player: userName,
+            faction: faction,
+            detachment: detachment,
+            points: this.formatPoints(points),
+            mfm: mfmVersion,
+            date: TableBase.formatters.date(timestamp),
+            notes: notes ? `<span title="${notes.replace(/"/g, '&quot;')}" style="cursor: help;">📝</span>` : ''
         };
-
-        // Add unit link if displaying across forces
-        if (context.showUnitLinks && unit.Key) {
-            columnData.name = this.createUnitLink(columnData.name, unit.Key);
-        }
 
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
     },
 
     /**
-     * Build detailed unit display (for force details page)
-     */
-    buildDetailedUnitRow(unit, columns) {
-        const baseRow = this.buildUnitRow(unit, columns);
-
-        // Check if unit has additional details to show
-        const hasDetails = unit.Description || unit['Notable History'] ||
-                          unit.Wargear || unit.Enhancements ||
-                          unit['Battle Traits'] || unit['Battle Scars'];
-
-        if (!hasDetails) return baseRow;
-
-        // Add expandable details row
-        let detailsHtml = '<tr class="unit-details-row"><td colspan="' + columns.length + '">';
-        detailsHtml += '<div class="unit-details">';
-
-        if (unit.Wargear) {
-            detailsHtml += `<div class="detail-item"><strong>Wargear:</strong> ${unit.Wargear}</div>`;
-        }
-        if (unit.Enhancements) {
-            detailsHtml += `<div class="detail-item"><strong>Enhancements:</strong> ${unit.Enhancements}</div>`;
-        }
-        if (unit['Battle Traits'] || unit['Battle Honours']) {
-            const traits = unit['Battle Traits'] || unit['Battle Honours'];
-            detailsHtml += `<div class="detail-item"><strong>Battle Traits:</strong> ${traits}</div>`;
-        }
-        if (unit['Battle Scars']) {
-            detailsHtml += `<div class="detail-item"><strong>Battle Scars:</strong> ${unit['Battle Scars']}</div>`;
-        }
-        if (unit.Description) {
-            detailsHtml += `<div class="detail-item"><strong>Description:</strong> ${unit.Description}</div>`;
-        }
-        if (unit['Notable History']) {
-            detailsHtml += `<div class="detail-item"><strong>Notable History:</strong> ${unit['Notable History']}</div>`;
-        }
-
-        detailsHtml += '</div></td></tr>';
-
-        return baseRow + detailsHtml;
-    },
-
-    /**
-     * Fetch units configuration
+     * Fetch army lists configuration
      */
     getFetchConfig(type, key) {
-        const unitsUrl = CrusadeConfig.getSheetUrl('units');
+        const armyUrl = CrusadeConfig.getSheetUrl('armyLists');
+
         const configs = {
             'force': {
-                url: `${unitsUrl}?action=force-units&forceKey=${encodeURIComponent(key)}`,
-                cacheType: 'units',
+                url: `${armyUrl}?action=force-lists&forceKey=${encodeURIComponent(key)}`,
+                cacheType: 'armyLists',
                 cacheKey: `force_${key}`,
-                dataKey: 'units',
-                loadingMessage: 'Loading units...'
+                dataKey: 'data',
+                loadingMessage: 'Loading army lists...'
             },
             'crusade': {
-                url: `${unitsUrl}?action=crusade-units&crusadeKey=${encodeURIComponent(key)}`,
-                cacheType: 'units',
+                url: `${armyUrl}?action=crusade-lists&crusadeKey=${encodeURIComponent(key)}`,
+                cacheType: 'armyLists',
                 cacheKey: `crusade_${key}`,
-                dataKey: 'units',
-                loadingMessage: 'Loading crusade units...'
+                dataKey: 'data',
+                loadingMessage: 'Loading crusade army lists...'
             },
             'user': {
-                url: `${unitsUrl}?action=user-units&userKey=${encodeURIComponent(key)}`,
-                cacheType: 'units',
+                url: `${armyUrl}?action=user-lists&userKey=${encodeURIComponent(key)}`,
+                cacheType: 'armyLists',
                 cacheKey: `user_${key}`,
-                dataKey: 'units',
-                loadingMessage: 'Loading user units...'
+                dataKey: 'data',
+                loadingMessage: 'Loading user army lists...'
+            },
+            'recent': {
+                url: `${armyUrl}?action=recent&limit=20`,
+                cacheType: 'armyLists',
+                cacheKey: 'recent',
+                dataKey: 'data',
+                loadingMessage: 'Loading recent army lists...'
             },
             'all': {
-                url: unitsUrl,
-                cacheType: 'units',
+                url: armyUrl,
+                cacheType: 'armyLists',
                 cacheKey: 'all',
                 dataKey: null, // Raw array format
-                loadingMessage: 'Loading all units...'
+                loadingMessage: 'Loading all army lists...'
             }
         };
-        return configs[type] || configs['force'];
+
+        return configs[type] || configs['all'];
     },
 
     /**
@@ -153,185 +108,135 @@ const UnitTable = {
     getDisplayConfig(type, key) {
         const configs = {
             'force': {
-                columns: ['name', 'datasheet', 'role', 'points', 'cp', 'xp', 'rank', 'battles', 'kills'],
-                headers: ['Name', 'Data Sheet', 'Role', 'Points', 'CP', 'XP', 'Rank', 'Battles', 'Kills'],
-                tableId: 'force-units-table',
-                buildRow: this.buildDetailedUnitRow.bind(this),
-                sortBy: (a, b) => (b.XP || 0) - (a.XP || 0), // Sort by XP descending
-                noDataMessage: 'No units registered for this force yet.',
-                errorMessage: 'Failed to load units.',
-                groupBy: 'role' // Group by battlefield role
+                // Matching the columns from the old ForceUI.displayArmyLists implementation
+                columns: ['army', 'detachment', 'mfm', 'points', 'date'],
+                headers: ['Army Name', 'Detachment', 'MFM Version', 'Points', 'Date Added'],
+                tableId: 'army-lists-table',
+                buildRow: this.buildArmyRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('Timestamp'),
+                noDataMessage: 'No army lists uploaded for this force yet.',
+                errorMessage: 'Failed to load army lists.'
             },
             'crusade': {
-                columns: ['name', 'force', 'datasheet', 'points', 'xp', 'rank'],
-                headers: ['Name', 'Force', 'Data Sheet', 'Points', 'XP', 'Rank'],
-                tableId: 'crusade-units-table',
-                buildRow: this.buildUnitRow.bind(this),
-                context: { showUnitLinks: true },
-                sortBy: (a, b) => (b.XP || 0) - (a.XP || 0),
-                noDataMessage: 'No units in this crusade yet.',
-                errorMessage: 'Failed to load crusade units.'
+                columns: ['army', 'force', 'player', 'points', 'date'],
+                headers: ['Army List', 'Force', 'Player', 'Points', 'Date'],
+                tableId: 'crusade-armies-table',
+                buildRow: this.buildArmyRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('Timestamp'),
+                noDataMessage: 'No army lists in this crusade yet.',
+                errorMessage: 'Failed to load crusade army lists.'
             },
             'user': {
-                columns: ['name', 'force', 'datasheet', 'points', 'xp', 'rank', 'battles'],
-                headers: ['Name', 'Force', 'Type', 'Points', 'XP', 'Rank', 'Battles'],
-                tableId: 'user-units-table',
-                buildRow: this.buildUnitRow.bind(this),
-                context: { showUnitLinks: true },
-                sortBy: (a, b) => (b.XP || 0) - (a.XP || 0),
-                noDataMessage: 'No units created by this user yet.',
-                errorMessage: 'Failed to load user units.'
+                columns: ['army', 'force', 'faction', 'points', 'date'],
+                headers: ['Army List', 'Force', 'Faction', 'Points', 'Date'],
+                tableId: 'user-armies-table',
+                buildRow: this.buildArmyRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('Timestamp'),
+                noDataMessage: 'No army lists created by this user yet.',
+                errorMessage: 'Failed to load user army lists.'
+            },
+            'recent': {
+                columns: ['army', 'force', 'player', 'faction', 'points', 'date'],
+                headers: ['Army List', 'Force', 'Player', 'Faction', 'Points', 'Date'],
+                tableId: 'recent-armies-table',
+                buildRow: this.buildArmyRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('Timestamp'),
+                limit: 20,
+                noDataMessage: 'No army lists uploaded yet.',
+                errorMessage: 'Failed to load recent army lists.'
             },
             'all': {
-                columns: ['name', 'force', 'datasheet', 'points', 'xp', 'rank'],
-                headers: ['Name', 'Force', 'Type', 'Points', 'XP', 'Rank'],
-                tableId: 'all-units-table',
-                buildRow: this.buildUnitRow.bind(this),
-                context: { showUnitLinks: true },
-                sortBy: (a, b) => (b.XP || 0) - (a.XP || 0),
-                noDataMessage: 'No units registered yet.',
-                errorMessage: 'Failed to load units.'
+                columns: ['army', 'force', 'player', 'faction', 'points', 'date'],
+                headers: ['Army List', 'Force', 'Player', 'Faction', 'Points', 'Date'],
+                tableId: 'all-armies-table',
+                buildRow: this.buildArmyRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('Timestamp'),
+                noDataMessage: 'No army lists in the system yet.',
+                errorMessage: 'Failed to load army lists.'
             }
         };
-        return configs[type] || configs['force'];
+
+        return configs[type] || configs['all'];
     },
 
     /**
-     * Custom display for grouped units (by role)
+     * Generic loader using base utility - using standard table display for all contexts
      */
-    async displayGroupedUnits(units, container, config) {
-        if (!units?.length) {
-            UIHelpers.showNoData(container, config.noDataMessage);
-            return;
-        }
-
-        // Group units by battlefield role
-        const unitsByRole = {};
-        units.forEach(unit => {
-            const role = unit['Battlefield Role'] || unit.Role || 'Other';
-            if (!unitsByRole[role]) unitsByRole[role] = [];
-            unitsByRole[role].push(unit);
-        });
-
-        // Build grouped display
-        let html = '<div class="units-container">';
-
-        const roleOrder = ['HQ', 'Troops', 'Elites', 'Fast Attack', 'Heavy Support', 'Flyer', 'Dedicated Transport', 'Other'];
-        roleOrder.forEach(role => {
-            if (!unitsByRole[role]) return;
-
-            const roleUnits = unitsByRole[role];
-            html += `
-                <div class="unit-role-group">
-                    <h4 class="unit-role-header">${role} (${roleUnits.length})</h4>
-                    <table class="data-table units-table">
-                        <thead>
-                            <tr>${config.headers.map(h => `<th>${h}</th>`).join('')}</tr>
-                        </thead>
-                        <tbody>
-                            ${roleUnits.map(unit =>
-                                config.buildRow(unit, config.columns, config.context || {})
-                            ).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        });
-
-        // Add summary statistics
-        const stats = this.calculateUnitStats(units);
-        html += `
-            <div class="units-summary">
-                <strong>Force Summary:</strong>
-                ${stats.totalUnits} units |
-                ${stats.totalPoints} points |
-                ${stats.totalCP} Crusade Points |
-                ${stats.totalKills} total kills
-            </div>
-        `;
-
-        html += '</div>';
-        container.innerHTML = html;
-    },
-
-    /**
-     * Generic loader using base utility
-     */
-    async loadUnits(type, key, containerId) {
+    async loadArmyLists(type, key, containerId) {
         const fetchConfig = this.getFetchConfig(type, key);
         const displayConfig = this.getDisplayConfig(type, key);
 
-        // Use custom grouped display for force units
-        if (type === 'force' && displayConfig.groupBy) {
-            const container = typeof containerId === 'string' ?
-                document.getElementById(containerId) : containerId;
-            if (!container) return;
-
-            try {
-                UIHelpers.showLoading(container, fetchConfig.loadingMessage);
-                const result = await TableBase.fetchWithCache(
-                    fetchConfig.url,
-                    fetchConfig.cacheType,
-                    fetchConfig.cacheKey
-                );
-
-                const units = TableBase.processResponseData(result, fetchConfig.dataKey);
-
-                if (units.length > 0) {
-                    units.sort(displayConfig.sortBy);
-                    await this.displayGroupedUnits(units, container, displayConfig);
-                } else {
-                    UIHelpers.showNoData(container, displayConfig.noDataMessage);
-                }
-            } catch (error) {
-                console.error('Error loading units:', error);
-                UIHelpers.showError(container, displayConfig.errorMessage);
-            }
-        } else {
-            // Use standard table display
-            await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId);
-        }
+        // Use standard table display for all contexts (including force)
+        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId);
     },
 
     // Convenience methods
     async loadForForce(forceKey, containerId) {
-        return this.loadUnits('force', forceKey, containerId);
+        return this.loadArmyLists('force', forceKey, containerId);
     },
 
     async loadForCrusade(crusadeKey, containerId) {
-        return this.loadUnits('crusade', crusadeKey, containerId);
+        return this.loadArmyLists('crusade', crusadeKey, containerId);
     },
 
     async loadForUser(userKey, containerId) {
-        return this.loadUnits('user', userKey, containerId);
+        return this.loadArmyLists('user', userKey, containerId);
     },
 
-    async loadAllUnits(containerId) {
-        return this.loadUnits('all', null, containerId);
+    async loadRecentArmyLists(containerId) {
+        return this.loadArmyLists('recent', null, containerId);
+    },
+
+    async loadAllArmyLists(containerId) {
+        return this.loadArmyLists('all', null, containerId);
     },
 
     /**
-     * Calculate unit statistics
+     * Fetch army lists (for external use)
      */
-    calculateUnitStats(units) {
-        return {
-            totalUnits: units.length,
-            totalPoints: units.reduce((sum, unit) =>
-                sum + (parseInt(unit.Points || unit['Points Cost']) || 0), 0),
-            totalCP: units.reduce((sum, unit) =>
-                sum + (parseInt(unit['Crusade Points'] || unit.CP) || 0), 0),
-            totalKills: units.reduce((sum, unit) =>
-                sum + (parseInt(unit['Kill Count'] || unit.Kills) || 0), 0),
-            totalXP: units.reduce((sum, unit) =>
-                sum + (parseInt(unit.XP || unit['Experience Points']) || 0), 0)
+    async fetchArmyLists(action, key) {
+        const config = this.getFetchConfig(action, key);
+        return await TableBase.fetchWithCache(config.url, config.cacheType, config.cacheKey);
+    },
+
+    /**
+     * Calculate army list statistics
+     */
+    calculateArmyStats(armyLists) {
+        const stats = {
+            totalLists: armyLists.length,
+            totalPoints: 0,
+            averagePoints: 0,
+            factionBreakdown: {},
+            detachmentBreakdown: {}
         };
+
+        armyLists.forEach(army => {
+            const points = parseInt(army['Points Value'] || army.pointsValue || 0);
+            stats.totalPoints += points;
+
+            const faction = army.Faction || army.faction || 'Unknown';
+            stats.factionBreakdown[faction] = (stats.factionBreakdown[faction] || 0) + 1;
+
+            const detachment = army.Detachment || army.detachment || 'None';
+            stats.detachmentBreakdown[detachment] = (stats.detachmentBreakdown[detachment] || 0) + 1;
+        });
+
+        if (stats.totalLists > 0) {
+            stats.averagePoints = Math.round(stats.totalPoints / stats.totalLists);
+        }
+
+        return stats;
     }
 };
 
+// Initialize auto-loading for pages with recent army lists
+TableBase.initAutoLoad('recent-armies-container', () => ArmyTable.loadRecentArmyLists('recent-armies-container'));
+
 // Make globally available
-window.UnitTable = UnitTable;
+window.ArmyTable = ArmyTable;
 
 // Export for modules
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = UnitTable;
+    module.exports = ArmyTable;
 }

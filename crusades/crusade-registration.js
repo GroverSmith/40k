@@ -116,7 +116,7 @@ const ForceRegistration = {
             
             
 
-			const crusadeKey = this.crusadeData;
+			const crusadeKey = this.crusadeData.Key || this.crusadeData.key || this.crusadeKey;
             
             // Prepare registration data with keys
             const registrationData = {

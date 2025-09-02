@@ -25,24 +25,18 @@ const ForceSections = {
      * Load army lists section using force key
      */
     async loadArmyLists(forceData) {
-        ForceUI.showSection('army-lists-section');
-        
-        // Use the force key to load army lists
-        const forceKey = forceData.key;
-        console.log('Loading army lists for force key:', forceKey);
-        
-        const result = await ForceData.loadArmyLists(forceKey);
-        
-        if (result.success) {
-            ForceUI.displayArmyLists(result.data, forceData.forceName, forceKey);
-        } else {
-            ForceUI.displayPlaceholder(
-                'army-lists-sheet',
-                'armyLists',
-                forceData.forceName,
-                'ðŸ"‹',
-                'will be displayed here'
-            );
+        const section = document.getElementById('army-lists-section');
+        if (section) {
+            section.style.display = 'block';
+            if (window.ArmyTable) {
+                await ArmyTable.loadForForce(forceData.key, 'army-lists-sheet');
+            } else {
+                console.error('ArmyTable module not loaded');
+                const container = document.getElementById('army-lists-sheet');
+                if (container) {
+                    container.innerHTML = '<p class="error-message">Army table module not loaded</p>';
+                }
+            }
         }
     },
 
