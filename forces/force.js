@@ -32,8 +32,8 @@ const CrusadeForceApp = {
                 ForceSections.loadBattleHistory(this.forceData),
                 ForceSections.loadArmyLists(this.forceData),
                 ForceSections.loadCharactersUnits(this.forceData.key),
-                ForceSections.loadStories(this.forceData.key),
-                ForceSections.loadForceLogs(this.forceData.key)
+                ForceSections.loadStories(this.forceData.key)
+                // Removed ForceSections.loadForceLogs as it no longer exists
             ]);
 
         } catch (error) {
