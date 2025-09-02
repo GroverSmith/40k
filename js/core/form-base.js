@@ -74,7 +74,7 @@ class BaseForm {
         const userField = this.form.querySelector('[name="userName"], #user-name');
         if (!userField) return;
 
-        const currentUser = UserStorage.getCurrentUser();
+        const currentUser = UserManager.getCurrentUser();
         if (currentUser && currentUser.name) {
             userField.value = currentUser.name;
             userField.setAttribute('title', 'Auto-populated from selected user');

@@ -4,7 +4,7 @@
 
 class ForceForm extends BaseForm {
     constructor() {
-        super('create-force-form', {
+        super('add-force-form', {
             submitUrl: CrusadeConfig.getSheetUrl('forces'),
             successMessage: 'Force created successfully!',
             errorMessage: 'Failed to create force',
@@ -138,7 +138,7 @@ class ForceForm extends BaseForm {
         const userField = document.getElementById('user-name');
         if (!userField) return;
 
-        const currentUser = UserStorage.getCurrentUser();
+        const currentUser = UserManager.getCurrentUser();
         if (currentUser && currentUser.name) {
             userField.value = currentUser.name;
             userField.readOnly = true;

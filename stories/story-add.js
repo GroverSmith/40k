@@ -42,7 +42,7 @@ class StoryForm extends BaseForm {
             forceName: urlParams.get('forceName'),
             crusadeKey: urlParams.get('crusadeKey'),
             crusadeName: urlParams.get('crusadeName'),
-            userName: urlParams.get('userName') || UserStorage.getCurrentUser()?.name || ''
+            userName: urlParams.get('userName') || UserManager.getCurrentUser()?.name || ''
         };
 
         // Pre-fill related fields if context provided
