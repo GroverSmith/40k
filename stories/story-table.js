@@ -164,32 +164,7 @@ const StoryTable = {
             return;
         }
 
-        const rows = stories.map(story => {
-            const date = UIHelpers.formatDate(story['Date Created'] || story.Timestamp);
-            const title = story.Title || 'Untitled Story';
-            const author = story.Author || story['User Name'] || 'Unknown';
-            const crusadeName = story['Crusade Name'] || '';
-            const crusadeKey = story['Crusade Key'] || '';
-            const wordCount = story['Word Count'] || this.calculateWordCount(story.Content || '');
-
-            return `
-                <tr>
-                    <td>${date}</td>
-                    <td>${this.createStoryLink(title, story.Key)}</td>
-                    <td>${author}</td>
-                    <td>${crusadeName ? this.createCrusadeLink(crusadeName, crusadeKey) : '-'}</td>
-                    <td>${wordCount} words</td>
-                </tr>
-            `;
-        }).join('');
-
-        container.innerHTML = this.wrapInTable(
-            ['Date', 'Title', 'Author', 'Crusade', 'Length'],
-            rows,
-            'force-stories-table'
-        );
-
-        this.makeSortable('force-stories-table');
+        this.displayStories(stories, container, 'force-stories-table', ['date', 'title', 'author', 'type', 'length'], ['Date', 'Title', 'Author', 'Type', 'Length']);
     },
 
     /**
@@ -201,32 +176,7 @@ const StoryTable = {
             return;
         }
 
-        const rows = stories.map(story => {
-            const date = UIHelpers.formatDate(story['Date Created'] || story.Timestamp);
-            const title = story.Title || 'Untitled Story';
-            const author = story.Author || story['User Name'] || 'Unknown';
-            const forceName = story['Force Name'] || '';
-            const forceKey = story['Force Key'] || '';
-            const wordCount = story['Word Count'] || this.calculateWordCount(story.Content || '');
-
-            return `
-                <tr>
-                    <td>${date}</td>
-                    <td>${this.createStoryLink(title, story.Key)}</td>
-                    <td>${author}</td>
-                    <td>${forceName ? this.createForceLink(forceName, forceKey) : '-'}</td>
-                    <td>${wordCount} words</td>
-                </tr>
-            `;
-        }).join('');
-
-        container.innerHTML = this.wrapInTable(
-            ['Date', 'Title', 'Author', 'Force', 'Length'],
-            rows,
-            'crusade-stories-table'
-        );
-
-        this.makeSortable('crusade-stories-table');
+        this.displayStories(stories, container, 'crusade-stories-table', ['date', 'title', 'author', 'type', 'length'], ['Date', 'Title', 'Author', 'Type', 'Length']);
     },
 
     /**
@@ -238,32 +188,7 @@ const StoryTable = {
             return;
         }
 
-        const rows = stories.map(story => {
-            const date = UIHelpers.formatDate(story['Date Created'] || story.Timestamp);
-            const title = story.Title || 'Untitled Story';
-            const author = story.Author || story['User Name'] || 'Unknown';
-            const forceName = story['Force Name'] || '';
-            const forceKey = story['Force Key'] || '';
-            const storyType = story['Story Type'] || story.Type || '';
-
-            return `
-                <tr>
-                    <td>${date}</td>
-                    <td>${this.createStoryLink(title, story.Key)}</td>
-                    <td>${author}</td>
-                    <td>${storyType}</td>
-                    <td>${forceName ? this.createForceLink(forceName, forceKey) : '-'}</td>
-                </tr>
-            `;
-        }).join('');
-
-        container.innerHTML = this.wrapInTable(
-            ['Date', 'Title', 'Author', 'Type', 'Force'],
-            rows,
-            'recent-stories-table'
-        );
-
-        this.makeSortable('recent-stories-table');
+        this.displayStories(stories, container, 'recent-stories-table', ['date', 'title', 'author', 'type', 'length'], ['Date', 'Title', 'Author', 'Type', 'Length']);
     },
 
     /**
@@ -275,33 +200,7 @@ const StoryTable = {
             return;
         }
 
-        const rows = stories.map(story => {
-            const date = UIHelpers.formatDate(story['Date Created'] || story.Timestamp);
-            const title = story.Title || 'Untitled Story';
-            const author = story.Author || story['User Name'] || 'Unknown';
-            const forceName = story['Force Name'] || '';
-            const forceKey = story['Force Key'] || '';
-            const crusadeName = story['Crusade Name'] || '';
-            const crusadeKey = story['Crusade Key'] || '';
-
-            return `
-                <tr>
-                    <td>${date}</td>
-                    <td>${this.createStoryLink(title, story.Key)}</td>
-                    <td>${author}</td>
-                    <td>${forceName ? this.createForceLink(forceName, forceKey) : '-'}</td>
-                    <td>${crusadeName ? this.createCrusadeLink(crusadeName, crusadeKey) : '-'}</td>
-                </tr>
-            `;
-        }).join('');
-
-        container.innerHTML = this.wrapInTable(
-            ['Date', 'Title', 'Author', 'Force', 'Crusade'],
-            rows,
-            'all-stories-table'
-        );
-
-        this.makeSortable('all-stories-table');
+        this.displayStories(stories, container, 'all-stories-table', ['date', 'title', 'author', 'type', 'length'], ['Date', 'Title', 'Author', 'Type', 'Length']);
     },
 
     /**
@@ -310,6 +209,63 @@ const StoryTable = {
     calculateWordCount(content) {
         if (!content) return 0;
         return content.trim().split(/\s+/).filter(word => word.length > 0).length;
+    },
+
+    /**
+     * Build a standard story row with common columns
+     */
+    buildStoryRow(story, customColumns = null) {
+        const date = UIHelpers.formatDate(story['Date Created'] || story.Timestamp);
+        const title = story.Title || 'Untitled Story';
+        const author = story.Author || story['User Name'] || 'Unknown';
+        const storyType = story['Story Type'] || story.Type || '';
+        const wordCount = story['Word Count'] || this.calculateWordCount(story.Content || '');
+
+        // Default columns: Date, Title, Author, Type, Length
+        if (!customColumns) {
+            return `
+                <tr>
+                    <td>${date}</td>
+                    <td>${this.createStoryLink(title, story.Key)}</td>
+                    <td>${author}</td>
+                    <td>${storyType}</td>
+                    <td>${wordCount} words</td>
+                </tr>
+            `;
+        }
+
+        // Custom column builder for future extensibility
+        const columnData = {
+            date: date,
+            title: this.createStoryLink(title, story.Key),
+            author: author,
+            type: storyType,
+            length: `${wordCount} words`,
+            force: story['Force Name'] ? this.createForceLink(story['Force Name'], story['Force Key']) : '-',
+            crusade: story['Crusade Name'] ? this.createCrusadeLink(story['Crusade Name'], story['Crusade Key']) : '-'
+        };
+
+        const cells = customColumns.map(col => `<td>${columnData[col] || '-'}</td>`).join('');
+        return `<tr>${cells}</tr>`;
+    },
+
+    /**
+     * Generic story display method
+     */
+    displayStories(stories, container, tableId, customColumns = null, customHeaders = null) {
+        if (!stories || stories.length === 0) {
+            UIHelpers.showNoData(container, 'No stories written yet.');
+            return;
+        }
+
+        // Default headers: Date, Title, Author, Type, Length
+        const headers = customHeaders || ['Date', 'Title', 'Author', 'Type', 'Length'];
+        const columns = customColumns || ['date', 'title', 'author', 'type', 'length'];
+
+        const rows = stories.map(story => this.buildStoryRow(story, columns)).join('');
+
+        container.innerHTML = this.wrapInTable(headers, rows, tableId);
+        this.makeSortable(tableId);
     },
 
     /**
