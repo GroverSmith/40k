@@ -24,11 +24,8 @@ class StoryForm extends BaseForm {
         // Load context from URL
         this.loadContext();
 
-        // Setup character counter for story content
-        FormUtilities.setupCharacterCounter('story-content', 'char-count', {
-            maxCharacters: this.config.maxCharacters,
-            minCharacters: this.config.minCharacters
-        });
+        // Setup character counters for each story text field
+        this.setupStoryCharacterCounters();
 
         // Setup related entity selection
         await this.setupRelatedEntities();
@@ -169,16 +166,92 @@ class StoryForm extends BaseForm {
         const formData = super.gatherFormData();
 
         // Generate story key
-        const userKey = KeyUtils.generateUserKey(formData.authorName || formData.userName);
-        const storyKey = KeyUtils.generateStoryKey(userKey, formData.storyTitle);
+        const userKey = KeyUtils.generateUserKey(formData.userName || 'Unknown');
+        const storyKey = KeyUtils.generateStoryKey(userKey, formData.title || 'Untitled');
 
         return {
             key: storyKey,
+            userKey: userKey,
             ...formData,
-            relatedForce: formData.relatedForce || this.contextData.forceKey || '',
-            relatedCrusade: formData.relatedCrusade || this.contextData.crusadeKey || '',
-            tags: formData.tags || ''
+            storyText1: document.getElementById('story-text-1')?.value || '',
+            storyText2: document.getElementById('story-text-2')?.value || '',
+            storyText3: document.getElementById('story-text-3')?.value || '',
+            forceKey: document.getElementById('force-select')?.value || '',
+            crusadeKey: document.getElementById('crusade-select')?.value || '',
+            storyType: document.getElementById('story-type')?.value || '',
+            title: document.getElementById('title')?.value || '',
+            imperialDate: document.getElementById('imperial-date')?.value || '',
+            image1: document.getElementById('image-1')?.value || '',
+            image2: document.getElementById('image-2')?.value || '',
+            image3: document.getElementById('image-3')?.value || '',
+            audioLink: document.getElementById('audio-link')?.value || '',
+            textLink: document.getElementById('text-link')?.value || ''
         };
+    }
+
+    setupStoryCharacterCounters() {
+        // Story Text 1
+        const textarea1 = document.getElementById('story-text-1');
+        const counter1 = document.getElementById('count-1');
+        if (textarea1 && counter1) {
+            const updateCount1 = () => {
+                const length = textarea1.value.length;
+                counter1.textContent = `${length.toLocaleString()} / 10,000 characters`;
+
+                // Update color based on length
+                if (length > 10000) {
+                    counter1.style.color = 'var(--color-error, #ff6b6b)';
+                } else if (length < 100) {
+                    counter1.style.color = 'var(--color-warning, #ffa500)';
+                } else {
+                    counter1.style.color = 'var(--color-success, #4ecdc4)';
+                }
+            };
+
+            textarea1.addEventListener('input', updateCount1);
+            textarea1.addEventListener('paste', () => setTimeout(updateCount1, 10));
+            updateCount1(); // Initial count
+        }
+
+        // Story Text 2
+        const textarea2 = document.getElementById('story-text-2');
+        const counter2 = document.getElementById('count-2');
+        if (textarea2 && counter2) {
+            const updateCount2 = () => {
+                const length = textarea2.value.length;
+                counter2.textContent = `${length.toLocaleString()} / 10,000 characters`;
+
+                if (length > 10000) {
+                    counter2.style.color = 'var(--color-error, #ff6b6b)';
+                } else {
+                    counter2.style.color = 'var(--color-secondary, #999)';
+                }
+            };
+
+            textarea2.addEventListener('input', updateCount2);
+            textarea2.addEventListener('paste', () => setTimeout(updateCount2, 10));
+            updateCount2();
+        }
+
+        // Story Text 3
+        const textarea3 = document.getElementById('story-text-3');
+        const counter3 = document.getElementById('count-3');
+        if (textarea3 && counter3) {
+            const updateCount3 = () => {
+                const length = textarea3.value.length;
+                counter3.textContent = `${length.toLocaleString()} / 10,000 characters`;
+
+                if (length > 10000) {
+                    counter3.style.color = 'var(--color-error, #ff6b6b)';
+                } else {
+                    counter3.style.color = 'var(--color-secondary, #999)';
+                }
+            };
+
+            textarea3.addEventListener('input', updateCount3);
+            textarea3.addEventListener('paste', () => setTimeout(updateCount3, 10));
+            updateCount3();
+        }
     }
 }
 
