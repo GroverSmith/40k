@@ -18,17 +18,45 @@ const StoryTable = {
     },
 
     /**
+     * Extract username from user key
+     */
+    extractUserName(userKey) {
+        if (!userKey) return 'Unknown';
+        // User keys are typically just the username with no spaces/special chars
+        // Try to add spaces before capital letters for readability
+        return userKey.replace(/([A-Z])/g, ' $1').trim();
+    },
+
+    /**
+     * Calculate word count from story text fields
+     */
+    calculateWordCount(story) {
+        let totalText = '';
+        if (story['Story Text 1']) totalText += story['Story Text 1'] + ' ';
+        if (story['Story Text 2']) totalText += story['Story Text 2'] + ' ';
+        if (story['Story Text 3']) totalText += story['Story Text 3'];
+
+        if (!totalText.trim()) return 0;
+
+        return totalText.trim().split(/\s+/).filter(word => word.length > 0).length;
+    },
+
+    /**
      * Build story row
      */
     buildStoryRow(story, columns) {
-        const wordCount = story['Word Count'] || TableBase.formatters.wordCount(story.Content || '');
+        // Extract author name from User Key
+        const authorName = this.extractUserName(story['User Key']);
+
+        // Calculate word count from the three story text fields
+        const wordCount = this.calculateWordCount(story);
 
         const columnData = {
-            date: TableBase.formatters.date(story['Date Created'] || story.Timestamp),
-            title: this.createStoryLink(story.Title, story.Key),
-            author: story.Author || story['User Name'] || 'Unknown',
-            type: story['Story Type'] || story.Type || '',
-            length: `${wordCount} words`,
+            date: TableBase.formatters.date(story['Timestamp']),
+            title: this.createStoryLink(story['Title'], story['Key']),
+            author: authorName,
+            type: story['Story Type'] || '',
+            length: wordCount > 0 ? `${wordCount} words` : '-',
             force: story['Force Name'] ? this.createForceLink(story['Force Name'], story['Force Key']) : '-',
             crusade: story['Crusade Name'] ? this.createCrusadeLink(story['Crusade Name'], story['Crusade Key']) : '-'
         };
@@ -67,7 +95,7 @@ const StoryTable = {
                 url: storyUrl,
                 cacheType: 'stories',
                 cacheKey: 'all',
-                dataKey: 'stories',
+                dataKey: null, // For raw array data
                 loadingMessage: 'Loading all stories...'
             }
         };
