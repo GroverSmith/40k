@@ -47,12 +47,12 @@ class StoryForm extends BaseForm {
 
         // Pre-fill related fields if context provided
         if (this.contextData.forceKey) {
-            const forceField = document.getElementById('related-force');
+            const forceField = document.getElementById('force-select');  // Changed from 'related-force'
             if (forceField) forceField.value = this.contextData.forceKey;
         }
 
         if (this.contextData.crusadeKey) {
-            const crusadeField = document.getElementById('related-crusade');
+            const crusadeField = document.getElementById('crusade-select');  // Changed from 'related-crusade'
             if (crusadeField) crusadeField.value = this.contextData.crusadeKey;
         }
 
@@ -77,7 +77,7 @@ class StoryForm extends BaseForm {
 
     async setupRelatedEntities() {
         // Load forces for dropdown
-        const forceSelect = document.getElementById('related-force');
+        const forceSelect = document.getElementById('force-select');  // Changed from 'related-force'
         if (forceSelect) {
             try {
                 const forcesUrl = CrusadeConfig.getSheetUrl('forces');
@@ -104,7 +104,7 @@ class StoryForm extends BaseForm {
         }
 
         // Load crusades for dropdown
-        const crusadeSelect = document.getElementById('related-crusade');
+        const crusadeSelect = document.getElementById('crusade-select');  // Changed from 'related-crusade'
         if (crusadeSelect) {
             try {
                 const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
