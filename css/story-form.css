@@ -134,3 +134,23 @@
     line-height: 1.8;
     white-space: pre-wrap;
 }
+
+.multi-select {
+    width: 100%;
+    min-height: 120px;
+    border: 2px solid var(--color-border);
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.multi-select option {
+    padding: 8px;
+    margin: 2px 0;
+}
+
+.multi-select option:checked {
+    background: linear-gradient(0deg, #4ecdc4 0%, #4ecdc4 100%);
+    color: white;
+}

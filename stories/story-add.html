@@ -83,14 +83,13 @@
                 <!-- Associated Records Section -->
                 <div class="story-section">
                     <h2 class="section-title">🔗 Associated Records <span class="optional-label">(optional)</span></h2>
-                    
+
                     <div class="form-group">
-                        <label for="force-select">Associated Force</label>
-                        <select id="force-select" name="forceKey">
-                            <option value="">No force association</option>
-                            <!-- Will be populated dynamically -->
+                        <label for="force-select">Associated Forces</label>
+                        <select id="force-select" name="forceKeys" multiple size="5">
+                            <!-- Options populated dynamically -->
                         </select>
-                        <small class="help-text">Link this story to a specific force</small>
+                        <small class="help-text">Hold Ctrl/Cmd to select multiple forces</small>
                     </div>
                     
                     <div class="form-group">

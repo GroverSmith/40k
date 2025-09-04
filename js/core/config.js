@@ -58,6 +58,20 @@ const CrusadeConfig = {
             sheetId: '1Abqj7jWKzeupZMBF48GgSWG-u1kpPKsQfXHrzIw2uwQ',
             sheetName: 'Stories'
         },
+
+        storyForces: {
+            url: 'https://script.google.com/macros/s/AKfycbx1KvSAWcliHW0xTxq4kP9cJn2yeW9Oh72nHb7c7q8ThdRWx5ZS6lA_8hyW-yqufqw/exec',
+            sheetId: '16IHkhSjjHZoxGFS96VK4Rzpf4xOwU8620R-MNKnxy-0',
+            sheetName: 'Story_Forces',
+            columns: ['Story Key', 'Force Key', 'Timestamp', 'Deleted Timestamp'],
+        },
+
+        storyUnits: {
+            url: '',
+            sheetId: '1YbPSfXMJro_x9d1W18RyZ4MQyfhoOwjgtDR0RhSju1E',
+            sheetName: 'Story_Units',
+            columns: ['Story Key', 'Unit Key', 'Timestamp', 'Deleted Timestamp']
+        },
         
         forceLogs: {
             url: null,

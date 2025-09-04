@@ -68,7 +68,8 @@ async function loadStoryDetails() {
         }
 
         if (story) {
-            displayStoryDetails(story);
+            // Pass container to displayStoryDetails since we'll update it asynchronously
+            await displayStoryDetails(story);
         } else {
             container.innerHTML = '<div class="error-message">Story not found</div>';
         }
@@ -122,8 +123,9 @@ function findStoryInCache(data, storyKey) {
 
 /**
  * Display the story details on the page
+ * Made async to handle fetching related forces
  */
-function displayStoryDetails(story) {
+async function displayStoryDetails(story) {
     const container = document.getElementById('story-content');
     if (!container) return;
 
@@ -142,6 +144,23 @@ function displayStoryDetails(story) {
         .split('\n\n')
         .map(para => `<p>${para.replace(/\n/g, '<br>')}</p>`)
         .join('');
+
+    // Fetch related forces from junction table
+    let relatedForces = [];
+    if (story.Key) {
+        try {
+            const junctionUrl = CrusadeConfig.getSheetUrl('storyForces');
+            if (junctionUrl) {
+                const response = await fetch(`${junctionUrl}?action=forces-for-story&storyKey=${story.Key}`);
+                const result = await response.json();
+                if (result.success) {
+                    relatedForces = result.forces;
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching related forces:', error);
+        }
+    }
 
     // Build HTML for story display
     let html = `
@@ -195,12 +214,17 @@ function displayStoryDetails(story) {
     }
 
     html += `
-            <footer class="story-footer">
-                <p class="author-info">Written by: ${extractUserName(story['User Key'])}</p>
-                ${story['Force Key'] ? `<p>Force: ${story['Force Key']}</p>` : ''}
-                ${story['Crusade Key'] ? `<p>Crusade: ${story['Crusade Key']}</p>` : ''}
-            </footer>
-        </article>
+        <footer class="story-footer">
+            <p class="author-info">Written by: ${extractUserName(story['User Key'])}</p>
+            ${relatedForces.length > 0 ?
+                `<p>Related Forces: ${relatedForces.map(fk =>
+                    `<a href="../forces/force-details.html?key=${fk}">${fk}</a>`
+                ).join(', ')}</p>` :
+                story['Force Key'] ? `<p>Force: ${story['Force Key']}</p>` : ''
+            }
+            ${story['Crusade Key'] ? `<p>Crusade: ${story['Crusade Key']}</p>` : ''}
+        </footer>
+    </article>
     `;
 
     container.innerHTML = html;
