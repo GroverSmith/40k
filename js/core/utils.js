@@ -135,13 +135,7 @@ const CoreUtils = {
                 .replace(/^-+|-+$/g, '');
         },
 
-        /**
-         * Truncate text with ellipsis
-         */
-        truncate(text, maxLength = 50) {
-            if (!text || text.length <= maxLength) return text;
-            return text.substring(0, maxLength - 3) + '...';
-        },
+        
 
         /**
          * Format large numbers with commas
@@ -160,12 +154,39 @@ const CoreUtils = {
         },
 
         /**
+         * Truncate text with ellipsis
+         */
+        truncate(text, maxLength = 50) {
+            if (!text || text.length <= maxLength) return text;
+            return text.substring(0, maxLength - 3) + '...';
+        },
+
+        /**
          * Strip HTML tags from text
          */
         stripHtml(html) {
             const div = document.createElement('div');
             div.innerHTML = html;
             return div.textContent || div.innerText || '';
+        },
+
+        /**
+         * Clean string by removing non-alphanumeric characters and truncating to specified length
+         */
+        clean(text, maxLength = 30) {
+            if (!text) return '';
+            return String(text).replace(/[^a-zA-Z0-9]/g, '').substring(0, maxLength);
+        },
+
+        /**
+         * Generate a UUID v4
+         */
+        generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
         }
     },
 
@@ -572,6 +593,8 @@ window.formatDate = CoreUtils.dates.toDisplay;
 window.createSlug = CoreUtils.strings.createSlug;
 window.showNotification = CoreUtils.notifications.show;
 window.getRelativePath = CoreUtils.path.getRelativePath;
+window.clean = CoreUtils.strings.clean;
+window.generateUUID = CoreUtils.strings.generateUUID;
 
 // Export for modules
 if (typeof module !== 'undefined' && module.exports) {

@@ -24,11 +24,24 @@ function filterActiveRows(data) {
   return activeRows;
 }
 
-// Generate unique unit key using force key, unit name, and timestamp
-function generateUnitKey(forceKey, unitName) {
-  const unitPart = unitName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
-  const timestamp = new Date().getTime();
-  return `${forceKey}_${unitPart}_${timestamp}`;
+// Clean function to remove non-alphanumeric characters and truncate
+function clean(text, maxLength = 30) {
+  if (!text) return '';
+  return String(text).replace(/[^a-zA-Z0-9]/g, '').substring(0, maxLength);
+}
+
+// Generate UUID v4
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+// Generate unique unit key using UUID
+function generateUnitKey() {
+  return generateUUID();
 }
 
 function doPost(e) {
@@ -68,7 +81,7 @@ function doPost(e) {
         console.log('Extracted userKey from forceKey:', userKey);
       } else if (data.userName) {
         // Fallback: generate from userName if can't extract from forceKey
-        userKey = data.userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+        userKey = clean(data.userName, 30);
         console.log('Generated userKey from userName:', userKey);
       } else {
         throw new Error('Unable to determine userKey - forceKey format invalid and userName not provided');
@@ -151,7 +164,7 @@ function doPost(e) {
     
     // Create Name Xref Key for easier lookups (userKey_unitName without timestamp)
     // This uses userKey instead of forceKey to be consistent across different forces
-    const nameXrefKey = `${userKey}_${data.name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30)}`;
+    const nameXrefKey = `${userKey}_${clean(data.name, 30)}`;
     console.log('Generated name xref key:', nameXrefKey);
     
     // Determine rank based on XP if not provided

@@ -24,10 +24,18 @@ function filterActiveRows(data) {
   return activeRows;
 }
 
+// Clean function to remove non-alphanumeric characters and truncate
+function clean(text, maxLength = 30) {
+  if (!text) return '';
+  return String(text).replace(/[^a-zA-Z0-9]/g, '').substring(0, maxLength);
+}
+
 // Key generation function
-function generateUserKey(name) {
-  // Simple user key - just cleaned name
-  return name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+function generateUserKey(name, discordHandle) {
+  // Composite user key using name and discord handle
+  const namePart = clean(name);
+  const discordPart = clean(discordHandle);
+  return `${namePart}_${discordPart}`;
 }
 
 function doPost(e) {
@@ -89,7 +97,7 @@ function doPost(e) {
     }
     
     // Generate user key
-    const userKey = generateUserKey(data.name);
+    const userKey = generateUserKey(data.name, data.discord_handle);
     console.log('Generated user key:', userKey);
     
     // Check if user key already exists (and is not deleted)

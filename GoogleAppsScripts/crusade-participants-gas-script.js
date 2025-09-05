@@ -25,15 +25,20 @@ function filterActiveRows(data) {
   return activeRows;
 }
 
-// Key generation helpers (must match the format from other sheets)
-function generateCrusadeKey(crusadeName) {
-  return crusadeName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+// Clean function to remove non-alphanumeric characters and truncate
+function clean(text, maxLength = 30) {
+  if (!text) return '';
+  return String(text).replace(/[^a-zA-Z0-9]/g, '').substring(0, maxLength);
 }
 
-function generateForceKey(forceName, userName) {
-  const forcePart = forceName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
-  const userPart = userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
-  return `${forcePart}_${userPart}`;
+// Key generation helpers (must match the format from other sheets)
+function generateCrusadeKey(crusadeName) {
+  return clean(crusadeName, 30);
+}
+
+function generateForceKey(forceName, userKey) {
+  const forcePart = clean(forceName);
+  return `${forcePart}_${userKey}`;
 }
 
 function doPost(e) {

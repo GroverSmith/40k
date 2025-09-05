@@ -293,11 +293,10 @@ const ForceData = {
     /**
      * Generate a force key from force name and user name
      */
-    generateForceKey(forceName, userName) {
+    generateForceKey(forceName, userKey) {
         // Match the server-side key generation
-        const forcePart = forceName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
-        const userPart = userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
-        return `${forcePart}_${userPart}`;
+        const forcePart = clean(forceName);
+        return `${forcePart}_${userKey}`;
     },
     
     /**

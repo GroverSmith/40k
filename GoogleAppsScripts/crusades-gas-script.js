@@ -24,10 +24,16 @@ function filterActiveRows(data) {
   return activeRows;
 }
 
+// Clean function to remove non-alphanumeric characters and truncate
+function clean(text, maxLength = 30) {
+  if (!text) return '';
+  return String(text).replace(/[^a-zA-Z0-9]/g, '').substring(0, maxLength);
+}
+
 // Key generation function
 function generateCrusadeKey(crusadeName) {
   // Simple crusade key - just cleaned name
-  return crusadeName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+  return clean(crusadeName, 30);
 }
 
 function doGet(e) {

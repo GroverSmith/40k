@@ -25,36 +25,31 @@ function filterActiveRows(data) {
   return activeRows;
 }
 
-// Key generation functions
-function generateForceKey(forceName, userName) {
-  // Match the force key format from forces sheet
-  const forcePart = forceName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
-  const userPart = userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
-  return `${forcePart}_${userPart}`;
+// Clean function to remove non-alphanumeric characters and truncate
+function clean(text, maxLength = 30) {
+  if (!text) return '';
+  return String(text).replace(/[^a-zA-Z0-9]/g, '').substring(0, maxLength);
 }
 
-function generateArmyListKey(forceKey, armyName, sheet) {
-  // Generate base key
-  const armyPart = armyName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
-  const baseKey = `${forceKey}_${armyPart}`;
-  
-  // Find the next sequence number
-  let sequence = 1;
-  if (sheet.getLastRow() > 1) {
-    const existingKeys = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues().flat();
-    const matchingKeys = existingKeys.filter(k => k && k.startsWith(baseKey + '_'));
-    
-    if (matchingKeys.length > 0) {
-      const sequences = matchingKeys.map(k => {
-        const parts = k.split('_');
-        const seq = parseInt(parts[parts.length - 1]);
-        return isNaN(seq) ? 0 : seq;
-      });
-      sequence = Math.max(...sequences) + 1;
-    }
-  }
-  
-  return `${baseKey}_${String(sequence).padStart(2, '0')}`;
+// Key generation functions
+function generateForceKey(forceName, userKey) {
+  // Match the force key format from forces sheet
+  const forcePart = clean(forceName);
+  return `${forcePart}_${userKey}`;
+}
+
+// Generate UUID v4
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+// Generate unique army key using UUID
+function generateArmyKey() {
+  return generateUUID();
 }
 
 function doPost(e) {
@@ -160,8 +155,8 @@ function doPost(e) {
     }
     
     // Generate the army list key (primary key)
-    const armyListKey = generateArmyListKey(forceKey, data.armyName, sheet);
-    console.log('Generated army list key (PK):', armyListKey);
+    const armyKey = generateArmyKey();
+    console.log('Generated army key (PK):', armyKey);
     
     // Parse timestamp
     let timestamp;
@@ -174,7 +169,7 @@ function doPost(e) {
     
     // Prepare the row data with Force Key as second column
     const rowData = [
-      armyListKey,                 // Key (Primary Key) - Column 0
+      armyKey,                     // Key (Primary Key) - Column 0
       forceKey,                    // Force Key (Foreign Key) - Column 1
       timestamp,                   // Timestamp - Column 2
       data.userName,               // User Name - Column 3
@@ -218,14 +213,14 @@ function doPost(e) {
     sheet.autoResizeRows(newRowNumber, 1);
     
     // Log success
-    console.log('Successfully added army list with key:', armyListKey);
+    console.log('Successfully added army list with key:', armyKey);
     
     // Return success response with the key
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
         message: 'Army list submitted successfully',
-        key: armyListKey,
+        key: armyKey,
         forceKey: forceKey,
         rowNumber: newRowNumber,
         timestamp: timestamp.toISOString()
@@ -346,11 +341,11 @@ function getArmyLists(params = {}) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function getArmyListByKey(armyListKey) {
+function getArmyByKey(armyKey) {
   // Get a specific army list by its key
-  console.log('getArmyListByKey called with key:', armyListKey);
+  console.log('getArmyByKey called with key:', armyKey);
   
-  if (!armyListKey) {
+  if (!armyKey) {
     throw new Error('Army list key is required');
   }
   
@@ -372,11 +367,11 @@ function getArmyListByKey(armyListKey) {
     if (index === 0) return false; // Skip header
     // Check if not deleted
     if (deletedTimestampIndex !== -1 && row[deletedTimestampIndex]) return false;
-    return row[0] === armyListKey;
+    return row[0] === armyKey;
   });
   
   if (!armyListRow) {
-    console.error(`Army list with key "${armyListKey}" not found or deleted`);
+    console.error(`Army list with key "${armyKey}" not found or deleted`);
     throw new Error('Army list not found');
   }
   
@@ -454,9 +449,9 @@ function getRecentArmyLists() {
 }
 
 // Soft delete function
-function softDeleteArmyList(armyListKey) {
+function softDeleteArmy(armyKey) {
   try {
-    if (!armyListKey) {
+    if (!armyKey) {
       throw new Error('Army list key is required');
     }
     
@@ -485,18 +480,18 @@ function softDeleteArmyList(armyListKey) {
     
     // Find the row with the matching key
     for (let i = 1; i < data.length; i++) {
-      if (data[i][0] === armyListKey) { // Key is in column 0
+      if (data[i][0] === armyKey) { // Key is in column 0
         // Set the Deleted Timestamp value
         sheet.getRange(i + 1, deletedTimestampIndex + 1).setValue(new Date());
         sheet.getRange(i + 1, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
         
-        console.log('Soft deleted army list:', armyListKey);
+        console.log('Soft deleted army list:', armyKey);
         
         return ContentService
           .createTextOutput(JSON.stringify({
             success: true,
             message: 'Army list soft deleted successfully',
-            key: armyListKey
+            key: armyKey
           }))
           .setMimeType(ContentService.MimeType.JSON);
       }

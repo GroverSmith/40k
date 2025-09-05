@@ -150,7 +150,7 @@ const CrusadeData = {
      * Generate crusade key from name
      */
     generateCrusadeKey(crusadeName) {
-        return crusadeName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+        return clean(crusadeName, 30);
     }
 };
 

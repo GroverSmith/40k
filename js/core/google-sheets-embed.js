@@ -431,7 +431,7 @@ class GoogleSheetsEmbed {
     getCacheKey() {
         // Create a unique cache key based on the Apps Script URL AND container ID
         const containerKey = this.container.id || 'unknown';
-        return 'sheets_cache_' + containerKey + '_' + btoa(this.appsScriptUrl).replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+        return 'sheets_cache_' + containerKey + '_' + clean(btoa(this.appsScriptUrl), 20);
     }
     
     getCachedData() {

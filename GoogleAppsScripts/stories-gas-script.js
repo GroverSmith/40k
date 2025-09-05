@@ -24,12 +24,24 @@ function filterActiveRows(data) {
   return activeRows;
 }
 
-// Generate unique story key using timestamp and random suffix
-function generateStoryKey(userKey, title) {
-  const titlePart = title.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
-  const timestamp = new Date().getTime();
-  const random = Math.random().toString(36).substring(2, 6);
-  return `${userKey}_${titlePart}_${timestamp}_${random}`;
+// Clean function to remove non-alphanumeric characters and truncate
+function clean(text, maxLength = 30) {
+  if (!text) return '';
+  return String(text).replace(/[^a-zA-Z0-9]/g, '').substring(0, maxLength);
+}
+
+// Generate UUID v4
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+// Generate unique story key using UUID
+function generateStoryKey() {
+  return generateUUID();
 }
 
 function doPost(e) {

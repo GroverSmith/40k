@@ -24,12 +24,17 @@ function filterActiveRows(data) {
   return activeRows;
 }
 
+// Clean function to remove non-alphanumeric characters and truncate
+function clean(text, maxLength = 30) {
+  if (!text) return '';
+  return String(text).replace(/[^a-zA-Z0-9]/g, '').substring(0, maxLength);
+}
+
 // Key generation function
-function generateForceKey(force_name, user_name) {
+function generateForceKey(force_name, user_key) {
   // Remove spaces and special characters, limit length for readability
-  const forcePart = force_name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
-  const userPart = user_name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
-  return `${forcePart}_${userPart}`;
+  const forcePart = clean(force_name);
+  return `${forcePart}_${user_key}`;
 }
 
 function doPost(e) {
@@ -161,7 +166,7 @@ function doPost(e) {
     }
     
     // Generate the force key
-    const forceKey = generateForceKey(data.force_name, data.user_name);
+    const forceKey = generateForceKey(data.force_name, data.user_key);
     console.log('Generated force key:', forceKey);
     
     // Check if force key already exists (and is not deleted)

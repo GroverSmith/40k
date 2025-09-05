@@ -8,8 +8,8 @@ const CacheManager = {
         forces: { duration: 86400000, key: 'cache_forces' }, // 24 hours
         users: { duration: 86400000, key: 'cache_users' }, // 24 hours
         crusades: { duration: 86400000, key: 'cache_crusades' }, // 24 hours
-        armyLists: { duration: 3600000, key: 'cache_army_lists' }, // 1 hour
-        battleHistory: { duration: 1800000, key: 'cache_battle_history' }, // 30 minutes
+        armies: { duration: 3600000, key: 'cache_armies' }, // 1 hour
+        battles: { duration: 1800000, key: 'cache_battles' }, // 30 minutes
         participants: { duration: 86400000, key: 'cache_participants' }, // // 24 hours
         // Generic cache for any URL
         generic: { duration: 1800000, prefix: 'cache_url_' } // 30 minutes default

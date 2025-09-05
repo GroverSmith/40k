@@ -5,17 +5,17 @@
 class BattleReportForm extends BaseForm {
     constructor() {
         super('battle-report-form', {
-            submitUrl: CrusadeConfig.getSheetUrl('battle_history'),
+            submitUrl: CrusadeConfig.getSheetUrl('battles'),
             successMessage: 'Battle report submitted successfully!',
             errorMessage: 'Failed to submit battle report',
-            clearCacheOnSuccess: ['battle_history', 'forces']
+            clearCacheOnSuccess: ['battles', 'forces']
         });
 
         this.dataLoaders = {
             forces: null,
             crusades: null,
             users: null,
-            army_lists: null
+            armies: null
         };
 
         this.init();
@@ -185,15 +185,15 @@ class BattleReportForm extends BaseForm {
 
     async loadArmyLists() {
         try {
-            const url = CrusadeConfig.getSheetUrl('army_lists');
+            const url = CrusadeConfig.getSheetUrl('armies');
             if (url) {
-                const data = await CacheManager.fetchWithCache(url, 'army_lists');
-                this.dataLoaders.army_lists = Array.isArray(data) ? data :
+                const data = await CacheManager.fetchWithCache(url, 'armies');
+                this.dataLoaders.armies = Array.isArray(data) ? data :
                     (data.data ? data.data : []);
             }
         } catch (error) {
             console.error('Error loading army lists:', error);
-            this.dataLoaders.army_lists = [];
+            this.dataLoaders.armies = [];
         }
     }
 
@@ -353,11 +353,11 @@ class BattleReportForm extends BaseForm {
 
     updateArmyListDropdown(playerNum, forceKey) {
         const select = document.getElementById(`army${playerNum}-select`);
-        if (!select || !this.dataLoaders.army_lists) return;
+        if (!select || !this.dataLoaders.armies) return;
 
         select.innerHTML = '<option value="">Select army list (optional)...</option>';
 
-        const forceArmyLists = this.dataLoaders.army_lists.filter(item => {
+        const forceArmyLists = this.dataLoaders.armies.filter(item => {
             if (Array.isArray(item)) {
                 return item[1] === forceKey; // Force Key column
             } else {
