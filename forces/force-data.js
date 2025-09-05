@@ -86,12 +86,8 @@ const ForceData = {
         try {
             const fetchUrl = `${armyListsUrl}?action=force-lists&forceKey=${encodeURIComponent(forceKey || this.forceKey)}`;
             
-            // Use CacheManager with specific identifier for this query
-            const data = await CacheManager.fetchWithCache(
-                fetchUrl, 
-                'armyLists', 
-                `force_${forceKey || this.forceKey}`
-            );
+            // Use CacheManager for unified caching
+            const data = await CacheManager.fetchWithCache(fetchUrl, 'armies');
             
             console.log('Army lists response:', data);
             
@@ -126,12 +122,8 @@ const ForceData = {
 			const key = forceKey || this.forceKey;
 			const fetchUrl = `${battleHistoryUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`;
 			
-			// Use CacheManager with specific identifier
-			const responseData = await CacheManager.fetchWithCache(
-				fetchUrl,
-				'battleHistory',
-				`force_${key}`
-			);
+			// Use CacheManager for unified caching
+			const responseData = await CacheManager.fetchWithCache(fetchUrl, 'battles');
 			
 			let battles = [];
 			if (responseData.success && responseData.battles) {

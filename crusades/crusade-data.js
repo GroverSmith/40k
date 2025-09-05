@@ -75,12 +75,8 @@ const CrusadeData = {
             // Use specific GET endpoint for crusade participants
             const fetchUrl = `${participantsUrl}?action=forces-for-crusade&crusadeKey=${encodeURIComponent(crusadeKey)}`;
             
-            // Use CacheManager with specific identifier
-            const response = await CacheManager.fetchWithCache(
-                fetchUrl,
-                'participants',
-                `crusade_${crusadeKey}`
-            );
+            // Use CacheManager for unified caching
+            const response = await CacheManager.fetchWithCache(fetchUrl, 'participants');
             
             if (response.success && response.forces) {
                 return { success: true, forces: response.forces };

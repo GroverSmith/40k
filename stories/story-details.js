@@ -59,10 +59,10 @@ async function loadStoryDetails() {
             if (result.success && result.data) {
                 story = result.data;
                 // Cache this specific story for future use
-                CacheManager.set('stories', story, `story_${storyKey}`);
+                CacheManager.set('stories', story);
             } else {
                 // Fallback: fetch all stories and cache them
-                const allStoriesResponse = await CacheManager.fetchWithCache(storiesUrl, 'stories', 'all');
+                const allStoriesResponse = await CacheManager.fetchWithCache(storiesUrl, 'stories');
                 story = findStoryInCache(allStoriesResponse, storyKey);
             }
         }

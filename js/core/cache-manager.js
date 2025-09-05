@@ -1,29 +1,53 @@
 // filename: js/cache-manager.js
-// Unified caching system for all Google Sheets API calls
+// Simplified caching system for all Google Sheets API calls
 // 40k Crusade Campaign Tracker
+// Caches all data once per table and filters on retrieval
+//
+// USAGE EXAMPLES:
+// 
+// 1. Basic caching (replaces old identifier-based caching):
+//    const data = await CacheManager.fetchWithCache(url, 'forces');
+// 
+// 2. Find specific record in cached data:
+//    const force = CacheManager.findInCache('forces', 'force_key', 'MyForce_User123');
+// 
+// 3. Filter cached data:
+//    const userForces = CacheManager.getFiltered('forces', { 
+//        column: 'user_key', 
+//        value: 'User123' 
+//    });
+// 
+// 4. Custom filter with predicate:
+//    const recentForces = CacheManager.getFiltered('forces', {
+//        predicate: (force) => new Date(force.timestamp) > new Date('2024-01-01')
+//    });
 
 const CacheManager = {
     // Cache configuration per data type
     cacheConfig: {
-        forces: { duration: 86400000, key: 'cache_forces' }, // 24 hours
-        users: { duration: 86400000, key: 'cache_users' }, // 24 hours
-        crusades: { duration: 86400000, key: 'cache_crusades' }, // 24 hours
-        armies: { duration: 3600000, key: 'cache_armies' }, // 1 hour
-        battles: { duration: 1800000, key: 'cache_battles' }, // 30 minutes
-        participants: { duration: 86400000, key: 'cache_participants' }, // // 24 hours
+        forces: { duration: 86400000 }, // 24 hours
+        users: { duration: 86400000 }, // 24 hours
+        crusades: { duration: 86400000 }, // 24 hours
+        armies: { duration: 3600000 }, // 1 hour
+        battles: { duration: 1800000 }, // 30 minutes
+        participants: { duration: 86400000 }, // 24 hours
+        stories: { duration: 3600000 }, // 1 hour
+        units: { duration: 3600000 }, // 1 hour
+        xref_story_forces: { duration: 3600000 }, // 1 hour
+        xref_story_units: { duration: 3600000 }, // 1 hour
+        xref_crusade_participants: { duration: 86400000 }, // 24 hours
         // Generic cache for any URL
-        generic: { duration: 1800000, prefix: 'cache_url_' } // 30 minutes default
+        generic: { duration: 1800000 } // 30 minutes default
     },
     
     /**
      * Get cached data if valid
-     * @param {string} dataType - Type of data (forces, users, etc.) or 'url' for generic
-     * @param {string} identifier - Optional identifier for sub-queries (e.g., forceKey)
+     * @param {string} dataType - Type of data (forces, users, etc.)
      * @returns {Object|null} Cached data or null if invalid/missing
      */
-    get(dataType, identifier = '') {
+    get(dataType) {
         try {
-            const cacheKey = this.getCacheKey(dataType, identifier);
+            const cacheKey = `cache_${dataType}`;
             const cached = localStorage.getItem(cacheKey);
             
             if (!cached) return null;
@@ -34,11 +58,11 @@ const CacheManager = {
             
             if (age < config.duration) {
                 const ageMinutes = Math.round(age / 60000);
-                console.log(`Cache hit for ${dataType}${identifier ? `:${identifier}` : ''} (${ageMinutes}m old)`);
+                console.log(`Cache hit for ${dataType} (${ageMinutes}m old, ${Array.isArray(data) ? data.length : 'N/A'} rows)`);
                 return { data, timestamp, metadata, valid: true };
             }
             
-            console.log(`Cache expired for ${dataType}${identifier ? `:${identifier}` : ''}`);
+            console.log(`Cache expired for ${dataType}`);
             localStorage.removeItem(cacheKey);
             return null;
             
@@ -52,19 +76,17 @@ const CacheManager = {
      * Set cache data
      * @param {string} dataType - Type of data
      * @param {any} data - Data to cache
-     * @param {string} identifier - Optional identifier
      * @param {Object} metadata - Optional metadata about the cached data
      */
-    set(dataType, data, identifier = '', metadata = {}) {
+    set(dataType, data, metadata = {}) {
         try {
-            const cacheKey = this.getCacheKey(dataType, identifier);
+            const cacheKey = `cache_${dataType}`;
             const cacheData = {
                 data,
                 timestamp: Date.now(),
                 metadata: {
                     ...metadata,
                     dataType,
-                    identifier,
                     rows: Array.isArray(data) ? data.length : undefined
                 }
             };
@@ -73,7 +95,7 @@ const CacheManager = {
             
             const config = this.cacheConfig[dataType] || this.cacheConfig.generic;
             const expiryHours = Math.round(config.duration / 3600000);
-            console.log(`Cached ${dataType}${identifier ? `:${identifier}` : ''} (expires in ${expiryHours}h)`);
+            console.log(`Cached ${dataType} (${Array.isArray(data) ? data.length : 'N/A'} rows, expires in ${expiryHours}h)`);
             
             return true;
         } catch (error) {
@@ -94,15 +116,14 @@ const CacheManager = {
     },
     
     /**
-     * Fetch with cache
+     * Fetch with cache - simplified to cache all data once per table
      * @param {string} url - URL to fetch
      * @param {string} dataType - Type of data for cache config
-     * @param {string} identifier - Optional identifier
      * @returns {Promise<any>} Fetched or cached data
      */
-    async fetchWithCache(url, dataType = 'generic', identifier = '') {
+    async fetchWithCache(url, dataType = 'generic') {
         // Check cache first
-        const cached = this.get(dataType, identifier || url);
+        const cached = this.get(dataType);
         if (cached && cached.valid) {
             return cached.data;
         }
@@ -118,7 +139,7 @@ const CacheManager = {
             const data = await response.json();
             
             // Cache the response
-            this.set(dataType, data, identifier || url, { url });
+            this.set(dataType, data, { url });
             
             return data;
             
@@ -126,7 +147,7 @@ const CacheManager = {
             console.error('Fetch error:', error);
             
             // Try to return stale cache if available
-            const staleCache = this.getStale(dataType, identifier || url);
+            const staleCache = this.getStale(dataType);
             if (staleCache) {
                 console.warn('Using stale cache due to fetch error');
                 return staleCache.data;
@@ -139,9 +160,9 @@ const CacheManager = {
     /**
      * Get stale cache (expired but still present)
      */
-    getStale(dataType, identifier = '') {
+    getStale(dataType) {
         try {
-            const cacheKey = this.getCacheKey(dataType, identifier);
+            const cacheKey = `cache_${dataType}`;
             const cached = localStorage.getItem(cacheKey);
             
             if (!cached) return null;
@@ -158,10 +179,90 @@ const CacheManager = {
     /**
      * Clear specific cache
      */
-    clear(dataType, identifier = '') {
-        const cacheKey = this.getCacheKey(dataType, identifier);
+    clear(dataType) {
+        const cacheKey = `cache_${dataType}`;
         localStorage.removeItem(cacheKey);
-        console.log(`Cleared cache for ${dataType}${identifier ? `:${identifier}` : ''}`);
+        console.log(`Cleared cache for ${dataType}`);
+    },
+
+    /**
+     * Get filtered data from cache
+     * @param {string} dataType - Type of data
+     * @param {Object} filter - Filter criteria
+     * @returns {Array|null} Filtered data or null if cache miss
+     */
+    getFiltered(dataType, filter = {}) {
+        const cached = this.get(dataType);
+        if (!cached || !cached.valid) {
+            return null;
+        }
+
+        if (!Array.isArray(cached.data)) {
+            return cached.data;
+        }
+
+        // Apply filters
+        let filteredData = cached.data;
+        
+        if (filter.column && filter.value !== undefined) {
+            filteredData = filteredData.filter(row => {
+                if (Array.isArray(row)) {
+                    // Handle array format (with headers)
+                    const headers = cached.data[0];
+                    const columnIndex = headers.indexOf(filter.column);
+                    return columnIndex !== -1 && row[columnIndex] === filter.value;
+                } else {
+                    // Handle object format
+                    return row[filter.column] === filter.value;
+                }
+            });
+        }
+
+        if (filter.predicate && typeof filter.predicate === 'function') {
+            filteredData = filteredData.filter(filter.predicate);
+        }
+
+        console.log(`Filtered ${dataType}: ${cached.data.length} -> ${filteredData.length} rows`);
+        return filteredData;
+    },
+
+    /**
+     * Find specific record in cached data
+     * @param {string} dataType - Type of data
+     * @param {string} keyColumn - Column name to search
+     * @param {string} keyValue - Value to find
+     * @returns {Object|null} Found record or null
+     */
+    findInCache(dataType, keyColumn, keyValue) {
+        const cached = this.get(dataType);
+        if (!cached || !cached.valid || !Array.isArray(cached.data)) {
+            return null;
+        }
+
+        const data = cached.data;
+        if (data.length === 0) return null;
+
+        // Check if first row is headers
+        const isArrayFormat = Array.isArray(data[0]);
+        const headers = isArrayFormat ? data[0] : null;
+        const searchData = isArrayFormat ? data.slice(1) : data;
+
+        if (isArrayFormat) {
+            const keyIndex = headers.indexOf(keyColumn);
+            if (keyIndex === -1) return null;
+            
+            const found = searchData.find(row => row[keyIndex] === keyValue);
+            if (!found) return null;
+
+            // Convert array to object
+            const result = {};
+            headers.forEach((header, index) => {
+                result[header] = found[index];
+            });
+            return result;
+        } else {
+            return searchData.find(row => row[keyColumn] === keyValue) || null;
+        }
     },
     
     /**
@@ -232,23 +333,6 @@ const CacheManager = {
         console.log(`Cleaned up ${keysToRemove.length} old cache entries`);
     },
     
-    /**
-     * Get cache key for a data type and identifier
-     */
-    getCacheKey(dataType, identifier) {
-        const config = this.cacheConfig[dataType];
-
-        if (!config) {
-            // Don't truncate - use full identifier with dataType prefix
-            return `cache_${dataType}_${identifier}`;
-        }
-
-        if (identifier) {
-            return `${config.key || config.prefix}_${identifier}`;
-        }
-
-        return config.key || `${config.prefix}${dataType}`;
-    },
     
     /**
      * Get cache statistics
