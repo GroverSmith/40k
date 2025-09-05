@@ -5,19 +5,19 @@
 // Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; 
-const SHEET_NAME = 'Army Lists';
+const SHEET_NAME = 'armies';
 
 // Helper function to filter out deleted rows
 function filterActiveRows(data) {
   if (!data || data.length <= 1) return data;
   
   const headers = data[0];
-  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
   
-  // If no Deleted Timestamp column, return all data
+  // If no deleted_timestamp column, return all data
   if (deletedTimestampIndex === -1) return data;
   
-  // Filter to only include rows where Deleted Timestamp is empty
+  // Filter to only include rows where deleted_timestamp is empty
   const activeRows = [headers].concat(
     data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
   );
@@ -360,7 +360,7 @@ function getArmyByKey(armyKey) {
   const headers = data[0];
   
   // Check if row is deleted
-  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
   
   // Find by key (Key is column 0)
   const armyListRow = data.find((row, index) => {

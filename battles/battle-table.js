@@ -84,25 +84,25 @@ const BattleTable = {
      * Fetch battles configuration
      */
     getFetchConfig(type, key) {
-        const battleUrl = CrusadeConfig.getSheetUrl('battleHistory');
+        const battleUrl = CrusadeConfig.getSheetUrl('battles');
         const configs = {
             'force': {
                 url: `${battleUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`,
-                cacheType: 'battleHistory',
+                cacheType: 'battles',
                 cacheKey: `force_${key}`,
                 dataKey: 'battles',
                 loadingMessage: 'Loading battles...'
             },
             'crusade': {
                 url: `${battleUrl}?action=crusade-battles&crusadeKey=${encodeURIComponent(key)}`,
-                cacheType: 'battleHistory',
+                cacheType: 'battles',
                 cacheKey: `crusade_${key}`,
                 dataKey: 'battles',
                 loadingMessage: 'Loading battles...'
             },
             'recent': {
                 url: battleUrl,
-                cacheType: 'battleHistory',
+                cacheType: 'battles',
                 cacheKey: 'recent',
                 dataKey: 'battles',
                 loadingMessage: 'Loading recent battles...'

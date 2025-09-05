@@ -59,40 +59,40 @@ const ArmyTable = {
      * Fetch army lists configuration
      */
     getFetchConfig(type, key) {
-        const armyUrl = CrusadeConfig.getSheetUrl('armyLists');
+        const armyUrl = CrusadeConfig.getSheetUrl('armies');
 
         const configs = {
             'force': {
                 url: `${armyUrl}?action=force-lists&forceKey=${encodeURIComponent(key)}`,
-                cacheType: 'armyLists',
+                cacheType: 'armies',
                 cacheKey: `force_${key}`,
                 dataKey: 'data',
                 loadingMessage: 'Loading army lists...'
             },
             'crusade': {
                 url: `${armyUrl}?action=crusade-lists&crusadeKey=${encodeURIComponent(key)}`,
-                cacheType: 'armyLists',
+                cacheType: 'armies',
                 cacheKey: `crusade_${key}`,
                 dataKey: 'data',
                 loadingMessage: 'Loading crusade army lists...'
             },
             'user': {
                 url: `${armyUrl}?action=user-lists&userKey=${encodeURIComponent(key)}`,
-                cacheType: 'armyLists',
+                cacheType: 'armies',
                 cacheKey: `user_${key}`,
                 dataKey: 'data',
                 loadingMessage: 'Loading user army lists...'
             },
             'recent': {
                 url: `${armyUrl}?action=recent&limit=20`,
-                cacheType: 'armyLists',
+                cacheType: 'armies',
                 cacheKey: 'recent',
                 dataKey: 'data',
                 loadingMessage: 'Loading recent army lists...'
             },
             'all': {
                 url: armyUrl,
-                cacheType: 'armyLists',
+                cacheType: 'armies',
                 cacheKey: 'all',
                 dataKey: null, // Raw array format
                 loadingMessage: 'Loading all army lists...'

@@ -11,12 +11,12 @@ function filterActiveRows(data) {
   if (!data || data.length <= 1) return data;
   
   const headers = data[0];
-  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
   
-  // If no Deleted Timestamp column, return all data
+  // If no deleted_timestamp column, return all data
   if (deletedTimestampIndex === -1) return data;
   
-  // Filter to only include rows where Deleted Timestamp is empty
+  // Filter to only include rows where deleted_timestamp is empty
   const activeRows = [headers].concat(
     data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
   );
@@ -175,7 +175,7 @@ function getCrusadeByKey(crusadeKey) {
     const headers = data[0];
     
     // Check if row is deleted
-    const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
     
     console.log('getCrusadeByKey - Headers:', headers);
     console.log('getCrusadeByKey - Looking for crusade key:', crusadeKey);
@@ -291,7 +291,7 @@ function doPost(e) {
     if (sheet.getLastRow() > 1) {
       const allData = sheet.getDataRange().getValues();
       const headers = allData[0];
-      const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+      const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
       
       for (let i = 1; i < allData.length; i++) {
         if (allData[i][0] === crusadeKey) {

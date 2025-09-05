@@ -149,7 +149,7 @@ async function displayStoryDetails(story) {
     let relatedForces = [];
     if (story.Key) {
         try {
-            const junctionUrl = CrusadeConfig.getSheetUrl('storyForces');
+            const junctionUrl = CrusadeConfig.getSheetUrl('xref_story_forces');
             if (junctionUrl) {
                 const response = await fetch(`${junctionUrl}?action=forces-for-story&storyKey=${story.Key}`);
                 const result = await response.json();

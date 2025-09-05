@@ -11,12 +11,12 @@ function filterActiveRows(data) {
   if (!data || data.length <= 1) return data;
   
   const headers = data[0];
-  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
   
-  // If no Deleted Timestamp column, return all data
+  // If no deleted_timestamp column, return all data
   if (deletedTimestampIndex === -1) return data;
   
-  // Filter to only include rows where Deleted Timestamp is empty
+  // Filter to only include rows where deleted_timestamp is empty
   const activeRows = [headers].concat(
     data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
   );
@@ -313,7 +313,7 @@ function getUnitByKey(unitKey) {
   const headers = data[0];
   
   // Check if row is deleted
-  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
   
   // Find by key (column 0)
   const unitRow = data.find((row, index) => {

@@ -289,7 +289,7 @@ class StoryForm extends BaseForm {
      * Create story-force relationships in junction table
      */
     async createStoryForceRelationships(storyKey, forceKeys) {
-        const junctionUrl = CrusadeConfig.getSheetUrl('storyForces');
+        const junctionUrl = CrusadeConfig.getSheetUrl('xref_story_forces');
         if (!junctionUrl) {
             console.warn('Story-Forces junction table URL not configured');
             return;

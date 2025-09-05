@@ -65,7 +65,7 @@ const CrusadeData = {
      */
     async loadParticipatingForces(crusadeKey) {
         try {
-            const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
+            const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
             
             if (!participantsUrl) {
                 console.warn('Participants sheet URL not configured');
@@ -117,7 +117,7 @@ const CrusadeData = {
      * Register a force for a crusade
      */
     async registerForce(registrationData) {
-        const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
+        const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
         
         if (!participantsUrl) {
             throw new Error('Participants sheet URL not configured');

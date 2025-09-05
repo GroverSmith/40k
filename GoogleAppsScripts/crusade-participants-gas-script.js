@@ -5,19 +5,19 @@
 // Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '17jJO939FWthVaLCO091CQzx0hAmtNn8zE5zlqBf10JQ';
-const SHEET_NAME = 'Participants';
+const SHEET_NAME = 'xref_crusade_participants';
 
 // Helper function to filter out deleted rows
 function filterActiveRows(data) {
   if (!data || data.length <= 1) return data;
   
   const headers = data[0];
-  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
   
-  // If no Deleted Timestamp column, return all data
+  // If no deleted_timestamp column, return all data
   if (deletedTimestampIndex === -1) return data;
   
-  // Filter to only include rows where Deleted Timestamp is empty
+  // Filter to only include rows where deleted_timestamp is empty
   const activeRows = [headers].concat(
     data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
   );
@@ -110,7 +110,7 @@ function doPost(e) {
     const data_range = sheet.getDataRange();
     const values = data_range.getValues();
     const headers = values[0];
-    const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
     
     const existingEntry = values.find((row, index) => {
       if (index === 0) return false; // Skip header
@@ -355,7 +355,7 @@ function checkRegistration(crusadeKey, forceKey) {
   
   const data = sheet.getDataRange().getValues();
   const headers = data[0];
-  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
   
   const registration = data.find((row, index) => {
     if (index === 0) return false; // Skip header

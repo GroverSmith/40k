@@ -23,7 +23,7 @@ class BattleDetailsViewer {
 
     async loadBattleData() {
         try {
-            const battleUrl = CrusadeConfig.getSheetUrl('battleHistory');
+            const battleUrl = CrusadeConfig.getSheetUrl('battles');
             if (!battleUrl) {
                 throw new Error('Battle history not configured');
             }

@@ -77,7 +77,7 @@ const ForceData = {
      * Load army lists for a force using force key
      */
     async loadArmyLists(forceKey) {
-        const armyListsUrl = CrusadeConfig.getSheetUrl('armyLists');
+        const armyListsUrl = CrusadeConfig.getSheetUrl('armies');
         
         if (!armyListsUrl) {
             return { success: false, data: [] };
@@ -117,7 +117,7 @@ const ForceData = {
 
 	async loadBattleHistory(forceKey) {
 		try {
-			const battleHistoryUrl = CrusadeConfig.getSheetUrl('battleHistory');
+			const battleHistoryUrl = CrusadeConfig.getSheetUrl('battles');
 			if (!battleHistoryUrl) {
 				console.warn('Battle History sheet URL not configured');
 				return [];
@@ -252,7 +252,7 @@ const ForceData = {
                 await CacheManager.fetchWithCache(crusadesUrl, 'crusades') : [];
             
             // Load participants to find which crusades this force is in
-            const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
+            const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
             if (!participantsUrl) {
                 return [];
             }

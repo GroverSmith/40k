@@ -41,7 +41,7 @@ const ForceTable = {
      */
     getFetchConfig(type, key) {
         const forceUrl = CrusadeConfig.getSheetUrl('forces');
-        const participantsUrl = CrusadeConfig.getSheetUrl('crusadeParticipants');
+        const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
 
         const configs = {
             'all': {
@@ -53,7 +53,7 @@ const ForceTable = {
             },
             'crusade': {
                 url: `${participantsUrl}?action=forces-for-crusade&crusade=${encodeURIComponent(key)}`,
-                cacheType: 'crusadeParticipants',
+                cacheType: 'participants',
                 cacheKey: `crusade_${key}_forces`,
                 dataKey: 'forces',
                 loadingMessage: 'Loading crusade forces...'

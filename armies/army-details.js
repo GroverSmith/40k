@@ -31,7 +31,7 @@ class ArmyListViewer {
     
     async loadArmyList() {
         try {
-            const armyListUrl = CrusadeConfig.getSheetUrl('armyLists');
+            const armyListUrl = CrusadeConfig.getSheetUrl('armies');
             
             if (!armyListUrl) {
                 throw new Error('Army Lists sheet URL not configured');
