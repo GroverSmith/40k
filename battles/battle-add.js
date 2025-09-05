@@ -5,17 +5,17 @@
 class BattleReportForm extends BaseForm {
     constructor() {
         super('battle-report-form', {
-            submitUrl: CrusadeConfig.getSheetUrl('battleHistory'),
+            submitUrl: CrusadeConfig.getSheetUrl('battle_history'),
             successMessage: 'Battle report submitted successfully!',
             errorMessage: 'Failed to submit battle report',
-            clearCacheOnSuccess: ['battleHistory', 'forces']
+            clearCacheOnSuccess: ['battle_history', 'forces']
         });
 
         this.dataLoaders = {
             forces: null,
             crusades: null,
             users: null,
-            armyLists: null
+            army_lists: null
         };
 
         this.init();
@@ -139,6 +139,7 @@ class BattleReportForm extends BaseForm {
         try {
             const users = await UserAPI.loadUsers();
             this.dataLoaders.users = users || [];
+            console.log('Users data loaded:', this.dataLoaders.users);
             this.populatePlayerDropdowns();
         } catch (error) {
             console.error('Error loading users:', error);
@@ -151,6 +152,17 @@ class BattleReportForm extends BaseForm {
             const url = CrusadeConfig.getSheetUrl('forces');
             if (url) {
                 this.dataLoaders.forces = await CacheManager.fetchWithCache(url, 'forces');
+                console.log('Forces data loaded:', this.dataLoaders.forces);
+                
+                // Show structure of forces data
+                if (this.dataLoaders.forces && this.dataLoaders.forces.length > 0) {
+                    console.log('Forces data structure:');
+                    console.log('Header row:', this.dataLoaders.forces[0]);
+                    if (this.dataLoaders.forces.length > 1) {
+                        console.log('Sample data row:', this.dataLoaders.forces[1]);
+                        console.log('Total rows:', this.dataLoaders.forces.length);
+                    }
+                }
             }
         } catch (error) {
             console.error('Error loading forces:', error);
@@ -173,15 +185,15 @@ class BattleReportForm extends BaseForm {
 
     async loadArmyLists() {
         try {
-            const url = CrusadeConfig.getSheetUrl('armyLists');
+            const url = CrusadeConfig.getSheetUrl('army_lists');
             if (url) {
-                const data = await CacheManager.fetchWithCache(url, 'armyLists');
-                this.dataLoaders.armyLists = Array.isArray(data) ? data :
+                const data = await CacheManager.fetchWithCache(url, 'army_lists');
+                this.dataLoaders.army_lists = Array.isArray(data) ? data :
                     (data.data ? data.data : []);
             }
         } catch (error) {
             console.error('Error loading army lists:', error);
-            this.dataLoaders.armyLists = [];
+            this.dataLoaders.army_lists = [];
         }
     }
 
@@ -229,31 +241,94 @@ class BattleReportForm extends BaseForm {
         });
     }
 
-    handlePlayerSelection(playerNum, playerName) {
-        if (!playerName || !this.dataLoaders.forces) return;
+    async handlePlayerSelection(playerNum, playerName) {
+        console.log(`Player ${playerNum} selected:`, playerName);
+        
+        if (!playerName) {
+            console.log('No player name provided');
+            return;
+        }
 
-        const playerForces = this.dataLoaders.forces.slice(1).filter(row =>
-            row[1] === playerName // User Name column
-        );
+        // Try to get forces directly from the API for this user
+        try {
+            const userForces = await this.getUserForcesFromAPI(playerName);
+            console.log(`Found ${userForces.length} forces for player ${playerName} via API`);
+            this.updateForceDropdown(playerNum, userForces);
+        } catch (error) {
+            console.error('Error getting user forces from API:', error);
+            
+            // Fallback to client-side filtering
+            if (this.dataLoaders.forces) {
+                console.log('Falling back to client-side filtering');
+                const playerForces = this.dataLoaders.forces.slice(1).filter(row => {
+                    const forceUserName = row[2]; // User Name is now column 2
+                    return forceUserName && playerName && 
+                        forceUserName.toString().trim().toLowerCase() === playerName.toString().trim().toLowerCase();
+                });
+                console.log(`Found ${playerForces.length} forces for player ${playerName} via fallback`);
+                this.updateForceDropdown(playerNum, playerForces);
+            } else {
+                console.log('No forces data available for fallback');
+            }
+        }
+    }
 
-        this.updateForceDropdown(playerNum, playerForces);
+    async getUserForcesFromAPI(userName) {
+        const url = CrusadeConfig.getSheetUrl('forces');
+        if (!url) {
+            throw new Error('Forces URL not configured');
+        }
+
+        const apiUrl = `${url}?action=user-forces&user=${encodeURIComponent(userName)}`;
+        console.log('Fetching user forces from:', apiUrl);
+
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('API response:', result);
+
+        if (!result.success) {
+            throw new Error(result.error || 'API returned error');
+        }
+
+        // Convert the forces array to the format expected by updateForceDropdown
+        // New structure: [Key, User Key, User Name, Force Name, Faction, Detachment, Notes, Timestamp, Deleted Timestamp]
+        return result.forces.map(force => [
+            force.Key,
+            force['User Key'] || '',  // User Key (column 1)
+            force['User Name'],       // User Name (column 2)
+            force['Force Name'],      // Force Name (column 3)
+            force.Faction,            // Faction (column 4)
+            force.Detachment,         // Detachment (column 5)
+            force.Notes,              // Notes (column 6)
+            force.Timestamp           // Timestamp (column 7)
+        ]);
     }
 
     updateForceDropdown(playerNum, forces) {
         const select = document.getElementById(`force${playerNum}-select`);
-        if (!select) return;
+        
+        if (!select) {
+            console.log(`Force select element not found for player ${playerNum}`);
+            return;
+        }
 
         select.innerHTML = '<option value="">Select force...</option>';
 
         forces.forEach(row => {
-            if (row[0] && row[2]) { // Key and Force Name
+            if (row[0] && row[3]) { // Key and Force Name (now column 3)
                 const option = document.createElement('option');
                 option.value = row[0];
-                option.textContent = `${row[2]} - ${row[3] || 'Unknown Faction'}`;
-                option.dataset.forceName = row[2];
+                option.textContent = `${row[3]} - ${row[4] || 'Unknown Faction'}`; // Force Name and Faction
+                option.dataset.forceName = row[3];
                 select.appendChild(option);
             }
         });
+
+        console.log(`Force dropdown updated with ${select.options.length - 1} options for player ${playerNum}`);
 
         // Auto-select if only one force
         if (forces.length === 1) {
@@ -278,21 +353,21 @@ class BattleReportForm extends BaseForm {
 
     updateArmyListDropdown(playerNum, forceKey) {
         const select = document.getElementById(`army${playerNum}-select`);
-        if (!select || !this.dataLoaders.armyLists) return;
+        if (!select || !this.dataLoaders.army_lists) return;
 
         select.innerHTML = '<option value="">Select army list (optional)...</option>';
 
-        const forceArmyLists = this.dataLoaders.armyLists.filter(item => {
+        const forceArmyLists = this.dataLoaders.army_lists.filter(item => {
             if (Array.isArray(item)) {
                 return item[1] === forceKey; // Force Key column
             } else {
-                return item['Force Key'] === forceKey || item.forceKey === forceKey;
+                return item['force_key'] === forceKey || item.forceKey === forceKey;
             }
         });
 
         forceArmyLists.forEach(item => {
-            const name = Array.isArray(item) ? item[5] : (item['Army Name'] || item.armyName);
-            const points = Array.isArray(item) ? item[9] : (item['Points Value'] || item.pointsValue);
+            const name = Array.isArray(item) ? item[5] : (item['army_name'] || item.armyName);
+            const points = Array.isArray(item) ? item[9] : (item['points_value'] || item.pointsValue);
 
             if (name) {
                 const option = document.createElement('option');

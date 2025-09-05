@@ -4,14 +4,14 @@
 // Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '13n56kfJPSMoeV9VyiTXYajWT1LuBmnpj2oSwcek_osg';
-const SHEET_NAME = 'Forces';
+const SHEET_NAME = 'forces';
 
 // Helper function to filter out deleted rows
 function filterActiveRows(data) {
   if (!data || data.length <= 1) return data;
   
   const headers = data[0];
-  const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
   
   // If no Deleted Timestamp column, return all data
   if (deletedTimestampIndex === -1) return data;
@@ -25,10 +25,10 @@ function filterActiveRows(data) {
 }
 
 // Key generation function
-function generateForceKey(forceName, userName) {
+function generateForceKey(force_name, user_name) {
   // Remove spaces and special characters, limit length for readability
-  const forcePart = forceName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
-  const userPart = userName.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
+  const forcePart = force_name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+  const userPart = user_name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 15);
   return `${forcePart}_${userPart}`;
 }
 
@@ -57,10 +57,10 @@ function doPost(e) {
     }
     
     // Validate required fields
-    if (!data.userName || !data.forceName || !data.faction) {
+    if (!data.user_name || !data.force_name || !data.faction) {
       const missing = [];
-      if (!data.userName) missing.push('userName');
-      if (!data.forceName) missing.push('forceName');
+      if (!data.user_name) missing.push('user_name');
+      if (!data.force_name) missing.push('force_name');
       if (!data.faction) missing.push('faction');
       throw new Error('Missing required fields: ' + missing.join(', '));
     }
@@ -80,13 +80,13 @@ function doPost(e) {
       sheet = spreadsheet.insertSheet(SHEET_NAME);
     }
     
-    // Check if sheet has the correct headers (with Key column first and Deleted Timestamp at end)
+    // Check if sheet has the correct headers (with key column first and deleted_timestamp at end)
     let needsHeaderUpdate = false;
     if (sheet.getLastRow() === 0) {
       needsHeaderUpdate = true;
     } else {
       const firstCell = sheet.getRange(1, 1).getValue();
-      if (firstCell !== 'Key') {
+      if (firstCell !== 'key') {
         needsHeaderUpdate = true;
       }
     }
@@ -94,8 +94,8 @@ function doPost(e) {
     if (needsHeaderUpdate) {
       console.log('Updating headers to include Key column and Deleted Timestamp');
       
-      // If sheet has existing data without Key column, we need to migrate it
-      if (sheet.getLastRow() > 0 && sheet.getRange(1, 1).getValue() !== 'Key') {
+      // If sheet has existing data without key column, we need to migrate it
+      if (sheet.getLastRow() > 0 && sheet.getRange(1, 1).getValue() !== 'key') {
         console.log('Migrating existing data to new structure');
         
         // Get existing data
@@ -104,8 +104,8 @@ function doPost(e) {
         // Clear the sheet
         sheet.clear();
         
-        // Set new headers with Deleted Timestamp
-        const headers = ['Key', 'User Name', 'Force Name', 'Faction', 'Detachment', 'Notes', 'Timestamp', 'Deleted Timestamp'];
+        // Set new headers with deleted_timestamp
+        const headers = ['key', 'user_key', 'user_name', 'force_name', 'faction', 'detachment', 'notes', 'timestamp', 'deleted_timestamp'];
         sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
         
         // Migrate existing data with generated keys
@@ -114,59 +114,61 @@ function doPost(e) {
           for (let i = 1; i < existingData.length; i++) {
             const row = existingData[i];
             // Assume old structure was: User Name, Force Name, Faction, Detachment, Notes, Timestamp
-            const userName = row[0] || '';
-            const forceName = row[1] || '';
-            const forceKey = generateForceKey(forceName, userName);
+            const user_name = row[0] || '';
+            const force_name = row[1] || '';
+            const forceKey = generateForceKey(force_name, user_name);
             
             migratedData.push([
               forceKey,
-              userName,
-              forceName,
+              '', // user_key (will be populated later)
+              user_name,
+              force_name,
               row[2] || '', // Faction
               row[3] || '', // Detachment
               row[4] || '', // Notes
               row[5] || new Date(), // Timestamp
-              '' // Deleted Timestamp (empty for existing records)
+              '' // deleted_timestamp (empty for existing records)
             ]);
           }
           
           if (migratedData.length > 0) {
-            sheet.getRange(2, 1, migratedData.length, 8).setValues(migratedData);
+            sheet.getRange(2, 1, migratedData.length, 9).setValues(migratedData);
             console.log(`Migrated ${migratedData.length} existing forces`);
           }
         }
       } else {
         // Just add headers to empty sheet
-        const headers = ['Key', 'User Name', 'Force Name', 'Faction', 'Detachment', 'Notes', 'Timestamp', 'Deleted Timestamp'];
+        const headers = ['key', 'user_key', 'user_name', 'force_name', 'faction', 'detachment', 'notes', 'timestamp', 'deleted_timestamp'];
         sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       }
       
       // Format header row
-      const headerRange = sheet.getRange(1, 1, 1, 8);
+      const headerRange = sheet.getRange(1, 1, 1, 9);
       headerRange.setFontWeight('bold');
       headerRange.setBackground('#4ecdc4');
       headerRange.setFontColor('#ffffff');
       
       // Set column widths
-      sheet.setColumnWidth(1, 200); // Key
-      sheet.setColumnWidth(2, 150); // User Name
-      sheet.setColumnWidth(3, 200); // Force Name
-      sheet.setColumnWidth(4, 150); // Faction
-      sheet.setColumnWidth(5, 150); // Detachment
-      sheet.setColumnWidth(6, 300); // Notes
-      sheet.setColumnWidth(7, 150); // Timestamp
-      sheet.setColumnWidth(8, 150); // Deleted Timestamp
+      sheet.setColumnWidth(1, 200); // key
+      sheet.setColumnWidth(2, 150); // user_key
+      sheet.setColumnWidth(3, 150); // user_name
+      sheet.setColumnWidth(4, 200); // force_name
+      sheet.setColumnWidth(5, 150); // faction
+      sheet.setColumnWidth(6, 150); // detachment
+      sheet.setColumnWidth(7, 300); // notes
+      sheet.setColumnWidth(8, 150); // timestamp
+      sheet.setColumnWidth(9, 150); // deleted_timestamp
     }
     
     // Generate the force key
-    const forceKey = generateForceKey(data.forceName, data.userName);
+    const forceKey = generateForceKey(data.force_name, data.user_name);
     console.log('Generated force key:', forceKey);
     
     // Check if force key already exists (and is not deleted)
     if (sheet.getLastRow() > 1) {
       const allData = sheet.getDataRange().getValues();
       const headers = allData[0];
-      const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+      const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
       
       for (let i = 1; i < allData.length; i++) {
         if (allData[i][0] === forceKey) {
@@ -197,14 +199,15 @@ function doPost(e) {
     
     // Prepare the row data with key and deleted timestamp
     const rowData = [
-      forceKey,                                // Key (column A)
-      data.userName,                           // User Name (column B)
-      data.forceName,                          // Force Name (column C)
-      data.faction,                            // Faction (column D)
-      data.detachment || '',                   // Detachment (column E)
-      data.notes || '',                        // Notes (column F)
-      timestamp,                                // Timestamp (column G)
-      ''                                        // Deleted Timestamp (column H) - empty for new records
+      forceKey,                                // key (column A)
+      data.user_key || '',                     // user_key (column B)
+      data.user_name,                          // user_name (column C)
+      data.force_name,                         // force_name (column D)
+      data.faction,                            // faction (column E)
+      data.detachment || '',                   // detachment (column F)
+      data.notes || '',                        // notes (column G)
+      timestamp,                                // timestamp (column H)
+      ''                                        // deleted_timestamp (column I) - empty for new records
     ];
     
     console.log('Row data prepared with key:', rowData);
@@ -219,7 +222,7 @@ function doPost(e) {
     console.log('Data written to sheet successfully');
     
     // Format timestamp column
-    sheet.getRange(newRowNumber, 7).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+    sheet.getRange(newRowNumber, 8).setNumberFormat('yyyy-mm-dd hh:mm:ss');
     
     // Format key column to be bold
     sheet.getRange(newRowNumber, 1).setFontWeight('bold');

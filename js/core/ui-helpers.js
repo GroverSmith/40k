@@ -13,12 +13,33 @@ const UIHelpers = {
 
         if (!container) return;
 
-        container.innerHTML = `
-            <div class="loading-state">
-                <div class="loading-spinner"></div>
-                <span>${message}</span>
-            </div>
+        // Store original content if not already stored
+        if (!container.dataset.originalContent) {
+            container.dataset.originalContent = container.innerHTML;
+        }
+
+        // Hide original content and show loading
+        const originalContent = container.querySelector('.original-content');
+        if (originalContent) {
+            originalContent.style.display = 'none';
+        } else {
+            // Wrap original content in a div
+            const wrapper = document.createElement('div');
+            wrapper.className = 'original-content';
+            wrapper.innerHTML = container.innerHTML;
+            container.innerHTML = '';
+            container.appendChild(wrapper);
+            wrapper.style.display = 'none';
+        }
+
+        // Add loading state
+        const loadingEl = document.createElement('div');
+        loadingEl.className = 'loading-state';
+        loadingEl.innerHTML = `
+            <div class="loading-spinner"></div>
+            <span>${message}</span>
         `;
+        container.appendChild(loadingEl);
     },
 
     /**
@@ -31,9 +52,20 @@ const UIHelpers = {
 
         if (!container) return;
 
+        // Remove loading state
         const loadingEl = container.querySelector('.loading-state');
         if (loadingEl) {
             loadingEl.remove();
+        }
+
+        // Restore original content
+        const originalContent = container.querySelector('.original-content');
+        if (originalContent) {
+            originalContent.style.display = 'block';
+        } else if (container.dataset.originalContent) {
+            // Fallback: restore from stored content
+            container.innerHTML = container.dataset.originalContent;
+            delete container.dataset.originalContent;
         }
     },
 
