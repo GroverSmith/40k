@@ -1,7 +1,6 @@
 // filename: crusades-gas-script.js
 // Google Apps Script for Crusades Sheet Access with Key System
 // Deploy this as a web app to handle crusade data requests
-// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '1Nzjg5YsL4i63r1cXVzVtF6AW3a2YseUCL_gV6tv9JmU'; 
 const SHEET_NAME = 'Crusades';

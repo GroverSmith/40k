@@ -1,7 +1,6 @@
 // filename: stories-gas-script.js
 // Google Apps Script for Stories Sheet
 // Deploy this as a web app to handle story submissions and retrieval
-// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '1Abqj7jWKzeupZMBF48GgSWG-u1kpPKsQfXHrzIw2uwQ';
 const SHEET_NAME = 'Stories';
@@ -44,6 +43,132 @@ function generateStoryKey() {
   return generateUUID();
 }
 
+// Edit function - updates an existing story record
+function editStory(storyKey, userKey, data) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Sheet not found');
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  const headers = allData[0];
+  const storyKeyIndex = headers.indexOf('story_key');
+  const userKeyIndex = headers.indexOf('user_key');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Find the row to update (must match both story_key and user_key)
+  let rowIndex = -1;
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[storyKeyIndex] === storyKey && row[userKeyIndex] === userKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      rowIndex = i + 1; // +1 because sheet rows are 1-indexed
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    throw new Error('Story not found or access denied');
+  }
+  
+  // Prepare updated row data
+  const timestamp = new Date();
+  const updatedRowData = [
+    storyKey,                      // story_key (Primary Key) - Column 0
+    userKey,                       // user_key - Column 1
+    data.crusade_key || '',        // crusade_key - Column 2
+    data.story_type || '',         // story_type - Column 3
+    data.title || '',              // title - Column 4
+    data.imperial_date || '',      // imperial_date - Column 5
+    data.story_text_1 || '',       // story_text_1 - Column 6
+    data.story_text_2 || '',       // story_text_2 - Column 7
+    data.story_text_3 || '',       // story_text_3 - Column 8
+    data.text_link || '',          // text_link - Column 9
+    data.image_1 || '',            // image_1 - Column 10
+    data.image_2 || '',            // image_2 - Column 11
+    data.image_3 || '',            // image_3 - Column 12
+    data.audio_link || '',         // audio_link - Column 13
+    timestamp,                     // timestamp - Column 14
+    ''                             // deleted_timestamp - Column 15 (keep empty)
+  ];
+  
+  // Update the row
+  sheet.getRange(rowIndex, 1, 1, updatedRowData.length).setValues([updatedRowData]);
+  sheet.getRange(rowIndex, 15).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  
+  return { success: true, message: 'Story updated successfully' };
+}
+
+// Delete function - soft deletes a story record
+function deleteStory(storyKey, userKey) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Sheet not found');
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  const headers = allData[0];
+  const storyKeyIndex = headers.indexOf('story_key');
+  const userKeyIndex = headers.indexOf('user_key');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Find the row to delete (must match both story_key and user_key)
+  let rowIndex = -1;
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[storyKeyIndex] === storyKey && row[userKeyIndex] === userKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      rowIndex = i + 1; // +1 because sheet rows are 1-indexed
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    throw new Error('Story not found or access denied');
+  }
+  
+  // Set deleted timestamp
+  const deletedTimestamp = new Date();
+  sheet.getRange(rowIndex, deletedTimestampIndex + 1).setValue(deletedTimestamp);
+  sheet.getRange(rowIndex, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  
+  // Trigger cascade deletion in xref tables
+  try {
+    // Delete from story forces
+    const storyForcesUrl = 'https://script.google.com/macros/s/AKfycbx1KvSAWcliHW0xTxq4kP9cJn2yeW9Oh72nHb7c7q8ThdRWx5ZS6lA_8hyW-yqufqw/exec';
+    UrlFetchApp.fetch(storyForcesUrl, {
+      method: 'POST',
+      payload: JSON.stringify({
+        operation: 'cascade_delete',
+        parent_table: 'stories',
+        parent_key: storyKey
+      }),
+      contentType: 'application/json'
+    });
+    
+    // Delete from story units
+    const storyUnitsUrl = 'https://script.google.com/macros/s/AKfycbz7xVqEw5qHx9r_fHTmIe8D5tSjL6b_LPxTqP3wzGH5KNMUI_ATXnSlzBQX0DzYyuBNXw/exec';
+    UrlFetchApp.fetch(storyUnitsUrl, {
+      method: 'POST',
+      payload: JSON.stringify({
+        operation: 'cascade_delete',
+        parent_table: 'stories',
+        parent_key: storyKey
+      }),
+      contentType: 'application/json'
+    });
+  } catch (cascadeError) {
+    console.error('Cascade deletion error:', cascadeError);
+    // Don't fail the main deletion if cascade fails
+  }
+  
+  return { success: true, message: 'Story deleted successfully' };
+}
+
 function doPost(e) {
   try {
     console.log('doPost called for story submission');
@@ -63,6 +188,28 @@ function doPost(e) {
       throw new Error('No data received');
     }
     
+    // Handle different operations
+    if (data.operation === 'edit') {
+      if (!data.story_key || !data.user_key) {
+        throw new Error('story_key and user_key are required for edit operation');
+      }
+      const result = editStory(data.story_key, data.user_key, data);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    if (data.operation === 'delete') {
+      if (!data.story_key || !data.user_key) {
+        throw new Error('story_key and user_key are required for delete operation');
+      }
+      const result = deleteStory(data.story_key, data.user_key);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Default operation is create
     // Validate required fields
     const required = ['userKey', 'title', 'storyType'];
     const missing = required.filter(field => !data[field]);

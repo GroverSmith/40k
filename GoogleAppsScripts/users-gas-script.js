@@ -30,12 +30,22 @@ function clean(text, maxLength = 30) {
   return String(text).replace(/[^a-zA-Z0-9]/g, '').substring(0, maxLength);
 }
 
+// Generate UUID v4
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 // Key generation function
 function generateUserKey(name, discordHandle) {
-  // Composite user key using name and discord handle
+  // Composite user key using name and discord handle, with UUID for uniqueness
   const namePart = clean(name);
   const discordPart = clean(discordHandle);
-  return `${namePart}_${discordPart}`;
+  const uuid = generateUUID();
+  return `${namePart}_${discordPart}_${uuid}`;
 }
 
 function doPost(e) {

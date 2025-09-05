@@ -1,7 +1,6 @@
 // filename: forces-gas-script.js
 // Google Apps Script for Forces Sheet with Composite Key System
 // Deploy this as a web app to handle force creation and retrieval
-// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '13n56kfJPSMoeV9VyiTXYajWT1LuBmnpj2oSwcek_osg';
 const SHEET_NAME = 'forces';
@@ -37,6 +36,125 @@ function generateForceKey(force_name, user_key) {
   return `${forcePart}_${user_key}`;
 }
 
+// Edit function - updates an existing force record
+function editForce(forceKey, userKey, data) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Sheet not found');
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  const headers = allData[0];
+  const forceKeyIndex = headers.indexOf('force_key');
+  const userKeyIndex = headers.indexOf('user_key');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Find the row to update (must match both force_key and user_key)
+  let rowIndex = -1;
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[forceKeyIndex] === forceKey && row[userKeyIndex] === userKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      rowIndex = i + 1; // +1 because sheet rows are 1-indexed
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    throw new Error('Force not found or access denied');
+  }
+  
+  // Prepare updated row data
+  const timestamp = new Date();
+  const updatedRowData = [
+    forceKey,                                // force_key (column A)
+    userKey,                                 // user_key (column B)
+    data.user_name,                          // user_name (column C)
+    data.force_name,                         // force_name (column D)
+    data.faction,                            // faction (column E)
+    data.detachment || '',                   // detachment (column F)
+    data.notes || '',                        // notes (column G)
+    timestamp,                               // timestamp (column H)
+    ''                                       // deleted_timestamp (column I) - keep empty
+  ];
+  
+  // Update the row
+  sheet.getRange(rowIndex, 1, 1, updatedRowData.length).setValues([updatedRowData]);
+  sheet.getRange(rowIndex, 8).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  
+  return { success: true, message: 'Force updated successfully' };
+}
+
+// Delete function - soft deletes a force record
+function deleteForce(forceKey, userKey) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Sheet not found');
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  const headers = allData[0];
+  const forceKeyIndex = headers.indexOf('force_key');
+  const userKeyIndex = headers.indexOf('user_key');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Find the row to delete (must match both force_key and user_key)
+  let rowIndex = -1;
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[forceKeyIndex] === forceKey && row[userKeyIndex] === userKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      rowIndex = i + 1; // +1 because sheet rows are 1-indexed
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    throw new Error('Force not found or access denied');
+  }
+  
+  // Set deleted timestamp
+  const deletedTimestamp = new Date();
+  sheet.getRange(rowIndex, deletedTimestampIndex + 1).setValue(deletedTimestamp);
+  sheet.getRange(rowIndex, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  
+  // Trigger cascade deletion in xref tables
+  try {
+    // Delete from crusade participants
+    const crusadeParticipantsUrl = 'https://script.google.com/macros/s/AKfycbx79dYbG5yCDKa-kz0iKPlJowWekbJkhmJRNIJ5b0HjcVfV1JXrJqqeIejxDpHoWzsIZg/exec';
+    UrlFetchApp.fetch(crusadeParticipantsUrl, {
+      method: 'POST',
+      payload: JSON.stringify({
+        operation: 'cascade_delete',
+        parent_table: 'forces',
+        parent_key: forceKey
+      }),
+      contentType: 'application/json'
+    });
+    
+    // Delete from story forces
+    const storyForcesUrl = 'https://script.google.com/macros/s/AKfycbx1KvSAWcliHW0xTxq4kP9cJn2yeW9Oh72nHb7c7q8ThdRWx5ZS6lA_8hyW-yqufqw/exec';
+    UrlFetchApp.fetch(storyForcesUrl, {
+      method: 'POST',
+      payload: JSON.stringify({
+        operation: 'cascade_delete',
+        parent_table: 'forces',
+        parent_key: forceKey
+      }),
+      contentType: 'application/json'
+    });
+  } catch (cascadeError) {
+    console.error('Cascade deletion error:', cascadeError);
+    // Don't fail the main deletion if cascade fails
+  }
+  
+  return { success: true, message: 'Force deleted successfully' };
+}
+
 function doPost(e) {
   try {
     console.log('doPost called - raw data:', e.postData ? e.postData.contents : 'No postData');
@@ -61,6 +179,28 @@ function doPost(e) {
       throw new Error('No data received in request');
     }
     
+    // Handle different operations
+    if (data.operation === 'edit') {
+      if (!data.force_key || !data.user_key) {
+        throw new Error('force_key and user_key are required for edit operation');
+      }
+      const result = editForce(data.force_key, data.user_key, data);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    if (data.operation === 'delete') {
+      if (!data.force_key || !data.user_key) {
+        throw new Error('force_key and user_key are required for delete operation');
+      }
+      const result = deleteForce(data.force_key, data.user_key);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Default operation is create
     // Validate required fields
     if (!data.user_name || !data.force_name || !data.faction) {
       const missing = [];

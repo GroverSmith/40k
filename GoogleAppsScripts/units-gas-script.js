@@ -44,6 +44,128 @@ function generateUnitKey() {
   return generateUUID();
 }
 
+// Edit function - updates an existing unit record
+function editUnit(unitKey, userKey, data) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Sheet not found');
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  const headers = allData[0];
+  const unitKeyIndex = headers.indexOf('unit_key');
+  const userKeyIndex = headers.indexOf('user_key');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Find the row to update (must match both unit_key and user_key)
+  let rowIndex = -1;
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[unitKeyIndex] === unitKey && row[userKeyIndex] === userKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      rowIndex = i + 1; // +1 because sheet rows are 1-indexed
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    throw new Error('Unit not found or access denied');
+  }
+  
+  // Prepare updated row data
+  const timestamp = new Date();
+  const updatedRowData = [
+    unitKey,                       // unit_key (Primary Key) - Column 0
+    userKey,                       // user_key - Column 1
+    data.force_key || '',          // force_key - Column 2
+    data.data_sheet || '',         // data_sheet - Column 3
+    data.unit_name || '',          // unit_name - Column 4
+    data.unit_type || '',          // unit_type - Column 5
+    data.mfm_version || '',        // mfm_version - Column 6
+    data.points || '',             // points - Column 7
+    data.crusade_points || '',     // crusade_points - Column 8
+    data.wargear || '',            // wargear - Column 9
+    data.enhancements || '',       // enhancements - Column 10
+    data.relics || '',             // relics - Column 11
+    data.battle_traits || '',      // battle_traits - Column 12
+    data.battle_scars || '',       // battle_scars - Column 13
+    data.battle_count || '',       // battle_count - Column 14
+    data.xp || '',                 // xp - Column 15
+    data.rank || '',               // rank - Column 16
+    data.kill_count || '',         // kill_count - Column 17
+    data.times_killed || '',       // times_killed - Column 18
+    data.description || '',        // description - Column 19
+    data.notable_history || '',    // notable_history - Column 20
+    data.notes || '',              // notes - Column 21
+    timestamp,                     // timestamp - Column 22
+    ''                             // deleted_timestamp - Column 23 (keep empty)
+  ];
+  
+  // Update the row
+  sheet.getRange(rowIndex, 1, 1, updatedRowData.length).setValues([updatedRowData]);
+  sheet.getRange(rowIndex, 23).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  
+  return { success: true, message: 'Unit updated successfully' };
+}
+
+// Delete function - soft deletes a unit record
+function deleteUnit(unitKey, userKey) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Sheet not found');
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  const headers = allData[0];
+  const unitKeyIndex = headers.indexOf('unit_key');
+  const userKeyIndex = headers.indexOf('user_key');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Find the row to delete (must match both unit_key and user_key)
+  let rowIndex = -1;
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[unitKeyIndex] === unitKey && row[userKeyIndex] === userKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      rowIndex = i + 1; // +1 because sheet rows are 1-indexed
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    throw new Error('Unit not found or access denied');
+  }
+  
+  // Set deleted timestamp
+  const deletedTimestamp = new Date();
+  sheet.getRange(rowIndex, deletedTimestampIndex + 1).setValue(deletedTimestamp);
+  sheet.getRange(rowIndex, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  
+  // Trigger cascade deletion in xref tables
+  try {
+    // Delete from story units
+    const storyUnitsUrl = 'https://script.google.com/macros/s/AKfycbz7xVqEw5qHx9r_fHTmIe8D5tSjL6b_LPxTqP3wzGH5KNMUI_ATXnSlzBQX0DzYyuBNXw/exec';
+    UrlFetchApp.fetch(storyUnitsUrl, {
+      method: 'POST',
+      payload: JSON.stringify({
+        operation: 'cascade_delete',
+        parent_table: 'units',
+        parent_key: unitKey
+      }),
+      contentType: 'application/json'
+    });
+  } catch (cascadeError) {
+    console.error('Cascade deletion error:', cascadeError);
+    // Don't fail the main deletion if cascade fails
+  }
+  
+  return { success: true, message: 'Unit deleted successfully' };
+}
+
 function doPost(e) {
   try {
     console.log('doPost called for unit submission');
@@ -63,6 +185,28 @@ function doPost(e) {
       throw new Error('No data received');
     }
     
+    // Handle different operations
+    if (data.operation === 'edit') {
+      if (!data.unit_key || !data.user_key) {
+        throw new Error('unit_key and user_key are required for edit operation');
+      }
+      const result = editUnit(data.unit_key, data.user_key, data);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    if (data.operation === 'delete') {
+      if (!data.unit_key || !data.user_key) {
+        throw new Error('unit_key and user_key are required for delete operation');
+      }
+      const result = deleteUnit(data.unit_key, data.user_key);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Default operation is create
     // Validate required fields (check for empty strings too)
     const required = ['forceKey', 'name', 'dataSheet', 'type'];
     const missing = required.filter(field => !data[field] || data[field].trim() === '');

@@ -2,7 +2,6 @@
 // Google Apps Script for Army List Form Submissions with Composite Key System
 // Deploy this as a web app to handle form submissions
 
-
 const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; 
 const SHEET_NAME = 'armies';
 
@@ -51,6 +50,100 @@ function generateArmyKey() {
   return generateUUID();
 }
 
+// Edit function - updates an existing army record
+function editArmy(armyKey, userKey, data) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Sheet not found');
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  const headers = allData[0];
+  const armyKeyIndex = headers.indexOf('army_key');
+  const userKeyIndex = headers.indexOf('user_key');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Find the row to update (must match both army_key and user_key)
+  let rowIndex = -1;
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[armyKeyIndex] === armyKey && row[userKeyIndex] === userKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      rowIndex = i + 1; // +1 because sheet rows are 1-indexed
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    throw new Error('Army not found or access denied');
+  }
+  
+  // Prepare updated row data
+  const timestamp = new Date();
+  const updatedRowData = [
+    armyKey,                     // army_key (Primary Key) - Column 0
+    data.force_key || '',        // force_key (Foreign Key) - Column 1
+    userKey,                     // user_key (Foreign Key) - Column 2
+    data.user_name,              // user_name - Column 3
+    data.force_name,             // force_name - Column 4
+    data.army_name,              // army_name - Column 5
+    data.faction || '',          // faction - Column 6
+    data.detachment || '',       // detachment - Column 7
+    data.mfm_version || '',      // mfm_version - Column 8
+    data.points_value || '',     // points_value - Column 9
+    data.notes || '',            // notes - Column 10
+    data.army_list_text,         // army_list_text - Column 11
+    timestamp,                   // timestamp - Column 12
+    ''                           // deleted_timestamp - Column 13 (keep empty)
+  ];
+  
+  // Update the row
+  sheet.getRange(rowIndex, 1, 1, updatedRowData.length).setValues([updatedRowData]);
+  sheet.getRange(rowIndex, 13).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  
+  return { success: true, message: 'Army updated successfully' };
+}
+
+// Delete function - soft deletes an army record
+function deleteArmy(armyKey, userKey) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Sheet not found');
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  const headers = allData[0];
+  const armyKeyIndex = headers.indexOf('army_key');
+  const userKeyIndex = headers.indexOf('user_key');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Find the row to delete (must match both army_key and user_key)
+  let rowIndex = -1;
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[armyKeyIndex] === armyKey && row[userKeyIndex] === userKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      rowIndex = i + 1; // +1 because sheet rows are 1-indexed
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    throw new Error('Army not found or access denied');
+  }
+  
+  // Set deleted timestamp
+  const deletedTimestamp = new Date();
+  sheet.getRange(rowIndex, deletedTimestampIndex + 1).setValue(deletedTimestamp);
+  sheet.getRange(rowIndex, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  
+  return { success: true, message: 'Army deleted successfully' };
+}
+
 function doPost(e) {
   try {
     console.log('doPost called - raw data:', e.postData ? e.postData.contents : 'No postData');
@@ -75,6 +168,28 @@ function doPost(e) {
       throw new Error('No data received in request');
     }
     
+    // Handle different operations
+    if (data.operation === 'edit') {
+      if (!data.army_key || !data.user_key) {
+        throw new Error('army_key and user_key are required for edit operation');
+      }
+      const result = editArmy(data.army_key, data.user_key, data);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    if (data.operation === 'delete') {
+      if (!data.army_key || !data.user_key) {
+        throw new Error('army_key and user_key are required for delete operation');
+      }
+      const result = deleteArmy(data.army_key, data.user_key);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Default operation is create
     // Validate required fields
     if (!data.userName || !data.forceName || !data.armyName || !data.armyListText) {
       const missing = [];

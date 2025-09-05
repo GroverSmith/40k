@@ -2,7 +2,6 @@
 // Google Apps Script for Crusade Participants Sheet (Junction Table)
 // Deploy this as a web app to handle participant registrations and lookups
 // This is a junction table - no primary key needed, the combination of crusadeKey + forceKey is unique
-// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '17jJO939FWthVaLCO091CQzx0hAmtNn8zE5zlqBf10JQ';
 const SHEET_NAME = 'xref_crusade_participants';
@@ -41,6 +40,58 @@ function generateForceKey(forceName, userKey) {
   return `${forcePart}_${userKey}`;
 }
 
+// Cascade delete function - soft deletes all xref records when a parent record is deleted
+function cascadeDeleteByParent(parentTable, parentKey) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    console.log('Crusade participants sheet not found');
+    return { success: true, message: 'No xref records to clean up' };
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  if (allData.length <= 1) {
+    return { success: true, message: 'No xref records to clean up' };
+  }
+  
+  const headers = allData[0];
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Determine which column to check based on parent table
+  let parentKeyColumn = -1;
+  if (parentTable === 'crusades') {
+    parentKeyColumn = headers.indexOf('crusade_key');
+  } else if (parentTable === 'forces') {
+    parentKeyColumn = headers.indexOf('force_key');
+  } else if (parentTable === 'users') {
+    parentKeyColumn = headers.indexOf('user_key');
+  }
+  
+  if (parentKeyColumn === -1) {
+    console.log(`Unknown parent table: ${parentTable}`);
+    return { success: true, message: 'Unknown parent table' };
+  }
+  
+  let deletedCount = 0;
+  const deletedTimestamp = new Date();
+  
+  // Find and soft-delete all matching records
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[parentKeyColumn] === parentKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      // Soft delete this record
+      sheet.getRange(i + 1, deletedTimestampIndex + 1).setValue(deletedTimestamp);
+      sheet.getRange(i + 1, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+      deletedCount++;
+    }
+  }
+  
+  console.log(`Cascade deleted ${deletedCount} xref records for ${parentTable}:${parentKey}`);
+  return { success: true, message: `Cascade deleted ${deletedCount} xref records` };
+}
+
 function doPost(e) {
   try {
     console.log('doPost called for participant registration');
@@ -59,6 +110,14 @@ function doPost(e) {
       }
     } else {
       throw new Error('No data received');
+    }
+    
+    // Handle cascade delete operation
+    if (data.operation === 'cascade_delete') {
+      const result = cascadeDeleteByParent(data.parent_table, data.parent_key);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
     }
     
     // We now expect to receive either keys directly OR names to generate keys from

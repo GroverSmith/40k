@@ -1,9 +1,9 @@
-// filename: story-forces-gas-script.js
-// Google Apps Script for Story_Forces Junction Table
+// filename: story-units-gas-script.js
+// Google Apps Script for Story_Units Junction Table
 // Deploy this as a web app
 
-const SPREADSHEET_ID = '16IHkhSjjHZoxGFS96VK4Rzpf4xOwU8620R-MNKnxy-0';
-const SHEET_NAME = 'Story_Forces';
+const SPREADSHEET_ID = '1YbPSfXMJro_x9d1W18RyZ4MQyfhoOwjgtDR0RhSju1E';
+const SHEET_NAME = 'xref_story_units';
 
 // Cascade delete function - soft deletes all xref records when a parent record is deleted
 function cascadeDeleteByParent(parentTable, parentKey) {
@@ -11,7 +11,7 @@ function cascadeDeleteByParent(parentTable, parentKey) {
   const sheet = spreadsheet.getSheetByName(SHEET_NAME);
   
   if (!sheet) {
-    console.log('Story forces sheet not found');
+    console.log('Story units sheet not found');
     return { success: true, message: 'No xref records to clean up' };
   }
   
@@ -27,8 +27,8 @@ function cascadeDeleteByParent(parentTable, parentKey) {
   let parentKeyColumn = -1;
   if (parentTable === 'stories') {
     parentKeyColumn = headers.indexOf('story_key');
-  } else if (parentTable === 'forces') {
-    parentKeyColumn = headers.indexOf('force_key');
+  } else if (parentTable === 'units') {
+    parentKeyColumn = headers.indexOf('unit_key');
   }
   
   if (parentKeyColumn === -1) {
@@ -62,7 +62,11 @@ function doPost(e) {
     if (e.parameter) {
       data = e.parameter;
     } else if (e.postData && e.postData.contents) {
-      data = JSON.parse(e.postData.contents);
+      try {
+        data = JSON.parse(e.postData.contents);
+      } catch (jsonError) {
+        throw new Error('Invalid data format');
+      }
     } else {
       throw new Error('No data received');
     }
@@ -75,30 +79,36 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // Default operation is create story-unit relationships
+    const { storyKey, unitKeys } = data;
+    
+    if (!storyKey || !unitKeys || !Array.isArray(unitKeys)) {
+      throw new Error('storyKey and unitKeys array are required');
+    }
+
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
     let sheet = spreadsheet.getSheetByName(SHEET_NAME);
 
+    // Create sheet if it doesn't exist
     if (!sheet) {
+      console.log('Creating story units sheet');
       sheet = spreadsheet.insertSheet(SHEET_NAME);
-      const headers = ['Story Key', 'Force Key', 'Timestamp', 'Deleted Timestamp'];
+      
+      const headers = ['story_key', 'unit_key', 'timestamp', 'deleted_timestamp'];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-
+      
       // Format headers
       const headerRange = sheet.getRange(1, 1, 1, headers.length);
       headerRange.setFontWeight('bold');
-      headerRange.setBackground('#4ecdc4');
-      headerRange.setFontColor('#ffffff');
     }
 
-    // Handle multiple forces for one story
-    const storyKey = data.storyKey;
-    const forceKeys = data.forceKeys ? data.forceKeys.split(',') : [];
     const timestamp = new Date();
-
-    if (forceKeys.length > 0) {
-      const rows = forceKeys.map(forceKey => [
+    
+    // Create rows for each unit key
+    if (unitKeys.length > 0) {
+      const rows = unitKeys.map(unitKey => [
         storyKey,
-        forceKey.trim(),
+        unitKey.trim(),
         timestamp,
         '' // Deleted Timestamp
       ]);
@@ -110,12 +120,13 @@ function doPost(e) {
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
-        message: 'Story-Force relationships created',
-        count: forceKeys.length
+        message: 'Story-Unit relationships created',
+        count: unitKeys.length
       }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
+    console.error('Error in story-units doPost:', error);
     return ContentService
       .createTextOutput(JSON.stringify({
         success: false,
@@ -127,17 +138,37 @@ function doPost(e) {
 
 function doGet(e) {
   try {
-    const action = e.parameter.action || 'list';
-
-    switch(action) {
-      case 'forces-for-story':
-        return getForcesForStory(e.parameter.storyKey);
-      case 'stories-for-force':
-        return getStoriesForForce(e.parameter.forceKey);
-      default:
-        return getAllRelationships();
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      return ContentService
+        .createTextOutput(JSON.stringify([]))
+        .setMimeType(ContentService.MimeType.JSON);
     }
+    
+    const data = sheet.getDataRange().getValues();
+    
+    // Filter out deleted rows
+    const headers = data[0];
+    const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+    
+    if (deletedTimestampIndex === -1) {
+      return ContentService
+        .createTextOutput(JSON.stringify(data))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const activeRows = [headers].concat(
+      data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
+    );
+    
+    return ContentService
+      .createTextOutput(JSON.stringify(activeRows))
+      .setMimeType(ContentService.MimeType.JSON);
+      
   } catch (error) {
+    console.error('Error in story-units doGet:', error);
     return ContentService
       .createTextOutput(JSON.stringify({
         success: false,
@@ -145,62 +176,4 @@ function doGet(e) {
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
-}
-
-function getForcesForStory(storyKey) {
-  if (!storyKey) throw new Error('Story key required');
-
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-
-  if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        forces: []
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-
-  const data = sheet.getDataRange().getValues();
-  const forceKeys = data
-    .slice(1)
-    .filter(row => row[0] === storyKey && !row[3])
-    .map(row => row[1]);
-
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      forces: forceKeys
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function getStoriesForForce(forceKey) {
-  if (!forceKey) throw new Error('Force key required');
-
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-
-  if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        stories: []
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-
-  const data = sheet.getDataRange().getValues();
-  const storyKeys = data
-    .slice(1)
-    .filter(row => row[1] === forceKey && !row[3])
-    .map(row => row[0]);
-
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      stories: storyKeys
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
 }

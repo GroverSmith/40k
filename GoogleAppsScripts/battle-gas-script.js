@@ -1,7 +1,6 @@
 // filename: battle-gas-script.js
 // Google Apps Script for Battle History Sheet - Standardized API responses
 // Deploy this as a web app to handle battle report submissions and retrieval
-// Updated to always return consistent JSON responses
 
 const SPREADSHEET_ID = '1ybyOYvN_7hHJ2lT5iK3wMOuY3grlUwGTooxbttgmJyk';
 const SHEET_NAME = 'battles';
@@ -62,6 +61,107 @@ function generateBattleKey() {
   return generateUUID();
 }
 
+// Edit function - updates an existing battle record
+function editBattle(battleKey, userKey, data) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Sheet not found');
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  const headers = normalizeHeaders(allData[0]);
+  const battleKeyIndex = headers.indexOf('battle_key');
+  const userKeyIndex = headers.indexOf('user_key');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Find the row to update (must match both battle_key and user_key)
+  let rowIndex = -1;
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[battleKeyIndex] === battleKey && row[userKeyIndex] === userKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      rowIndex = i + 1; // +1 because sheet rows are 1-indexed
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    throw new Error('Battle not found or access denied');
+  }
+  
+  // Prepare updated row data
+  const timestamp = new Date();
+  const updatedRowData = [
+    battleKey,                     // battle_key (Primary Key) - Column 0
+    userKey,                       // user_key - Column 1
+    data.crusade_key || '',        // crusade_key - Column 2
+    data.victor_force_key || '',   // victor_force_key - Column 3
+    data.battle_size || '',        // battle_size - Column 4
+    data.force_key_1 || '',        // force_key_1 - Column 5
+    data.force_key_2 || '',        // force_key_2 - Column 6
+    data.date_played || '',        // date_played - Column 7
+    data.player_1 || '',           // player_1 - Column 8
+    data.force_1 || '',            // force_1 - Column 9
+    data.army_1 || '',             // army_1 - Column 10
+    data.player_2 || '',           // player_2 - Column 11
+    data.force_2 || '',            // force_2 - Column 12
+    data.army_2 || '',             // army_2 - Column 13
+    data.victor || '',             // victor - Column 14
+    data.player_1_score || '',     // player_1_score - Column 15
+    data.player_2_score || '',     // player_2_score - Column 16
+    data.battle_name || '',        // battle_name - Column 17
+    data.summary_notes || '',      // summary_notes - Column 18
+    timestamp,                     // timestamp - Column 19
+    ''                             // deleted_timestamp - Column 20 (keep empty)
+  ];
+  
+  // Update the row
+  sheet.getRange(rowIndex, 1, 1, updatedRowData.length).setValues([updatedRowData]);
+  sheet.getRange(rowIndex, 20).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  
+  return { success: true, message: 'Battle updated successfully' };
+}
+
+// Delete function - soft deletes a battle record
+function deleteBattle(battleKey, userKey) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Sheet not found');
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  const headers = normalizeHeaders(allData[0]);
+  const battleKeyIndex = headers.indexOf('battle_key');
+  const userKeyIndex = headers.indexOf('user_key');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Find the row to delete (must match both battle_key and user_key)
+  let rowIndex = -1;
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[battleKeyIndex] === battleKey && row[userKeyIndex] === userKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      rowIndex = i + 1; // +1 because sheet rows are 1-indexed
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    throw new Error('Battle not found or access denied');
+  }
+  
+  // Set deleted timestamp
+  const deletedTimestamp = new Date();
+  sheet.getRange(rowIndex, deletedTimestampIndex + 1).setValue(deletedTimestamp);
+  sheet.getRange(rowIndex, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  
+  return { success: true, message: 'Battle deleted successfully' };
+}
+
 function doPost(e) {
   try {
     console.log('doPost called for battle report');
@@ -81,6 +181,28 @@ function doPost(e) {
       throw new Error('No data received');
     }
 
+    // Handle different operations
+    if (data.operation === 'edit') {
+      if (!data.battle_key || !data.user_key) {
+        throw new Error('battle_key and user_key are required for edit operation');
+      }
+      const result = editBattle(data.battle_key, data.user_key, data);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    if (data.operation === 'delete') {
+      if (!data.battle_key || !data.user_key) {
+        throw new Error('battle_key and user_key are required for delete operation');
+      }
+      const result = deleteBattle(data.battle_key, data.user_key);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Default operation is create
     // Validate required fields
     const required = ['force1Key', 'force2Key', 'datePlayed', 'player1', 'player2'];
     const missing = required.filter(field => !data[field]);
