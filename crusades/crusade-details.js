@@ -45,11 +45,7 @@ class CrusadeDetailsController {
             const fetchUrl = `${crusadesUrl}?action=get&key=${encodeURIComponent(this.crusadeKey)}`;
 
             // USE CACHE MANAGER for the API call
-            const data = await CacheManager.fetchWithCache(
-                fetchUrl,
-                'crusades',
-                `details_${this.crusadeKey}`
-            );
+            const data = await CacheManager.fetchWithCache(fetchUrl, 'crusades');
 
             if (data.success && data.data) {
                 this.crusadeData = data.data;
@@ -58,11 +54,7 @@ class CrusadeDetailsController {
             }
 
             // If API doesn't work, fetch all crusades and find ours
-            const allCrusades = await CacheManager.fetchWithCache(
-                crusadesUrl,
-                'crusades',
-                'all'
-            );
+            const allCrusades = await CacheManager.fetchWithCache(crusadesUrl, 'crusades');
 
             if (allCrusades && allCrusades.length > 1) {
                 const headers = allCrusades[0];
@@ -181,18 +173,15 @@ class CrusadeDetailsController {
         const section = document.getElementById('participating-forces-section');
         if (section) {
             section.style.display = 'block';
-            if (window.ForceTable) {
-                await ForceTable.loadForCrusade(this.crusadeKey, 'participating-forces-content');
+            if (window.CrusadeParticipantsTable) {
+                await CrusadeParticipantsTable.displayCrusadeParticipants('participating-forces-content', this.crusadeKey);
+            } else {
+                console.error('CrusadeParticipantsTable module not loaded');
+                const container = document.getElementById('participating-forces-content');
+                if (container) {
+                    container.innerHTML = '<p class="error-message">Failed to display participants.</p>';
+                }
             }
-        }
-    }
-
-    displayParticipatingForces(forces, container) {
-        if (window.ForceTable) {
-            ForceTable.displayCrusadeForces(forces, container);
-        } else {
-            console.error('ForceTable module not loaded');
-            container.innerHTML = '<p class="error-message">Failed to display forces.</p>';
         }
     }
 

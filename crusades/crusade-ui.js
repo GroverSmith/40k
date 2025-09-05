@@ -98,57 +98,19 @@ const CrusadeUI = {
         CoreUtils.dom.show(section);
     },
 
-    displayParticipatingForces(forces, crusadeName) {
+    displayParticipatingForces(crusadeKey) {
         const container = document.getElementById('forces-content');
         const section = document.getElementById('forces-section');
         if (!container || !section) return;
 
-        if (!forces || forces.length === 0) {
-            UIHelpers.showNoData(container, 'No forces registered for this crusade yet.');
+        // Use the new CrusadeParticipantsTable module
+        if (window.CrusadeParticipantsTable) {
+            CrusadeParticipantsTable.displayCrusadeParticipants('forces-content', crusadeKey);
             CoreUtils.dom.show(section);
-            return;
+        } else {
+            UIHelpers.showNoData(container, 'Participants table module not loaded.');
+            CoreUtils.dom.show(section);
         }
-
-        // Create table
-        let html = `
-            <table id="participants-table" class="data-table">
-                <thead>
-                    <tr>
-                        <th>Force Name</th>
-                        <th>Player</th>
-                        <th>Registered</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        forces.forEach(force => {
-            const forceName = force['Force Name'] || '';
-            const userName = force['User Name'] || '';
-            const registrationDate = UIHelpers.formatDate(force.Timestamp);
-            const forceKey = force['Force Key'] || force.Key || '';
-
-            const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceKey);
-
-            html += `
-                <tr>
-                    <td><a href="${forceUrl}">${forceName}</a></td>
-                    <td>${userName}</td>
-                    <td>${registrationDate}</td>
-                </tr>
-            `;
-        });
-
-        html += `
-                </tbody>
-            </table>
-        `;
-
-        container.innerHTML = html;
-        CoreUtils.dom.show(section);
-
-        // Make table sortable
-        UIHelpers.makeSortable('participants-table');
     },
 
     async displayStories(crusadeKey) {

@@ -139,9 +139,12 @@ const ForceRegistration = {
             this.showRegisterSuccess();
             this.closeRegisterModal();
             
-            // Reload participating forces
-            if (typeof loadParticipatingForces === 'function') {
-                loadParticipatingForces();
+            // Reload participating forces using the new table module
+            if (window.CrusadeParticipantsTable && this.crusadeData) {
+                const crusadeKey = this.crusadeData.Key || this.crusadeData.key;
+                if (crusadeKey) {
+                    await CrusadeParticipantsTable.displayCrusadeParticipants('participating-forces-content', crusadeKey);
+                }
             }
             
         } catch (error) {

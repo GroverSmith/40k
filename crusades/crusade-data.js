@@ -62,24 +62,15 @@ const CrusadeData = {
     
     /**
      * Load forces participating in this crusade
+     * @deprecated Use CrusadeParticipantsTable.displayCrusadeParticipants() instead
      */
     async loadParticipatingForces(crusadeKey) {
+        console.warn('loadParticipatingForces is deprecated. Use CrusadeParticipantsTable.displayCrusadeParticipants() instead.');
+        
         try {
-            const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
-            
-            if (!participantsUrl) {
-                console.warn('Participants sheet URL not configured');
-                return { success: true, forces: [] };
-            }
-            
-            // Use specific GET endpoint for crusade participants
-            const fetchUrl = `${participantsUrl}?action=forces-for-crusade&crusadeKey=${encodeURIComponent(crusadeKey)}`;
-            
-            // Use CacheManager for unified caching
-            const response = await CacheManager.fetchWithCache(fetchUrl, 'participants');
-            
-            if (response.success && response.forces) {
-                return { success: true, forces: response.forces };
+            if (window.CrusadeParticipantsTable) {
+                const data = await CrusadeParticipantsTable.fetchData('by-crusade', crusadeKey);
+                return { success: true, forces: data };
             }
             
             return { success: true, forces: [] };
@@ -135,8 +126,8 @@ const CrusadeData = {
         const result = await response.json();
         
         if (result.success) {
-            // Clear the participants cache for this crusade
-            CacheManager.clear('participants', `crusade_${registrationData.crusadeKey}`);
+            // Clear the participants cache
+            CacheManager.clear('participants');
         }
         
         return result;
