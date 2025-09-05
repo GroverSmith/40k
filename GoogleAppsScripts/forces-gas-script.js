@@ -110,7 +110,7 @@ function doPost(e) {
         sheet.clear();
         
         // Set new headers with deleted_timestamp
-        const headers = ['key', 'user_key', 'user_name', 'force_name', 'faction', 'detachment', 'notes', 'timestamp', 'deleted_timestamp'];
+        const headers = ['force_key', 'user_key', 'user_name', 'force_name', 'faction', 'detachment', 'notes', 'timestamp', 'deleted_timestamp'];
         sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
         
         // Migrate existing data with generated keys
@@ -143,7 +143,7 @@ function doPost(e) {
         }
       } else {
         // Just add headers to empty sheet
-        const headers = ['key', 'user_key', 'user_name', 'force_name', 'faction', 'detachment', 'notes', 'timestamp', 'deleted_timestamp'];
+        const headers = ['force_key', 'user_key', 'user_name', 'force_name', 'faction', 'detachment', 'notes', 'timestamp', 'deleted_timestamp'];
         sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       }
       

@@ -1,8 +1,7 @@
 // filename: army-gas-script.js
 // Google Apps Script for Army List Form Submissions with Composite Key System
 // Deploy this as a web app to handle form submissions
-// Updated to have Force Key as the second column (between Key and Timestamp)
-// Updated to include Deleted Timestamp column for soft deletion
+
 
 const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; 
 const SHEET_NAME = 'armies';
@@ -102,19 +101,20 @@ function doPost(e) {
       
       // Add header row with Force Key as second column and Deleted Timestamp at end
       const headers = [
-        'Key',           // Primary key (column 0)
-        'Force Key',     // Foreign key to Forces sheet (column 1)
-        'Timestamp',     // Column 2
-        'User Name',     // Column 3
-        'Force Name',    // Column 4
-        'Army Name',     // Column 5
-        'Faction',       // Column 6
-        'Detachment',    // Column 7
-        'MFM Version',   // Column 8
-        'Points Value',  // Column 9
-        'Notes',         // Column 10
-        'Army List Text',// Column 11
-        'Deleted Timestamp' // Column 12
+        'army_key',      // Primary key (column 0)
+        'force_key',     // Foreign key to Forces sheet (column 1)
+        'user_key',      // Foreign key to Users sheet (column 2)
+        'user_name',     // Column 3
+        'force_name',    // Column 4
+        'army_name',     // Column 5
+        'faction',       // Column 6
+        'detachment',    // Column 7
+        'mfm_version',   // Column 8
+        'points_value',  // Column 9
+        'notes',         // Column 10
+        'army_list_text',// Column 11
+        'timestamp',     // Column 12
+        'deleted_timestamp' // Column 13
       ];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
@@ -167,21 +167,22 @@ function doPost(e) {
     }
     console.log('Using timestamp:', timestamp);
     
-    // Prepare the row data with Force Key as second column
+    // Prepare the row data to match table-defs.js structure
     const rowData = [
-      armyKey,                     // Key (Primary Key) - Column 0
-      forceKey,                    // Force Key (Foreign Key) - Column 1
-      timestamp,                   // Timestamp - Column 2
-      data.userName,               // User Name - Column 3
-      data.forceName,              // Force Name - Column 4
-      data.armyName,               // Army Name - Column 5
-      data.faction || '',          // Faction - Column 6
-      data.detachment || '',       // Detachment - Column 7
-      data.mfmVersion || '',       // MFM Version - Column 8
-      data.pointsValue || '',      // Points Value - Column 9
-      data.notes || '',            // Notes - Column 10
-      data.armyListText,           // Army List Text - Column 11
-      ''                           // Deleted Timestamp - Column 12 (empty for new records)
+      armyKey,                     // army_key (Primary Key) - Column 0
+      forceKey,                    // force_key (Foreign Key) - Column 1
+      data.userKey || '',          // user_key (Foreign Key) - Column 2
+      data.userName,               // user_name - Column 3
+      data.forceName,              // force_name - Column 4
+      data.armyName,               // army_name - Column 5
+      data.faction || '',          // faction - Column 6
+      data.detachment || '',       // detachment - Column 7
+      data.mfmVersion || '',       // mfm_version - Column 8
+      data.pointsValue || '',      // points_value - Column 9
+      data.notes || '',            // notes - Column 10
+      data.armyListText,           // army_list_text - Column 11
+      timestamp,                   // timestamp - Column 12
+      ''                           // deleted_timestamp - Column 13 (empty for new records)
     ];
     
     console.log('Row data prepared with Force Key as second column');

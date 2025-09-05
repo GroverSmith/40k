@@ -97,26 +97,27 @@ function doPost(e) {
       sheet = spreadsheet.insertSheet(SHEET_NAME);
 
       const headers = [
-        'Key',
-        'Timestamp',
-        'Battle Size',
-        'Force 1 Key',
-        'Force 2 Key',
-        'Date Played',
-        'Player 1',
-        'Force 1',
-        'Army 1',
-        'Player 2',
-        'Force 2',
-        'Army 2',
-        'Victor',
-        'Player 1 Score',  // Uppercase 'Score'
-        'Player 2 Score',  // Uppercase 'Score'
-        'Battle Name',
-        'Summary Notes',
-        'Crusade Key',
-        'Victor Force Key',
-        'Deleted Timestamp'
+        'battle_key',
+        'user_key',
+        'crusade_key',
+        'victor_force_key',
+        'battle_size',
+        'force_key_1',
+        'force_key_2',
+        'date_played',
+        'player_1',
+        'force_1',
+        'army_1',
+        'player_2',
+        'force_2',
+        'army_2',
+        'victor',
+        'player_1_score',
+        'player_2_score',
+        'battle_name',
+        'summary_notes',
+        'timestamp',
+        'deleted_timestamp'
       ];
 
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);

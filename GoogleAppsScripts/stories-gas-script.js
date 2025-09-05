@@ -79,23 +79,22 @@ function doPost(e) {
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
       const headers = [
-        'Key',
-        'Timestamp',
-        'User Key',
-        'Force Key',
-        'Crusade Key',
-        'Story Type',
-        'Title',
-        'Imperial Date',
-        'Story Text 1',
-        'Story Text 2',
-        'Story Text 3',
-        'Text Link',
-        'Image 1',
-        'Image 2',
-        'Image 3',
-        'Audio Link',
-        'Deleted Timestamp'
+        'story_key',
+        'user_key',
+        'crusade_key',
+        'story_type',
+        'title',
+        'imperial_date',
+        'story_text_1',
+        'story_text_2',
+        'story_text_3',
+        'text_link',
+        'image_1',
+        'image_2',
+        'image_3',
+        'audio_link',
+        'timestamp',
+        'deleted_timestamp'
       ];
       
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);

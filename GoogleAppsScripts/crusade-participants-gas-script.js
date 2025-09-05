@@ -87,7 +87,7 @@ function doPost(e) {
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
       // Headers - no primary key column needed for junction table
-      const headers = ['Crusade Key', 'Force Key', 'Crusade Name', 'Force Name', 'User Name', 'Timestamp', 'Deleted Timestamp'];
+      const headers = ['crusade_key', 'force_key', 'user_key', 'crusade_name', 'force_name', 'user_name', 'timestamp', 'deleted_timestamp'];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
       // Format header row

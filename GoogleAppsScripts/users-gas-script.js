@@ -74,7 +74,7 @@ function doPost(e) {
       sheet = spreadsheet.insertSheet(SHEET_NAME);
       
       // Add headers with Key column first and Deleted Timestamp at end
-      const headers = ['Key', 'Timestamp', 'Name', 'Discord Handle', 'Email', 'Notes', 'Self Rating', 'Years Experience', 'Games Per Year', 'Deleted Timestamp'];
+      const headers = ['user_key', 'name', 'discord_handle', 'email', 'notes', 'composite_rating', 'self_rating', 'years_experience', 'games_per_year', 'timestamp', 'deleted_timestamp'];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
       // Format header row
@@ -216,7 +216,7 @@ function getUsersList() {
     if (!sheet) {
       // Return empty array with headers if no sheet exists yet
       return ContentService
-        .createTextOutput(JSON.stringify([['Key', 'Timestamp', 'Name', 'Discord Handle', 'Email', 'Notes', 'Self Rating', 'Years Experience', 'Games Per Year', 'Deleted Timestamp']]))
+        .createTextOutput(JSON.stringify([['user_key', 'name', 'discord_handle', 'email', 'notes', 'composite_rating', 'self_rating', 'years_experience', 'games_per_year', 'timestamp', 'deleted_timestamp']]))
         .setMimeType(ContentService.MimeType.JSON);
     }
     
