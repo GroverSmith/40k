@@ -155,14 +155,14 @@ class ForceDetails {
            
            // Use ArmyTable to load and display army lists for this force
            if (window.ArmyTable) {
-               await ArmyTable.loadForForce(this.forceKey, 'army-lists-content');
+               await ArmyTable.loadForForce(this.forceKey, 'army-lists-sheet');
            } else {
                console.error('ArmyTable module not loaded');
-               CoreUtils.dom.setLoading('army-lists-content', 'Army table module not loaded');
+               CoreUtils.dom.setLoading('army-lists-sheet', 'Army table module not loaded');
            }
        } catch (error) {
            console.error('Error loading army lists:', error);
-           CoreUtils.dom.setLoading('army-lists-content', 'Failed to load army lists');
+           CoreUtils.dom.setLoading('army-lists-sheet', 'Failed to load army lists');
        }
    }
    
@@ -207,10 +207,10 @@ class ForceDetails {
                let html = '<div class="crusades-list">';
                
                crusades.forEach(crusade => {
-                   const crusadeKey = crusade.Key || crusade.key;
-                   const crusadeName = crusade['Crusade Name'] || crusade.crusadeName;
-                   const state = crusade.State || crusade.state || 'Active';
-                   const startDate = crusade['Start Date'] ? new Date(crusade['Start Date']).toLocaleDateString() : '';
+                   const crusadeKey = crusade['crusade_key'] || crusade.Key || crusade.key;
+                   const crusadeName = crusade['crusade_name'] || crusade['Crusade Name'] || crusade.crusadeName;
+                   const state = crusade['state'] || crusade.State || crusade.state || 'Active';
+                   const startDate = (crusade['start_date'] || crusade['Start Date']) ? new Date(crusade['start_date'] || crusade['Start Date']).toLocaleDateString() : '';
                    
                    html += `
                        <div class="crusade-card">
