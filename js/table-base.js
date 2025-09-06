@@ -93,7 +93,7 @@ const TableBase = {
     /**
      * Generic loader pattern for all table types
      */
-    async loadAndDisplay(fetchConfig, displayConfig, container) {
+    async loadAndDisplay(fetchConfig, displayConfig, container, filterFn = null) {
         if (typeof container === 'string') {
             container = document.getElementById(container);
         }
@@ -111,7 +111,12 @@ const TableBase = {
                 fetchConfig.cacheKey
             );
 
-            const items = this.processResponseData(result, fetchConfig.dataKey);
+            let items = this.processResponseData(result, fetchConfig.dataKey);
+
+            // Apply filtering if provided
+            if (filterFn && typeof filterFn === 'function') {
+                items = items.filter(filterFn);
+            }
 
             if (items.length > 0) {
                 // Apply sorting if configured

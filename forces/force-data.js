@@ -84,16 +84,29 @@ const ForceData = {
         }
         
         try {
-            const fetchUrl = `${armyListsUrl}?action=force-lists&forceKey=${encodeURIComponent(forceKey || this.forceKey)}`;
-            
-            // Use CacheManager for unified caching
-            const data = await CacheManager.fetchWithCache(fetchUrl, 'armies');
+            // Use CacheManager for unified caching - fetch all armies and filter locally
+            const data = await CacheManager.fetchWithCache(armyListsUrl, 'armies');
             
             console.log('Army lists response:', data);
             
-            if (data.success && data.count > 0) {
-                this.armyListsData = data.data;
-                return { success: true, data: data.data };
+            if (Array.isArray(data) && data.length > 0) {
+                // Filter for armies belonging to this force
+                const headers = data[0];
+                const forceKeyToMatch = forceKey || this.forceKey;
+                const filteredArmies = data.slice(1)
+                    .filter(row => row[2] === forceKeyToMatch) // Force key is column 2
+                    .map(row => {
+                        const army = {};
+                        headers.forEach((header, index) => {
+                            army[header] = row[index];
+                        });
+                        return army;
+                    });
+                
+                if (filteredArmies.length > 0) {
+                    this.armyListsData = filteredArmies;
+                    return { success: true, data: filteredArmies };
+                }
             }
             
             this.armyListsData = [];

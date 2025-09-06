@@ -63,10 +63,10 @@ const ArmyTable = {
 
         const configs = {
             'force': {
-                url: `${armyUrl}?action=force-lists&forceKey=${encodeURIComponent(key)}`,
+                url: armyUrl,
                 cacheType: 'armies',
-                cacheKey: `force_${key}`,
-                dataKey: 'data',
+                cacheKey: 'all',
+                dataKey: null,
                 loadingMessage: 'Loading army lists...'
             },
             'crusade': {
@@ -172,7 +172,16 @@ const ArmyTable = {
 
     // Convenience methods
     async loadForForce(forceKey, containerId) {
-        return this.loadArmyLists('force', forceKey, containerId);
+        const fetchConfig = this.getFetchConfig('force', forceKey);
+        const displayConfig = this.getDisplayConfig('force');
+        
+        // Filter armies to only show those for this force
+        const filterFn = (army) => {
+            const armyForceKey = army['force_key'] || army['Force Key'] || '';
+            return armyForceKey === forceKey;
+        };
+        
+        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
     },
 
     async loadForCrusade(crusadeKey, containerId) {

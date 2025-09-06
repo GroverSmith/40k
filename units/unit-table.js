@@ -123,10 +123,10 @@ const UnitTable = {
 
         const configs = {
             'force': {
-                url: `${unitsUrl}?action=force-units&forceKey=${encodeURIComponent(key)}`,
+                url: unitsUrl,
                 cacheType: 'units',
-                cacheKey: `force_${key}`,
-                dataKey: 'units',
+                cacheKey: 'all',
+                dataKey: null,
                 loadingMessage: 'Loading units...'
             },
             'crusade': {
@@ -285,7 +285,16 @@ const UnitTable = {
 
     // Convenience methods
     async loadForForce(forceKey, containerId) {
-        return this.loadUnits('force', forceKey, containerId);
+        const fetchConfig = this.getFetchConfig('force', forceKey);
+        const displayConfig = this.getDisplayConfig('force');
+        
+        // Filter units to only show those for this force
+        const filterFn = (unit) => {
+            const unitForceKey = unit['force_key'] || unit['Force Key'] || '';
+            return unitForceKey === forceKey;
+        };
+        
+        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
     },
 
     async loadForCrusade(crusadeKey, containerId) {

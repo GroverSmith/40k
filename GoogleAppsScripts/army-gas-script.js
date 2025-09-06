@@ -368,8 +368,6 @@ function doGet(e) {
         return getArmyLists(e.parameter);
       case 'get':
         return getArmyListByKey(e.parameter.key);
-      case 'force-lists':
-        return getArmyListsForForce(e.parameter.forceKey);
       case 'test':
         return getRecentArmyLists();
       case 'delete':
@@ -511,16 +509,6 @@ function getArmyByKey(armyKey) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function getArmyListsForForce(forceKey) {
-  // Get all army lists for a specific force
-  console.log('getArmyListsForForce called with force key:', forceKey);
-  
-  if (!forceKey) {
-    throw new Error('Force key is required');
-  }
-  
-  return getArmyLists({ forceKey: forceKey });
-}
 
 function getRecentArmyLists() {
   // Get recent entries for testing

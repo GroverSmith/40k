@@ -130,10 +130,6 @@ function doGet(e) {
     const action = e.parameter.action || 'list';
 
     switch(action) {
-      case 'forces-for-story':
-        return getForcesForStory(e.parameter.storyKey);
-      case 'stories-for-force':
-        return getStoriesForForce(e.parameter.forceKey);
       default:
         return getAllRelationships();
     }
@@ -145,62 +141,4 @@ function doGet(e) {
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
-}
-
-function getForcesForStory(storyKey) {
-  if (!storyKey) throw new Error('Story key required');
-
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-
-  if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        forces: []
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-
-  const data = sheet.getDataRange().getValues();
-  const forceKeys = data
-    .slice(1)
-    .filter(row => row[0] === storyKey && !row[3])
-    .map(row => row[1]);
-
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      forces: forceKeys
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function getStoriesForForce(forceKey) {
-  if (!forceKey) throw new Error('Force key required');
-
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-
-  if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        stories: []
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-
-  const data = sheet.getDataRange().getValues();
-  const storyKeys = data
-    .slice(1)
-    .filter(row => row[1] === forceKey && !row[3])
-    .map(row => row[0]);
-
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      stories: storyKeys
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
 }

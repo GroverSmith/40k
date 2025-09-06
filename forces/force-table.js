@@ -52,10 +52,10 @@ const ForceTable = {
                 loadingMessage: 'Loading forces...'
             },
             'crusade': {
-                url: `${participantsUrl}?action=forces-for-crusade&crusade=${encodeURIComponent(key)}`,
+                url: participantsUrl,
                 cacheType: 'participants',
-                cacheKey: `crusade_${key}_forces`,
-                dataKey: 'forces',
+                cacheKey: 'all',
+                dataKey: null,
                 loadingMessage: 'Loading crusade forces...'
             },
             'user': {
@@ -121,7 +121,16 @@ const ForceTable = {
     },
 
     async loadForCrusade(crusadeKey, containerId) {
-        return this.loadForces('crusade', crusadeKey, containerId);
+        const fetchConfig = this.getFetchConfig('crusade', crusadeKey);
+        const displayConfig = this.getDisplayConfig('crusade');
+        
+        // Filter participants to only show forces for this crusade
+        const filterFn = (participant) => {
+            const participantCrusadeKey = participant['crusade_key'] || participant['Crusade Key'] || '';
+            return participantCrusadeKey === crusadeKey;
+        };
+        
+        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
     },
 
     async loadForUser(userKey, containerId) {

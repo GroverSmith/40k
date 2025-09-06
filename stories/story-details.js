@@ -151,10 +151,21 @@ async function displayStoryDetails(story) {
         try {
             const junctionUrl = CrusadeConfig.getSheetUrl('xref_story_forces');
             if (junctionUrl) {
-                const response = await fetch(`${junctionUrl}?action=forces-for-story&storyKey=${story.Key}`);
-                const result = await response.json();
-                if (result.success) {
-                    relatedForces = result.forces;
+                const response = await fetch(junctionUrl);
+                const data = await response.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    // Filter for forces related to this story
+                    const headers = data[0];
+                    const storyForces = data.slice(1)
+                        .filter(row => row[0] === story.Key) // Story key is column 0
+                        .map(row => {
+                            const force = {};
+                            headers.forEach((header, index) => {
+                                force[header] = row[index];
+                            });
+                            return force;
+                        });
+                    relatedForces = storyForces;
                 }
             }
         } catch (error) {

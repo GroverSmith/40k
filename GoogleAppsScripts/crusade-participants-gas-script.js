@@ -243,10 +243,6 @@ function doGet(e) {
     switch(action) {
       case 'list':
         return getParticipantsList(e.parameter);
-      case 'forces-for-crusade':
-        return getForcesForCrusade(e.parameter.crusadeKey || e.parameter.crusade);
-      case 'crusades-for-force':
-        return getCrusadesForForce(e.parameter.forceKey);
       case 'check-registration':
         return checkRegistration(e.parameter.crusadeKey, e.parameter.forceKey);
       case 'delete':
@@ -288,110 +284,7 @@ function getParticipantsList(params = {}) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function getForcesForCrusade(crusadeKeyOrName) {
-  console.log('getForcesForCrusade called with:', crusadeKeyOrName);
-  
-  if (!crusadeKeyOrName) {
-    throw new Error('Crusade key or name is required');
-  }
-  
-  // Determine if we received a key or a name
-  let crusadeKey;
-  if (crusadeKeyOrName.includes(' ') || crusadeKeyOrName.includes('-')) {
-    // Likely a name, generate key
-    crusadeKey = generateCrusadeKey(crusadeKeyOrName);
-    console.log('Generated crusade key from name:', crusadeKey);
-  } else {
-    // Likely already a key
-    crusadeKey = crusadeKeyOrName;
-  }
-  
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
-  if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        forces: []
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  const data = sheet.getDataRange().getValues();
-  
-  // Filter out deleted rows first
-  const activeData = filterActiveRows(data);
-  
-  const headers = activeData[0];
-  
-  // Filter for this crusade (Crusade Key is column 0)
-  const participants = activeData.slice(1)
-  .filter(row => row[0] === crusadeKey)
-  .map(row => ({
-    'Crusade Key': row[0],
-    'Force Key': row[1],
-    'Crusade Name': row[2],
-    'Force Name': row[3], 
-    'User Name': row[4], 
-    'Timestamp': row[5] 
-  }));
-  
-  console.log(`Found ${participants.length} active forces for crusade key "${crusadeKey}"`);
-  
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      forces: participants
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
 
-function getCrusadesForForce(forceKey) {
-  console.log('getCrusadesForForce called with force key:', forceKey);
-  
-  if (!forceKey) {
-    throw new Error('Force key is required');
-  }
-  
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
-  if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        crusades: []
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  const data = sheet.getDataRange().getValues();
-  
-  // Filter out deleted rows first
-  const activeData = filterActiveRows(data);
-  
-  // Filter for this force key (Force Key is column 1)
-  const crusades = activeData.slice(1)
-    .filter(row => row[1] === forceKey)
-    .map(row => ({
-      crusadeKey: row[0],
-      forceKey: row[1],
-      crusadeName: row[2],
-      forceName: row[3],
-      userName: row[4],
-      timestamp: row[5]
-    }));
-  
-  console.log(`Found ${crusades.length} active crusades for force key "${forceKey}"`);
-  
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      crusades: crusades
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
 
 function checkRegistration(crusadeKey, forceKey) {
   console.log('Checking registration for crusade:', crusadeKey, 'force:', forceKey);

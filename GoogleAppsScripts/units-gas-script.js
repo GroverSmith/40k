@@ -399,10 +399,6 @@ function doGet(e) {
         return getUnitsList(e.parameter);
       case 'get':
         return getUnitByKey(e.parameter.key);
-      case 'force-units':
-        return getUnitsForForce(e.parameter.forceKey);
-      case 'user-units':
-        return getUnitsForUser(e.parameter.userKey);
       case 'delete':
         return softDeleteUnit(e.parameter.key);
       default:
@@ -485,95 +481,6 @@ function getUnitByKey(unitKey) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function getUnitsForForce(forceKey) {
-  if (!forceKey) {
-    throw new Error('Force key is required');
-  }
-  
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
-  if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        units: []
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  const data = sheet.getDataRange().getValues();
-  
-  // Filter out deleted rows first
-  const activeData = filterActiveRows(data);
-  
-  const headers = activeData[0];
-  
-  // Filter units by force key (column 2)
-  const units = activeData.slice(1)
-    .filter(row => row[2] === forceKey)
-    .map(row => {
-      const unit = {};
-      headers.forEach((header, index) => {
-        unit[header] = row[index];
-      });
-      return unit;
-    });
-  
-  console.log(`Found ${units.length} active units for force key "${forceKey}"`);
-  
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      units: units
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function getUnitsForUser(userKey) {
-  if (!userKey) {
-    throw new Error('User key is required');
-  }
-  
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
-  if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        units: []
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  const data = sheet.getDataRange().getValues();
-  
-  // Filter out deleted rows first
-  const activeData = filterActiveRows(data);
-  
-  const headers = activeData[0];
-  
-  // Filter units by user key (column 1)
-  const units = activeData.slice(1)
-    .filter(row => row[1] === userKey)
-    .map(row => {
-      const unit = {};
-      headers.forEach((header, index) => {
-        unit[header] = row[index];
-      });
-      return unit;
-    });
-  
-  console.log(`Found ${units.length} active units for user key "${userKey}"`);
-  
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      units: units
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
 
 // Soft delete function
 function softDeleteUnit(unitKey) {
