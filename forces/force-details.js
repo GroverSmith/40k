@@ -154,29 +154,15 @@ class ForceDetailsApp {
            // Show the section
            document.getElementById('army-lists-section').style.display = 'block';
            
-           // Load army lists
-           const result = await this.loadArmyListsData(this.forceKey);
-           
-           const container = document.getElementById('army-lists-content');
-           
-           // Create the expected container element for ForceUI
-           if (!document.getElementById('army-lists-sheet')) {
-               const sheetContainer = document.createElement('div');
-               sheetContainer.id = 'army-lists-sheet';
-               container.appendChild(sheetContainer);
-           }
-           
-           if (result.success && result.data && result.data.length > 0) {
-               // Display army lists using ArmyTable
-               if (window.ArmyTable) {
-                   await ArmyTable.loadForForce(this.forceKey, 'army-lists-content');
-               }
+           // Use ArmyTable to load and display army lists for this force
+           if (window.ArmyTable) {
+               await ArmyTable.loadForForce(this.forceKey, 'army-lists-content');
            } else {
-               container.innerHTML = `
-                   <p class="no-data-message">No army lists uploaded yet.</p>
-                   <p><a href="../armies/add-army-list.html?forceKey=${encodeURIComponent(this.forceKey)}"
-                         style="color: #4ecdc4;">Add your first army list →</a></p>
-               `;
+               console.error('ArmyTable module not loaded');
+               const container = document.getElementById('army-lists-content');
+               if (container) {
+                   container.innerHTML = '<p class="error-message">Army table module not loaded</p>';
+               }
            }
        } catch (error) {
            console.error('Error loading army lists:', error);
@@ -192,101 +178,34 @@ class ForceDetailsApp {
            // Show the section
            document.getElementById('battle-history-section').style.display = 'block';
            
-           // Load battle history
-           const battles = await this.loadBattleHistoryData(this.forceKey);
-           
-           const container = document.getElementById('battle-history-content');
-           if (battles && battles.length > 0) {
-               // Calculate and display stats
-               const stats = this.calculateBattleStats(battles);
-               this.displayBattleStats(stats);
+           if (window.BattleTable) {
+               // First, fetch battles data to calculate stats
+               const battlesResult = await BattleTable.fetchBattles('force', this.forceKey);
                
-               // Display battle list with new column order
-               this.displayBattleHistory(battles);
+               if (battlesResult.success && battlesResult.battles) {
+                   // Calculate and display stats
+                   this.updateStatsFromBattles(battlesResult.battles, this.forceKey);
+               }
+               
+               // Then display the battles table
+               await BattleTable.loadForForce(this.forceKey, 'battle-history-content');
            } else {
-               container.innerHTML = `
-                   <p class="no-data-message">No battles recorded yet.</p>
-                   <p><a href="../battles/add-battle-report.html?force=${encodeURIComponent(this.forceKey)}"
-                         style="color: #4ecdc4;">Record your first battle →</a></p>
-               `;
+               console.error('BattleTable module not loaded');
+               const container = document.getElementById('battle-history-content');
+               if (container) {
+                   container.innerHTML = '<p class="error-message">Battle table module not loaded</p>';
+               }
            }
        } catch (error) {
            console.error('Error loading battle history:', error);
-           document.getElementById('battle-history-content').innerHTML = 
-               '<p class="error-message">Failed to load battle history</p>';
+           const container = document.getElementById('battle-history-content');
+           if (container) {
+               container.innerHTML = '<p class="error-message">Failed to load battle history</p>';
+           }
        }
    }
    
-   displayBattleStats(stats) {
-       const statsContainer = document.getElementById('battle-stats');
-       if (!statsContainer) return;
-       
-       statsContainer.innerHTML = `
-           <div class="stat-card">
-               <div class="stat-value">${stats.totalBattles}</div>
-               <div class="stat-label">Total Battles</div>
-           </div>
-           <div class="stat-card">
-               <div class="stat-value">${stats.victories}</div>
-               <div class="stat-label">Victories</div>
-           </div>
-           <div class="stat-card">
-               <div class="stat-value">${stats.defeats}</div>
-               <div class="stat-label">Defeats</div>
-           </div>
-           <div class="stat-card">
-               <div class="stat-value">${stats.draws}</div>
-               <div class="stat-label">Draws</div>
-           </div>
-           <div class="stat-card">
-               <div class="stat-value">${stats.winRate}%</div>
-               <div class="stat-label">Win Rate</div>
-           </div>
-           <div class="stat-card">
-               <div class="stat-value">${stats.averagePointsScored}</div>
-               <div class="stat-label">Avg Points Scored</div>
-           </div>
-       `;
-       
-       statsContainer.style.display = 'grid';
-   }
-   
-   displayBattleHistory(battles) {
-		const container = document.getElementById('battle-history-content');
-		
-		// Add Score column to the header
-		let html = '<div class="table-wrapper"><table class="data-table"><thead><tr>';
-		html += '<th>Outcome</th><th>Date Played</th><th>Opponent Name</th><th>Battle Name</th><th>Score</th><th>Battle Size</th>';
-		html += '</tr></thead><tbody>';
-		
-		battles.forEach(battle => {
-			const outcome = battle.result || 'Unknown';
-			const outcomeClass = outcome === 'Victory' ? 'victory' : 
-							   outcome === 'Defeat' ? 'defeat' : 'draw';
 			
-			const date = battle['Date Played'] ? new Date(battle['Date Played']).toLocaleDateString() : 'Unknown';
-			const opponentName = battle.opponentPlayer || 'Unknown Opponent';
-			const battleName = battle['Battle Name'] || '-';
-			const battleSize = battle['Battle Size'] ? `${battle['Battle Size']} pts` : '-';
-			
-			// Use the correct fields that were set in ForceData.loadBattleHistory()
-			const score = `${battle.forceScore || 0} - ${battle.opponentScore || 0}`;
-			
-			html += `
-				<tr>
-					<td class="${outcomeClass}">${outcome}</td>
-					<td>${date}</td>
-					<td>${opponentName}</td>
-					<td>${battleName}</td>
-					<td>${score}</td>
-					<td>${battleSize}</td>
-				</tr>
-			`;
-		});
-		
-		html += '</tbody></table></div>';
-		container.innerHTML = html;
-	}
    
    async loadParticipatingCrusades() {
        try {
@@ -432,36 +351,24 @@ class ForceDetailsApp {
     * Update battle stats from battles data
     */
    updateStatsFromBattles(battles, forceKey) {
-       const stats = {
-           battlesFought: battles.length,
-           victories: 0,
-           defeats: 0,
-           draws: 0
-       };
+       // Use BattleTable's comprehensive stats calculation
+       const stats = BattleTable.calculateBattleStats(battles, forceKey);
 
-       battles.forEach(battle => {
-           const victorForceKey = battle['Victor Force Key'] || '';
-
-           if (victorForceKey === 'Draw') {
-               stats.draws++;
-           } else if (victorForceKey === forceKey) {
-               stats.victories++;
-           } else {
-               stats.defeats++;
-           }
-       });
-
-       // Update DOM
+       // Update DOM with all stats
        const elements = {
-           'battles-fought': stats.battlesFought,
+           'battles-fought': stats.totalBattles,
            'victories': stats.victories,
            'battle-losses': stats.defeats,
-           'battle-ties': stats.draws
+           'battle-ties': stats.draws,
+           'win-rate': stats.winRate + '%',
+           'avg-points-scored': stats.averagePointsScored
        };
 
        Object.entries(elements).forEach(([id, value]) => {
            const el = document.getElementById(id);
-           if (el) el.textContent = value;
+           if (el) {
+               el.textContent = value;
+           }
        });
 
        // Show stats section
@@ -473,132 +380,8 @@ class ForceDetailsApp {
 
    // ===== ADDITIONAL DATA METHODS =====
    
-   /**
-    * Load army lists for a force using force key
-    */
-   async loadArmyListsData(forceKey) {
-       try {
-           // Use CacheManager with automatic URL resolution
-           const data = await CacheManager.fetchSheetData('armies');
-           
-           console.log('Army lists response:', data);
-           
-           if (Array.isArray(data) && data.length > 0) {
-               // Filter for armies belonging to this force
-               const headers = data[0];
-               const forceKeyToMatch = forceKey || this.forceKey;
-               const filteredArmies = data.slice(1)
-                   .filter(row => row[2] === forceKeyToMatch) // Force key is column 2
-                   .map(row => {
-                       const army = {};
-                       headers.forEach((header, index) => {
-                           army[header] = row[index];
-                       });
-                       return army;
-                   });
-               
-               if (filteredArmies.length > 0) {
-                   this.armyListsData = filteredArmies;
-                   return { success: true, data: filteredArmies };
-               }
-           }
-           
-           this.armyListsData = [];
-           return { success: true, data: [] };
-           
-       } catch (error) {
-           console.error('Error fetching army lists:', error);
-           return { success: false, data: [], error: error.message };
-       }
-   }
 
-   /**
-    * Load battle history for this force
-    */
-   async loadBattleHistoryData(forceKey) {
-       try {
-           const key = forceKey || this.forceKey;
-           const battlesUrl = CrusadeConfig.getSheetUrl('battles');
-           const fetchUrl = `${battlesUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`;
-           
-           // Use CacheManager for unified caching
-           const responseData = await CacheManager.fetchWithCache(fetchUrl, 'battles');
-           
-           let battles = [];
-           if (responseData.success && responseData.battles) {
-               battles = responseData.battles;
-           } else if (Array.isArray(responseData)) {
-               // Handle raw array response
-               const headers = responseData[0];
-               battles = responseData.slice(1).map(row => {
-                   const battle = {};
-                   headers.forEach((header, index) => {
-                       battle[header] = row[index];
-                   });
-                   return battle;
-               });
-           }
-           
-           // Filter battles for this force
-           const forceKeyToMatch = key || this.forceKey;
-           const filteredBattles = battles.filter(battle => {
-               const force1Key = battle['Force 1 Key'] || '';
-               const force2Key = battle['Force 2 Key'] || '';
-               return force1Key === forceKeyToMatch || force2Key === forceKeyToMatch;
-           });
-           
-           this.battleHistoryData = filteredBattles;
-           return filteredBattles;
-           
-       } catch (error) {
-           console.error('Error loading battle history:', error);
-           return [];
-       }
-   }
 
-   /**
-    * Calculate battle statistics
-    */
-   calculateBattleStats(battles = null) {
-       const battleData = battles || this.battleHistoryData;
-       const stats = {
-           totalBattles: battleData.length,
-           victories: 0,
-           defeats: 0,
-           draws: 0,
-           totalScore: 0,
-           totalOpponentScore: 0
-       };
-
-       battleData.forEach(battle => {
-           const victorForceKey = battle['Victor Force Key'] || '';
-           const force1Key = battle['Force 1 Key'] || '';
-           const force2Key = battle['Force 2 Key'] || '';
-           
-           // Determine if this force was force 1 or force 2
-           const isForce1 = force1Key === this.forceKey;
-           const isForce2 = force2Key === this.forceKey;
-           
-           if (victorForceKey === 'Draw') {
-               stats.draws++;
-           } else if (victorForceKey === this.forceKey) {
-               stats.victories++;
-           } else if (isForce1 || isForce2) {
-               stats.defeats++;
-           }
-           
-           // Add scores
-           if (isForce1) {
-               stats.totalScore += parseInt(battle['Force 1 Score'] || 0);
-               stats.totalOpponentScore += parseInt(battle['Force 2 Score'] || 0);
-           } else if (isForce2) {
-               stats.totalScore += parseInt(battle['Force 2 Score'] || 0);
-               stats.totalOpponentScore += parseInt(battle['Force 1 Score'] || 0);
-           }
-       });
-
-       return stats;
-   }
 
    /**
     * Get participating crusades for this force
