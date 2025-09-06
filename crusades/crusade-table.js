@@ -51,14 +51,14 @@ const CrusadeTable = {
 
         const configs = {
             'all': {
-                url: crusadesUrl,
+                url: `${crusadesUrl}?action=list`,
                 cacheType: 'crusades',
                 cacheKey: 'all',
                 dataKey: null,
                 loadingMessage: 'Loading crusades...'
             },
             'active': {
-                url: crusadesUrl,
+                url: `${crusadesUrl}?action=list`,
                 cacheType: 'crusades',
                 cacheKey: 'active',
                 dataKey: null,
