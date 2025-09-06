@@ -19,10 +19,10 @@ class StoryDetails {
             return;
         }
 
-        await this.loadStoryDetails();
+        await this.loadStoryData();
     }
 
-    async loadStoryDetails() {
+    async loadStoryData() {
         const container = document.getElementById('story-content');
         if (!container) return;
 
@@ -77,7 +77,7 @@ class StoryDetails {
 
             if (story) {
                 this.storyData = story;
-                await this.displayStoryDetails(story);
+                await this.displayStory(story);
             } else {
                 this.showError('Story not found');
             }
@@ -133,7 +133,7 @@ class StoryDetails {
      * Display the story details on the page
      * Made async to handle fetching related forces
      */
-    async displayStoryDetails(story) {
+    async displayStory(story) {
         const container = document.getElementById('story-content');
         if (!container) return;
 

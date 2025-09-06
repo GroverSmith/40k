@@ -20,7 +20,7 @@ class CrusadeDetails {
 
         try {
             // Load crusade details first
-            await this.loadCrusadeDetails();
+            await this.loadCrusadeData();
 
             // Then load related data in parallel
             await Promise.all([
@@ -34,7 +34,7 @@ class CrusadeDetails {
         }
     }
 
-    async loadCrusadeDetails() {
+    async loadCrusadeData() {
         try {
             // First try to get the specific crusade via API
             const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
@@ -65,7 +65,7 @@ class CrusadeDetails {
                     headers.forEach((header, index) => {
                         this.crusadeData[header] = crusadeRow[index];
                     });
-                    this.displayCrusadeDetails();
+                    this.displayCrusade();
                     return;
                 }
             }
@@ -78,7 +78,7 @@ class CrusadeDetails {
         }
     }
 
-    displayCrusadeDetails() {
+    displayCrusade() {
         // Update page title
         const crusadeName = this.crusadeData['Crusade Name'] || 'Unnamed Crusade';
         document.title = `${crusadeName} - Crusade Details`;
