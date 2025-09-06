@@ -60,27 +60,7 @@ const CrusadeData = {
         return crusade;
     },
     
-    /**
-     * Load forces participating in this crusade
-     * @deprecated Use CrusadeParticipantsTable.displayCrusadeParticipants() instead
-     */
-    async loadParticipatingForces(crusadeKey) {
-        console.warn('loadParticipatingForces is deprecated. Use CrusadeParticipantsTable.displayCrusadeParticipants() instead.');
         
-        try {
-            if (window.CrusadeParticipantsTable) {
-                const data = await CrusadeParticipantsTable.fetchData('by-crusade', crusadeKey);
-                return { success: true, forces: data };
-            }
-            
-            return { success: true, forces: [] };
-            
-        } catch (error) {
-            console.error('Error loading participating forces:', error);
-            return { success: false, forces: [], error: error.message };
-        }
-    },
-    
     /**
      * Load all available forces (for registration dropdown)
      */
@@ -133,12 +113,6 @@ const CrusadeData = {
         return result;
     },
     
-    /**
-     * Generate crusade key from name
-     */
-    generateCrusadeKey(crusadeName) {
-        return clean(crusadeName, 30);
-    }
 };
 
 // Make globally available
