@@ -143,30 +143,11 @@ const CrusadeTable = {
 
     
     /**
-     * Format date in dd MMM yyyy format
-     */
-    formatCrusadeDate(dateValue) {
-        if (!dateValue) return null;
-        
-        const date = new Date(dateValue);
-        if (isNaN(date.getTime())) return null;
-        
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        
-        const day = date.getDate();
-        const month = months[date.getMonth()];
-        const year = date.getFullYear();
-        
-        return `${day} ${month} ${year}`;
-    },
-
-    /**
-     * Format date range with optimized year display
+     * Format date range using common date formatting with year optimization
      */
     formatDateRange(startDate, endDate) {
-        const start = this.formatCrusadeDate(startDate);
-        const end = this.formatCrusadeDate(endDate);
+        const start = TableBase.formatters.date(startDate);
+        const end = TableBase.formatters.date(endDate);
         
         if (start && end) {
             // Check if both dates are in the same year
@@ -174,8 +155,8 @@ const CrusadeTable = {
             const endYear = new Date(endDate).getFullYear();
             
             if (startYear === endYear) {
-                // Same year: show "dd MMM - dd MMM yyyy"
-                const startWithoutYear = start.replace(` ${startYear}`, '');
+                // Same year: show "MMM dd - MMM dd, yyyy"
+                const startWithoutYear = start.replace(`, ${startYear}`, '');
                 return `${startWithoutYear} - ${end}`;
             } else {
                 // Different years: show full dates
