@@ -123,7 +123,7 @@ const CacheManager = {
      * @param {string} sheetName - Name of the sheet (e.g., 'forces', 'users')
      * @returns {Promise<any>} Fetched or cached data
      */
-    async fetchSheetData(sheetName) { ration
+    async fetchSheetData(sheetName) {
         const url = CrusadeConfig.getSheetUrl(sheetName);
         if (!url) {
             throw new Error(`${sheetName} sheet URL not configured`);
