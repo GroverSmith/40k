@@ -248,5 +248,38 @@ const CrusadeParticipantsTable = {
             console.error('Error checking force registration:', error);
             return false;
         }
+    },
+
+    /**
+     * Register a force for a crusade
+     */
+    async registerForce(registrationData) {
+        const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
+        
+        if (!participantsUrl) {
+            throw new Error('Participants sheet URL not configured');
+        }
+        
+        // Submit registration
+        const response = await fetch(participantsUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(registrationData).toString()
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to register force');
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Clear the participants cache
+            CacheManager.clear('participants');
+        }
+        
+        return result;
     }
 };

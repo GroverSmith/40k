@@ -54,7 +54,7 @@ const ForceRegistration = {
         modal.style.display = 'flex';
         
         try {
-            const data = await CrusadeData.loadAvailableForces();
+            const data = await ForceTable.loadAvailableForces();
             
             // Clear and populate select
             forceSelect.innerHTML = '<option value="">Select a force...</option>';
@@ -133,7 +133,7 @@ const ForceRegistration = {
             });
             
             // Submit registration
-            await CrusadeData.registerForce(registrationData);
+            await CrusadeParticipantsTable.registerForce(registrationData);
             
             // Success
             this.showRegisterSuccess();

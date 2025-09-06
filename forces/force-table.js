@@ -146,6 +146,25 @@ const ForceTable = {
     },
 
     /**
+     * Load all available forces (for registration dropdown)
+     */
+    async loadAvailableForces() {
+        try {
+            const forcesUrl = CrusadeConfig.getSheetUrl('forces');
+            if (!forcesUrl) {
+                throw new Error('Forces sheet URL not configured');
+            }
+            
+            // Use CacheManager for unified caching
+            return await CacheManager.fetchWithCache(forcesUrl, 'forces');
+            
+        } catch (error) {
+            console.error('Error loading available forces:', error);
+            throw error;
+        }
+    },
+
+    /**
      * Display forces in a container (for index.html and other pages)
      */
     async displayForces(containerId, options = {}) {
