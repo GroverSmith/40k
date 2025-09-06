@@ -271,25 +271,36 @@ class ForceDetails {
        console.log('Processed data:', data);
        console.log('Looking for force key:', forceKey);
        
-       if (!Array.isArray(data) || data.length === 0) {
+       // Handle standardized format
+       let forcesArray = [];
+       if (data && data.success && Array.isArray(data.data)) {
+           forcesArray = data.data;
+       } else if (Array.isArray(data)) {
+           forcesArray = data;
+       } else {
            throw new Error('No force data available or invalid data format');
        }
        
-       // Find the force by key using TableDefs
-       const forceKeyIndex = TableDefs.getColumnIndex('forces', 'force_key');
-       const forceRow = data.find((row, index) => {
-           if (index === 0) return false; // Skip header
-           return row[forceKeyIndex] === forceKey;
+       if (forcesArray.length === 0) {
+           throw new Error('No force data available or invalid data format');
+       }
+       
+       // Find the force by key - data is already in object format
+       const force = forcesArray.find(forceObj => {
+           const objForceKey = forceObj.force_key || forceObj['force_key'] || forceObj['Force Key'] || forceObj.Key || forceObj.key;
+           return objForceKey === forceKey;
        });
        
-       if (!forceRow) {
-           const availableKeys = data.slice(1).map(row => row[forceKeyIndex]).filter(key => key);
+       if (!force) {
+           const availableKeys = forcesArray.map(forceObj => {
+               return forceObj.force_key || forceObj['force_key'] || forceObj['Force Key'] || forceObj.Key || forceObj.key;
+           }).filter(key => key);
            console.log('Available force keys:', availableKeys);
            throw new Error(`Force with key "${forceKey}" not found. Available keys: ${availableKeys.slice(0, 5).join(', ')}`);
        }
        
-       // Map the columns from Forces sheet using TableDefs
-       const forceData = TableDefs.mapRowToObject('forces', forceRow);
+       // Data is already in object format, no need to map
+       const forceData = force;
        
        // Map to expected property names for backward compatibility
        const mappedForceData = {
