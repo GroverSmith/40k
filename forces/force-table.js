@@ -7,8 +7,8 @@ const ForceTable = {
     getDisplayConfig(type) {
         const configs = {
             'all': {
-                columns: ['force', 'commander', 'faction', 'detachment', 'joined'],
-                headers: ['Force Name', 'Commander', 'Faction', 'Detachment', 'Joined'],
+                columns: ['commander', 'force', 'faction', 'detachment', 'joined'],
+                headers: ['Commander', 'Force Name', 'Faction', 'Detachment', 'Joined'],
                 tableId: 'all-forces-table',
                 buildRow: this.buildForceRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('timestamp'),
@@ -16,8 +16,8 @@ const ForceTable = {
                 errorMessage: 'Failed to load forces.'
             },
             'crusade': {
-                columns: ['force', 'commander', 'faction', 'joined'],
-                headers: ['Force Name', 'Commander', 'Faction', 'Joined'],
+                columns: ['commander', 'force', 'faction', 'joined'],
+                headers: ['Commander', 'Force Name', 'Faction', 'Joined'],
                 tableId: 'crusade-forces-table',
                 buildRow: this.buildForceRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('timestamp'),
@@ -142,35 +142,12 @@ const ForceTable = {
         }
     },
 
-    /**
-     * Display forces in a container (for index.html and other pages)
-     */
-    async displayForces(containerId, options = {}) {
-        const container = document.getElementById(containerId);
-        if (!container) {
-            console.warn(`Container ${containerId} not found`);
-            return;
-        }
-
-        try {
-            // Show loading state
-            container.innerHTML = '<div class="loading-spinner"></div><span>Loading forces...</span>';
-
-            // Load all forces
-            await this.loadAllForces(containerId);
-        } catch (error) {
-            console.error('Error displaying forces:', error);
-            container.innerHTML = '<p class="error">Failed to load forces. Please try again later.</p>';
-        }
-    },
-
+    
     createForceLink(name, key) {
         return TableBase.createEntityLink('force', name || 'Unknown Force', key);
     },
 
-    /**
-     * Calculate force statistics
-     */
+    
     calculateForceStats(forces) {
         const stats = {
             totalForces: forces.length,
