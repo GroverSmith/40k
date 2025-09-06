@@ -39,27 +39,27 @@ const UnitTable = {
      * Build unit row
      */
     buildUnitRow(unit, columns, context = {}) {
-        const rank = unit.Rank || this.calculateRank(unit.XP || unit['Experience Points']);
+        const rank = unit.rank || unit.Rank || this.calculateRank(unit.xp || unit.XP || unit['Experience Points']);
         const rankClass = `rank-${rank.toLowerCase().replace(/[^a-z]/g, '')}`;
 
         const columnData = {
-            name: `<strong>${unit.Name || unit['Unit Name'] || 'Unnamed'}</strong> ${this.formatBadges(unit)}`,
-            datasheet: unit['Data Sheet'] || unit['Unit Type'] || '-',
-            role: unit['Battlefield Role'] || unit.Role || '-',
-            points: unit.Points || unit['Points Cost'] || '0',
+            name: `<strong>${unit.unit_name || unit.Name || unit['Unit Name'] || 'Unnamed'}</strong> ${this.formatBadges(unit)}`,
+            datasheet: unit.data_sheet || unit['Data Sheet'] || unit['Unit Type'] || '-',
+            role: unit.unit_type || unit['Battlefield Role'] || unit.Role || '-',
+            points: unit.points || unit.Points || unit['Points Cost'] || '0',
             power: unit['Power Level'] || unit.PL || '-',
-            cp: unit['Crusade Points'] || unit.CP || '0',
-            xp: unit.XP || unit['Experience Points'] || '0',
+            cp: unit.crusade_points || unit['Crusade Points'] || unit.CP || '0',
+            xp: unit.xp || unit.XP || unit['Experience Points'] || '0',
             rank: `<span class="rank-badge ${rankClass}">${rank}</span>`,
-            battles: unit['Battle Count'] || unit.Battles || '0',
-            kills: unit['Kill Count'] || unit.Kills || '0',
-            deaths: unit['Times Killed'] || unit.Deaths || '0',
+            battles: unit.battle_count || unit['Battle Count'] || unit.Battles || '0',
+            kills: unit.kill_count || unit['Kill Count'] || unit.Kills || '0',
+            deaths: unit.times_killed || unit['Times Killed'] || unit.Deaths || '0',
             force: unit['Force Name'] ? this.createForceLink(unit['Force Name'], unit['Force Key']) : '-'
         };
 
         // Add unit link if displaying across forces
-        if (context.showUnitLinks && unit.Key) {
-            columnData.name = this.createUnitLink(columnData.name, unit.Key);
+        if (context.showUnitLinks && (unit.unit_key || unit.Key)) {
+            columnData.name = this.createUnitLink(columnData.name, unit.unit_key || unit.Key);
         }
 
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
@@ -72,9 +72,9 @@ const UnitTable = {
         const baseRow = this.buildUnitRow(unit, columns);
 
         // Check if unit has additional details to show
-        const hasDetails = unit.Description || unit['Notable History'] ||
-                          unit.Wargear || unit.Enhancements ||
-                          unit['Battle Traits'] || unit['Battle Scars'];
+        const hasDetails = unit.description || unit.Description || unit['Notable History'] ||
+                          unit.wargear || unit.Wargear || unit.enhancements || unit.Enhancements ||
+                          unit.battle_traits || unit['Battle Traits'] || unit.battle_scars || unit['Battle Scars'];
 
         if (!hasDetails) return baseRow;
 
@@ -82,21 +82,21 @@ const UnitTable = {
         let detailsHtml = '<tr class="unit-details-row"><td colspan="' + columns.length + '">';
         detailsHtml += '<div class="unit-details">';
 
-        if (unit.Wargear) {
-            detailsHtml += `<div class="detail-item"><strong>Wargear:</strong> ${unit.Wargear}</div>`;
+        if (unit.wargear || unit.Wargear) {
+            detailsHtml += `<div class="detail-item"><strong>Wargear:</strong> ${unit.wargear || unit.Wargear}</div>`;
         }
-        if (unit.Enhancements) {
-            detailsHtml += `<div class="detail-item"><strong>Enhancements:</strong> ${unit.Enhancements}</div>`;
+        if (unit.enhancements || unit.Enhancements) {
+            detailsHtml += `<div class="detail-item"><strong>Enhancements:</strong> ${unit.enhancements || unit.Enhancements}</div>`;
         }
-        if (unit['Battle Traits'] || unit['Battle Honours']) {
-            const traits = unit['Battle Traits'] || unit['Battle Honours'];
+        if (unit.battle_traits || unit['Battle Traits'] || unit['Battle Honours']) {
+            const traits = unit.battle_traits || unit['Battle Traits'] || unit['Battle Honours'];
             detailsHtml += `<div class="detail-item"><strong>Battle Traits:</strong> ${traits}</div>`;
         }
-        if (unit['Battle Scars']) {
-            detailsHtml += `<div class="detail-item"><strong>Battle Scars:</strong> ${unit['Battle Scars']}</div>`;
+        if (unit.battle_scars || unit['Battle Scars']) {
+            detailsHtml += `<div class="detail-item"><strong>Battle Scars:</strong> ${unit.battle_scars || unit['Battle Scars']}</div>`;
         }
-        if (unit.Description) {
-            detailsHtml += `<div class="detail-item"><strong>Description:</strong> ${unit.Description}</div>`;
+        if (unit.description || unit.Description) {
+            detailsHtml += `<div class="detail-item"><strong>Description:</strong> ${unit.description || unit.Description}</div>`;
         }
         if (unit['Notable History']) {
             detailsHtml += `<div class="detail-item"><strong>Notable History:</strong> ${unit['Notable History']}</div>`;
@@ -213,7 +213,7 @@ const UnitTable = {
         // Group units by battlefield role
         const unitsByRole = {};
         units.forEach(unit => {
-            const role = unit['Battlefield Role'] || unit.Role || 'Other';
+            const role = unit.unit_type || unit['Battlefield Role'] || unit.Role || 'Other';
             if (!unitsByRole[role]) unitsByRole[role] = [];
             unitsByRole[role].push(unit);
         });
@@ -314,13 +314,13 @@ const UnitTable = {
         return {
             totalUnits: units.length,
             totalPoints: units.reduce((sum, unit) =>
-                sum + (parseInt(unit.Points || unit['Points Cost']) || 0), 0),
+                sum + (parseInt(unit.points || unit.Points || unit['Points Cost']) || 0), 0),
             totalCP: units.reduce((sum, unit) =>
-                sum + (parseInt(unit['Crusade Points'] || unit.CP) || 0), 0),
+                sum + (parseInt(unit.crusade_points || unit['Crusade Points'] || unit.CP) || 0), 0),
             totalKills: units.reduce((sum, unit) =>
-                sum + (parseInt(unit['Kill Count'] || unit.Kills) || 0), 0),
+                sum + (parseInt(unit.kill_count || unit['Kill Count'] || unit.Kills) || 0), 0),
             totalXP: units.reduce((sum, unit) =>
-                sum + (parseInt(unit.XP || unit['Experience Points']) || 0), 0)
+                sum + (parseInt(unit.xp || unit.XP || unit['Experience Points']) || 0), 0)
         };
     }
 };
