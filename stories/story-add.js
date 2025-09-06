@@ -339,6 +339,7 @@ class StoryForm extends BaseForm {
             key: storyKey,
             userKey: userKey,
             userName: userName,
+            authorName: userName, // Add authorName for the new column
             // For backward compatibility, store first force in main table
             forceKey: selectedForces[0] || this.contextData.forceKey || '',
             // Store array of selected forces for junction table

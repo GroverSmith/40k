@@ -78,25 +78,26 @@ function editStory(storyKey, userKey, data) {
   const updatedRowData = [
     storyKey,                      // story_key (Primary Key) - Column 0
     userKey,                       // user_key - Column 1
-    data.crusade_key || '',        // crusade_key - Column 2
-    data.story_type || '',         // story_type - Column 3
-    data.title || '',              // title - Column 4
-    data.imperial_date || '',      // imperial_date - Column 5
-    data.story_text_1 || '',       // story_text_1 - Column 6
-    data.story_text_2 || '',       // story_text_2 - Column 7
-    data.story_text_3 || '',       // story_text_3 - Column 8
-    data.text_link || '',          // text_link - Column 9
-    data.image_1 || '',            // image_1 - Column 10
-    data.image_2 || '',            // image_2 - Column 11
-    data.image_3 || '',            // image_3 - Column 12
-    data.audio_link || '',         // audio_link - Column 13
-    timestamp,                     // timestamp - Column 14
-    ''                             // deleted_timestamp - Column 15 (keep empty)
+    data.author_name || '',        // author_name - Column 2
+    data.crusade_key || '',        // crusade_key - Column 3
+    data.story_type || '',         // story_type - Column 4
+    data.title || '',              // title - Column 5
+    data.imperial_date || '',      // imperial_date - Column 6
+    data.story_text_1 || '',       // story_text_1 - Column 7
+    data.story_text_2 || '',       // story_text_2 - Column 8
+    data.story_text_3 || '',       // story_text_3 - Column 9
+    data.text_link || '',          // text_link - Column 10
+    data.image_1 || '',            // image_1 - Column 11
+    data.image_2 || '',            // image_2 - Column 12
+    data.image_3 || '',            // image_3 - Column 13
+    data.audio_link || '',         // audio_link - Column 14
+    timestamp,                     // timestamp - Column 15
+    ''                             // deleted_timestamp - Column 16 (keep empty)
   ];
   
   // Update the row
   sheet.getRange(rowIndex, 1, 1, updatedRowData.length).setValues([updatedRowData]);
-  sheet.getRange(rowIndex, 15).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  sheet.getRange(rowIndex, 16).setNumberFormat('yyyy-mm-dd hh:mm:ss');
   
   return { success: true, message: 'Story updated successfully' };
 }
@@ -284,6 +285,7 @@ function doPost(e) {
       storyKey,                     // Key
       timestamp,                    // Timestamp
       data.userKey || '',           // User Key
+      data.authorName || '',        // Author Name
       data.forceKey || '',          // Force Key
       data.crusadeKey || '',        // Crusade Key
       data.storyType || '',         // Story Type
@@ -310,7 +312,7 @@ function doPost(e) {
     sheet.getRange(newRowNumber, 2).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
     
     // Set text wrapping for story text columns
-    sheet.getRange(newRowNumber, 9, 1, 3).setWrap(true); // Story Text 1-3
+    sheet.getRange(newRowNumber, 10, 1, 3).setWrap(true); // Story Text 1-3
     
     console.log('Story saved successfully');
     
