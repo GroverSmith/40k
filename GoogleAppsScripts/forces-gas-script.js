@@ -219,90 +219,20 @@ function doPost(e) {
     let sheet = spreadsheet.getSheetByName(SHEET_NAME);
     console.log('Sheet found:', !!sheet);
     
-    // Create sheet if it doesn't exist OR update existing sheet structure
+    // Create sheet if it doesn't exist
     if (!sheet) {
       console.log('Creating new sheet:', SHEET_NAME);
       sheet = spreadsheet.insertSheet(SHEET_NAME);
-    }
-    
-    // Check if sheet has the correct headers (with key column first and deleted_timestamp at end)
-    let needsHeaderUpdate = false;
-    if (sheet.getLastRow() === 0) {
-      needsHeaderUpdate = true;
-    } else {
-      const firstCell = sheet.getRange(1, 1).getValue();
-      if (firstCell !== 'key') {
-        needsHeaderUpdate = true;
-      }
-    }
-    
-    if (needsHeaderUpdate) {
-      console.log('Updating headers to include Key column and Deleted Timestamp');
       
-      // If sheet has existing data without key column, we need to migrate it
-      if (sheet.getLastRow() > 0 && sheet.getRange(1, 1).getValue() !== 'key') {
-        console.log('Migrating existing data to new structure');
-        
-        // Get existing data
-        const existingData = sheet.getDataRange().getValues();
-        
-        // Clear the sheet
-        sheet.clear();
-        
-        // Set new headers with deleted_timestamp
-        const headers = ['force_key', 'user_key', 'user_name', 'force_name', 'faction', 'detachment', 'notes', 'timestamp', 'deleted_timestamp'];
-        sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-        
-        // Migrate existing data with generated keys
-        if (existingData.length > 1) {
-          const migratedData = [];
-          for (let i = 1; i < existingData.length; i++) {
-            const row = existingData[i];
-            // Assume old structure was: User Name, Force Name, Faction, Detachment, Notes, Timestamp
-            const user_name = row[0] || '';
-            const force_name = row[1] || '';
-            const forceKey = generateForceKey(force_name, user_name);
-            
-            migratedData.push([
-              forceKey,
-              '', // user_key (will be populated later)
-              user_name,
-              force_name,
-              row[2] || '', // Faction
-              row[3] || '', // Detachment
-              row[4] || '', // Notes
-              row[5] || new Date(), // Timestamp
-              '' // deleted_timestamp (empty for existing records)
-            ]);
-          }
-          
-          if (migratedData.length > 0) {
-            sheet.getRange(2, 1, migratedData.length, 9).setValues(migratedData);
-            console.log(`Migrated ${migratedData.length} existing forces`);
-          }
-        }
-      } else {
-        // Just add headers to empty sheet
-        const headers = ['force_key', 'user_key', 'user_name', 'force_name', 'faction', 'detachment', 'notes', 'timestamp', 'deleted_timestamp'];
-        sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-      }
+      // Only add headers to completely new sheets
+      const headers = ['force_key', 'user_key', 'user_name', 'force_name', 'faction', 'detachment', 'notes', 'timestamp', 'deleted_timestamp'];
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
       // Format header row
-      const headerRange = sheet.getRange(1, 1, 1, 9);
+      const headerRange = sheet.getRange(1, 1, 1, headers.length);
       headerRange.setFontWeight('bold');
       headerRange.setBackground('#4ecdc4');
       headerRange.setFontColor('#ffffff');
-      
-      // Set column widths
-      sheet.setColumnWidth(1, 200); // key
-      sheet.setColumnWidth(2, 150); // user_key
-      sheet.setColumnWidth(3, 150); // user_name
-      sheet.setColumnWidth(4, 200); // force_name
-      sheet.setColumnWidth(5, 150); // faction
-      sheet.setColumnWidth(6, 150); // detachment
-      sheet.setColumnWidth(7, 300); // notes
-      sheet.setColumnWidth(8, 150); // timestamp
-      sheet.setColumnWidth(9, 150); // deleted_timestamp
     }
     
     // Generate the force key
@@ -409,7 +339,7 @@ function doGet(e) {
     const action = e.parameter.action || 'list';
     
     // Ensure sheet has correct structure before any GET operation
-    ensureSheetStructure();
+    // ensureSheetStructure(); // Removed - no dynamic column addition
     
     switch(action) {
       case 'list':
@@ -438,31 +368,7 @@ function doGet(e) {
   }
 }
 
-function ensureSheetStructure() {
-  try {
-    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-    
-    if (!sheet) {
-      return; // Sheet will be created when needed
-    }
-    
-    // Check if Deleted Timestamp column exists
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-    if (!headers.includes('Deleted Timestamp')) {
-      const newColumnIndex = sheet.getLastColumn() + 1;
-      sheet.getRange(1, newColumnIndex).setValue('Deleted Timestamp');
-      sheet.getRange(1, newColumnIndex).setFontWeight('bold');
-      sheet.getRange(1, newColumnIndex).setBackground('#4ecdc4');
-      sheet.getRange(1, newColumnIndex).setFontColor('#ffffff');
-      sheet.setColumnWidth(newColumnIndex, 150);
-      console.log('Added Deleted Timestamp column to Forces sheet');
-    }
-    
-  } catch (error) {
-    console.error('Error ensuring sheet structure:', error);
-  }
-}
+// Helper function removed - no dynamic column addition
 
 function getForcesList(params = {}) {
   try {
@@ -715,7 +621,7 @@ function testForcesScript() {
   
   try {
     // First ensure structure
-    ensureSheetStructure();
+    // ensureSheetStructure(); // Removed - no dynamic column addition
     
     // Test getting all forces
     const allForces = getForcesList({});

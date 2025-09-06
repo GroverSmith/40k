@@ -639,14 +639,9 @@ function softDeleteStory(storyKey) {
     // Find Deleted Timestamp column index
     let deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
     
-    // If column doesn't exist, add it
+    // If column doesn't exist, throw error instead of adding it
     if (deletedTimestampIndex === -1) {
-      sheet.insertColumnAfter(headers.length);
-      sheet.getRange(1, headers.length + 1).setValue('Deleted Timestamp');
-      sheet.getRange(1, headers.length + 1).setFontWeight('bold');
-      sheet.getRange(1, headers.length + 1).setBackground('#4ecdc4');
-      sheet.getRange(1, headers.length + 1).setFontColor('#ffffff');
-      deletedTimestampIndex = headers.length;
+      throw new Error('Deleted Timestamp column not found in sheet structure');
     }
     
     // Find the row with the matching key

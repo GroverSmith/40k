@@ -45,7 +45,7 @@ class CrusadeDetails {
 
             if (data.success && data.data) {
                 this.crusadeData = data.data;
-                this.displayCrusadeDetails();
+                this.displayCrusade();
                 return;
             }
 
@@ -56,7 +56,7 @@ class CrusadeDetails {
                 const headers = allCrusades[0];
                 const crusadeRow = allCrusades.find((row, index) => {
                     if (index === 0) return false;
-                    return row[0] === this.crusadeKey; // Key is in column 0
+                    return row[0] === this.crusadeKey; // crusade_key is in column 0
                 });
 
                 if (crusadeRow) {
@@ -70,7 +70,13 @@ class CrusadeDetails {
                 }
             }
 
-            throw new Error('Crusade not found');
+            // Extract available keys from error message if present
+            let errorMessage = 'Crusade not found';
+            if (allCrusades && allCrusades.error && allCrusades.error.includes('Available keys:')) {
+                const availableKeys = allCrusades.error.split('Available keys:')[1]?.trim();
+                errorMessage = `Crusade "${this.crusadeKey}" not found. Available crusades: ${availableKeys}`;
+            }
+            throw new Error(errorMessage);
 
         } catch (error) {
             console.error('Error loading crusade:', error);
@@ -210,10 +216,27 @@ class CrusadeDetails {
         // Show error in header
         const header = CoreUtils.dom.getElement('crusade-header');
         if (header) {
+            // Check if message contains available crusades
+            let additionalInfo = '';
+            if (message.includes('Available crusades:')) {
+                const availableCrusades = message.split('Available crusades:')[1]?.trim();
+                if (availableCrusades) {
+                    additionalInfo = `
+                        <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 4px;">
+                            <strong>Available Crusades:</strong><br>
+                            ${availableCrusades.split(',').map(key => 
+                                `<a href="?key=${key.trim()}" style="color: #ffcc99; text-decoration: underline; margin-right: 10px;">${key.trim()}</a>`
+                            ).join('')}
+                        </div>
+                    `;
+                }
+            }
+            
             header.innerHTML = `
                 <div class="error-state" style="background: #4a1e1e; border: 2px solid #cc6666; padding: 20px; border-radius: 8px;">
                     <h3 style="color: #ff9999;">⚠️ Error</h3>
                     <p style="color: #ff9999;">${message}</p>
+                    ${additionalInfo}
                     <a href="../index.html" class="btn btn-primary" style="margin-top: 15px;">Return to Campaign Tracker</a>
                 </div>
             `;
