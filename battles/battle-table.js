@@ -209,8 +209,6 @@ const BattleTable = {
     }
 };
 
-// Initialize auto-loading
-TableBase.initAutoLoad('recent-battles-container', () => BattleTable.loadRecentBattles());
 
 // Make globally available
 window.BattleTable = BattleTable;

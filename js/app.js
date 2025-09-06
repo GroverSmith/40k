@@ -46,6 +46,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // Initialize Battles display using BattleTable
+        const battlesContainer = document.getElementById('recent-battles-container');
+        if (battlesContainer) {
+            if (window.BattleTable) {
+                BattleTable.loadRecentBattles();
+            } else {
+                // Fallback if BattleTable not loaded yet
+                setTimeout(() => {
+                    if (window.BattleTable) {
+                        BattleTable.loadRecentBattles();
+                    } else {
+                        console.warn('BattleTable module not available');
+                        battlesContainer.innerHTML = '<p class="no-data">⚔️ Recent battles will be displayed here.</p>';
+                    }
+                }, 100);
+            }
+        }
+
         // Initialize Stories display using StoryTable
         const storiesContainer = document.getElementById('stories-sheet');
         if (storiesContainer) {
