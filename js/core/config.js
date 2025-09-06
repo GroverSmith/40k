@@ -100,11 +100,8 @@ const CrusadeConfig = {
         ],
         
         mfmVersions: [
-            '2024.1',
-            '2024.2',
-            '2023.3',
-            '2023.2',
-            '2023.1'
+            '3.2 (Aug 25)',
+            '2.7 (Jun 25)'            
         ],
 		
 		storyTypes: [
@@ -118,8 +115,7 @@ const CrusadeConfig = {
             'Strategic Planning',
             'Personal Log',
             'Propaganda',
-            'Technical Report',
-            'Field Report',
+            'Historical Event',            
             'Other'
         ]
     },
