@@ -281,3 +281,6 @@ const CrusadeParticipantsTable = {
         return result;
     }
 };
+
+// Make globally available
+window.CrusadeParticipantsTable = CrusadeParticipantsTable;
