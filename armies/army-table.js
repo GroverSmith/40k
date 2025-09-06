@@ -66,7 +66,7 @@ const ArmyTable = {
                 url: `${armyUrl}?action=list`,
                 cacheType: 'armies',
                 cacheKey: 'all',
-                dataKey: null,
+                dataKey: 'data',
                 loadingMessage: 'Loading army lists...'
             },            
             'user': {
@@ -93,51 +93,15 @@ const ArmyTable = {
         const fetchConfig = this.getFetchConfig('force', forceKey);
         const displayConfig = this.getDisplayConfig('force');
         
-        // Get the raw data and process it with TableDefs mapping
-        const result = await TableBase.fetchWithCache(
-            fetchConfig.url,
-            fetchConfig.cacheType,
-            fetchConfig.cacheKey
-        );
-        
-        console.log('Raw army data result:', result);
-        
-        // Process the data - it's already in object format from GAS script
-        let armies = [];
-        if (result && result.success && Array.isArray(result.data)) {
-            
-            armies = result.data;
-            console.log('Using all data directly as objects:', armies);
-        } else if (Array.isArray(result) && result.length > 0) {
-            armies = result;
-        }
-        
-        console.log(`Processed armies (direct objects): ${armies.length} total armies`, armies);
-        
-        // Filter armies to only show those for this force
-        const filteredArmies = armies.filter(army => {
-            if (!army) {
-                console.log('Skipping null army object');
-                return false;
-            }
+        // Create a filter function to only show armies for this specific force
+        const filterFn = (army) => {
+            if (!army) return false;
             const armyForceKey = army.force_key || '';
-            const armyName = army.army_name || army['Army Name'] || 'Unknown';
-            const matches = armyForceKey === forceKey;
-            console.log(`Checking army "${armyName}": force_key="${armyForceKey}", looking for="${forceKey}", matches=${matches}`);
-            return matches;
-        });
+            return armyForceKey === forceKey;
+        };
         
-        console.log('Filtered armies:', filteredArmies);
-        
-        // Display the filtered armies
-        const container = document.getElementById(containerId);
-        if (container) {
-            if (filteredArmies.length > 0) {
-                TableBase.displayTable(filteredArmies, container, displayConfig);
-            } else {
-                UIHelpers.showNoData(container, displayConfig.noDataMessage || 'No army lists uploaded for this force yet.');
-            }
-        }
+        // Use the standard loadAndDisplay method with filtering
+        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
     },
 
     
