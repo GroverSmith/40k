@@ -10,9 +10,8 @@ class StoryDetails {
     }
 
     async init() {
-        // Get story key from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        this.storyKey = urlParams.get('key');
+        // Get story key from URL using utility
+        this.storyKey = getUrlKey('key');
 
         if (!this.storyKey) {
             this.showError('No story specified');
@@ -23,15 +22,12 @@ class StoryDetails {
     }
 
     async loadStoryData() {
-        const container = document.getElementById('story-content');
+        const container = CoreUtils.dom.getElement('story-content');
         if (!container) return;
 
         try {
-            // Show loading state
-            container.innerHTML = `
-                <div class="loading-spinner"></div>
-                <span>Loading story...</span>
-            `;
+            // Show loading state using utility
+            container.innerHTML = CoreUtils.details.createLoadingHtml('Loading story...');
 
             let story = null;
 
@@ -59,16 +55,14 @@ class StoryDetails {
                 console.log('Story not in cache, fetching from API');
                 const storiesUrl = CrusadeConfig.getSheetUrl('stories');
 
-                // Try to get specific story first
+                // Try to get specific story first using utility
                 const fetchUrl = `${storiesUrl}?action=get&key=${encodeURIComponent(this.storyKey)}`;
-                const response = await fetch(fetchUrl);
-                const result = await response.json();
-
-                if (result.success && result.data) {
-                    story = result.data;
+                
+                try {
+                    story = await fetchEntityData(fetchUrl, 'story');
                     // Cache this specific story for future use
                     CacheManager.set('stories', story);
-                } else {
+                } catch (error) {
                     // Fallback: fetch all stories and cache them
                     const allStoriesResponse = await CacheManager.fetchWithCache(storiesUrl, 'stories');
                     story = this.findStoryInCache(allStoriesResponse, this.storyKey);
@@ -134,7 +128,7 @@ class StoryDetails {
      * Made async to handle fetching related forces
      */
     async displayStory(story) {
-        const container = document.getElementById('story-content');
+        const container = CoreUtils.dom.getElement('story-content');
         if (!container) return;
 
         // Combine all story text parts (handle the typo in field name)
@@ -253,36 +247,25 @@ class StoryDetails {
      * Extract readable name from user key
      */
     extractUserName(userKey) {
-        if (!userKey) return 'Unknown Author';
-        // Add spaces before capital letters for readability
-        return userKey.replace(/([A-Z])/g, ' $1').trim();
+        // Use utility for user name extraction
+        return CoreUtils.details.extractUserName(userKey) || 'Unknown Author';
     }
 
     /**
      * Format date for display
      */
     formatDate(dateStr) {
-        if (!dateStr) return '';
-        try {
-            const date = new Date(dateStr);
-            if (isNaN(date.getTime())) return dateStr;
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        } catch (e) {
-            return dateStr;
-        }
+        // Use utility for date formatting
+        return CoreUtils.dates.toDisplay(dateStr);
     }
 
     /**
      * Show error message
      */
     showError(message) {
-        const container = document.getElementById('story-content');
+        const container = CoreUtils.dom.getElement('story-content');
         if (container) {
-            container.innerHTML = `<div class="error-message">${message}</div>`;
+            container.innerHTML = CoreUtils.details.createErrorHtml(message);
         }
     }
 }

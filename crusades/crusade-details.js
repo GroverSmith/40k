@@ -10,8 +10,8 @@ class CrusadeDetails {
     }
 
     async init() {
-        const urlParams = new URLSearchParams(window.location.search);
-        this.crusadeKey = urlParams.get('key');
+        // Get crusade key from URL using utility
+        this.crusadeKey = getUrlKey('key');
 
         if (!this.crusadeKey) {
             this.showError('No crusade specified');
@@ -84,7 +84,7 @@ class CrusadeDetails {
         document.title = `${crusadeName} - Crusade Details`;
 
         // Update header
-        const header = document.getElementById('crusade-header');
+        const header = CoreUtils.dom.getElement('crusade-header');
         if (header) {
             const crusadeType = this.crusadeData['Crusade Type'] || '';
             const state = this.crusadeData.State || 'Active';
@@ -118,17 +118,17 @@ class CrusadeDetails {
         // Introduction
         const intro = this.crusadeData.Introduction;
         if (intro && intro.trim()) {
-            const section = document.getElementById('introduction-section');
-            const content = document.getElementById('introduction-content');
+            const section = CoreUtils.dom.getElement('introduction-section');
+            const content = CoreUtils.dom.getElement('introduction-content');
             if (section && content) {
-                section.style.display = 'block';
+                CoreUtils.dom.show(section);
                 content.innerHTML = `<div class="content-block">${this.formatText(intro)}</div>`;
             }
         }
 
         // Rules Section - combine all rules blocks without headers
-        const rulesSection = document.getElementById('rules-section');
-        const rulesContent = document.getElementById('rules-content');
+        const rulesSection = CoreUtils.dom.getElement('rules-section');
+        const rulesContent = CoreUtils.dom.getElement('rules-content');
         if (rulesSection && rulesContent) {
             let rulesHTML = '';
 
@@ -140,14 +140,14 @@ class CrusadeDetails {
             }
 
             if (rulesHTML) {
-                rulesSection.style.display = 'block';
+                CoreUtils.dom.show(rulesSection);
                 rulesContent.innerHTML = rulesHTML;
             }
         }
 
         // Narrative Section - combine all narrative blocks without headers
-        const narrativeSection = document.getElementById('narrative-section');
-        const narrativeContent = document.getElementById('narrative-content');
+        const narrativeSection = CoreUtils.dom.getElement('narrative-section');
+        const narrativeContent = CoreUtils.dom.getElement('narrative-content');
         if (narrativeSection && narrativeContent) {
             let narrativeHTML = '';
 
@@ -159,32 +159,29 @@ class CrusadeDetails {
             }
 
             if (narrativeHTML) {
-                narrativeSection.style.display = 'block';
+                CoreUtils.dom.show(narrativeSection);
                 narrativeContent.innerHTML = narrativeHTML;
             }
         }
     }
 
     async loadParticipatingForces() {
-        const section = document.getElementById('participating-forces-section');
+        const section = CoreUtils.dom.getElement('participating-forces-section');
         if (section) {
-            section.style.display = 'block';
+            CoreUtils.dom.show(section);
             if (window.CrusadeParticipantsTable) {
                 await CrusadeParticipantsTable.displayCrusadeParticipants('participating-forces-content', this.crusadeKey);
             } else {
                 console.error('CrusadeParticipantsTable module not loaded');
-                const container = document.getElementById('participating-forces-content');
-                if (container) {
-                    container.innerHTML = '<p class="error-message">Failed to display participants.</p>';
-                }
+                CoreUtils.dom.setLoading('participating-forces-content', 'Failed to display participants.');
             }
         }
     }
 
     async loadBattleHistory() {
-        const section = document.getElementById('battle-history-section');
+        const section = CoreUtils.dom.getElement('battle-history-section');
         if (section) {
-            section.style.display = 'block';
+            CoreUtils.dom.show(section);
             if (window.BattleTable) {
                 await BattleTable.loadForCrusade(this.crusadeKey, 'battle-history-content');
             }
@@ -192,9 +189,9 @@ class CrusadeDetails {
     }
 
     async loadCampaignStories() {
-        const section = document.getElementById('campaign-stories-section');
+        const section = CoreUtils.dom.getElement('campaign-stories-section');
         if (section) {
-            section.style.display = 'block';
+            CoreUtils.dom.show(section);
             if (window.StoryTable) {
                 await StoryTable.loadForCrusade(this.crusadeKey, 'campaign-stories-content');
             }
@@ -205,19 +202,13 @@ class CrusadeDetails {
 
     formatText(text) {
         if (!text) return '';
-        // Convert line breaks to HTML breaks and escape HTML
-        const escaped = text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-        return escaped.replace(/\n/g, '<br>');
+        // Use utility for HTML escaping
+        return CoreUtils.strings.escapeHtml(text).replace(/\n/g, '<br>');
     }
 
     showError(message) {
         // Show error in header
-        const header = document.getElementById('crusade-header');
+        const header = CoreUtils.dom.getElement('crusade-header');
         if (header) {
             header.innerHTML = `
                 <div class="error-state" style="background: #4a1e1e; border: 2px solid #cc6666; padding: 20px; border-radius: 8px;">
@@ -228,9 +219,9 @@ class CrusadeDetails {
             `;
         }
 
-        // Hide all sections
+        // Hide all sections using utility
         const sections = document.querySelectorAll('.data-section');
-        sections.forEach(section => section.style.display = 'none');
+        sections.forEach(section => CoreUtils.dom.hide(section));
     }
 
 }

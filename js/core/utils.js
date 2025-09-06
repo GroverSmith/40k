@@ -581,6 +581,156 @@ const CoreUtils = {
             return pathMap[currentDir][targetDir];
         }
 
+    },
+
+    /**
+     * Details Page Utilities - Common patterns for *-details.js files
+     */
+    details: {
+        /**
+         * Extract key parameter from URL (commonly used pattern)
+         * @param {string} paramName - The parameter name (default: 'key')
+         * @returns {string|null} The parameter value or null
+         */
+        getUrlKey(paramName = 'key') {
+            return CoreUtils.url.getParam(paramName);
+        },
+
+        /**
+         * Standard error handling for details pages
+         * @param {string} message - Error message to display
+         * @param {string} containerId - Container element ID for error display
+         * @param {Array<string>} hideElementIds - Array of element IDs to hide
+         */
+        showError(message, containerId = 'error-message', hideElementIds = []) {
+            // Hide loading states
+            hideElementIds.forEach(id => {
+                CoreUtils.dom.hide(id);
+            });
+
+            // Show error message
+            CoreUtils.dom.show(containerId);
+            const errorElement = CoreUtils.dom.getElement(containerId);
+            if (errorElement) {
+                errorElement.textContent = message;
+            }
+        },
+
+        /**
+         * Standard data fetching with error handling
+         * @param {string} url - URL to fetch from
+         * @param {string} entityName - Name of entity for error messages
+         * @returns {Promise<Object>} The fetched data
+         */
+        async fetchEntityData(url, entityName) {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    return data.data;
+                } else {
+                    throw new Error(data.error || `${entityName} not found`);
+                }
+            } catch (error) {
+                console.error(`Error loading ${entityName}:`, error);
+                throw error;
+            }
+        },
+
+        /**
+         * Show/hide loading states (common pattern)
+         * @param {string} loadingId - Loading element ID
+         * @param {string} contentId - Content element ID
+         * @param {boolean} showContent - Whether to show content (default: true)
+         */
+        toggleLoadingState(loadingId, contentId, showContent = true) {
+            CoreUtils.dom.hide(loadingId);
+            if (showContent) {
+                CoreUtils.dom.show(contentId);
+            } else {
+                CoreUtils.dom.hide(contentId);
+            }
+        },
+
+        /**
+         * Set multiple element text content at once (common pattern)
+         * @param {Object} elements - Object with elementId as key and text as value
+         */
+        setElementTexts(elements) {
+            Object.entries(elements).forEach(([elementId, text]) => {
+                const element = CoreUtils.dom.getElement(elementId);
+                if (element) {
+                    element.textContent = text;
+                }
+            });
+        },
+
+        /**
+         * Extract readable name from user key (common pattern)
+         * @param {string} userKey - User key to format
+         * @returns {string} Formatted user name
+         */
+        extractUserName(userKey) {
+            if (!userKey) return 'Unknown';
+            // Add spaces before capital letters for readability
+            return userKey.replace(/([A-Z])/g, ' $1').trim();
+        },
+
+        /**
+         * Create loading HTML (common pattern)
+         * @param {string} message - Loading message
+         * @returns {string} HTML string for loading state
+         */
+        createLoadingHtml(message = 'Loading...') {
+            return `
+                <div class="loading-spinner"></div>
+                <span>${message}</span>
+            `;
+        },
+
+        /**
+         * Create error HTML (common pattern)
+         * @param {string} message - Error message
+         * @returns {string} HTML string for error state
+         */
+        createErrorHtml(message) {
+            return `<div class="error-message">${message}</div>`;
+        },
+
+        /**
+         * Standard initialization pattern for details pages
+         * @param {Object} config - Configuration object
+         * @param {string} config.entityName - Name of the entity
+         * @param {string} config.keyProperty - Property name for the key
+         * @param {Function} config.loadFunction - Function to load data
+         * @param {Function} config.errorFunction - Function to handle errors
+         * @returns {Promise<boolean>} Whether initialization was successful
+         */
+        async initializeDetailsPage(config) {
+            const { entityName, keyProperty, loadFunction, errorFunction } = config;
+            
+            try {
+                const key = this.getUrlKey('key');
+                if (!key) {
+                    throw new Error(`No ${entityName} specified`);
+                }
+                
+                // Set the key property on the instance
+                this[keyProperty] = key;
+                
+                // Load the data
+                await loadFunction.call(this);
+                
+                return true;
+            } catch (error) {
+                console.error(`Error initializing ${entityName} details:`, error);
+                if (errorFunction) {
+                    errorFunction.call(this, error.message);
+                }
+                return false;
+            }
+        }
     }
 };
 
@@ -595,6 +745,14 @@ window.showNotification = CoreUtils.notifications.show;
 window.getRelativePath = CoreUtils.path.getRelativePath;
 window.clean = CoreUtils.strings.clean;
 window.generateUUID = CoreUtils.strings.generateUUID;
+
+// Details page utilities
+window.getUrlKey = CoreUtils.details.getUrlKey;
+window.showDetailsError = CoreUtils.details.showError;
+window.fetchEntityData = CoreUtils.details.fetchEntityData;
+window.toggleLoadingState = CoreUtils.details.toggleLoadingState;
+window.setElementTexts = CoreUtils.details.setElementTexts;
+window.extractUserName = CoreUtils.details.extractUserName;
 
 // Export for modules
 if (typeof module !== 'undefined' && module.exports) {

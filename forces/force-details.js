@@ -13,9 +13,8 @@ class ForceDetails {
    
    async init() {
        try {
-           // Get force key from URL
-           const urlParams = new URLSearchParams(window.location.search);
-           this.forceKey = urlParams.get('key');
+           // Get force key from URL using utility
+           this.forceKey = getUrlKey('key');
            
            if (!this.forceKey) {
                throw new Error('No force key provided in URL');
@@ -54,7 +53,7 @@ class ForceDetails {
            this.updateActionButtons();
            
            // Show sections
-           document.getElementById('overview-section').style.display = 'block';
+           CoreUtils.dom.show('overview-section');
            
            
        } catch (error) {
@@ -152,31 +151,25 @@ class ForceDetails {
    async loadArmyLists() {
        try {
            // Show the section
-           document.getElementById('army-lists-section').style.display = 'block';
+           CoreUtils.dom.show('army-lists-section');
            
            // Use ArmyTable to load and display army lists for this force
            if (window.ArmyTable) {
                await ArmyTable.loadForForce(this.forceKey, 'army-lists-content');
            } else {
                console.error('ArmyTable module not loaded');
-               const container = document.getElementById('army-lists-content');
-               if (container) {
-                   container.innerHTML = '<p class="error-message">Army table module not loaded</p>';
-               }
+               CoreUtils.dom.setLoading('army-lists-content', 'Army table module not loaded');
            }
        } catch (error) {
            console.error('Error loading army lists:', error);
-           const container = document.getElementById('army-lists-content');
-           if (container) {
-               container.innerHTML = '<p class="error-message">Failed to load army lists</p>';
-           }
+           CoreUtils.dom.setLoading('army-lists-content', 'Failed to load army lists');
        }
    }
    
    async loadBattleHistory() {
        try {
            // Show the section
-           document.getElementById('battle-history-section').style.display = 'block';
+           CoreUtils.dom.show('battle-history-section');
            
            if (window.BattleTable) {
                // First, fetch battles data to calculate stats
@@ -191,17 +184,11 @@ class ForceDetails {
                await BattleTable.loadForForce(this.forceKey, 'battle-history-content');
            } else {
                console.error('BattleTable module not loaded');
-               const container = document.getElementById('battle-history-content');
-               if (container) {
-                   container.innerHTML = '<p class="error-message">Battle table module not loaded</p>';
-               }
+               CoreUtils.dom.setLoading('battle-history-content', 'Battle table module not loaded');
            }
        } catch (error) {
            console.error('Error loading battle history:', error);
-           const container = document.getElementById('battle-history-content');
-           if (container) {
-               container.innerHTML = '<p class="error-message">Failed to load battle history</p>';
-           }
+           CoreUtils.dom.setLoading('battle-history-content', 'Failed to load battle history');
        }
    }
    
@@ -210,7 +197,7 @@ class ForceDetails {
    async loadParticipatingCrusades() {
        try {
            // Show the section
-           document.getElementById('crusades-section').style.display = 'block';
+           CoreUtils.dom.show('crusades-section');
            
            // Get participating crusades
            const crusades = await this.getParticipatingCrusades();
@@ -242,8 +229,7 @@ class ForceDetails {
            }
        } catch (error) {
            console.error('Error loading crusades:', error);
-           document.getElementById('crusades-content').innerHTML = 
-               '<p class="error-message">Failed to load participating crusades</p>';
+           CoreUtils.dom.setLoading('crusades-content', 'Failed to load participating crusades');
        }
    }
    
@@ -254,16 +240,8 @@ class ForceDetails {
            header.innerHTML = `<div class="error-state">⚠️ ${message}</div>`;
        }
        
-       // Show error message
-       document.getElementById('error-message').style.display = 'block';
-       document.getElementById('error-text').textContent = message;
-       
-       // Hide all sections
-       ['overview-section', 'army-lists-section', 'battle-history-section', 
-        'crusades-section'].forEach(id => {
-           const element = document.getElementById(id);
-           if (element) element.style.display = 'none';
-       });
+       // Use utility for standard error handling
+       showDetailsError(message, 'error-message', ['overview-section', 'army-lists-section', 'battle-history-section', 'crusades-section']);
    }
 
    // ===== DATA LOADING METHODS (consolidated from force-data.js) =====
@@ -364,18 +342,11 @@ class ForceDetails {
            'avg-points-scored': stats.averagePointsScored
        };
 
-       Object.entries(elements).forEach(([id, value]) => {
-           const el = document.getElementById(id);
-           if (el) {
-               el.textContent = value;
-           }
-       });
+       // Use utility for setting multiple element texts
+       setElementTexts(elements);
 
        // Show stats section
-       const statsEl = document.getElementById('force-stats');
-       if (statsEl) {
-           statsEl.style.display = 'grid';
-       }
+       CoreUtils.dom.show('force-stats', 'grid');
    }
 
    // ===== ADDITIONAL DATA METHODS =====

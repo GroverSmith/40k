@@ -16,9 +16,8 @@ class ArmyDetails {
             return;
         }
         
-        // Get army list ID from URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        this.armyKey = urlParams.get('key');
+        // Get army list ID from URL parameter using utility
+        this.armyKey = getUrlKey('key');
         
         if (!this.armyKey) {
             this.showError('No army list specified. Please select an army list to view.');
@@ -40,15 +39,9 @@ class ArmyDetails {
             // Use the GET endpoint to fetch specific army list by ID
             const fetchUrl = `${armyListUrl}?action=get&key=${encodeURIComponent(this.armyKey)}`;
             
-            const response = await fetch(fetchUrl);
-            const data = await response.json();
-            
-            if (data.success && data.data) {
-                this.armyData = data.data;
-                this.displayArmy();
-            } else {
-                throw new Error(data.error || 'Army list not found');
-            }
+            // Use utility for standard data fetching
+            this.armyData = await fetchEntityData(fetchUrl, 'army list');
+            this.displayArmy();
             
         } catch (error) {
             console.error('Error loading army list:', error);
@@ -57,34 +50,34 @@ class ArmyDetails {
     }
     
     displayArmy() {
-        // Hide loading state and show content
-        document.getElementById('loading-state').style.display = 'none';
-        document.getElementById('army-list-content').style.display = 'block';
+        // Hide loading state and show content using utility
+        toggleLoadingState('loading-state', 'army-list-content', true);
         
         // Update page title
         const armyName = this.armyData['Army Name'] || 'Unnamed Army List';
         document.title = `${armyName} - Army List Viewer`;
         
-        // Update header
-        document.getElementById('army-list-title').textContent = armyName;
-        
+        // Update header using utility
         const forceName = this.armyData['Force Name'] || 'Unknown Force';
         const faction = this.armyData.Faction || 'Unknown Faction';
-        document.getElementById('army-list-subtitle').textContent = `${forceName} • ${faction}`;
+        setElementTexts({
+            'army-list-title': armyName,
+            'army-list-subtitle': `${forceName} • ${faction}`
+        });
         
         // Update metadata
         this.displayMetadata();
         
         // Display army list text
         const armyListText = this.armyData['Army List Text'] || 'No army list content available.';
-        document.getElementById('army-list-text').textContent = armyListText;
-        
-        // Update character count
         const charCount = armyListText.length.toLocaleString();
-        document.getElementById('character-count').textContent = `${charCount} characters`;
+        setElementTexts({
+            'army-list-text': armyListText,
+            'character-count': `${charCount} characters`
+        });
         
         // Set up back to force button
-        const backBtn = document.getElementById('back-to-force-btn');
+        const backBtn = CoreUtils.dom.getElement('back-to-force-btn');
         if (forceName && forceName !== 'Unknown Force') {
             // Use CrusadeConfig to build the URL with proper relative path from armies directory
             const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceName);
@@ -97,7 +90,7 @@ class ArmyDetails {
     }
     
     displayMetadata() {
-        const metaContainer = document.getElementById('army-list-meta');
+        const metaContainer = CoreUtils.dom.getElement('army-list-meta');
         
         // Prepare metadata items
         const metaItems = [
@@ -158,10 +151,9 @@ class ArmyDetails {
     }
     
     showError(message) {
-        document.getElementById('loading-state').style.display = 'none';
-        document.getElementById('army-list-content').style.display = 'none';
-        document.getElementById('error-state').style.display = 'block';
-        document.getElementById('error-message').textContent = message;
+        // Use utility for standard error handling
+        showDetailsError(message, 'error-message', ['loading-state', 'army-list-content']);
+        CoreUtils.dom.show('error-state');
     }
 }
 
