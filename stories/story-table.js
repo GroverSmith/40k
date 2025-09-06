@@ -69,10 +69,10 @@ const StoryTable = {
         const storyUrl = CrusadeConfig.getSheetUrl('stories');
         const configs = {
             'force': {
-                url: `${storyUrl}?action=force-stories&forceKey=${encodeURIComponent(key)}`,
+                url: `${storyUrl}?action=list`,
                 cacheType: 'stories',
-                cacheKey: `force_${key}`,
-                dataKey: 'stories',
+                cacheKey: 'all',
+                dataKey: 'data',
                 loadingMessage: 'Loading stories...'
             },
             'crusade': {
@@ -150,7 +150,16 @@ const StoryTable = {
 
     // Convenience methods
     async loadForForce(forceKey, containerId) {
-        return this.loadStories('force', forceKey, containerId);
+        const fetchConfig = this.getFetchConfig('force', forceKey);
+        const displayConfig = this.getDisplayConfig('force');
+        
+        // Filter stories to only show those for this force
+        const filterFn = (story) => {
+            const storyForceKey = story.force_key || story['force_key'] || story['Force Key'] || '';
+            return storyForceKey === forceKey;
+        };
+        
+        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
     },
 
     async loadForCrusade(crusadeKey, containerId) {

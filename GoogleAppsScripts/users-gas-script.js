@@ -223,9 +223,15 @@ function getUsersList() {
     const sheet = spreadsheet.getSheetByName(SHEET_NAME);
     
     if (!sheet) {
-      // Return empty array with headers if no sheet exists yet
+      // Return empty standardized format if sheet doesn't exist
       return ContentService
-        .createTextOutput(JSON.stringify([['user_key', 'name', 'discord_handle', 'email', 'notes', 'composite_rating', 'self_rating', 'years_experience', 'games_per_year', 'timestamp', 'deleted_timestamp']]))
+        .createTextOutput(JSON.stringify({
+          success: true,
+          count: 0,
+          totalCount: 0,
+          data: [],
+          hasMore: false
+        }))
         .setMimeType(ContentService.MimeType.JSON);
     }
     
@@ -234,11 +240,41 @@ function getUsersList() {
     // Filter out deleted rows
     const activeData = filterActiveRows(data);
     
-    console.log('getUsersList - Total active rows found:', activeData.length);
+    const headers = activeData[0];
+    let rows = activeData.slice(1);
     
-    // Return raw data for compatibility with existing sheets system
+    console.log('getUsersList - Total active rows found:', rows.length);
+    console.log('getUsersList - Headers:', headers);
+    
+    // Convert to objects with consistent field names
+    const users = rows.map((row) => {
+      const obj = { 
+        id: row[0], // Use the key as ID
+        key: row[0], // Also include as 'key' for clarity
+        Key: row[0]  // Include uppercase for compatibility
+      };
+      
+      headers.forEach((header, headerIndex) => {
+        obj[header] = row[headerIndex];
+      });
+      
+      return obj;
+    });
+    
+    console.log('getUsersList - Returning users with keys:', users.map(user => ({ 
+      name: user['name'] || user.Name, 
+      key: user.key, 
+      discord: user['discord_handle'] || user.Discord
+    })));
+    
     return ContentService
-      .createTextOutput(JSON.stringify(activeData))
+      .createTextOutput(JSON.stringify({
+        success: true,
+        count: users.length,
+        totalCount: users.length,
+        data: users,
+        hasMore: false
+      }))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
@@ -395,45 +431,6 @@ function softDeleteUser(userKey) {
 }
 
 // Test functions
-function testUsersScript() {
-  console.log('=== Testing Users Script ===');
-  
-  try {
-    // Test getting all users
-    const allUsers = getUsersList();
-    console.log('All users result:', JSON.parse(allUsers.getContent()));
-    
-    // Test key generation
-    const testKey = generateUserKey('John Smith');
-    console.log('Test user key:', testKey);
-    
-  } catch (error) {
-    console.error('Test error:', error);
-  }
-}
+// Test function removed - no longer needed
 
-function debugUsersSheet() {
-  try {
-    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    console.log('Spreadsheet name:', spreadsheet.getName());
-    
-    const sheets = spreadsheet.getSheets();
-    console.log('Available sheets:');
-    sheets.forEach((sheet, index) => {
-      console.log(`  ${index + 1}. ${sheet.getName()} (${sheet.getLastRow()} rows, ${sheet.getLastColumn()} columns)`);
-    });
-    
-    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-    if (sheet) {
-      console.log(`Using sheet: ${SHEET_NAME}`);
-      const data = sheet.getDataRange().getValues();
-      console.log('Headers:', data[0]);
-      console.log(`Sample data (first 3 rows):`, data.slice(0, 3));
-    } else {
-      console.log(`Sheet "${SHEET_NAME}" not found!`);
-    }
-    
-  } catch (error) {
-    console.error('Debug error:', error);
-  }
-}
+// Debug function removed - no longer needed

@@ -371,33 +371,81 @@ function doGet(e) {
 }
 
 function getStoriesList(params = {}) {
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
-  if (!sheet) {
+  try {
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      // Return empty standardized format if sheet doesn't exist
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: true,
+          count: 0,
+          totalCount: 0,
+          data: [],
+          hasMore: false
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    
+    // Filter out deleted rows
+    const activeData = filterActiveRows(data);
+    
+    const headers = activeData[0];
+    let rows = activeData.slice(1);
+    
+    // Filter by story type if specified
+    if (params.storyType) {
+      const storyTypeIndex = headers.indexOf('Story Type');
+      rows = rows.filter(row => row[storyTypeIndex] === params.storyType);
+    }
+    
+    console.log('getStoriesList - Total active rows found:', rows.length);
+    console.log('getStoriesList - Headers:', headers);
+    
+    // Convert to objects with consistent field names
+    const stories = rows.map((row) => {
+      const obj = { 
+        id: row[0], // Use the key as ID
+        key: row[0], // Also include as 'key' for clarity
+        Key: row[0]  // Include uppercase for compatibility
+      };
+      
+      headers.forEach((header, headerIndex) => {
+        obj[header] = row[headerIndex];
+      });
+      
+      return obj;
+    });
+    
+    console.log('getStoriesList - Returning stories with keys:', stories.map(story => ({ 
+      title: story['Title'] || story.title, 
+      key: story.key, 
+      type: story['Story Type'] || story.story_type
+    })));
+    
     return ContentService
-      .createTextOutput(JSON.stringify([]))
+      .createTextOutput(JSON.stringify({
+        success: true,
+        count: stories.length,
+        totalCount: stories.length,
+        data: stories,
+        hasMore: false
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    console.error('Error getting stories list:', error);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
       .setMimeType(ContentService.MimeType.JSON);
   }
-  
-  const data = sheet.getDataRange().getValues();
-  
-  // Filter out deleted rows
-  const activeData = filterActiveRows(data);
-  
-  // Filter by story type if specified
-  let filteredData = activeData;
-  if (params.storyType) {
-    const headers = activeData[0];
-    const storyTypeIndex = headers.indexOf('Story Type');
-    filteredData = [headers].concat(
-      activeData.slice(1).filter(row => row[storyTypeIndex] === params.storyType)
-    );
-  }
-  
-  return ContentService
-    .createTextOutput(JSON.stringify(filteredData))
-    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function getStoryByKey(storyKey) {
@@ -675,19 +723,4 @@ function softDeleteStory(storyKey) {
 }
 
 // Test function
-function testStoriesScript() {
-  console.log('=== Testing Stories Script ===');
-  
-  try {
-    // Test key generation
-    const testKey = generateStoryKey('TestUser', 'The Battle of Terra');
-    console.log('Test story key:', testKey);
-    
-    // Test getting all stories
-    const allStories = getStoriesList({});
-    console.log('All stories result:', JSON.parse(allStories.getContent()));
-    
-  } catch (error) {
-    console.error('Test error:', error);
-  }
-}
+// Test function removed - no longer needed

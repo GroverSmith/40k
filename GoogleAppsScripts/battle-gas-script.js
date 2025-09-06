@@ -23,29 +23,7 @@ function filterActiveRows(data) {
   return activeRows;
 }
 
-// Helper function to normalize headers for consistency
-function normalizeHeaders(headers) {
-  return headers.map(header => {
-    // Normalize score fields to uppercase 'Score'
-    if (header === 'Player 1 score') return 'Player 1 Score';
-    if (header === 'Player 2 score') return 'Player 2 Score';
-    return header;
-  });
-}
-
-// Helper function to convert array data to objects with normalized headers
-function convertToObjects(data) {
-  if (!data || data.length <= 1) return [];
-
-  const headers = normalizeHeaders(data[0]);
-  return data.slice(1).map(row => {
-    const obj = {};
-    headers.forEach((header, index) => {
-      obj[header] = row[index];
-    });
-    return obj;
-  });
-}
+// Legacy functions removed - now using standardized object format
 
 // Generate UUID v4
 function generateUUID() {
@@ -71,7 +49,7 @@ function editBattle(battleKey, userKey, data) {
   }
   
   const allData = sheet.getDataRange().getValues();
-  const headers = normalizeHeaders(allData[0]);
+  const headers = allData[0];
   const battleKeyIndex = headers.indexOf('battle_key');
   const userKeyIndex = headers.indexOf('user_key');
   const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
@@ -134,7 +112,7 @@ function deleteBattle(battleKey, userKey) {
   }
   
   const allData = sheet.getDataRange().getValues();
-  const headers = normalizeHeaders(allData[0]);
+  const headers = allData[0];
   const battleKeyIndex = headers.indexOf('battle_key');
   const userKeyIndex = headers.indexOf('user_key');
   const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
@@ -408,34 +386,75 @@ function doGet(e) {
 
 // UPDATED: Always return JSON with consistent structure
 function getBattlesList(params = {}) {
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  try {
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
 
-  if (!sheet) {
+    if (!sheet) {
+      // Return empty standardized format if sheet doesn't exist
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: true,
+          count: 0,
+          totalCount: 0,
+          data: [],
+          hasMore: false
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const data = sheet.getDataRange().getValues();
+
+    // Filter out deleted rows
+    const activeData = filterActiveRows(data);
+
+    const headers = activeData[0];
+    let rows = activeData.slice(1);
+    
+    console.log('getBattlesList - Total active rows found:', rows.length);
+    console.log('getBattlesList - Headers:', headers);
+
+    // Convert to objects with consistent field names
+    const battles = rows.map((row) => {
+      const obj = { 
+        id: row[0], // Use the key as ID
+        key: row[0], // Also include as 'key' for clarity
+        Key: row[0]  // Include uppercase for compatibility
+      };
+      
+      headers.forEach((header, headerIndex) => {
+        obj[header] = row[headerIndex];
+      });
+      
+      return obj;
+    });
+
+    console.log('getBattlesList - Returning battles with keys:', battles.map(battle => ({ 
+      key: battle.key, 
+      victor: battle['Victor'] || battle.victor,
+      date: battle['Date Played'] || battle.date_played
+    })));
+
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
-        battles: [],
-        count: 0
+        count: battles.length,
+        totalCount: battles.length,
+        data: battles,
+        hasMore: false
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    console.error('Error getting battles list:', error);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
-
-  const data = sheet.getDataRange().getValues();
-
-  // Filter out deleted rows
-  const activeData = filterActiveRows(data);
-
-  // Convert to objects with normalized headers
-  const battles = convertToObjects(activeData);
-
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      battles: battles,
-      count: battles.length
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function getBattleByKey(battleKey) {
@@ -506,7 +525,23 @@ function getBattlesForCrusade(crusadeKey) {
   const activeData = filterActiveRows(data);
 
   // Convert to objects with normalized headers (no filtering - done client-side)
-  const allBattles = convertToObjects(activeData);
+  // Convert to objects with consistent field names
+  const headers = activeData[0];
+  let rows = activeData.slice(1);
+  
+  const allBattles = rows.map((row) => {
+    const obj = { 
+      id: row[0], // Use the key as ID
+      key: row[0], // Also include as 'key' for clarity
+      Key: row[0]  // Include uppercase for compatibility
+    };
+    
+    headers.forEach((header, headerIndex) => {
+      obj[header] = row[headerIndex];
+    });
+    
+    return obj;
+  });
 
   console.log(`Found ${allBattles.length} active battles`);
 
@@ -543,7 +578,23 @@ function getBattlesForForce(forceKey) {
   const activeData = filterActiveRows(data);
 
   // Convert to objects with normalized headers (no filtering - done client-side)
-  const allBattles = convertToObjects(activeData);
+  // Convert to objects with consistent field names
+  const headers = activeData[0];
+  let rows = activeData.slice(1);
+  
+  const allBattles = rows.map((row) => {
+    const obj = { 
+      id: row[0], // Use the key as ID
+      key: row[0], // Also include as 'key' for clarity
+      Key: row[0]  // Include uppercase for compatibility
+    };
+    
+    headers.forEach((header, headerIndex) => {
+      obj[header] = row[headerIndex];
+    });
+    
+    return obj;
+  });
 
   console.log(`Found ${allBattles.length} active battles`);
 
@@ -576,7 +627,23 @@ function getRecentBattles(limit = 10) {
   const activeData = filterActiveRows(data);
 
   // Convert to objects with normalized headers
-  const allBattles = convertToObjects(activeData);
+  // Convert to objects with consistent field names
+  const headers = activeData[0];
+  let rows = activeData.slice(1);
+  
+  const allBattles = rows.map((row) => {
+    const obj = { 
+      id: row[0], // Use the key as ID
+      key: row[0], // Also include as 'key' for clarity
+      Key: row[0]  // Include uppercase for compatibility
+    };
+    
+    headers.forEach((header, headerIndex) => {
+      obj[header] = row[headerIndex];
+    });
+    
+    return obj;
+  });
 
   // Sort by timestamp (most recent first) and limit
   const battles = allBattles

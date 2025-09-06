@@ -368,8 +368,7 @@ function doGet(e) {
         return getArmyLists(e.parameter);
       case 'get':
         return getArmyListByKey(e.parameter.key);
-      case 'test':
-        return getRecentArmyLists();
+      // Test case removed - no longer needed
       case 'delete':
         return softDeleteArmyList(e.parameter.key);
       default:
@@ -609,48 +608,3 @@ function softDeleteArmy(armyKey) {
   }
 }
 
-// Test functions
-function testSubmission() {
-  const testData = {
-    timestamp: new Date().toISOString(),
-    forceKey: 'TestForce_TestUser',
-    userName: 'Test User',
-    forceName: 'Test Force',
-    armyName: 'Test Army List',
-    faction: 'Space Marines',
-    detachment: 'Battalion',
-    mfmVersion: '2024.1',
-    pointsValue: '1000',
-    notes: 'Test notes',
-    armyListText: 'This is a test army list with some sample text to verify the submission works correctly.'
-  };
-  
-  // Simulate a form POST request
-  const mockEvent = {
-    postData: {
-      type: 'application/x-www-form-urlencoded',
-      contents: null
-    },
-    parameter: testData
-  };
-  
-  const result = doPost(mockEvent);
-  console.log('Test result:', result.getContent());
-}
-
-function testArmyListRetrieval() {
-  console.log('=== Testing Army List Retrieval ===');
-  
-  try {
-    // Test getting all army lists
-    const allLists = getArmyLists({});
-    console.log('All lists result:', JSON.parse(allLists.getContent()));
-    
-    // Test key generation
-    const testForceKey = generateForceKey('Test Force', 'Test User');
-    console.log('Test force key:', testForceKey);
-    
-  } catch (error) {
-    console.error('Test error:', error);
-  }
-}

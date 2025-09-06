@@ -376,11 +376,15 @@ function getForcesList(params = {}) {
     const sheet = spreadsheet.getSheetByName(SHEET_NAME);
     
     if (!sheet) {
-      // Return empty array with headers if sheet doesn't exist
+      // Return empty standardized format if sheet doesn't exist
       return ContentService
-        .createTextOutput(JSON.stringify([
-          ['Key', 'User Name', 'Force Name', 'Faction', 'Detachment', 'Notes', 'Timestamp', 'Deleted Timestamp']
-        ]))
+        .createTextOutput(JSON.stringify({
+          success: true,
+          count: 0,
+          totalCount: 0,
+          data: [],
+          hasMore: false
+        }))
         .setMimeType(ContentService.MimeType.JSON);
     }
     
@@ -389,11 +393,41 @@ function getForcesList(params = {}) {
     // Filter out deleted rows
     const activeData = filterActiveRows(data);
     
-    console.log('getForcesList - Total active rows found:', activeData.length);
+    const headers = activeData[0];
+    let rows = activeData.slice(1);
     
-    // Return raw data for compatibility with existing sheets system
+    console.log('getForcesList - Total active rows found:', rows.length);
+    console.log('getForcesList - Headers:', headers);
+    
+    // Convert to objects with consistent field names
+    const forces = rows.map((row) => {
+      const obj = { 
+        id: row[0], // Use the key as ID
+        key: row[0], // Also include as 'key' for clarity
+        Key: row[0]  // Include uppercase for compatibility
+      };
+      
+      headers.forEach((header, headerIndex) => {
+        obj[header] = row[headerIndex];
+      });
+      
+      return obj;
+    });
+    
+    console.log('getForcesList - Returning forces with keys:', forces.map(force => ({ 
+      name: force['Force Name'] || force.force_name, 
+      key: force.key, 
+      user: force['User Name'] || force.user_name
+    })));
+    
     return ContentService
-      .createTextOutput(JSON.stringify(activeData))
+      .createTextOutput(JSON.stringify({
+        success: true,
+        count: forces.length,
+        totalCount: forces.length,
+        data: forces,
+        hasMore: false
+      }))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
@@ -611,48 +645,4 @@ function softDeleteForce(forceKey) {
 }
 
 // Test functions
-function testForcesScript() {
-  console.log('=== Testing Forces Script ===');
-  
-  try {
-    // First ensure structure
-    // ensureSheetStructure(); // Removed - no dynamic column addition
-    
-    // Test getting all forces
-    const allForces = getForcesList({});
-    console.log('All forces result:', JSON.parse(allForces.getContent()));
-    
-    // Test key generation
-    const testKey = generateForceKey('Ultramarines 2nd Company', 'John Smith');
-    console.log('Test key generation:', testKey);
-    
-  } catch (error) {
-    console.error('Test error:', error);
-  }
-}
-
-function debugForcesSheet() {
-  try {
-    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    console.log('Spreadsheet name:', spreadsheet.getName());
-    
-    const sheets = spreadsheet.getSheets();
-    console.log('Available sheets:');
-    sheets.forEach((sheet, index) => {
-      console.log(`  ${index + 1}. ${sheet.getName()} (${sheet.getLastRow()} rows, ${sheet.getLastColumn()} columns)`);
-    });
-    
-    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-    if (sheet) {
-      console.log(`Using sheet: ${SHEET_NAME}`);
-      const data = sheet.getDataRange().getValues();
-      console.log('Headers:', data[0]);
-      console.log(`Sample data (first 3 rows):`, data.slice(0, 3));
-    } else {
-      console.log(`Sheet "${SHEET_NAME}" not found!`);
-    }
-    
-  } catch (error) {
-    console.error('Debug error:', error);
-  }
-}
+// Test and debug functions removed - no longer needed

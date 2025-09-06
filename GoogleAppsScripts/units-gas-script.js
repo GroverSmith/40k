@@ -417,23 +417,75 @@ function doGet(e) {
 }
 
 function getUnitsList(params = {}) {
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
-  if (!sheet) {
+  try {
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      // Return empty standardized format if sheet doesn't exist
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: true,
+          count: 0,
+          totalCount: 0,
+          data: [],
+          hasMore: false
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    
+    // Filter out deleted rows
+    const activeData = filterActiveRows(data);
+    
+    const headers = activeData[0];
+    let rows = activeData.slice(1);
+    
+    console.log('getUnitsList - Total active rows found:', rows.length);
+    console.log('getUnitsList - Headers:', headers);
+    
+    // Convert to objects with consistent field names
+    const units = rows.map((row) => {
+      const obj = { 
+        id: row[0], // Use the key as ID
+        key: row[0], // Also include as 'key' for clarity
+        Key: row[0]  // Include uppercase for compatibility
+      };
+      
+      headers.forEach((header, headerIndex) => {
+        obj[header] = row[headerIndex];
+      });
+      
+      return obj;
+    });
+    
+    console.log('getUnitsList - Returning units with keys:', units.map(unit => ({ 
+      name: unit['Name'] || unit.name, 
+      key: unit.key, 
+      force: unit['Force Key'] || unit.force_key
+    })));
+    
     return ContentService
-      .createTextOutput(JSON.stringify([]))
+      .createTextOutput(JSON.stringify({
+        success: true,
+        count: units.length,
+        totalCount: units.length,
+        data: units,
+        hasMore: false
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    console.error('Error getting units list:', error);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
       .setMimeType(ContentService.MimeType.JSON);
   }
-  
-  const data = sheet.getDataRange().getValues();
-  
-  // Filter out deleted rows
-  const activeData = filterActiveRows(data);
-  
-  return ContentService
-    .createTextOutput(JSON.stringify(activeData))
-    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function getUnitByKey(unitKey) {
@@ -539,19 +591,4 @@ function softDeleteUnit(unitKey) {
 }
 
 // Test function
-function testUnitsScript() {
-  console.log('=== Testing Units Script ===');
-  
-  try {
-    // Test key generation
-    const testKey = generateUnitKey('TestForce_User', 'Captain Aurelius');
-    console.log('Test unit key:', testKey);
-    
-    // Test getting all units
-    const allUnits = getUnitsList({});
-    console.log('All units result:', JSON.parse(allUnits.getContent()));
-    
-  } catch (error) {
-    console.error('Test error:', error);
-  }
-}
+// Test function removed - no longer needed

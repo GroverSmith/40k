@@ -378,46 +378,4 @@ function softDeleteCrusade(crusadeKey) {
 }
 
 // Test function to verify the script works
-function testCrusadesScript() {
-  console.log('=== Testing Crusades Script ===');
-  
-  try {
-    // Test getting all crusades
-    const allCrusades = getCrusadesList();
-    console.log('All crusades result:', JSON.parse(allCrusades.getContent()));
-    
-    // Test key generation
-    const testKey = generateCrusadeKey('Summer Campaign 2024');
-    console.log('Test crusade key:', testKey);
-    
-  } catch (error) {
-    console.error('Test error:', error);
-  }
-}
-
-// Utility function to check sheet structure
-function debugSheetStructure() {
-  try {
-    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    console.log('Spreadsheet name:', spreadsheet.getName());
-    
-    const sheets = spreadsheet.getSheets();
-    console.log('Available sheets:');
-    sheets.forEach((sheet, index) => {
-      console.log(`  ${index + 1}. ${sheet.getName()} (${sheet.getLastRow()} rows, ${sheet.getLastColumn()} columns)`);
-    });
-    
-    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-    if (sheet) {
-      console.log(`Using sheet: ${SHEET_NAME}`);
-      const data = sheet.getDataRange().getValues();
-      console.log('Headers:', data[0]);
-      console.log(`Sample data (first 3 rows):`, data.slice(0, 3));
-    } else {
-      console.log(`Sheet "${SHEET_NAME}" not found!`);
-    }
-    
-  } catch (error) {
-    console.error('Debug error:', error);
-  }
-}
+// Test and debug functions removed - no longer needed

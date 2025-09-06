@@ -124,7 +124,7 @@ const UnitTable = {
                 url: `${unitsUrl}?action=list`,
                 cacheType: 'units',
                 cacheKey: 'all',
-                dataKey: null,
+                dataKey: 'data',
                 loadingMessage: 'Loading units...'
             },
             'crusade': {
@@ -288,7 +288,7 @@ const UnitTable = {
         
         // Filter units to only show those for this force
         const filterFn = (unit) => {
-            const unitForceKey = unit['force_key'] || unit['Force Key'] || '';
+            const unitForceKey = unit.force_key || unit['force_key'] || unit['Force Key'] || '';
             return unitForceKey === forceKey;
         };
         

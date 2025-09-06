@@ -70,21 +70,21 @@ const BattleTable = {
                 url: `${battleUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`,
                 cacheType: 'battles',
                 cacheKey: `force_${key}`,
-                dataKey: 'battles',
+                dataKey: 'data',
                 loadingMessage: 'Loading battles...'
             },
             'crusade': {
                 url: `${battleUrl}?action=crusade-battles&crusadeKey=${encodeURIComponent(key)}`,
                 cacheType: 'battles',
                 cacheKey: `crusade_${key}`,
-                dataKey: 'battles',
+                dataKey: 'data',
                 loadingMessage: 'Loading battles...'
             },
             'recent': {
-                url: battleUrl,
+                url: `${battleUrl}?action=recent&limit=10`,
                 cacheType: 'battles',
                 cacheKey: 'recent',
-                dataKey: 'battles',
+                dataKey: 'data',
                 loadingMessage: 'Loading recent battles...'
             }
         };
@@ -100,7 +100,17 @@ const BattleTable = {
 
     // Convenience methods
     async loadForForce(forceKey, containerId) {
-        return this.loadBattles('force', forceKey, containerId);
+        const fetchConfig = this.getFetchConfig('force', forceKey);
+        const displayConfig = this.getDisplayConfig('force');
+        
+        // Filter battles to only show those involving this force
+        const filterFn = (battle) => {
+            const force1Key = battle.force_key_1 || battle['force_key_1'] || battle['Force 1 Key'] || '';
+            const force2Key = battle.force_key_2 || battle['force_key_2'] || battle['Force 2 Key'] || '';
+            return force1Key === forceKey || force2Key === forceKey;
+        };
+        
+        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
     },
 
     async loadForCrusade(crusadeKey, containerId) {

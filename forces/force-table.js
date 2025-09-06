@@ -65,10 +65,10 @@ const ForceTable = {
 
         const configs = {
             'all': {
-                url: forceUrl,
+                url: `${forceUrl}?action=list`,
                 cacheType: 'forces',
                 cacheKey: 'all',
-                dataKey: null, // Uses raw array format
+                dataKey: 'data',
                 loadingMessage: 'Loading forces...'
             },
             'crusade': {

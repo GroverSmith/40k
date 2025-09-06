@@ -391,21 +391,4 @@ function softDeleteParticipant(crusadeKey, forceKey) {
 }
 
 // Test functions
-function testParticipantsScript() {
-  console.log('=== Testing Participants Script ===');
-  
-  try {
-    // Test getting all participants
-    const allParticipants = getParticipantsList({});
-    console.log('All participants result:', JSON.parse(allParticipants.getContent()));
-    
-    // Test key generation
-    const testCrusadeKey = generateCrusadeKey('Summer Campaign 2024');
-    const testForceKey = generateForceKey('Ultramarines 2nd Company', 'John Smith');
-    console.log('Test crusade key:', testCrusadeKey);
-    console.log('Test force key:', testForceKey);
-    
-  } catch (error) {
-    console.error('Test error:', error);
-  }
-}
+// Test function removed - no longer needed
