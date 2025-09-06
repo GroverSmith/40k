@@ -79,21 +79,21 @@ const StoryTable = {
                 url: `${storyUrl}?action=crusade-stories&crusadeKey=${encodeURIComponent(key)}`,
                 cacheType: 'stories',
                 cacheKey: `crusade_${key}`,
-                dataKey: 'stories',
+                dataKey: 'data',
                 loadingMessage: 'Loading stories...'
             },
             'recent': {
                 url: `${storyUrl}?action=recent`,
                 cacheType: 'stories',
                 cacheKey: 'recent',
-                dataKey: 'stories',
+                dataKey: 'data',
                 loadingMessage: 'Loading recent stories...'
             },
             'all': {
-                url: storyUrl,
+                url: `${storyUrl}?action=list`,
                 cacheType: 'stories',
                 cacheKey: 'all',
-                dataKey: null, // For raw array data
+                dataKey: 'data',
                 loadingMessage: 'Loading all stories...'
             }
         };
@@ -150,16 +150,126 @@ const StoryTable = {
 
     // Convenience methods
     async loadForForce(forceKey, containerId) {
-        const fetchConfig = this.getFetchConfig('force', forceKey);
-        const displayConfig = this.getDisplayConfig('force');
-        
-        // Filter stories to only show those for this force
-        const filterFn = (story) => {
-            const storyForceKey = story.force_key || story['force_key'] || story['Force Key'] || '';
-            return storyForceKey === forceKey;
-        };
-        
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
+        try {
+            console.log('StoryTable.loadForForce called with forceKey:', forceKey);
+            
+            // Get all stories first
+            const fetchConfig = this.getFetchConfig('all');
+            const displayConfig = this.getDisplayConfig('force');
+            
+            console.log('Fetching stories with config:', fetchConfig);
+            
+            // Get the raw data
+            const result = await TableBase.fetchWithCache(
+                fetchConfig.url,
+                fetchConfig.cacheType,
+                fetchConfig.cacheKey
+            );
+            
+            console.log('Stories result:', result);
+            
+            let stories = [];
+            if (result && result.success && Array.isArray(result.data)) {
+                stories = result.data;
+                console.log('Using stories from result.data:', stories.length, 'stories');
+            } else if (Array.isArray(result)) {
+                stories = result;
+                console.log('Using stories from raw array:', stories.length, 'stories');
+            }
+            
+            console.log('All stories:', stories);
+            
+            // Get crusades that this force participates in
+            const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
+            console.log('Participants URL:', participantsUrl);
+            
+            if (!participantsUrl) {
+                throw new Error('Crusade participants URL not configured');
+            }
+            
+            const participantsResult = await TableBase.fetchWithCache(
+                participantsUrl,
+                'participants',
+                'all'
+            );
+            
+            console.log('Participants result:', participantsResult);
+            
+            let participantCrusades = [];
+            if (participantsResult && participantsResult.success && Array.isArray(participantsResult.data)) {
+                participantCrusades = participantsResult.data;
+                console.log('Using participants from result.data:', participantCrusades.length, 'participants');
+            } else if (Array.isArray(participantsResult)) {
+                participantCrusades = participantsResult;
+                console.log('Using participants from raw array:', participantCrusades.length, 'participants');
+            }
+            
+            console.log('All participants:', participantCrusades);
+            
+            // Convert raw array participants to objects if needed
+            let participantObjects = [];
+            if (participantCrusades.length > 0 && Array.isArray(participantCrusades[0])) {
+                // Raw array format - convert to objects
+                const headers = participantCrusades[0];
+                console.log('Participants headers:', headers);
+                participantObjects = participantCrusades.slice(1).map(row => {
+                    const obj = {};
+                    headers.forEach((header, index) => {
+                        obj[header] = row[index];
+                    });
+                    return obj;
+                });
+                console.log('Converted participants to objects:', participantObjects);
+            } else {
+                // Already objects
+                participantObjects = participantCrusades;
+            }
+            
+            // Find crusades this force participates in
+            const forceCrusades = participantObjects
+                .filter(participant => {
+                    const participantForceKey = participant.force_key || participant['force_key'] || participant['Force Key'] || '';
+                    const matches = participantForceKey === forceKey;
+                    console.log(`Checking participant: force_key="${participantForceKey}", looking for="${forceKey}", matches=${matches}`);
+                    return matches;
+                })
+                .map(participant => {
+                    const crusadeKey = participant.crusade_key || participant['crusade_key'] || participant['Crusade Key'] || '';
+                    console.log(`Mapped participant to crusade: ${crusadeKey}`);
+                    return crusadeKey;
+                });
+            
+            console.log('Force crusades:', forceCrusades);
+            
+            // Filter stories to only show those for crusades this force participates in
+            const filteredStories = stories.filter(story => {
+                const storyCrusadeKey = story.crusade_key || story['crusade_key'] || story['Crusade Key'] || '';
+                const matches = forceCrusades.includes(storyCrusadeKey);
+                console.log(`Checking story: crusade_key="${storyCrusadeKey}", force crusades=[${forceCrusades.join(', ')}], matches=${matches}`);
+                return matches;
+            });
+            
+            console.log('Filtered stories:', filteredStories);
+            
+            // Display the filtered stories
+            const container = document.getElementById(containerId);
+            if (container) {
+                if (filteredStories.length > 0) {
+                    console.log('Displaying', filteredStories.length, 'stories');
+                    TableBase.displayTable(filteredStories, container, displayConfig);
+                } else {
+                    console.log('No stories found, showing no data message');
+                    UIHelpers.showNoData(container, displayConfig.noDataMessage || 'No stories found for this force.');
+                }
+            }
+            
+        } catch (error) {
+            console.error('Error loading stories for force:', error);
+            const container = document.getElementById(containerId);
+            if (container) {
+                UIHelpers.showNoData(container, 'Failed to load stories.');
+            }
+        }
     },
 
     async loadForCrusade(crusadeKey, containerId) {

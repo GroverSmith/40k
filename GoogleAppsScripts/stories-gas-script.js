@@ -504,7 +504,10 @@ function getStoriesForUser(userKey) {
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
-        stories: []
+        count: 0,
+        totalCount: 0,
+        data: [],
+        hasMore: false
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
@@ -532,7 +535,10 @@ function getStoriesForUser(userKey) {
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
-      stories: stories
+      count: stories.length,
+      totalCount: stories.length,
+      data: stories,
+      hasMore: false
     }))
     .setMimeType(ContentService.MimeType.JSON);
 }
@@ -549,7 +555,10 @@ function getStoriesForForce(forceKey) {
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
-        stories: []
+        count: 0,
+        totalCount: 0,
+        data: [],
+        hasMore: false
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
@@ -576,7 +585,10 @@ function getStoriesForForce(forceKey) {
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
-      stories: stories
+      count: stories.length,
+      totalCount: stories.length,
+      data: stories,
+      hasMore: false
     }))
     .setMimeType(ContentService.MimeType.JSON);
 }
@@ -593,7 +605,10 @@ function getStoriesForCrusade(crusadeKey) {
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
-        stories: []
+        count: 0,
+        totalCount: 0,
+        data: [],
+        hasMore: false
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
@@ -620,7 +635,10 @@ function getStoriesForCrusade(crusadeKey) {
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
-      stories: stories
+      count: stories.length,
+      totalCount: stories.length,
+      data: stories,
+      hasMore: false
     }))
     .setMimeType(ContentService.MimeType.JSON);
 }
@@ -633,7 +651,10 @@ function getRecentStories(limit = 10) {
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
-        stories: []
+        count: 0,
+        totalCount: 0,
+        data: [],
+        hasMore: false
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
@@ -660,7 +681,10 @@ function getRecentStories(limit = 10) {
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
-      stories: stories
+      count: stories.length,
+      totalCount: stories.length,
+      data: stories,
+      hasMore: false
     }))
     .setMimeType(ContentService.MimeType.JSON);
 }
