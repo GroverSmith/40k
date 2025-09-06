@@ -31,49 +31,27 @@ class UnitForm extends BaseForm {
     }
 
     loadForceContext() {
-        const urlParams = new URLSearchParams(window.location.search);
-
-        this.forceContext = {
-            forceKey: urlParams.get('forceKey'),
-            forceName: urlParams.get('forceName'),
-            userName: urlParams.get('userName'),
-            userKey: urlParams.get('userKey'),
-            faction: urlParams.get('faction')
-        };
+        this.forceContext = CoreUtils.url.getAllParams();
 
         if (!this.forceContext.forceKey || !this.forceContext.forceName) {
             FormUtilities.showError('No force selected. Please access this form from a force details page.');
-            this.form.style.display = 'none';
+            CoreUtils.dom.hide(this.form);
             return;
         }
 
-        // Set redirect URL to force details
         this.config.redirectUrl = `../forces/force-details.html?key=${encodeURIComponent(this.forceContext.forceKey)}`;
-
-        // Populate hidden fields
         this.populateForceContext();
-
-        // Update navigation
         this.updateNavigation();
     }
 
     populateForceContext() {
-        // Set hidden fields
-        const fields = {
-            'force-key': this.forceContext.forceKey,
-            'force-name': this.forceContext.forceName,
-            'user-name': this.forceContext.userName,
-            'user-key': this.forceContext.userKey,
-            'faction': this.forceContext.faction
-        };
-
-        Object.entries(fields).forEach(([id, value]) => {
-            const field = document.getElementById(id);
-            if (field) field.value = value || '';
+        const fields = ['force-key', 'force-name', 'user-name', 'user-key', 'faction'];
+        fields.forEach(id => {
+            const field = CoreUtils.dom.getElement(id);
+            if (field) field.value = this.forceContext[id.replace('-', '')] || '';
         });
 
-        // Update display
-        const contextEl = document.getElementById('force-context');
+        const contextEl = CoreUtils.dom.getElement('force-context');
         if (contextEl) {
             contextEl.textContent = `Adding unit to ${this.forceContext.forceName}`;
         }
@@ -81,19 +59,17 @@ class UnitForm extends BaseForm {
 
     updateNavigation() {
         const forceUrl = `../forces/force-details.html?key=${encodeURIComponent(this.forceContext.forceKey)}`;
-
-        const backButton = document.getElementById('back-button');
-        if (backButton) backButton.href = forceUrl;
-
-        const backToForceBtn = document.getElementById('back-to-force-btn');
-        if (backToForceBtn) backToForceBtn.href = forceUrl;
+        ['back-button', 'back-to-force-btn'].forEach(id => {
+            const element = CoreUtils.dom.getElement(id);
+            if (element) element.href = forceUrl;
+        });
     }
 
     setupBattlefieldRoleFields() {
-        const roleSelect = document.getElementById('battlefield-role');
+        const roleSelect = CoreUtils.dom.getElement('battlefield-role');
         if (!roleSelect) return;
 
-        const characterFields = document.getElementById('character-fields');
+        const characterFields = CoreUtils.dom.getElement('character-fields');
 
         roleSelect.addEventListener('change', (e) => {
             const isCharacter = e.target.value === 'HQ';

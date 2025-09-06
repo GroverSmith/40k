@@ -32,28 +32,19 @@ class StoryForm extends BaseForm {
     }
 
     loadContext() {
-        const urlParams = new URLSearchParams(window.location.search);
+        this.contextData = CoreUtils.url.getAllParams();
+        this.contextData.userName = this.contextData.userName || UserManager.getCurrentUser()?.name || '';
 
-        this.contextData = {
-            forceKey: urlParams.get('forceKey'),
-            forceName: urlParams.get('forceName'),
-            crusadeKey: urlParams.get('crusadeKey'),
-            crusadeName: urlParams.get('crusadeName'),
-            userName: urlParams.get('userName') || UserManager.getCurrentUser()?.name || ''
-        };
-
-        // Pre-fill user name if available
-        const userNameField = document.getElementById('user-name');
+        const userNameField = CoreUtils.dom.getElement('user-name');
         if (userNameField && this.contextData.userName) {
             userNameField.value = this.contextData.userName;
         }
 
-        // Update header context
         this.updateHeaderContext();
     }
 
     updateHeaderContext() {
-        const contextEl = document.getElementById('story-context');
+        const contextEl = CoreUtils.dom.getElement('story-context');
         if (!contextEl) return;
 
         let contextText = 'Write a new campaign story';
@@ -69,8 +60,8 @@ class StoryForm extends BaseForm {
 
     setupStoryCharacterCounters() {
         // Story Text 1
-        const textarea1 = document.getElementById('story-text-1');
-        const counter1 = document.getElementById('count-1');
+        const textarea1 = CoreUtils.dom.getElement('story-text-1');
+        const counter1 = CoreUtils.dom.getElement('count-1');
         if (textarea1 && counter1) {
             const updateCount1 = () => {
                 const length = textarea1.value.length;
@@ -91,8 +82,8 @@ class StoryForm extends BaseForm {
         }
 
         // Story Text 2
-        const textarea2 = document.getElementById('story-text-2');
-        const counter2 = document.getElementById('count-2');
+        const textarea2 = CoreUtils.dom.getElement('story-text-2');
+        const counter2 = CoreUtils.dom.getElement('count-2');
         if (textarea2 && counter2) {
             const updateCount2 = () => {
                 const length = textarea2.value.length;

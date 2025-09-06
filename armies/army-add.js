@@ -33,55 +33,41 @@ class ArmyListForm extends BaseForm {
     }
 
     loadForceContext() {
-        const urlParams = new URLSearchParams(window.location.search);
-
-        this.forceContext = {
-            forceKey: urlParams.get('forceKey'),
-            forceName: urlParams.get('forceName'),
-            userName: urlParams.get('userName'),
-            faction: urlParams.get('faction'),
-            detachment: urlParams.get('detachment') || ''
-        };
+        this.forceContext = CoreUtils.url.getAllParams();
+        this.forceContext.detachment = this.forceContext.detachment || '';
 
         if (!this.forceContext.forceKey || !this.forceContext.forceName) {
             FormUtilities.showError('No force selected. Please access this form from a force details page.');
-            this.form.style.display = 'none';
+            CoreUtils.dom.hide(this.form);
             return;
         }
 
-        // Populate hidden and display fields
         this.populateForceContext();
-
-        // Update navigation
         this.updateNavigation();
     }
 
     populateForceContext() {
-        // Set hidden fields
-        document.getElementById('force-key').value = this.forceContext.forceKey;
-        document.getElementById('force-name').value = this.forceContext.forceName;
-        document.getElementById('user-name').value = this.forceContext.userName;
-        document.getElementById('faction').value = this.forceContext.faction;
-        document.getElementById('detachment').value = this.forceContext.detachment;
+        const fields = ['force-key', 'force-name', 'user-name', 'faction', 'detachment'];
+        fields.forEach(id => {
+            const element = CoreUtils.dom.getElement(id);
+            if (element) element.value = this.forceContext[id.replace('-', '')] || '';
+        });
 
-        // Update display
-        document.getElementById('display-force-name').textContent = this.forceContext.forceName;
-        document.getElementById('display-user-name').textContent = this.forceContext.userName;
-        document.getElementById('display-faction').textContent = this.forceContext.faction;
-        document.getElementById('display-detachment').textContent = this.forceContext.detachment || 'Not specified';
-
-        document.getElementById('force-context').textContent =
-            `Adding army list for ${this.forceContext.forceName}`;
+        setElementTexts({
+            'display-force-name': this.forceContext.forceName,
+            'display-user-name': this.forceContext.userName,
+            'display-faction': this.forceContext.faction,
+            'display-detachment': this.forceContext.detachment || 'Not specified',
+            'force-context': `Adding army list for ${this.forceContext.forceName}`
+        });
     }
 
     updateNavigation() {
         const forceUrl = `../forces/force-details.html?key=${encodeURIComponent(this.forceContext.forceKey)}`;
-
-        const backButton = document.getElementById('back-button');
-        if (backButton) backButton.href = forceUrl;
-
-        const backToForceBtn = document.getElementById('back-to-force-btn');
-        if (backToForceBtn) backToForceBtn.href = forceUrl;
+        ['back-button', 'back-to-force-btn'].forEach(id => {
+            const element = CoreUtils.dom.getElement(id);
+            if (element) element.href = forceUrl;
+        });
     }
 
     validateSpecificField(field, value) {

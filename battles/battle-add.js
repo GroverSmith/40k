@@ -42,14 +42,14 @@ class BattleReportForm extends BaseForm {
     }
 
     setDefaultDate() {
-        const dateField = document.getElementById('date-played');
+        const dateField = CoreUtils.dom.getElement('date-played');
         if (dateField) {
             dateField.value = new Date().toISOString().split('T')[0];
         }
     }
 
     setupCustomBattleSize() {
-        const battleSizeSelect = document.getElementById('battle-size');
+        const battleSizeSelect = CoreUtils.dom.getElement('battle-size');
         const container = battleSizeSelect.parentNode;
 
         // Create custom input
@@ -82,7 +82,7 @@ class BattleReportForm extends BaseForm {
     setupDropdowns() {
         // Convert player inputs to selects
         ['player1-name', 'player2-name'].forEach((id, index) => {
-            const input = document.getElementById(id);
+            const input = CoreUtils.dom.getElement(id);
             if (input && input.tagName === 'INPUT') {
                 const select = this.createSelect(id, input.name, input.required);
                 input.parentNode.replaceChild(select, input);
@@ -95,7 +95,7 @@ class BattleReportForm extends BaseForm {
 
         // Setup force selection handlers
         ['force1-select', 'force2-select'].forEach((id, index) => {
-            const select = document.getElementById(id);
+            const select = CoreUtils.dom.getElement(id);
             if (select) {
                 select.addEventListener('change', (e) => {
                     this.handleForceSelection(index + 1, e.target.value);
@@ -371,11 +371,12 @@ class BattleReportForm extends BaseForm {
     }
 
     checkUrlParameters() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const crusadeKey = urlParams.get('crusade') || urlParams.get('crusadeKey');
+        // Use utility to get URL parameters
+        const urlParams = CoreUtils.url.getAllParams();
+        const crusadeKey = urlParams.crusade || urlParams.crusadeKey;
 
         if (crusadeKey) {
-            const crusadeSelect = document.getElementById('crusade-select');
+            const crusadeSelect = CoreUtils.dom.getElement('crusade-select');
             if (crusadeSelect) {
                 // Wait for options to load
                 setTimeout(() => {

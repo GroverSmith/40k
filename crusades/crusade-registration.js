@@ -17,8 +17,8 @@ const ForceRegistration = {
      * Setup event handlers for registration
      */
     setupEventHandlers() {
-        const registerBtn = document.getElementById('register-force-btn');
-        const form = document.getElementById('register-force-form');
+        const registerBtn = CoreUtils.dom.getElement('register-force-btn');
+        const form = CoreUtils.dom.getElement('register-force-form');
         
         if (registerBtn) {
             registerBtn.addEventListener('click', () => {
@@ -35,7 +35,7 @@ const ForceRegistration = {
         
         // Close modal on overlay click
         window.addEventListener('click', (event) => {
-            const modal = document.getElementById('register-force-modal');
+            const modal = CoreUtils.dom.getElement('register-force-modal');
             if (event.target === modal) {
                 this.closeRegisterModal();
             }
@@ -46,12 +46,12 @@ const ForceRegistration = {
      * Show registration modal
      */
     async showRegisterModal() {
-        const modal = document.getElementById('register-force-modal');
-        const forceSelect = document.getElementById('force-select');
+        const modal = CoreUtils.dom.getElement('register-force-modal');
+        const forceSelect = CoreUtils.dom.getElement('force-select');
         
         // Show modal immediately with loading state
         forceSelect.innerHTML = '<option value="">Loading forces...</option>';
-        modal.style.display = 'flex';
+        CoreUtils.dom.show(modal, 'flex');
         
         try {
             const data = await ForceTable.loadAvailableForces();
@@ -90,8 +90,8 @@ const ForceRegistration = {
      * Handle force registration submission
      */
     async handleForceRegistration() {
-        const form = document.getElementById('register-force-form');
-        const submitBtn = document.getElementById('register-submit-btn');
+        const form = CoreUtils.dom.getElement('register-force-form');
+        const submitBtn = CoreUtils.dom.getElement('register-submit-btn');
         const btnText = submitBtn.querySelector('.btn-text');
         const btnLoading = submitBtn.querySelector('.btn-loading');
         
@@ -109,7 +109,7 @@ const ForceRegistration = {
             }
             
             // Get force details from selected option
-            const forceSelect = document.getElementById('force-select');
+            const forceSelect = CoreUtils.dom.getElement('force-select');
             const selectedOption = forceSelect.options[forceSelect.selectedIndex];
             const forceName = selectedOption.getAttribute('data-force-name');
             const userName = selectedOption.getAttribute('data-user-name');
