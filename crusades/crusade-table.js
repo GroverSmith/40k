@@ -69,18 +69,15 @@ const CrusadeTable = {
         const configs = {
             'all': {
                 url: crusadesUrl,
-                cacheType: 'crusades',
-                cacheKey: 'all'
+                cacheType: 'crusades'
             },
             'active': {
                 url: crusadesUrl,
-                cacheType: 'crusades',
-                cacheKey: 'active'
+                cacheType: 'crusades'
             },
             'by-state': {
                 url: crusadesUrl,
-                cacheType: 'crusades',
-                cacheKey: `state_${key}`
+                cacheType: 'crusades'
             }
         };
 
@@ -105,7 +102,7 @@ const CrusadeTable = {
     },
 
     /**
-     * Filter active crusades from data
+     * Filter active crusades
      */
     filterActiveCrusades(data) {
         if (!Array.isArray(data)) return data;
@@ -211,3 +208,6 @@ const CrusadeTable = {
         return await this.displayCrusades(containerId, stateOptions);
     }
 };
+
+// Make globally available
+window.CrusadeTable = CrusadeTable;

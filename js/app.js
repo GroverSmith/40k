@@ -21,33 +21,29 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('40k Crusade Campaign Tracker - Initializing...');
 
     try {
-        // Initialize Crusades sheet with custom column display
-        const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
-        if (crusadesUrl) {
-            SheetsManager.embed('crusades-sheet',
-                crusadesUrl,
-                {
-                    maxHeight: '350px',
-                    showStats: true,
-                    sortable: true,
-                    linkColumn: 2,          // Display the Crusade Name column (index 2) as link
-                    linkDataColumn: 0,      // Use the Key column (index 0) for link value
-                    linkPattern: 'crusades/crusade-details.html?key={slug}',
-                    cacheMinutes: CrusadeConfig.getCacheConfig('default'),
-                    hideColumns: [0, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-                    dateColumns: [4, 5],     // Start Date and End Date columns
-                    columnNames: {
-                        1: 'State',
-                        2: 'Name',
-                        3: 'Type',
-                        4: 'Start',
-                        5: 'End'
+        // Initialize Crusades display using CrusadeTable
+        const crusadesContainer = document.getElementById('crusades-sheet');
+        if (crusadesContainer) {
+            // Use CrusadeTable for consistent crusade display
+            if (window.CrusadeTable) {
+                CrusadeTable.displayCrusades('crusades-sheet', {
+                    columns: ['crusade', 'type', 'state', 'dates', 'created'],
+                    sortable: true
+                });
+            } else {
+                // Fallback if CrusadeTable not loaded yet
+                setTimeout(() => {
+                    if (window.CrusadeTable) {
+                        CrusadeTable.displayCrusades('crusades-sheet', {
+                            columns: ['crusade', 'type', 'state', 'dates', 'created'],
+                            sortable: true
+                        });
+                    } else {
+                        console.warn('CrusadeTable module not available');
+                        crusadesContainer.innerHTML = '<p class="no-data">📜 Crusade campaigns will be displayed here.</p>';
                     }
-                }
-            );
-        } else {
-            console.warn('Crusades sheet URL not configured');
-            CoreUtils.dom.setLoading('crusades-sheet', '📜 Crusade campaigns will be displayed here.');
+                }, 100);
+            }
         }
 
         // Initialize Forces sheet
