@@ -1,10 +1,9 @@
 // filename: users-gas-script.js
 // Google Apps Script for Users Sheet Management with Key System
 // Deploy this as a web app to handle user creation and retrieval
-// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '15q9EIPz2PswXwNsZ0aJAb9mgT0qy_NXUUQqELEdx3W4';
-const SHEET_NAME = 'Users';
+const SHEET_NAME = 'users';
 
 // Helper function to filter out deleted rows
 function filterActiveRows(data) {

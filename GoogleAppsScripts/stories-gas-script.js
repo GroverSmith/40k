@@ -3,7 +3,7 @@
 // Deploy this as a web app to handle story submissions and retrieval
 
 const SPREADSHEET_ID = '1Abqj7jWKzeupZMBF48GgSWG-u1kpPKsQfXHrzIw2uwQ';
-const SHEET_NAME = 'Stories';
+const SHEET_NAME = 'stories';
 
 // Helper function to filter out deleted rows
 function filterActiveRows(data) {

@@ -1,10 +1,9 @@
 // filename: units-gas-script.js
 // Google Apps Script for Units Sheet
 // Deploy this as a web app to handle unit/character submissions and retrieval
-// Updated to include Deleted Timestamp column for soft deletion
 
 const SPREADSHEET_ID = '1u23pjxHFD5Z0bv8Tw_erlEo50f71gYtGCKSe0ukhtfA';
-const SHEET_NAME = 'Units';
+const SHEET_NAME = 'units';
 
 // Helper function to filter out deleted rows
 function filterActiveRows(data) {

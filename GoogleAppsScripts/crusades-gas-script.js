@@ -3,7 +3,7 @@
 // Deploy this as a web app to handle crusade data requests
 
 const SPREADSHEET_ID = '1Nzjg5YsL4i63r1cXVzVtF6AW3a2YseUCL_gV6tv9JmU'; 
-const SHEET_NAME = 'Crusades';
+const SHEET_NAME = 'crusades';
 
 // Helper function to filter out deleted rows
 function filterActiveRows(data) {

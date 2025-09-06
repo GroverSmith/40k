@@ -3,7 +3,7 @@
 // Deploy this as a web app
 
 const SPREADSHEET_ID = '16IHkhSjjHZoxGFS96VK4Rzpf4xOwU8620R-MNKnxy-0';
-const SHEET_NAME = 'Story_Forces';
+const SHEET_NAME = 'xref_story_forces';
 
 // Cascade delete function - soft deletes all xref records when a parent record is deleted
 function cascadeDeleteByParent(parentTable, parentKey) {
