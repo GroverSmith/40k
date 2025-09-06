@@ -636,12 +636,12 @@ function softDeleteStory(storyKey) {
     const data = sheet.getDataRange().getValues();
     const headers = data[0];
     
-    // Find Deleted Timestamp column index
-    let deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    // Find deleted_timestamp column index
+    let deletedTimestampIndex = headers.indexOf('deleted_timestamp');
     
     // If column doesn't exist, throw error instead of adding it
     if (deletedTimestampIndex === -1) {
-      throw new Error('Deleted Timestamp column not found in sheet structure');
+      throw new Error('deleted_timestamp column not found in sheet structure');
     }
     
     // Find the row with the matching key

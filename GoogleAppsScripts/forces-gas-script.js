@@ -427,7 +427,7 @@ function getForceByKey(forceKey) {
     const headers = data[0];
     
     // Check if row is deleted
-    const deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
     
     // Find the force by key (Key is in column 0)
     const forceRow = data.find((row, index) => {
@@ -570,17 +570,12 @@ function softDeleteForce(forceKey) {
     const data = sheet.getDataRange().getValues();
     const headers = data[0];
     
-    // Find Deleted Timestamp column index
-    let deletedTimestampIndex = headers.indexOf('Deleted Timestamp');
+    // Find deleted_timestamp column index
+    let deletedTimestampIndex = headers.indexOf('deleted_timestamp');
     
-    // If column doesn't exist, add it
+    // If column doesn't exist, throw error instead of adding it
     if (deletedTimestampIndex === -1) {
-      sheet.insertColumnAfter(headers.length);
-      sheet.getRange(1, headers.length + 1).setValue('Deleted Timestamp');
-      sheet.getRange(1, headers.length + 1).setFontWeight('bold');
-      sheet.getRange(1, headers.length + 1).setBackground('#4ecdc4');
-      sheet.getRange(1, headers.length + 1).setFontColor('#ffffff');
-      deletedTimestampIndex = headers.length;
+      throw new Error('deleted_timestamp column not found in sheet structure');
     }
     
     // Find the row with the matching key

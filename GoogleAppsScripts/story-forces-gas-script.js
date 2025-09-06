@@ -80,7 +80,7 @@ function doPost(e) {
 
     if (!sheet) {
       sheet = spreadsheet.insertSheet(SHEET_NAME);
-      const headers = ['Story Key', 'Force Key', 'Timestamp', 'Deleted Timestamp'];
+      const headers = ['Story Key', 'Force Key', 'Timestamp', 'deleted_timestamp'];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
 
       // Format headers
