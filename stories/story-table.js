@@ -179,73 +179,54 @@ const StoryTable = {
             
             console.log('All stories:', stories);
             
-            // Get crusades that this force participates in
-            const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
-            console.log('Participants URL:', participantsUrl);
+            // Get story-forces relationships
+            const storyForcesUrl = CrusadeConfig.getSheetUrl('xref_story_forces');
+            console.log('Story-Forces URL:', storyForcesUrl);
             
-            if (!participantsUrl) {
-                throw new Error('Crusade participants URL not configured');
+            if (!storyForcesUrl) {
+                throw new Error('Story-Forces URL not configured');
             }
             
-            const participantsResult = await TableBase.fetchWithCache(
-                participantsUrl,
-                'participants',
+            const storyForcesResult = await TableBase.fetchWithCache(
+                storyForcesUrl,
+                'story-forces',
                 'all'
             );
             
-            console.log('Participants result:', participantsResult);
+            console.log('Story-Forces result:', storyForcesResult);
             
-            let participantCrusades = [];
-            if (participantsResult && participantsResult.success && Array.isArray(participantsResult.data)) {
-                participantCrusades = participantsResult.data;
-                console.log('Using participants from result.data:', participantCrusades.length, 'participants');
-            } else if (Array.isArray(participantsResult)) {
-                participantCrusades = participantsResult;
-                console.log('Using participants from raw array:', participantCrusades.length, 'participants');
+            let storyForces = [];
+            if (storyForcesResult && storyForcesResult.success && Array.isArray(storyForcesResult.data)) {
+                storyForces = storyForcesResult.data;
+                console.log('Using story-forces from result.data:', storyForces.length, 'relationships');
+            } else if (Array.isArray(storyForcesResult)) {
+                storyForces = storyForcesResult;
+                console.log('Using story-forces from raw array:', storyForces.length, 'relationships');
             }
             
-            console.log('All participants:', participantCrusades);
+            console.log('All story-forces relationships:', storyForces);
             
-            // Convert raw array participants to objects if needed
-            let participantObjects = [];
-            if (participantCrusades.length > 0 && Array.isArray(participantCrusades[0])) {
-                // Raw array format - convert to objects
-                const headers = participantCrusades[0];
-                console.log('Participants headers:', headers);
-                participantObjects = participantCrusades.slice(1).map(row => {
-                    const obj = {};
-                    headers.forEach((header, index) => {
-                        obj[header] = row[index];
-                    });
-                    return obj;
-                });
-                console.log('Converted participants to objects:', participantObjects);
-            } else {
-                // Already objects
-                participantObjects = participantCrusades;
-            }
-            
-            // Find crusades this force participates in
-            const forceCrusades = participantObjects
-                .filter(participant => {
-                    const participantForceKey = participant.force_key || participant['force_key'] || participant['Force Key'] || '';
-                    const matches = participantForceKey === forceKey;
-                    console.log(`Checking participant: force_key="${participantForceKey}", looking for="${forceKey}", matches=${matches}`);
+            // Find stories linked to this force
+            const forceStoryKeys = storyForces
+                .filter(relationship => {
+                    const relationshipForceKey = relationship.force_key || relationship['force_key'] || relationship['Force Key'] || '';
+                    const matches = relationshipForceKey === forceKey;
+                    console.log(`Checking relationship: force_key="${relationshipForceKey}", looking for="${forceKey}", matches=${matches}`);
                     return matches;
                 })
-                .map(participant => {
-                    const crusadeKey = participant.crusade_key || participant['crusade_key'] || participant['Crusade Key'] || '';
-                    console.log(`Mapped participant to crusade: ${crusadeKey}`);
-                    return crusadeKey;
+                .map(relationship => {
+                    const storyKey = relationship.story_key || relationship['story_key'] || relationship['Story Key'] || '';
+                    console.log(`Mapped relationship to story: ${storyKey}`);
+                    return storyKey;
                 });
             
-            console.log('Force crusades:', forceCrusades);
+            console.log('Force story keys:', forceStoryKeys);
             
-            // Filter stories to only show those for crusades this force participates in
+            // Filter stories to only show those linked to this force
             const filteredStories = stories.filter(story => {
-                const storyCrusadeKey = story.crusade_key || story['crusade_key'] || story['Crusade Key'] || '';
-                const matches = forceCrusades.includes(storyCrusadeKey);
-                console.log(`Checking story: crusade_key="${storyCrusadeKey}", force crusades=[${forceCrusades.join(', ')}], matches=${matches}`);
+                const storyKey = story.story_key || story['story_key'] || story['Story Key'] || story.key || story.Key || '';
+                const matches = forceStoryKeys.includes(storyKey);
+                console.log(`Checking story: story_key="${storyKey}", force story keys=[${forceStoryKeys.join(', ')}], matches=${matches}`);
                 return matches;
             });
             

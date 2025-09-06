@@ -125,11 +125,59 @@ function doPost(e) {
   }
 }
 
+function getAllRelationships() {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        count: 0,
+        totalCount: 0,
+        data: [],
+        hasMore: false
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  const data = sheet.getDataRange().getValues();
+  
+  // Filter out deleted rows
+  const activeData = data.filter((row, index) => {
+    if (index === 0) return true; // Keep header
+    const deletedTimestampIndex = data[0].indexOf('deleted_timestamp');
+    return deletedTimestampIndex === -1 || !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '';
+  });
+  
+  // Convert to objects with consistent field names
+  const headers = activeData[0];
+  const relationships = activeData.slice(1).map((row) => {
+    const obj = {};
+    headers.forEach((header, index) => {
+      obj[header] = row[index];
+    });
+    return obj;
+  });
+  
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: true,
+      count: relationships.length,
+      totalCount: relationships.length,
+      data: relationships,
+      hasMore: false
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 function doGet(e) {
   try {
     const action = e.parameter.action || 'list';
 
     switch(action) {
+      case 'list':
+        return getAllRelationships();
       default:
         return getAllRelationships();
     }
