@@ -121,20 +121,14 @@ const CacheManager = {
     /**
      * Fetch with cache using sheet name - handles URL resolution internally
      * @param {string} sheetName - Name of the sheet (e.g., 'forces', 'users')
-     * @param {string} dataType - Type of data for cache config (defaults to sheetName)
      * @returns {Promise<any>} Fetched or cached data
      */
-    async fetchSheetData(sheetName, dataType = null) {
-        // Use sheetName as dataType if not provided
-        const cacheType = dataType || sheetName;
-        
-        // Get the sheet URL from configuration
+    async fetchSheetData(sheetName) { ration
         const url = CrusadeConfig.getSheetUrl(sheetName);
         if (!url) {
             throw new Error(`${sheetName} sheet URL not configured`);
-        }
-        
-        return await this.fetchWithCache(url, cacheType);
+        }        
+        return await this.fetchWithCache(url, sheetName);
     },
 
     /**
@@ -198,14 +192,7 @@ const CacheManager = {
         }
     },
     
-    /**
-     * Clear specific cache
-     */
-    clear(dataType) {
-        const cacheKey = `cache_${dataType}`;
-        localStorage.removeItem(cacheKey);
-        console.log(`Cleared cache for ${dataType}`);
-    },
+    
 
     /**
      * Get filtered data from cache
@@ -287,6 +274,15 @@ const CacheManager = {
         }
     },
     
+
+    /**
+     * Clear specific cache
+     */
+    clear(dataType) {
+        const cacheKey = `cache_${dataType}`;
+        localStorage.removeItem(cacheKey);
+        console.log(`Cleared cache for ${dataType}`);
+    },
     /**
      * Clear all caches for a data type
      */
@@ -391,49 +387,14 @@ const CacheManager = {
             this.cacheConfig[dataType].duration = durationMs;
             console.log(`Set ${dataType} cache duration to ${durationMs}ms`);
         }
-    },
-    
-    /**
-     * Migrate old cache formats to new unified format
-     */
-    migrateOldCaches() {
-        const migrations = {
-            'crusade_forces_cache': 'cache_forces',
-            'crusade_users_cache': 'cache_users',
-            'crusade_crusades_cache': 'cache_crusades'
-        };
-        
-        Object.entries(migrations).forEach(([oldKey, newKey]) => {
-            const oldData = localStorage.getItem(oldKey);
-            if (oldData) {
-                try {
-                    const parsed = JSON.parse(oldData);
-                    // Convert old format to new format
-                    const newData = {
-                        data: parsed.forces || parsed.users || parsed.crusades || parsed.data,
-                        timestamp: parsed.timestamp || Date.now(),
-                        metadata: {}
-                    };
-                    localStorage.setItem(newKey, JSON.stringify(newData));
-                    localStorage.removeItem(oldKey);
-                    console.log(`Migrated ${oldKey} to ${newKey}`);
-                } catch (e) {
-                    console.warn(`Failed to migrate ${oldKey}:`, e);
-                }
-            }
-        });
     }
+    
+    
 };
 
-// Run migration on load
-CacheManager.migrateOldCaches();
 
 // Make globally available
 window.CacheManager = CacheManager;
 
-// Export for modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = CacheManager;
-}
 
 console.log('CacheManager initialized - unified caching system ready');

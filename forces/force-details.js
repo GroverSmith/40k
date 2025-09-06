@@ -389,7 +389,3 @@ document.addEventListener('DOMContentLoaded', () => {
    console.log('Force Details page initialized');
 });
 
-// Export for modules
-if (typeof module !== 'undefined' && module.exports) {
-   module.exports = ForceDetails;
-}
