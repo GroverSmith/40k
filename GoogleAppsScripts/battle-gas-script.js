@@ -513,8 +513,10 @@ function getBattlesForCrusade(crusadeKey) {
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
-        battles: [],
-        count: 0
+        count: 0,
+        totalCount: 0,
+        data: [],
+        hasMore: false
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
@@ -548,8 +550,10 @@ function getBattlesForCrusade(crusadeKey) {
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
-      battles: allBattles,
-      count: allBattles.length
+      count: allBattles.length,
+      totalCount: allBattles.length,
+      data: allBattles,
+      hasMore: false
     }))
     .setMimeType(ContentService.MimeType.JSON);
 }
@@ -566,8 +570,10 @@ function getBattlesForForce(forceKey) {
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
-        battles: [],
-        count: 0
+        count: 0,
+        totalCount: 0,
+        data: [],
+        hasMore: false
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
@@ -601,8 +607,10 @@ function getBattlesForForce(forceKey) {
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
-      battles: allBattles,
-      count: allBattles.length
+      count: allBattles.length,
+      totalCount: allBattles.length,
+      data: allBattles,
+      hasMore: false
     }))
     .setMimeType(ContentService.MimeType.JSON);
 }
@@ -615,8 +623,10 @@ function getRecentBattles(limit = 10) {
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
-        battles: [],
-        count: 0
+        count: 0,
+        totalCount: 0,
+        data: [],
+        hasMore: false
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
@@ -653,9 +663,10 @@ function getRecentBattles(limit = 10) {
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
-      battles: battles,
       count: battles.length,
-      totalCount: allBattles.length
+      totalCount: allBattles.length,
+      data: battles,
+      hasMore: false
     }))
     .setMimeType(ContentService.MimeType.JSON);
 }
