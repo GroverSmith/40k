@@ -187,16 +187,16 @@ const ArmyTable = {
         let armies = [];
         if (result && result.success && Array.isArray(result.data)) {
             console.log('Raw data array:', result.data);
-            console.log('First row (headers):', result.data[0]);
-            console.log('Data rows:', result.data.slice(1));
-            // Data is already in object format, no need to map
-            armies = result.data.slice(1);
-            console.log('Using data directly as objects:', armies);
-        } else if (Array.isArray(result) && result.length > 1) {
-            armies = result.slice(1);
+            console.log('First row (actual data):', result.data[0]);
+            console.log('All data rows:', result.data);
+            // Data is already in object format, no need to map or skip first row
+            armies = result.data;
+            console.log('Using all data directly as objects:', armies);
+        } else if (Array.isArray(result) && result.length > 0) {
+            armies = result;
         }
         
-        console.log('Processed armies (direct objects):', armies);
+        console.log(`Processed armies (direct objects): ${armies.length} total armies`, armies);
         
         // Filter armies to only show those for this force
         const filteredArmies = armies.filter(army => {
@@ -205,8 +205,10 @@ const ArmyTable = {
                 return false;
             }
             const armyForceKey = army.force_key || '';
-            console.log('Checking army:', army, 'armyForceKey:', armyForceKey, 'matches:', armyForceKey === forceKey);
-            return armyForceKey === forceKey;
+            const armyName = army.army_name || army['Army Name'] || 'Unknown';
+            const matches = armyForceKey === forceKey;
+            console.log(`Checking army "${armyName}": force_key="${armyForceKey}", looking for="${forceKey}", matches=${matches}`);
+            return matches;
         });
         
         console.log('Filtered armies:', filteredArmies);
