@@ -98,7 +98,7 @@ const StoryTable = {
         
         // Pre-load story-force relationships for filtering
         const storyForces = await CacheManager.fetchSheetData('xref_story_forces');
-        const storyForcesData = this.extractDataArray(storyForces);
+        const storyForcesData = storyForces && storyForces.success ? storyForces.data : [];
         const forceStoryKeys = storyForcesData
             .filter(rel => this.getFieldValue(rel, 'force_key') === forceKey)
             .map(rel => this.getFieldValue(rel, 'story_key'))
@@ -136,8 +136,6 @@ const StoryTable = {
     createCrusadeLink(name, key) {
         return TableBase.createEntityLink('crusade', name || 'Unknown Crusade', key);
     },
-
-
     
     calculateWordCount(story) {
         let totalText = '';
@@ -150,17 +148,6 @@ const StoryTable = {
         return totalText.trim().split(/\s+/).filter(word => word.length > 0).length;
     },
 
-    /**
-     * Extract data array from API response (handles both formats)
-     */
-    extractDataArray(response) {
-        if (response && response.success && Array.isArray(response.data)) {
-            return response.data;
-        } else if (Array.isArray(response)) {
-            return response;
-        }
-        return [];
-    },
 
     /**
      * Get field value from object with multiple possible field names
