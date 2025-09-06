@@ -275,31 +275,35 @@ class ForceDetails {
            throw new Error('No force data available or invalid data format');
        }
        
-       // Find the force by key (Key is now column 0)
+       // Find the force by key using TableDefs
+       const forceKeyIndex = TableDefs.getColumnIndex('forces', 'force_key');
        const forceRow = data.find((row, index) => {
            if (index === 0) return false; // Skip header
-           return row[0] === forceKey; // Key column
+           return row[forceKeyIndex] === forceKey;
        });
        
        if (!forceRow) {
-           const availableKeys = data.slice(1).map(row => row[0]).filter(key => key);
+           const availableKeys = data.slice(1).map(row => row[forceKeyIndex]).filter(key => key);
            console.log('Available force keys:', availableKeys);
            throw new Error(`Force with key "${forceKey}" not found. Available keys: ${availableKeys.slice(0, 5).join(', ')}`);
        }
        
-       // Map the columns from Forces sheet (with key in column 0)
-       const forceData = {
-           key: forceRow[0] || '',           // Key
-           playerName: forceRow[1] || '',   // User Name
-           forceName: forceRow[2] || '',    // Force Name
-           faction: forceRow[3] || '',      // Faction
-           detachment: forceRow[4] || '',   // Detachment
-           notes: forceRow[5] || '',        // Notes
-           timestamp: forceRow[6] || ''     // Timestamp
+       // Map the columns from Forces sheet using TableDefs
+       const forceData = TableDefs.mapRowToObject('forces', forceRow);
+       
+       // Map to expected property names for backward compatibility
+       const mappedForceData = {
+           key: forceData.force_key || '',
+           playerName: forceData.user_name || '',
+           forceName: forceData.force_name || '',
+           faction: forceData.faction || '',
+           detachment: forceData.detachment || '',
+           notes: forceData.notes || '',
+           timestamp: forceData.timestamp || ''
        };
        
-       console.log('Successfully found and loaded force data:', forceData);
-       return forceData;
+       console.log('Successfully found and loaded force data:', mappedForceData);
+       return mappedForceData;
    }
 
    // ===== UI METHODS (consolidated from force-ui.js) =====

@@ -137,10 +137,14 @@ class StoryForm extends BaseForm {
                 forceSelect.innerHTML = '';
 
                 forces.slice(1).forEach(row => {
-                    if (row[0] && row[2]) { // Key and Force Name
+                    const forceKeyIndex = TableDefs.getColumnIndex('forces', 'force_key');
+                    const forceNameIndex = TableDefs.getColumnIndex('forces', 'force_name');
+                    const userNameIndex = TableDefs.getColumnIndex('forces', 'user_name');
+                    
+                    if (row[forceKeyIndex] && row[forceNameIndex]) {
                         const option = document.createElement('option');
-                        option.value = row[0];
-                        option.textContent = `${row[2]} (${row[1]})`; // Force Name (User)
+                        option.value = row[forceKeyIndex];
+                        option.textContent = `${row[forceNameIndex]} (${row[userNameIndex]})`;
                         forceSelect.appendChild(option);
                     }
                 });
@@ -169,10 +173,13 @@ class StoryForm extends BaseForm {
                 crusadeSelect.innerHTML = '<option value="">Select crusade (optional)...</option>';
 
                 crusades.slice(1).forEach(row => {
-                    if (row[0] && row[2]) { // Key and Crusade Name
+                    const crusadeKeyIndex = TableDefs.getColumnIndex('crusades', 'crusade_key');
+                    const crusadeNameIndex = TableDefs.getColumnIndex('crusades', 'crusade_name');
+                    
+                    if (row[crusadeKeyIndex] && row[crusadeNameIndex]) {
                         const option = document.createElement('option');
-                        option.value = row[0];
-                        option.textContent = row[2]; // Crusade Name
+                        option.value = row[crusadeKeyIndex];
+                        option.textContent = row[crusadeNameIndex];
                         crusadeSelect.appendChild(option);
                     }
                 });

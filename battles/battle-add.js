@@ -224,10 +224,14 @@ class BattleReportForm extends BaseForm {
         select.innerHTML = '<option value="">Select crusade (optional)...</option>';
 
         data.slice(1).forEach(row => {
-            if (row[0] && row[2]) { // Key and Name
+            const crusadeKeyIndex = TableDefs.getColumnIndex('crusades', 'crusade_key');
+            const crusadeNameIndex = TableDefs.getColumnIndex('crusades', 'crusade_name');
+            const stateIndex = TableDefs.getColumnIndex('crusades', 'state');
+            
+            if (row[crusadeKeyIndex] && row[crusadeNameIndex]) {
                 const option = document.createElement('option');
-                option.value = row[0];
-                option.textContent = `${row[2]} (${row[1] || 'Active'})`;
+                option.value = row[crusadeKeyIndex];
+                option.textContent = `${row[crusadeNameIndex]} (${row[stateIndex] || 'Active'})`;
                 select.appendChild(option);
             }
         });
@@ -311,11 +315,15 @@ class BattleReportForm extends BaseForm {
         select.innerHTML = '<option value="">Select force...</option>';
 
         forces.forEach(row => {
-            if (row[0] && row[3]) { // Key and Force Name (now column 3)
+            const forceKeyIndex = TableDefs.getColumnIndex('forces', 'force_key');
+            const forceNameIndex = TableDefs.getColumnIndex('forces', 'force_name');
+            const factionIndex = TableDefs.getColumnIndex('forces', 'faction');
+            
+            if (row[forceKeyIndex] && row[forceNameIndex]) {
                 const option = document.createElement('option');
-                option.value = row[0];
-                option.textContent = `${row[3]} - ${row[4] || 'Unknown Faction'}`; // Force Name and Faction
-                option.dataset.forceName = row[3];
+                option.value = row[forceKeyIndex];
+                option.textContent = `${row[forceNameIndex]} - ${row[factionIndex] || 'Unknown Faction'}`;
+                option.dataset.forceName = row[forceNameIndex];
                 select.appendChild(option);
             }
         });

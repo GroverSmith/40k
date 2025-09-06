@@ -60,13 +60,18 @@ const ForceRegistration = {
             forceSelect.innerHTML = '<option value="">Select a force...</option>';
             
             // Add force options (skip header row)
-            // Forces now have force_key in column 0
+            // Use TableDefs for column mapping
             data.slice(1).forEach(row => {
-                if (row[0]) { // force_key column
-                    const forceKey = row[0];
-                    const userName = row[1];
-                    const forceName = row[2];
-                    const faction = row[3];
+                const forceKeyIndex = TableDefs.getColumnIndex('forces', 'force_key');
+                const userNameIndex = TableDefs.getColumnIndex('forces', 'user_name');
+                const forceNameIndex = TableDefs.getColumnIndex('forces', 'force_name');
+                const factionIndex = TableDefs.getColumnIndex('forces', 'faction');
+                
+                if (row[forceKeyIndex]) {
+                    const forceKey = row[forceKeyIndex];
+                    const userName = row[userNameIndex];
+                    const forceName = row[forceNameIndex];
+                    const faction = row[factionIndex];
                     
                     const displayName = `${forceName} (${userName})${faction ? ` - ${faction}` : ''}`;
                     

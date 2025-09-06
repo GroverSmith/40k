@@ -54,17 +54,15 @@ class CrusadeDetails {
 
             if (allCrusades && allCrusades.length > 1) {
                 const headers = allCrusades[0];
+                const crusadeKeyIndex = TableDefs.getColumnIndex('crusades', 'crusade_key');
                 const crusadeRow = allCrusades.find((row, index) => {
                     if (index === 0) return false;
-                    return row[0] === this.crusadeKey; // crusade_key is in column 0
+                    return row[crusadeKeyIndex] === this.crusadeKey;
                 });
 
                 if (crusadeRow) {
-                    // Convert to object
-                    this.crusadeData = {};
-                    headers.forEach((header, index) => {
-                        this.crusadeData[header] = crusadeRow[index];
-                    });
+                    // Convert to object using TableDefs
+                    this.crusadeData = TableDefs.mapRowToObject('crusades', crusadeRow);
                     this.displayCrusade();
                     return;
                 }
