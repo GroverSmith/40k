@@ -26,17 +26,17 @@ const ArmyTable = {
      * Build army list row
      */
     buildArmyRow(army, columns, context = {}) {
-        const armyKey = army.Key || army.key || army.id;
-        const armyName = army['Army Name'] || 'Unnamed List';
-        const forceName = army['Force Name'] || army.forceName || '';
-        const forceKey = army['Force Key'] || army.forceKey || '';
-        const faction = army.Faction || army.faction || 'Unknown';
-        const detachment = army.Detachment || army.detachment || '-';
-        const points = army['Points Value'] || army.pointsValue || '';
-        const mfmVersion = army['MFM Version'] || army.mfmVersion || '-';
-        const userName = army['User Name'] || army.userName || 'Unknown';
-        const timestamp = army.Timestamp || army.timestamp;
-        const notes = army.Notes || army.notes || '';
+        const armyKey = army.army_key || army.Key || army.key || army.id;
+        const armyName = army.army_name || army['Army Name'] || 'Unnamed List';
+        const forceName = army.force_name || army['Force Name'] || army.forceName || '';
+        const forceKey = army.force_key || army['Force Key'] || army.forceKey || '';
+        const faction = army.faction || army.Faction || army.faction || 'Unknown';
+        const detachment = army.detachment || army.Detachment || army.detachment || '-';
+        const points = army.points_value || army['Points Value'] || army.pointsValue || '';
+        const mfmVersion = army.mfm_version || army['MFM Version'] || army.mfmVersion || '-';
+        const userName = army.user_name || army['User Name'] || army.userName || 'Unknown';
+        const timestamp = army.timestamp || army.Timestamp || army.timestamp;
+        const notes = army.notes || army.Notes || army.notes || '';
 
         const columnData = {
             army: this.createArmyLink(armyName, armyKey),
@@ -170,16 +170,56 @@ const ArmyTable = {
 
     // Convenience methods
     async loadForForce(forceKey, containerId) {
+        console.log('ArmyTable.loadForForce called with forceKey:', forceKey);
         const fetchConfig = this.getFetchConfig('force', forceKey);
         const displayConfig = this.getDisplayConfig('force');
         
-        // Filter armies to only show those for this force
-        const filterFn = (army) => {
-            const armyForceKey = army['force_key'] || army['Force Key'] || '';
-            return armyForceKey === forceKey;
-        };
+        // Get the raw data and process it with TableDefs mapping
+        const result = await TableBase.fetchWithCache(
+            fetchConfig.url,
+            fetchConfig.cacheType,
+            fetchConfig.cacheKey
+        );
         
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
+        console.log('Raw army data result:', result);
+        
+        // Process the data - it's already in object format from GAS script
+        let armies = [];
+        if (result && result.success && Array.isArray(result.data)) {
+            console.log('Raw data array:', result.data);
+            console.log('First row (headers):', result.data[0]);
+            console.log('Data rows:', result.data.slice(1));
+            // Data is already in object format, no need to map
+            armies = result.data.slice(1);
+            console.log('Using data directly as objects:', armies);
+        } else if (Array.isArray(result) && result.length > 1) {
+            armies = result.slice(1);
+        }
+        
+        console.log('Processed armies (direct objects):', armies);
+        
+        // Filter armies to only show those for this force
+        const filteredArmies = armies.filter(army => {
+            if (!army) {
+                console.log('Skipping null army object');
+                return false;
+            }
+            const armyForceKey = army.force_key || '';
+            console.log('Checking army:', army, 'armyForceKey:', armyForceKey, 'matches:', armyForceKey === forceKey);
+            return armyForceKey === forceKey;
+        });
+        
+        console.log('Filtered armies:', filteredArmies);
+        
+        // Display the filtered armies
+        const container = document.getElementById(containerId);
+        if (container) {
+            if (filteredArmies.length > 0) {
+                TableBase.displayTable(filteredArmies, container, displayConfig);
+            } else {
+                UIHelpers.showNoData(container, displayConfig.noDataMessage || 'No army lists uploaded for this force yet.');
+            }
+        }
     },
 
     async loadForCrusade(crusadeKey, containerId) {
