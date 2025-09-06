@@ -149,10 +149,8 @@ class BattleReportForm extends BaseForm {
 
     async loadForces() {
         try {
-            const url = CrusadeConfig.getSheetUrl('forces');
-            if (url) {
-                this.dataLoaders.forces = await CacheManager.fetchWithCache(url, 'forces');
-                console.log('Forces data loaded:', this.dataLoaders.forces);
+            this.dataLoaders.forces = await CacheManager.fetchSheetData('forces');
+            console.log('Forces data loaded:', this.dataLoaders.forces);
                 
                 // Show structure of forces data
                 if (this.dataLoaders.forces && this.dataLoaders.forces.length > 0) {
@@ -172,12 +170,9 @@ class BattleReportForm extends BaseForm {
 
     async loadCrusades() {
         try {
-            const url = CrusadeConfig.getSheetUrl('crusades');
-            if (url) {
-                const data = await CacheManager.fetchWithCache(url, 'crusades');
-                this.dataLoaders.crusades = data;
-                this.populateCrusadeDropdown(data);
-            }
+            const data = await CacheManager.fetchSheetData('crusades');
+            this.dataLoaders.crusades = data;
+            this.populateCrusadeDropdown(data);
         } catch (error) {
             console.error('Error loading crusades:', error);
         }
@@ -185,12 +180,9 @@ class BattleReportForm extends BaseForm {
 
     async loadArmyLists() {
         try {
-            const url = CrusadeConfig.getSheetUrl('armies');
-            if (url) {
-                const data = await CacheManager.fetchWithCache(url, 'armies');
-                this.dataLoaders.armies = Array.isArray(data) ? data :
-                    (data.data ? data.data : []);
-            }
+            const data = await CacheManager.fetchSheetData('armies');
+            this.dataLoaders.armies = Array.isArray(data) ? data :
+                (data.data ? data.data : []);
         } catch (error) {
             console.error('Error loading army lists:', error);
             this.dataLoaders.armies = [];

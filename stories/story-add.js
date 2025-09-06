@@ -141,8 +141,7 @@ class StoryForm extends BaseForm {
             forceSelect.classList.add('multi-select');
 
             try {
-                const forcesUrl = CrusadeConfig.getSheetUrl('forces');
-                const forces = await CacheManager.fetchWithCache(forcesUrl, 'forces');
+                const forces = await CacheManager.fetchSheetData('forces');
 
                 forceSelect.innerHTML = '';
 
@@ -174,8 +173,7 @@ class StoryForm extends BaseForm {
         const crusadeSelect = document.getElementById('crusade-select');
         if (crusadeSelect) {
             try {
-                const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
-                const crusades = await CacheManager.fetchWithCache(crusadesUrl, 'crusades');
+                const crusades = await CacheManager.fetchSheetData('crusades');
 
                 crusadeSelect.innerHTML = '<option value="">Select crusade (optional)...</option>';
 

@@ -16,14 +16,8 @@ const ForceData = {
         this.forceKey = forceKey;
         
         try {
-            const forceSheetUrl = CrusadeConfig.getSheetUrl('forces');
-            
-            if (!forceSheetUrl) {
-                throw new Error('Crusade Forces sheet URL not configured in CrusadeConfig');
-            }
-            
-            // Use CacheManager for unified caching
-            const data = await CacheManager.fetchWithCache(forceSheetUrl, 'forces');
+            // Use CacheManager with automatic URL resolution
+            const data = await CacheManager.fetchSheetData('forces');
             
             const force = this.findForceInData(data, forceKey);
             this.forceData = force;

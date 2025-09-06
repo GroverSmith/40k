@@ -36,12 +36,8 @@ class CrusadeDetailsController {
 
     async loadCrusadeDetails() {
         try {
-            const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
-            if (!crusadesUrl) {
-                throw new Error('Crusades sheet URL not configured');
-            }
-
             // First try to get the specific crusade via API
+            const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
             const fetchUrl = `${crusadesUrl}?action=get&key=${encodeURIComponent(this.crusadeKey)}`;
 
             // USE CACHE MANAGER for the API call
@@ -54,7 +50,7 @@ class CrusadeDetailsController {
             }
 
             // If API doesn't work, fetch all crusades and find ours
-            const allCrusades = await CacheManager.fetchWithCache(crusadesUrl, 'crusades');
+            const allCrusades = await CacheManager.fetchSheetData('crusades');
 
             if (allCrusades && allCrusades.length > 1) {
                 const headers = allCrusades[0];

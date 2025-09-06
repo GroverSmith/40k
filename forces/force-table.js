@@ -150,13 +150,8 @@ const ForceTable = {
      */
     async loadAvailableForces() {
         try {
-            const forcesUrl = CrusadeConfig.getSheetUrl('forces');
-            if (!forcesUrl) {
-                throw new Error('Forces sheet URL not configured');
-            }
-            
-            // Use CacheManager for unified caching
-            return await CacheManager.fetchWithCache(forcesUrl, 'forces');
+            // Use CacheManager with automatic URL resolution
+            return await CacheManager.fetchSheetData('forces');
             
         } catch (error) {
             console.error('Error loading available forces:', error);

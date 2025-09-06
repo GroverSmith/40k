@@ -5,19 +5,22 @@
 //
 // USAGE EXAMPLES:
 // 
-// 1. Basic caching (replaces old identifier-based caching):
+// 1. Fetch sheet data with automatic URL resolution:
+//    const data = await CacheManager.fetchSheetData('forces');
+// 
+// 2. Basic caching with explicit URL:
 //    const data = await CacheManager.fetchWithCache(url, 'forces');
 // 
-// 2. Find specific record in cached data:
+// 3. Find specific record in cached data:
 //    const force = CacheManager.findInCache('forces', 'force_key', 'MyForce_User123');
 // 
-// 3. Filter cached data:
+// 4. Filter cached data:
 //    const userForces = CacheManager.getFiltered('forces', { 
 //        column: 'user_key', 
 //        value: 'User123' 
 //    });
 // 
-// 4. Custom filter with predicate:
+// 5. Custom filter with predicate:
 //    const recentForces = CacheManager.getFiltered('forces', {
 //        predicate: (force) => new Date(force.timestamp) > new Date('2024-01-01')
 //    });
@@ -115,6 +118,25 @@ const CacheManager = {
         }
     },
     
+    /**
+     * Fetch with cache using sheet name - handles URL resolution internally
+     * @param {string} sheetName - Name of the sheet (e.g., 'forces', 'users')
+     * @param {string} dataType - Type of data for cache config (defaults to sheetName)
+     * @returns {Promise<any>} Fetched or cached data
+     */
+    async fetchSheetData(sheetName, dataType = null) {
+        // Use sheetName as dataType if not provided
+        const cacheType = dataType || sheetName;
+        
+        // Get the sheet URL from configuration
+        const url = CrusadeConfig.getSheetUrl(sheetName);
+        if (!url) {
+            throw new Error(`${sheetName} sheet URL not configured`);
+        }
+        
+        return await this.fetchWithCache(url, cacheType);
+    },
+
     /**
      * Fetch with cache - simplified to cache all data once per table
      * @param {string} url - URL to fetch
