@@ -28,7 +28,9 @@ class ForceDetails {
            // Load additional data in parallel
            await Promise.all([
                this.loadArmyLists(),
-               this.loadBattleHistory()
+               this.loadBattleHistory(),
+               this.loadUnits(),
+               this.loadStories()
            ]);
            
        } catch (error) {
@@ -162,6 +164,42 @@ class ForceDetails {
        } catch (error) {
            console.error('Error loading army lists:', error);
            CoreUtils.dom.setLoading('army-lists-sheet', 'Failed to load army lists');
+       }
+   }
+   
+   async loadUnits() {
+       try {
+           // Show the section
+           CoreUtils.dom.show('characters-units-section');
+           
+           // Use UnitTable to load and display units for this force
+           if (window.UnitTable) {
+               await UnitTable.loadForForce(this.forceKey, 'characters-units-sheet');
+           } else {
+               console.error('UnitTable module not loaded');
+               CoreUtils.dom.setLoading('characters-units-sheet', 'Unit table module not loaded');
+           }
+       } catch (error) {
+           console.error('Error loading units:', error);
+           CoreUtils.dom.setLoading('characters-units-sheet', 'Failed to load units');
+       }
+   }
+   
+   async loadStories() {
+       try {
+           // Show the section
+           CoreUtils.dom.show('stories-section');
+           
+           // Use StoryTable to load and display stories for this force
+           if (window.StoryTable) {
+               await StoryTable.loadForForce(this.forceKey, 'stories-sheet');
+           } else {
+               console.error('StoryTable module not loaded');
+               CoreUtils.dom.setLoading('stories-sheet', 'Story table module not loaded');
+           }
+       } catch (error) {
+           console.error('Error loading stories:', error);
+           CoreUtils.dom.setLoading('stories-sheet', 'Failed to load stories');
        }
    }
    

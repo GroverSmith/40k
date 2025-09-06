@@ -121,7 +121,7 @@ const UnitTable = {
 
         const configs = {
             'force': {
-                url: unitsUrl,
+                url: `${unitsUrl}?action=list`,
                 cacheType: 'units',
                 cacheKey: 'all',
                 dataKey: null,

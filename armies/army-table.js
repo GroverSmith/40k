@@ -61,7 +61,7 @@ const ArmyTable = {
 
         const configs = {
             'force': {
-                url: armyUrl,
+                url: `${armyUrl}?action=list`,
                 cacheType: 'armies',
                 cacheKey: 'all',
                 dataKey: null,
