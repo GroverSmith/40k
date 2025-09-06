@@ -138,7 +138,7 @@ const CrusadeTable = {
     formatState(state) {
         if (!state) return '-';
         const stateClass = state.toLowerCase().replace(/\s+/g, '-');
-        return `<span class="crusade-state state-${stateClass}">${state.toUpperCase()}</span>`;
+        return `<span class="crusade-state state-${stateClass}">${state}</span>`;
     },
 
     

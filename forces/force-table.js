@@ -15,12 +15,12 @@ const ForceTable = {
      * Build force row
      */
     buildForceRow(force, columns) {
-        const forceKey = force['Force Key'] || force['Key'] || force.key;
-        const forceName = force['Force Name'] || force.forceName || 'Unnamed Force';
-        const userName = force['User Name'] || force['Player Name'] || force.playerName || 'Unknown';
-        const faction = force['Faction'] || force.faction || 'Unknown';
-        const detachment = force['Detachment'] || force.detachment || '-';
-        const timestamp = force['Timestamp'] || force.timestamp;
+        const forceKey = force['force_key'] || force['Force Key'] || force['Key'] || force.key;
+        const forceName = force['force_name'] || force['Force Name'] || force.forceName || 'Unnamed Force';
+        const userName = force['user_name'] || force['User Name'] || force['Player Name'] || force.playerName || 'Unknown';
+        const faction = force['faction'] || force['Faction'] || force.faction || 'Unknown';
+        const detachment = force['detachment'] || force['Detachment'] || force.detachment || '-';
+        const timestamp = force['timestamp'] || force['Timestamp'] || force.timestamp;
 
         const columnData = {
             force: this.createForceLink(forceName, forceKey),
@@ -28,9 +28,9 @@ const ForceTable = {
             faction: faction,
             detachment: detachment,
             joined: TableBase.formatters.date(timestamp),
-            supply: force['Supply Limit'] || force.supplyLimit || '-',
-            battles: force['Battle Count'] || force.battleCount || '0',
-            points: force['Total Points'] || force.totalPoints || '0'
+            supply: force['supply_limit'] || force['Supply Limit'] || force.supplyLimit || '-',
+            battles: force['battle_count'] || force['Battle Count'] || force.battleCount || '0',
+            points: force['total_points'] || force['Total Points'] || force.totalPoints || '0'
         };
 
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
@@ -79,7 +79,7 @@ const ForceTable = {
                 headers: ['Force Name', 'Commander', 'Faction', 'Detachment', 'Joined'],
                 tableId: 'all-forces-table',
                 buildRow: this.buildForceRow.bind(this),
-                sortBy: TableBase.sortByDateDesc('Timestamp'),
+                sortBy: TableBase.sortByDateDesc('timestamp'),
                 noDataMessage: 'No forces registered yet.',
                 errorMessage: 'Failed to load forces.'
             },
@@ -88,7 +88,7 @@ const ForceTable = {
                 headers: ['Force Name', 'Commander', 'Faction', 'Joined'],
                 tableId: 'crusade-forces-table',
                 buildRow: this.buildForceRow.bind(this),
-                sortBy: TableBase.sortByDateDesc('Timestamp'),
+                sortBy: TableBase.sortByDateDesc('timestamp'),
                 noDataMessage: 'No forces registered for this crusade yet.',
                 errorMessage: 'Failed to load crusade forces.'
             },
@@ -97,7 +97,7 @@ const ForceTable = {
                 headers: ['Force Name', 'Faction', 'Detachment', 'Battles', 'Created'],
                 tableId: 'user-forces-table',
                 buildRow: this.buildForceRow.bind(this),
-                sortBy: TableBase.sortByDateDesc('Timestamp'),
+                sortBy: TableBase.sortByDateDesc('timestamp'),
                 noDataMessage: 'No forces created by this user yet.',
                 errorMessage: 'Failed to load user forces.'
             }
@@ -193,10 +193,10 @@ const ForceTable = {
         };
 
         forces.forEach(force => {
-            const faction = force['Faction'] || force.faction || 'Unknown';
+            const faction = force['faction'] || force['Faction'] || force.faction || 'Unknown';
             stats.factionBreakdown[faction] = (stats.factionBreakdown[faction] || 0) + 1;
 
-            const battles = parseInt(force['Battle Count'] || force.battleCount || 0);
+            const battles = parseInt(force['battle_count'] || force['Battle Count'] || force.battleCount || 0);
             stats.totalBattles += battles;
         });
 

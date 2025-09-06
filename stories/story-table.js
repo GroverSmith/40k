@@ -32,9 +32,9 @@ const StoryTable = {
      */
     calculateWordCount(story) {
         let totalText = '';
-        if (story['Story Text 1']) totalText += story['Story Text 1'] + ' ';
-        if (story['Story Text 2']) totalText += story['Story Text 2'] + ' ';
-        if (story['Story Text 3']) totalText += story['Story Text 3'];
+        if (story['story_text_1'] || story['Story Text 1']) totalText += (story['story_text_1'] || story['Story Text 1']) + ' ';
+        if (story['story_text_2'] || story['Story Text 2']) totalText += (story['story_text_2'] || story['Story Text 2']) + ' ';
+        if (story['story_text_3'] || story['Story Text 3']) totalText += (story['story_text_3'] || story['Story Text 3']);
 
         if (!totalText.trim()) return 0;
 
@@ -46,19 +46,19 @@ const StoryTable = {
      */
     buildStoryRow(story, columns) {
         // Extract author name from User Key
-        const authorName = this.extractUserName(story['User Key']);
+        const authorName = this.extractUserName(story['user_key'] || story['User Key']);
 
         // Calculate word count from the three story text fields
         const wordCount = this.calculateWordCount(story);
 
         const columnData = {
-            date: TableBase.formatters.date(story['Timestamp']),
-            title: this.createStoryLink(story['Title'], story['Key']),
+            date: TableBase.formatters.date(story['timestamp'] || story['Timestamp']),
+            title: this.createStoryLink(story['title'] || story['Title'], story['story_key'] || story['Key']),
             author: authorName,
-            type: story['Story Type'] || '',
+            type: story['story_type'] || story['Story Type'] || '',
             length: wordCount > 0 ? `${wordCount} words` : '-',
-            force: story['Force Name'] ? this.createForceLink(story['Force Name'], story['Force Key']) : '-',
-            crusade: story['Crusade Name'] ? this.createCrusadeLink(story['Crusade Name'], story['Crusade Key']) : '-'
+            force: (story['force_key'] || story['Force Key']) ? this.createForceLink('Force', story['force_key'] || story['Force Key']) : '-',
+            crusade: (story['crusade_key'] || story['Crusade Key']) ? this.createCrusadeLink('Crusade', story['crusade_key'] || story['Crusade Key']) : '-'
         };
 
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
@@ -111,7 +111,7 @@ const StoryTable = {
             columns: ['date', 'title', 'author', 'type', 'length'],
             headers: ['Date', 'Title', 'Author', 'Type', 'Length'],
             buildRow: this.buildStoryRow.bind(this),
-            sortBy: TableBase.sortByDateDesc('Date Created'),
+            sortBy: TableBase.sortByDateDesc('timestamp'),
             errorMessage: 'Failed to load stories.'
         };
 

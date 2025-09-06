@@ -21,8 +21,8 @@ const BattleTable = {
      */
     getScores(battle) {
         return {
-            player1: parseInt(battle['Player 1 Score']) || 0,
-            player2: parseInt(battle['Player 2 Score']) || 0
+            player1: parseInt(battle['player_1_score'] || battle['Player 1 Score']) || 0,
+            player2: parseInt(battle['player_2_score'] || battle['Player 2 Score']) || 0
         };
     },
 
@@ -30,26 +30,32 @@ const BattleTable = {
         const scores = this.getScores(battle);
         if (!forceKey) return TableBase.formatters.score(scores.player1, scores.player2);
 
-        const isForce1 = battle['Force 1 Key'] === forceKey;
+        const isForce1 = (battle['force_key_1'] || battle['Force 1 Key']) === forceKey;
         return isForce1 ?
             TableBase.formatters.score(scores.player1, scores.player2) :
             TableBase.formatters.score(scores.player2, scores.player1);
     },
 
     getBattleResult(battle, forceKey) {
-        const victorKey = battle['Victor Force Key'];
+        const victorKey = battle['victor_force_key'] || battle['Victor Force Key'];
         if (victorKey === 'Draw') return 'Draw';
         return victorKey === forceKey ? 'Victory' : 'Defeat';
     },
 
     formatOutcome(battle) {
-        const force1Link = this.createForceLink(battle['Force 1'] || battle['Player 1'], battle['Force 1 Key']);
-        const force2Link = this.createForceLink(battle['Force 2'] || battle['Player 2'], battle['Force 2 Key']);
-        const victorKey = battle['Victor Force Key'];
+        const force1Link = this.createForceLink(
+            battle['force_1'] || battle['Force 1'] || battle['player_1'] || battle['Player 1'], 
+            battle['force_key_1'] || battle['Force 1 Key']
+        );
+        const force2Link = this.createForceLink(
+            battle['force_2'] || battle['Force 2'] || battle['player_2'] || battle['Player 2'], 
+            battle['force_key_2'] || battle['Force 2 Key']
+        );
+        const victorKey = battle['victor_force_key'] || battle['Victor Force Key'];
 
         if (victorKey === 'Draw') return `${force1Link} draws ${force2Link}`;
-        if (victorKey === battle['Force 1 Key']) return `${force1Link} defeats ${force2Link}`;
-        if (victorKey === battle['Force 2 Key']) return `${force2Link} defeats ${force1Link}`;
+        if (victorKey === (battle['force_key_1'] || battle['Force 1 Key'])) return `${force1Link} defeats ${force2Link}`;
+        if (victorKey === (battle['force_key_2'] || battle['Force 2 Key'])) return `${force2Link} defeats ${force1Link}`;
         return `${force1Link} vs ${force2Link}`;
     },
 
@@ -58,19 +64,19 @@ const BattleTable = {
      */
     buildBattleRow(battle, columns, context = {}) {
         const columnData = {
-            date: TableBase.formatters.date(battle['Date Played']),
-            battle: this.createBattleLink(battle['Battle Name'], battle.Key),
+            date: TableBase.formatters.date(battle['date_played'] || battle['Date Played']),
+            battle: this.createBattleLink(battle['battle_name'] || battle['Battle Name'], battle['battle_key'] || battle.Key),
             outcome: this.formatOutcome(battle),
             score: this.formatScore(battle, context.forceKey),
-            size: TableBase.formatters.points(battle['Battle Size'])
+            size: TableBase.formatters.points(battle['battle_size'] || battle['Battle Size'])
         };
 
         // Add force-specific columns if needed
         if (context.forceKey) {
-            const isForce1 = battle['Force 1 Key'] === context.forceKey;
+            const isForce1 = (battle['force_key_1'] || battle['Force 1 Key']) === context.forceKey;
             columnData.opponent = this.createForceLink(
-                isForce1 ? battle['Force 2'] : battle['Force 1'],
-                isForce1 ? battle['Force 2 Key'] : battle['Force 1 Key']
+                isForce1 ? (battle['force_2'] || battle['Force 2']) : (battle['force_1'] || battle['Force 1']),
+                isForce1 ? (battle['force_key_2'] || battle['Force 2 Key']) : (battle['force_key_1'] || battle['Force 1 Key'])
             );
 
             const result = this.getBattleResult(battle, context.forceKey);
@@ -194,8 +200,8 @@ const BattleTable = {
         };
 
         battles.forEach(battle => {
-            const victorKey = battle['Victor Force Key'];
-            const isForce1 = battle['Force 1 Key'] === forceKey;
+            const victorKey = battle['victor_force_key'] || battle['Victor Force Key'];
+            const isForce1 = (battle['force_key_1'] || battle['Force 1 Key']) === forceKey;
             const scores = this.getScores(battle);
 
             if (victorKey === 'Draw') stats.draws++;
