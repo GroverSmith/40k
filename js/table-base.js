@@ -111,7 +111,9 @@ const TableBase = {
                 fetchConfig.cacheKey
             );
 
+            console.log('TableBase.loadAndDisplay - Raw result:', result);
             let items = this.processResponseData(result, fetchConfig.dataKey);
+            console.log('TableBase.loadAndDisplay - Processed items:', items);
 
             // Apply filtering if provided
             if (filterFn && typeof filterFn === 'function') {

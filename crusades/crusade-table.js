@@ -71,18 +71,37 @@ const CrusadeTable = {
     
 
     async loadCrusades(type, key, containerId) {
-        const fetchConfig = this.getFetchConfig(type, key);
-        const displayConfig = this.getDisplayConfig(type, key);
-        
-        // Apply filtering for active crusades
-        const filterFn = type === 'active' ? this.filterActiveCrusades : null;        
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
+        try {
+            console.log('CrusadeTable.loadCrusades called with:', { type, key, containerId });
+            const fetchConfig = this.getFetchConfig(type, key);
+            const displayConfig = this.getDisplayConfig(type, key);
+            
+            console.log('CrusadeTable fetch config:', fetchConfig);
+            console.log('CrusadeTable display config:', displayConfig);
+            
+            // Apply filtering for active crusades
+            const filterFn = type === 'active' ? this.filterActiveCrusades : null;        
+            await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
+        } catch (error) {
+            console.error('Error in loadCrusades:', error);
+            throw error;
+        }
     },
 
     
     // Convenience methods
     async loadAllCrusades(containerId) {
-        return this.loadCrusades('all', null, containerId);
+        try {
+            console.log('CrusadeTable.loadAllCrusades called for container:', containerId);
+            return await this.loadCrusades('all', null, containerId);
+        } catch (error) {
+            console.error('Error in loadAllCrusades:', error);
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = '<p class="no-data">Failed to load crusades. Please try refreshing the page.</p>';
+            }
+            throw error;
+        }
     },
 
     async loadActiveCrusades(containerId) {

@@ -13,19 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize Crusades display using CrusadeTable
         const crusadesContainer = document.getElementById('crusades-sheet');
         if (crusadesContainer) {
-            if (window.CrusadeTable) {
-                CrusadeTable.loadAllCrusades('crusades-sheet');
-            } else {
-                // Fallback if CrusadeTable not loaded yet
-                setTimeout(() => {
-                    if (window.CrusadeTable) {
-                        CrusadeTable.loadAllCrusades('crusades-sheet');
-                    } else {
-                        console.warn('CrusadeTable module not available');
-                        crusadesContainer.innerHTML = '<p class="no-data">📜 Crusade campaigns will be displayed here.</p>';
-                    }
-                }, 100);
-            }
+            // Wait for all dependencies to be ready
+            CrusadeApp.initializeCrusadesTable(crusadesContainer);
         }
 
         // Initialize Forces display using ForceTable
@@ -154,6 +143,33 @@ const CrusadeApp = {
         console.log('Clearing all application caches...');
         CacheManager.clearAll();
     },
+
+    // Initialize crusades table with proper dependency checking
+    async initializeCrusadesTable(container) {
+        const maxRetries = 10;
+        let retries = 0;
+        
+        const tryLoad = async () => {
+            if (window.CrusadeTable && window.TableBase && window.CacheManager) {
+                try {
+                    console.log('All dependencies ready, loading crusades...');
+                    await CrusadeTable.loadAllCrusades('crusades-sheet');
+                } catch (error) {
+                    console.error('Error loading crusades:', error);
+                    container.innerHTML = '<p class="no-data">Failed to load crusades. Please try refreshing the page.</p>';
+                }
+            } else if (retries < maxRetries) {
+                retries++;
+                console.log(`Dependencies not ready, retrying... (${retries}/${maxRetries})`);
+                setTimeout(tryLoad, 100);
+            } else {
+                console.warn('CrusadeTable dependencies not available after retries');
+                container.innerHTML = '<p class="no-data">📜 Crusade campaigns will be displayed here.</p>';
+            }
+        };
+        
+        tryLoad();
+    }
 
     
 };
