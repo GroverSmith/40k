@@ -11,31 +11,7 @@ const CrusadeTable = {
         return TableBase.createEntityLink('crusade', name || 'Unnamed Crusade', key);
     },
 
-    /**
-     * Format crusade state with styling
-     */
-    formatState(state) {
-        if (!state) return '-';
-        const stateClass = state.toLowerCase().replace(/\s+/g, '-');
-        return `<span class="crusade-state state-${stateClass}">${state.toUpperCase()}</span>`;
-    },
-
-    /**
-     * Format date range
-     */
-    formatDateRange(startDate, endDate) {
-        const start = TableBase.formatters.date(startDate);
-        const end = TableBase.formatters.date(endDate);
-        
-        if (start && end) {
-            return `${start} - ${end}`;
-        } else if (start) {
-            return `Started ${start}`;
-        } else if (end) {
-            return `Ends ${end}`;
-        }
-        return '-';
-    },
+    
 
     /**
      * Build crusade row
@@ -47,14 +23,12 @@ const CrusadeTable = {
         const state = crusade['state'] || crusade['State'] || 'Unknown';
         const startDate = crusade['start_date'] || crusade['Start Date'];
         const endDate = crusade['end_date'] || crusade['End Date'];
-        const timestamp = crusade['timestamp'] || crusade['Timestamp'];
 
         const columnData = {
-            crusade: this.createCrusadeLink(crusadeName, crusadeKey),
-            type: crusadeType,
-            state: this.formatState(state),
-            dates: this.formatDateRange(startDate, endDate),
-            created: TableBase.formatters.date(timestamp)
+            'Crusade Name': this.createCrusadeLink(crusadeName, crusadeKey),
+            'Type': crusadeType,
+            'State': this.formatState(state),
+            'Dates': this.formatDateRange(startDate, endDate)
         };
 
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
@@ -151,7 +125,7 @@ const CrusadeTable = {
             }
 
             // Define columns
-            const columns = options.columns || ['crusade', 'type', 'state', 'dates', 'created'];
+            const columns = options.columns || ['State', 'Crusade Name', 'Type', 'Dates'];
 
             // Build table
             let html = `
@@ -185,9 +159,7 @@ const CrusadeTable = {
         }
     },
 
-    /**
-     * Display active crusades only
-     */
+    
     async displayActiveCrusades(containerId, options = {}) {
         const activeOptions = {
             ...options,
@@ -196,9 +168,7 @@ const CrusadeTable = {
         return await this.displayCrusades(containerId, activeOptions);
     },
 
-    /**
-     * Display crusades by state
-     */
+    
     async displayCrusadesByState(containerId, state, options = {}) {
         const stateOptions = {
             ...options,
@@ -206,7 +176,63 @@ const CrusadeTable = {
             key: state
         };
         return await this.displayCrusades(containerId, stateOptions);
-    }
+    },
+
+
+    
+    formatState(state) {
+        if (!state) return '-';
+        const stateClass = state.toLowerCase().replace(/\s+/g, '-');
+        return `<span class="crusade-state state-${stateClass}">${state.toUpperCase()}</span>`;
+    },
+
+    
+    /**
+     * Format date in dd MMM yyyy format
+     */
+    formatCrusadeDate(dateValue) {
+        if (!dateValue) return null;
+        
+        const date = new Date(dateValue);
+        if (isNaN(date.getTime())) return null;
+        
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        const day = date.getDate();
+        const month = months[date.getMonth()];
+        const year = date.getFullYear();
+        
+        return `${day} ${month} ${year}`;
+    },
+
+    /**
+     * Format date range with optimized year display
+     */
+    formatDateRange(startDate, endDate) {
+        const start = this.formatCrusadeDate(startDate);
+        const end = this.formatCrusadeDate(endDate);
+        
+        if (start && end) {
+            // Check if both dates are in the same year
+            const startYear = new Date(startDate).getFullYear();
+            const endYear = new Date(endDate).getFullYear();
+            
+            if (startYear === endYear) {
+                // Same year: show "dd MMM - dd MMM yyyy"
+                const startWithoutYear = start.replace(` ${startYear}`, '');
+                return `${startWithoutYear} - ${end}`;
+            } else {
+                // Different years: show full dates
+                return `${start} - ${end}`;
+            }
+        } else if (start) {
+            return `Started ${start}`;
+        } else if (end) {
+            return `Ends ${end}`;
+        }
+        return '-';
+    },
 };
 
 // Make globally available

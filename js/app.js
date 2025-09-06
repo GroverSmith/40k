@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Use CrusadeTable for consistent crusade display
             if (window.CrusadeTable) {
                 CrusadeTable.displayCrusades('crusades-sheet', {
-                    columns: ['crusade', 'type', 'state', 'dates', 'created'],
                     sortable: true
                 });
             } else {
@@ -35,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => {
                     if (window.CrusadeTable) {
                         CrusadeTable.displayCrusades('crusades-sheet', {
-                            columns: ['crusade', 'type', 'state', 'dates', 'created'],
                             sortable: true
                         });
                     } else {
