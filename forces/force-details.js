@@ -6,6 +6,8 @@ class ForceDetailsApp {
    constructor() {
        this.forceKey = null;
        this.forceData = null;
+       this.armyListsData = [];
+       this.battleHistoryData = [];
        this.init();
    }
    
@@ -39,11 +41,11 @@ class ForceDetailsApp {
    
    async loadForceData() {
        try {
-           // Use existing ForceData module to load with caching
-           this.forceData = await ForceData.loadForceData(this.forceKey);
+           // Load force data with caching
+           this.forceData = await this.loadForceDataByKey(this.forceKey);
            
-           // Use ForceUI module to update the display
-           ForceUI.updateHeader(this.forceData);
+           // Update the display
+           this.updateHeader(this.forceData);
            
            // Update overview section
            this.updateOverview();
@@ -152,8 +154,8 @@ class ForceDetailsApp {
            // Show the section
            document.getElementById('army-lists-section').style.display = 'block';
            
-           // Use ForceData module to load army lists
-           const result = await ForceData.loadArmyLists(this.forceKey);
+           // Load army lists
+           const result = await this.loadArmyListsData(this.forceKey);
            
            const container = document.getElementById('army-lists-content');
            
@@ -165,8 +167,10 @@ class ForceDetailsApp {
            }
            
            if (result.success && result.data && result.data.length > 0) {
-               // Use ForceUI module to display
-               ForceUI.displayArmyLists(result.data, this.forceData.forceName, this.forceKey);
+               // Display army lists using ArmyTable
+               if (window.ArmyTable) {
+                   await ArmyTable.loadForForce(this.forceKey, 'army-lists-content');
+               }
            } else {
                container.innerHTML = `
                    <p class="no-data-message">No army lists uploaded yet.</p>
@@ -188,13 +192,13 @@ class ForceDetailsApp {
            // Show the section
            document.getElementById('battle-history-section').style.display = 'block';
            
-           // Use ForceData module to load battle history
-           const battles = await ForceData.loadBattleHistory(this.forceKey);
+           // Load battle history
+           const battles = await this.loadBattleHistoryData(this.forceKey);
            
            const container = document.getElementById('battle-history-content');
            if (battles && battles.length > 0) {
                // Calculate and display stats
-               const stats = ForceData.calculateBattleStats();
+               const stats = this.calculateBattleStats(battles);
                this.displayBattleStats(stats);
                
                // Display battle list with new column order
@@ -289,8 +293,8 @@ class ForceDetailsApp {
            // Show the section
            document.getElementById('crusades-section').style.display = 'block';
            
-           // Use ForceData module to get participating crusades
-           const crusades = await ForceData.getParticipatingCrusades();
+           // Get participating crusades
+           const crusades = await this.getParticipatingCrusades();
            
            const container = document.getElementById('crusades-content');
            if (crusades && crusades.length > 0) {
@@ -342,6 +346,276 @@ class ForceDetailsApp {
            if (element) element.style.display = 'none';
        });
    }
+
+   // ===== DATA LOADING METHODS (consolidated from force-data.js) =====
+   
+   /**
+    * Load main force data from the Forces sheet by key
+    */
+   async loadForceDataByKey(forceKey) {
+       try {
+           // Use CacheManager with automatic URL resolution
+           const data = await CacheManager.fetchSheetData('forces');
+           
+           const force = this.findForceInData(data, forceKey);
+           this.forceData = force;
+           return force;
+           
+       } catch (error) {
+           console.error('Error loading force data:', error);
+           throw error;
+       }
+   }
+   
+   /**
+    * Find specific force in data array
+    */
+   findForceInData(data, forceKey) {
+       console.log('Processed data:', data);
+       console.log('Looking for force key:', forceKey);
+       
+       if (!Array.isArray(data) || data.length === 0) {
+           throw new Error('No force data available or invalid data format');
+       }
+       
+       // Find the force by key (Key is now column 0)
+       const forceRow = data.find((row, index) => {
+           if (index === 0) return false; // Skip header
+           return row[0] === forceKey; // Key column
+       });
+       
+       if (!forceRow) {
+           const availableKeys = data.slice(1).map(row => row[0]).filter(key => key);
+           console.log('Available force keys:', availableKeys);
+           throw new Error(`Force with key "${forceKey}" not found. Available keys: ${availableKeys.slice(0, 5).join(', ')}`);
+       }
+       
+       // Map the columns from Forces sheet (with key in column 0)
+       const forceData = {
+           key: forceRow[0] || '',           // Key
+           playerName: forceRow[1] || '',   // User Name
+           forceName: forceRow[2] || '',    // Force Name
+           faction: forceRow[3] || '',      // Faction
+           detachment: forceRow[4] || '',   // Detachment
+           notes: forceRow[5] || '',        // Notes
+           timestamp: forceRow[6] || ''     // Timestamp
+       };
+       
+       console.log('Successfully found and loaded force data:', forceData);
+       return forceData;
+   }
+
+   // ===== UI METHODS (consolidated from force-ui.js) =====
+   
+   /**
+    * Update force header display
+    */
+   updateHeader(forceData) {
+       const header = document.getElementById('force-header');
+       const launchDate = UIHelpers.formatDate(forceData.timestamp);
+
+       header.innerHTML = `
+           <h1>${forceData.forceName}</h1>
+           <div class="force-subtitle">
+               ${forceData.faction}${forceData.detachment ? ` - ${forceData.detachment}` : ''} • Commanded by ${forceData.playerName}
+           </div>
+           ${launchDate ? `<div class="force-launch-date">Crusade Force Launched on ${launchDate}</div>` : ''}
+           <div class="force-key-display">
+               Force Key: <code>${forceData.key}</code>
+           </div>
+       `;
+
+       document.title = `${forceData.forceName} - Crusade Force`;
+   }
+
+   /**
+    * Update battle stats from battles data
+    */
+   updateStatsFromBattles(battles, forceKey) {
+       const stats = {
+           battlesFought: battles.length,
+           victories: 0,
+           defeats: 0,
+           draws: 0
+       };
+
+       battles.forEach(battle => {
+           const victorForceKey = battle['Victor Force Key'] || '';
+
+           if (victorForceKey === 'Draw') {
+               stats.draws++;
+           } else if (victorForceKey === forceKey) {
+               stats.victories++;
+           } else {
+               stats.defeats++;
+           }
+       });
+
+       // Update DOM
+       const elements = {
+           'battles-fought': stats.battlesFought,
+           'victories': stats.victories,
+           'battle-losses': stats.defeats,
+           'battle-ties': stats.draws
+       };
+
+       Object.entries(elements).forEach(([id, value]) => {
+           const el = document.getElementById(id);
+           if (el) el.textContent = value;
+       });
+
+       // Show stats section
+       const statsEl = document.getElementById('force-stats');
+       if (statsEl) {
+           statsEl.style.display = 'grid';
+       }
+   }
+
+   // ===== ADDITIONAL DATA METHODS =====
+   
+   /**
+    * Load army lists for a force using force key
+    */
+   async loadArmyListsData(forceKey) {
+       try {
+           // Use CacheManager with automatic URL resolution
+           const data = await CacheManager.fetchSheetData('armies');
+           
+           console.log('Army lists response:', data);
+           
+           if (Array.isArray(data) && data.length > 0) {
+               // Filter for armies belonging to this force
+               const headers = data[0];
+               const forceKeyToMatch = forceKey || this.forceKey;
+               const filteredArmies = data.slice(1)
+                   .filter(row => row[2] === forceKeyToMatch) // Force key is column 2
+                   .map(row => {
+                       const army = {};
+                       headers.forEach((header, index) => {
+                           army[header] = row[index];
+                       });
+                       return army;
+                   });
+               
+               if (filteredArmies.length > 0) {
+                   this.armyListsData = filteredArmies;
+                   return { success: true, data: filteredArmies };
+               }
+           }
+           
+           this.armyListsData = [];
+           return { success: true, data: [] };
+           
+       } catch (error) {
+           console.error('Error fetching army lists:', error);
+           return { success: false, data: [], error: error.message };
+       }
+   }
+
+   /**
+    * Load battle history for this force
+    */
+   async loadBattleHistoryData(forceKey) {
+       try {
+           const key = forceKey || this.forceKey;
+           const battlesUrl = CrusadeConfig.getSheetUrl('battles');
+           const fetchUrl = `${battlesUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`;
+           
+           // Use CacheManager for unified caching
+           const responseData = await CacheManager.fetchWithCache(fetchUrl, 'battles');
+           
+           let battles = [];
+           if (responseData.success && responseData.battles) {
+               battles = responseData.battles;
+           } else if (Array.isArray(responseData)) {
+               // Handle raw array response
+               const headers = responseData[0];
+               battles = responseData.slice(1).map(row => {
+                   const battle = {};
+                   headers.forEach((header, index) => {
+                       battle[header] = row[index];
+                   });
+                   return battle;
+               });
+           }
+           
+           // Filter battles for this force
+           const forceKeyToMatch = key || this.forceKey;
+           const filteredBattles = battles.filter(battle => {
+               const force1Key = battle['Force 1 Key'] || '';
+               const force2Key = battle['Force 2 Key'] || '';
+               return force1Key === forceKeyToMatch || force2Key === forceKeyToMatch;
+           });
+           
+           this.battleHistoryData = filteredBattles;
+           return filteredBattles;
+           
+       } catch (error) {
+           console.error('Error loading battle history:', error);
+           return [];
+       }
+   }
+
+   /**
+    * Calculate battle statistics
+    */
+   calculateBattleStats(battles = null) {
+       const battleData = battles || this.battleHistoryData;
+       const stats = {
+           totalBattles: battleData.length,
+           victories: 0,
+           defeats: 0,
+           draws: 0,
+           totalScore: 0,
+           totalOpponentScore: 0
+       };
+
+       battleData.forEach(battle => {
+           const victorForceKey = battle['Victor Force Key'] || '';
+           const force1Key = battle['Force 1 Key'] || '';
+           const force2Key = battle['Force 2 Key'] || '';
+           
+           // Determine if this force was force 1 or force 2
+           const isForce1 = force1Key === this.forceKey;
+           const isForce2 = force2Key === this.forceKey;
+           
+           if (victorForceKey === 'Draw') {
+               stats.draws++;
+           } else if (victorForceKey === this.forceKey) {
+               stats.victories++;
+           } else if (isForce1 || isForce2) {
+               stats.defeats++;
+           }
+           
+           // Add scores
+           if (isForce1) {
+               stats.totalScore += parseInt(battle['Force 1 Score'] || 0);
+               stats.totalOpponentScore += parseInt(battle['Force 2 Score'] || 0);
+           } else if (isForce2) {
+               stats.totalScore += parseInt(battle['Force 2 Score'] || 0);
+               stats.totalOpponentScore += parseInt(battle['Force 1 Score'] || 0);
+           }
+       });
+
+       return stats;
+   }
+
+   /**
+    * Get participating crusades for this force
+    */
+   async getParticipatingCrusades() {
+       try {
+           // Use CrusadeParticipantsTable to get crusades for this force
+           if (window.CrusadeParticipantsTable) {
+               const participants = await CrusadeParticipantsTable.fetchData('by-force', this.forceKey);
+               return participants || [];
+           }
+           return [];
+       } catch (error) {
+           console.error('Error getting participating crusades:', error);
+           return [];
+       }
+   }
 }
 
 // Initialize when DOM is ready
@@ -349,14 +623,6 @@ document.addEventListener('DOMContentLoaded', () => {
    console.log('Force Details page initializing...');
    
    // Check if required modules are loaded
-   if (typeof ForceData === 'undefined') {
-       console.error('ForceData module not loaded!');
-       return;
-   }
-   if (typeof ForceUI === 'undefined') {
-       console.error('ForceUI module not loaded!');
-       return;
-   }
    if (typeof UserStorage === 'undefined') {
        console.error('UserStorage module not loaded!');
        return;
