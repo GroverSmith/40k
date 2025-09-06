@@ -67,23 +67,20 @@ const BattleTable = {
         const battleUrl = CrusadeConfig.getSheetUrl('battle_history');
         const configs = {
             'force': {
-                url: `${battleUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`,
+                url: `${battleUrl}?action=list`,
                 cacheType: 'battles',
-                cacheKey: `force_${key}`,
                 dataKey: 'data',
                 loadingMessage: 'Loading battles...'
             },
             'crusade': {
-                url: `${battleUrl}?action=crusade-battles&crusadeKey=${encodeURIComponent(key)}`,
+                url: `${battleUrl}?action=list`,
                 cacheType: 'battles',
-                cacheKey: `crusade_${key}`,
                 dataKey: 'data',
                 loadingMessage: 'Loading battles...'
             },
             'recent': {
-                url: `${battleUrl}?action=recent&limit=10`,
+                url: `${battleUrl}?action=list`,
                 cacheType: 'battles',
-                cacheKey: 'recent',
                 dataKey: 'data',
                 loadingMessage: 'Loading recent battles...'
             }
@@ -130,7 +127,6 @@ const BattleTable = {
         return await TableBase.fetchWithCache(config.url, config.cacheType, config.cacheKey);
     },
 
-    // Simplified link creators using base
     createBattleLink(name, key) {
         return TableBase.createEntityLink('battle', name || 'Unnamed Battle', key);
     },
@@ -141,9 +137,7 @@ const BattleTable = {
         return TableBase.createEntityLink('crusade', name || 'Unknown Crusade', key);
     },
 
-    /**
-     * Battle-specific methods
-     */
+    
     getScores(battle) {
         return {
             player1: parseInt(battle['player_1_score'] || battle['Player 1 Score']) || 0,
@@ -183,10 +177,7 @@ const BattleTable = {
         if (victorKey === (battle['force_key_2'] || battle['Force 2 Key'])) return `${force2Link} defeats ${force1Link}`;
         return `${force1Link} vs ${force2Link}`;
     },
-
-    /**
-     * Calculate battle statistics for a force
-     */
+    
     calculateBattleStats(battles, forceKey) {
         const stats = {
             totalBattles: battles.length,
@@ -218,7 +209,6 @@ const BattleTable = {
         return stats;
     }
 };
-
 
 // Make globally available
 window.BattleTable = BattleTable;

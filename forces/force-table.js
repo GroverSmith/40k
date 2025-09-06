@@ -67,14 +67,12 @@ const ForceTable = {
             'all': {
                 url: `${forceUrl}?action=list`,
                 cacheType: 'forces',
-                cacheKey: 'all',
                 dataKey: 'data',
                 loadingMessage: 'Loading forces...'
             },
             'crusade': {
                 url: participantsUrl,
                 cacheType: 'participants',
-                cacheKey: 'all',
                 dataKey: null,
                 loadingMessage: 'Loading crusade forces...'
             },
@@ -94,7 +92,6 @@ const ForceTable = {
     async loadForces(type, key, containerId) {
         const fetchConfig = this.getFetchConfig(type, key);
         const displayConfig = this.getDisplayConfig(type, key);
-
         await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId);
     },
 
@@ -146,7 +143,6 @@ const ForceTable = {
     createForceLink(name, key) {
         return TableBase.createEntityLink('force', name || 'Unknown Force', key);
     },
-
     
     calculateForceStats(forces) {
         const stats = {
@@ -171,6 +167,5 @@ const ForceTable = {
         return stats;
     }
 };
-
 
 window.ForceTable = ForceTable;

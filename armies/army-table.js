@@ -4,27 +4,31 @@
 
 const ArmyTable = {
 
-    // Simplified link creators using base
-    createArmyLink(name, key) {
-        return TableBase.createEntityLink('army', name || 'Unnamed Army List', key);
-    },
-    createForceLink(name, key) {
-        return TableBase.createEntityLink('force', name || 'Unknown Force', key);
-    },
+    getDisplayConfig(type, key) {
+        const configs = {
+            'force': {
+                columns: ['army', 'detachment', 'mfm', 'points', 'date'],
+                headers: ['Army Name', 'Detachment', 'MFM Version', 'Points', 'Date Added'],
+                tableId: 'army-lists-table',
+                buildRow: this.buildArmyRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('Timestamp'),
+                noDataMessage: 'No army lists uploaded for this force yet.',
+                errorMessage: 'Failed to load army lists.'
+            },
+            'user': {
+                columns: ['army', 'force', 'faction', 'points', 'date'],
+                headers: ['Army Name', 'Force', 'Faction', 'Points', 'Date Added'],
+                tableId: 'user-armies-table',
+                buildRow: this.buildArmyRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('Timestamp'),
+                noDataMessage: 'No army lists created by this user yet.',
+                errorMessage: 'Failed to load user army lists.'
+            }
+        };
 
-    /**
-     * Format points value
-     */
-    formatPoints(points) {
-        if (!points) return '-';
-        const value = parseInt(points);
-        if (isNaN(value)) return points;
-        return value.toLocaleString() + ' pts';
-    },
+        return configs[type] || configs['all'];
+    },    
 
-    /**
-     * Build army list row
-     */
     buildArmyRow(army, columns, context = {}) {
         const armyKey = army.army_key || army.Key || army.key || army.id;
         const armyName = army.army_name || army['Army Name'] || 'Unnamed List';
@@ -53,9 +57,7 @@ const ArmyTable = {
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
     },
 
-    /**
-     * Fetch army lists configuration
-     */
+    
     getFetchConfig(type, key) {
         const armyUrl = CrusadeConfig.getSheetUrl('armies');
 
@@ -66,111 +68,28 @@ const ArmyTable = {
                 cacheKey: 'all',
                 dataKey: null,
                 loadingMessage: 'Loading army lists...'
-            },
-            'crusade': {
-                url: `${armyUrl}?action=crusade-lists&crusadeKey=${encodeURIComponent(key)}`,
-                cacheType: 'armies',
-                cacheKey: `crusade_${key}`,
-                dataKey: 'data',
-                loadingMessage: 'Loading crusade army lists...'
-            },
+            },            
             'user': {
                 url: `${armyUrl}?action=user-lists&userKey=${encodeURIComponent(key)}`,
                 cacheType: 'armies',
                 cacheKey: `user_${key}`,
                 dataKey: 'data',
                 loadingMessage: 'Loading user army lists...'
-            },
-            'recent': {
-                url: `${armyUrl}?action=recent&limit=20`,
-                cacheType: 'armies',
-                cacheKey: 'recent',
-                dataKey: 'data',
-                loadingMessage: 'Loading recent army lists...'
-            },
-            'all': {
-                url: armyUrl,
-                cacheType: 'armies',
-                cacheKey: 'all',
-                dataKey: null, // Raw array format
-                loadingMessage: 'Loading all army lists...'
-            }
+            }            
         };
 
         return configs[type] || configs['all'];
     },
 
-    /**
-     * Get display configuration
-     */
-    getDisplayConfig(type, key) {
-        const configs = {
-            'force': {
-                // Matching the columns from the old ForceUI.displayArmyLists implementation
-                columns: ['army', 'detachment', 'mfm', 'points', 'date'],
-                headers: ['Army Name', 'Detachment', 'MFM Version', 'Points', 'Date Added'],
-                tableId: 'army-lists-table',
-                buildRow: this.buildArmyRow.bind(this),
-                sortBy: TableBase.sortByDateDesc('Timestamp'),
-                noDataMessage: 'No army lists uploaded for this force yet.',
-                errorMessage: 'Failed to load army lists.'
-            },
-            'crusade': {
-                columns: ['army', 'force', 'player', 'points', 'date'],
-                headers: ['Army List', 'Force', 'Player', 'Points', 'Date'],
-                tableId: 'crusade-armies-table',
-                buildRow: this.buildArmyRow.bind(this),
-                sortBy: TableBase.sortByDateDesc('Timestamp'),
-                noDataMessage: 'No army lists in this crusade yet.',
-                errorMessage: 'Failed to load crusade army lists.'
-            },
-            'user': {
-                columns: ['army', 'force', 'faction', 'points', 'date'],
-                headers: ['Army List', 'Force', 'Faction', 'Points', 'Date'],
-                tableId: 'user-armies-table',
-                buildRow: this.buildArmyRow.bind(this),
-                sortBy: TableBase.sortByDateDesc('Timestamp'),
-                noDataMessage: 'No army lists created by this user yet.',
-                errorMessage: 'Failed to load user army lists.'
-            },
-            'recent': {
-                columns: ['army', 'force', 'player', 'faction', 'points', 'date'],
-                headers: ['Army List', 'Force', 'Player', 'Faction', 'Points', 'Date'],
-                tableId: 'recent-armies-table',
-                buildRow: this.buildArmyRow.bind(this),
-                sortBy: TableBase.sortByDateDesc('Timestamp'),
-                limit: 20,
-                noDataMessage: 'No army lists uploaded yet.',
-                errorMessage: 'Failed to load recent army lists.'
-            },
-            'all': {
-                columns: ['army', 'force', 'player', 'faction', 'points', 'date'],
-                headers: ['Army List', 'Force', 'Player', 'Faction', 'Points', 'Date'],
-                tableId: 'all-armies-table',
-                buildRow: this.buildArmyRow.bind(this),
-                sortBy: TableBase.sortByDateDesc('Timestamp'),
-                noDataMessage: 'No army lists in the system yet.',
-                errorMessage: 'Failed to load army lists.'
-            }
-        };
-
-        return configs[type] || configs['all'];
-    },
-
-    /**
-     * Generic loader using base utility - using standard table display for all contexts
-     */
+   
     async loadArmyLists(type, key, containerId) {
         const fetchConfig = this.getFetchConfig(type, key);
         const displayConfig = this.getDisplayConfig(type, key);
-
-        // Use standard table display for all contexts (including force)
         await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId);
     },
 
     // Convenience methods
     async loadForForce(forceKey, containerId) {
-        console.log('ArmyTable.loadForForce called with forceKey:', forceKey);
         const fetchConfig = this.getFetchConfig('force', forceKey);
         const displayConfig = this.getDisplayConfig('force');
         
@@ -186,10 +105,7 @@ const ArmyTable = {
         // Process the data - it's already in object format from GAS script
         let armies = [];
         if (result && result.success && Array.isArray(result.data)) {
-            console.log('Raw data array:', result.data);
-            console.log('First row (actual data):', result.data[0]);
-            console.log('All data rows:', result.data);
-            // Data is already in object format, no need to map or skip first row
+            
             armies = result.data;
             console.log('Using all data directly as objects:', armies);
         } else if (Array.isArray(result) && result.length > 0) {
@@ -224,21 +140,12 @@ const ArmyTable = {
         }
     },
 
-    async loadForCrusade(crusadeKey, containerId) {
-        return this.loadArmyLists('crusade', crusadeKey, containerId);
-    },
-
+    
     async loadForUser(userKey, containerId) {
         return this.loadArmyLists('user', userKey, containerId);
     },
+   
 
-    async loadRecentArmyLists(containerId) {
-        return this.loadArmyLists('recent', null, containerId);
-    },
-
-    async loadAllArmyLists(containerId) {
-        return this.loadArmyLists('all', null, containerId);
-    },
 
     /**
      * Fetch army lists (for external use)
@@ -246,6 +153,24 @@ const ArmyTable = {
     async fetchArmyLists(action, key) {
         const config = this.getFetchConfig(action, key);
         return await TableBase.fetchWithCache(config.url, config.cacheType, config.cacheKey);
+    },
+
+    // Simplified link creators using base
+    createArmyLink(name, key) {
+        return TableBase.createEntityLink('army', name || 'Unnamed Army List', key);
+    },
+    createForceLink(name, key) {
+        return TableBase.createEntityLink('force', name || 'Unknown Force', key);
+    },
+
+    /**
+     * Format points value
+     */
+    formatPoints(points) {
+        if (!points) return '-';
+        const value = parseInt(points);
+        if (isNaN(value)) return points;
+        return value.toLocaleString() + ' pts';
     },
 
     /**
@@ -278,9 +203,6 @@ const ArmyTable = {
         return stats;
     }
 };
-
-// Initialize auto-loading for pages with recent army lists
-TableBase.initAutoLoad('recent-armies-container', () => ArmyTable.loadRecentArmyLists('recent-armies-container'));
 
 // Make globally available
 window.ArmyTable = ArmyTable;

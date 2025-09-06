@@ -123,29 +123,25 @@ const UnitTable = {
             'force': {
                 url: `${unitsUrl}?action=list`,
                 cacheType: 'units',
-                cacheKey: 'all',
                 dataKey: 'data',
                 loadingMessage: 'Loading units...'
             },
             'crusade': {
-                url: `${unitsUrl}?action=crusade-units&crusadeKey=${encodeURIComponent(key)}`,
+                url: `${unitsUrl}?action=list`,
                 cacheType: 'units',
-                cacheKey: `crusade_${key}`,
-                dataKey: 'units',
+                dataKey: 'data',
                 loadingMessage: 'Loading crusade units...'
             },
             'user': {
-                url: `${unitsUrl}?action=user-units&userKey=${encodeURIComponent(key)}`,
+                url: `${unitsUrl}?action=list`,
                 cacheType: 'units',
-                cacheKey: `user_${key}`,
-                dataKey: 'units',
+                dataKey: 'data',
                 loadingMessage: 'Loading user units...'
             },
             'all': {
-                url: unitsUrl,
+                url: `${unitsUrl}?action=list`,
                 cacheType: 'units',
-                cacheKey: 'all',
-                dataKey: null, // Raw array format
+                dataKey: 'data',
                 loadingMessage: 'Loading all units...'
             }
         };

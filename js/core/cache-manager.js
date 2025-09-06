@@ -135,10 +135,11 @@ const CacheManager = {
      * Fetch with cache - simplified to cache all data once per table
      * @param {string} url - URL to fetch
      * @param {string} dataType - Type of data for cache config
+     * @param {string} cacheKey - Ignored - kept for compatibility but not used
      * @returns {Promise<any>} Fetched or cached data
      */
-    async fetchWithCache(url, dataType = 'generic') {
-        // Check cache first
+    async fetchWithCache(url, dataType = 'generic', cacheKey = null) {
+        // Check cache first - always use dataType as the cache key
         const cached = this.get(dataType);
         if (cached && cached.valid) {
             return cached.data;
@@ -154,7 +155,7 @@ const CacheManager = {
             
             const data = await response.json();
             
-            // Cache the response
+            // Cache the response using dataType as the cache key
             this.set(dataType, data, { url });
             
             return data;

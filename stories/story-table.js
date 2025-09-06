@@ -71,28 +71,24 @@ const StoryTable = {
             'force': {
                 url: `${storyUrl}?action=list`,
                 cacheType: 'stories',
-                cacheKey: 'all',
                 dataKey: 'data',
                 loadingMessage: 'Loading stories...'
             },
             'crusade': {
-                url: `${storyUrl}?action=crusade-stories&crusadeKey=${encodeURIComponent(key)}`,
+                url: `${storyUrl}?action=list`,
                 cacheType: 'stories',
-                cacheKey: `crusade_${key}`,
                 dataKey: 'data',
                 loadingMessage: 'Loading stories...'
             },
             'recent': {
-                url: `${storyUrl}?action=recent`,
+                url: `${storyUrl}?action=list`,
                 cacheType: 'stories',
-                cacheKey: 'recent',
                 dataKey: 'data',
                 loadingMessage: 'Loading recent stories...'
             },
             'all': {
                 url: `${storyUrl}?action=list`,
                 cacheType: 'stories',
-                cacheKey: 'all',
                 dataKey: 'data',
                 loadingMessage: 'Loading all stories...'
             }

@@ -75,8 +75,7 @@ const CrusadeTable = {
         const displayConfig = this.getDisplayConfig(type, key);
         
         // Apply filtering for active crusades
-        const filterFn = type === 'active' ? this.filterActiveCrusades : null;
-        
+        const filterFn = type === 'active' ? this.filterActiveCrusades : null;        
         await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
     },
 
