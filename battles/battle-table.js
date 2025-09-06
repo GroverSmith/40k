@@ -128,7 +128,7 @@ const BattleTable = {
                 tableId: 'force-battles-table',
                 context: { forceKey: key },
                 buildRow: this.buildBattleRow.bind(this),
-                sortBy: TableBase.sortByDateDesc('Date Played'),
+                sortBy: TableBase.sortByDateDesc('date_played'),
                 noDataMessage: 'No battles recorded yet for this force.',
                 errorMessage: 'Failed to load battles.'
             },
@@ -137,7 +137,7 @@ const BattleTable = {
                 headers: ['Date', 'Battle', 'Outcome', 'Score'],
                 tableId: 'crusade-battles-table',
                 buildRow: this.buildBattleRow.bind(this),
-                sortBy: TableBase.sortByDateDesc('Date Played'),
+                sortBy: TableBase.sortByDateDesc('date_played'),
                 noDataMessage: 'No battles recorded yet for this crusade.',
                 errorMessage: 'Failed to load battles.'
             },
@@ -146,7 +146,7 @@ const BattleTable = {
                 headers: ['Date', 'Battle Name', 'Outcome', 'Score', 'Size'],
                 tableId: 'recent-battles-table',
                 buildRow: this.buildBattleRow.bind(this),
-                sortBy: TableBase.sortByDateDesc('Date Played'),
+                sortBy: TableBase.sortByDateDesc('date_played'),
                 limit: 10,
                 noDataMessage: 'No battles recorded yet.',
                 errorMessage: 'Failed to load recent battles.'
