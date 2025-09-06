@@ -3,8 +3,6 @@
 // 40k Crusade Campaign Tracker
 
 const ForceTable = {
-    // Use base utility for common methods
-    getRelativePath: (dir) => TableBase.getRelativePath(dir),
 
     // Simplified link creator using base
     createForceLink(name, key) {

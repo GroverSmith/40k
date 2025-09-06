@@ -3,8 +3,6 @@
 // 40k Crusade Campaign Tracker
 
 const StoryTable = {
-    // Use base utility for common methods
-    getRelativePath: (dir) => TableBase.getRelativePath(dir),
 
     // Simplified link creators using base
     createStoryLink(title, key) {

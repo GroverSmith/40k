@@ -103,15 +103,12 @@ const CrusadeTable = {
     createCrusadeLink(name, key) {
         return TableBase.createEntityLink('crusade', name || 'Unnamed Crusade', key);
     },
-
-    getRelativePath: (dir) => TableBase.getRelativePath(dir),
      
 
     filterActiveCrusades(crusade) {
         const state = crusade['state'] || crusade['State'] || '';
         return state.toLowerCase() === 'active';
     },
-
 
     
     formatState(state) {
@@ -121,9 +118,6 @@ const CrusadeTable = {
     },
 
     
-    /**
-     * Format date range using common date formatting with year optimization
-     */
     formatDateRange(startDate, endDate) {
         const start = TableBase.formatters.date(startDate);
         const end = TableBase.formatters.date(endDate);
