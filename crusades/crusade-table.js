@@ -29,7 +29,7 @@ const CrusadeTable = {
     },
     
     buildCrusadeRow(crusade, columns) {
-        const crusadeKey = crusade['crusade_key'] || crusade['Key'] || crusade.key;
+        const crusadeKey = crusade['crusade_key'] || crusade.key;
         const crusadeName = crusade['crusade_name'] || crusade['Crusade Name'] || 'Unnamed Crusade';
         const crusadeType = crusade['crusade_type'] || crusade['Crusade Type'] || '-';
         const state = crusade['state'] || crusade['State'] || 'Unknown';

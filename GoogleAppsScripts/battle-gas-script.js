@@ -505,19 +505,16 @@ function getBattlesForCrusade(crusadeKey) {
   // Filter out deleted rows first
   const activeData = filterActiveRows(data);
 
-  // Convert to objects with normalized headers
+  // Convert to objects with normalized headers (no filtering - done client-side)
   const allBattles = convertToObjects(activeData);
 
-  // Filter for this crusade
-  const battles = allBattles.filter(battle => battle['Crusade Key'] === crusadeKey);
-
-  console.log(`Found ${battles.length} active battles for crusade key "${crusadeKey}"`);
+  console.log(`Found ${allBattles.length} active battles`);
 
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
-      battles: battles,
-      count: battles.length
+      battles: allBattles,
+      count: allBattles.length
     }))
     .setMimeType(ContentService.MimeType.JSON);
 }
@@ -545,21 +542,16 @@ function getBattlesForForce(forceKey) {
   // Filter out deleted rows first
   const activeData = filterActiveRows(data);
 
-  // Convert to objects with normalized headers
+  // Convert to objects with normalized headers (no filtering - done client-side)
   const allBattles = convertToObjects(activeData);
 
-  // Filter battles where force is either Force 1 or Force 2
-  const battles = allBattles.filter(battle =>
-    battle['Force 1 Key'] === forceKey || battle['Force 2 Key'] === forceKey
-  );
-
-  console.log(`Found ${battles.length} active battles for force key "${forceKey}"`);
+  console.log(`Found ${allBattles.length} active battles`);
 
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
-      battles: battles,
-      count: battles.length
+      battles: allBattles,
+      count: allBattles.length
     }))
     .setMimeType(ContentService.MimeType.JSON);
 }

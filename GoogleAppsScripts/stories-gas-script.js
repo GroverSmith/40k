@@ -513,9 +513,8 @@ function getStoriesForForce(forceKey) {
   
   const headers = activeData[0];
   
-  // Filter stories by force key (column 3)
+  // Convert all active stories to objects (no filtering - done client-side)
   const stories = activeData.slice(1)
-    .filter(row => row[3] === forceKey)
     .map(row => {
       const story = {};
       headers.forEach((header, index) => {
@@ -523,9 +522,9 @@ function getStoriesForForce(forceKey) {
       });
       return story;
     });
-  
-  console.log(`Found ${stories.length} active stories for force key "${forceKey}"`);
-  
+
+  console.log(`Found ${stories.length} active stories`);
+
   return ContentService
     .createTextOutput(JSON.stringify({
       success: true,
@@ -558,9 +557,8 @@ function getStoriesForCrusade(crusadeKey) {
   
   const headers = activeData[0];
   
-  // Filter stories by crusade key (column 4)
+  // Convert all active stories to objects (no filtering - done client-side)
   const stories = activeData.slice(1)
-    .filter(row => row[4] === crusadeKey)
     .map(row => {
       const story = {};
       headers.forEach((header, index) => {

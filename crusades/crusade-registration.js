@@ -60,9 +60,9 @@ const ForceRegistration = {
             forceSelect.innerHTML = '<option value="">Select a force...</option>';
             
             // Add force options (skip header row)
-            // Forces now have Key in column 0
+            // Forces now have force_key in column 0
             data.slice(1).forEach(row => {
-                if (row[0]) { // Key column
+                if (row[0]) { // force_key column
                     const forceKey = row[0];
                     const userName = row[1];
                     const forceName = row[2];
@@ -116,12 +116,12 @@ const ForceRegistration = {
             
             
 
-			const crusadeKey = this.crusadeData.Key || this.crusadeData.key || this.crusadeKey;
+			const crusadeKey = this.crusadeData.crusade_key || this.crusadeData.key || this.crusadeKey;
             
             // Prepare registration data with keys
             const registrationData = {
                 crusadeKey: crusadeKey,
-                crusadeName: this.crusadeData['Crusade Name'],
+                crusadeName: this.crusadeData['crusade_name'] || this.crusadeData['Crusade Name'],
                 forceKey: forceKey,
                 forceName: forceName,
                 userName: userName
@@ -141,7 +141,7 @@ const ForceRegistration = {
             
             // Reload participating forces using the new table module
             if (window.CrusadeParticipantsTable && this.crusadeData) {
-                const crusadeKey = this.crusadeData.Key || this.crusadeData.key;
+                const crusadeKey = this.crusadeData.crusade_key || this.crusadeData.key;
                 if (crusadeKey) {
                     await CrusadeParticipantsTable.displayCrusadeParticipants('participating-forces-content', crusadeKey);
                 }

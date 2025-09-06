@@ -17,7 +17,7 @@ const CrusadeParticipantsTable = {
      * Build participant row
      */
     buildParticipantRow(participant, columns) {
-        const forceKey = participant['force_key'] || participant['Force Key'] || participant.Key;
+        const forceKey = participant['force_key'] || participant['Force Key'];
         const forceName = participant['force_name'] || participant['Force Name'] || 'Unknown Force';
         const userName = participant['user_name'] || participant['User Name'] || 'Unknown Player';
         const crusadeKey = participant['crusade_key'] || participant['Crusade Key'];

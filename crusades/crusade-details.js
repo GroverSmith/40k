@@ -85,17 +85,22 @@ class CrusadeDetails {
     }
 
     displayCrusade() {
+        // Debug: Log the crusade data to see what we have
+        console.log('Crusade data loaded:', this.crusadeData);
+        console.log('Available fields:', Object.keys(this.crusadeData));
+        
         // Update page title
-        const crusadeName = this.crusadeData['Crusade Name'] || 'Unnamed Crusade';
+        const crusadeName = this.crusadeData['crusade_name'] || this.crusadeData['Crusade Name'] || 'Unnamed Crusade';
+        console.log('Crusade name found:', crusadeName);
         document.title = `${crusadeName} - Crusade Details`;
 
         // Update header
         const header = CoreUtils.dom.getElement('crusade-header');
         if (header) {
-            const crusadeType = this.crusadeData['Crusade Type'] || '';
-            const state = this.crusadeData.State || 'Active';
-            const startDate = this.crusadeData['Start Date'];
-            const endDate = this.crusadeData['End Date'];
+            const crusadeType = this.crusadeData['crusade_type'] || this.crusadeData['Crusade Type'] || '';
+            const state = this.crusadeData['state'] || this.crusadeData['State'] || 'Active';
+            const startDate = this.crusadeData['start_date'] || this.crusadeData['Start Date'];
+            const endDate = this.crusadeData['end_date'] || this.crusadeData['End Date'];
 
             let dateText = '';
             if (startDate && endDate) {
@@ -122,7 +127,7 @@ class CrusadeDetails {
 
     displayContentBlocks() {
         // Introduction
-        const intro = this.crusadeData.Introduction;
+        const intro = this.crusadeData['introduction'] || this.crusadeData['Introduction'];
         if (intro && intro.trim()) {
             const section = CoreUtils.dom.getElement('introduction-section');
             const content = CoreUtils.dom.getElement('introduction-content');
@@ -139,7 +144,7 @@ class CrusadeDetails {
             let rulesHTML = '';
 
             for (let i = 1; i <= 3; i++) {
-                const rules = this.crusadeData[`Rules Block ${i}`];
+                const rules = this.crusadeData[`rules_block_${i}`] || this.crusadeData[`Rules Block ${i}`];
                 if (rules && rules.trim()) {
                     rulesHTML += `<div class="content-block">${this.formatText(rules)}</div>`;
                 }
@@ -158,7 +163,7 @@ class CrusadeDetails {
             let narrativeHTML = '';
 
             for (let i = 1; i <= 2; i++) {
-                const narrative = this.crusadeData[`Narrative Block ${i}`];
+                const narrative = this.crusadeData[`narrative_block_${i}`] || this.crusadeData[`Narrative Block ${i}`];
                 if (narrative && narrative.trim()) {
                     narrativeHTML += `<div class="content-block">${this.formatText(narrative)}</div>`;
                 }
@@ -189,7 +194,10 @@ class CrusadeDetails {
         if (section) {
             CoreUtils.dom.show(section);
             if (window.BattleTable) {
+                console.log('Loading battle history for crusade:', this.crusadeKey);
                 await BattleTable.loadForCrusade(this.crusadeKey, 'battle-history-content');
+            } else {
+                console.error('BattleTable module not loaded');
             }
         }
     }
@@ -199,7 +207,10 @@ class CrusadeDetails {
         if (section) {
             CoreUtils.dom.show(section);
             if (window.StoryTable) {
+                console.log('Loading campaign stories for crusade:', this.crusadeKey);
                 await StoryTable.loadForCrusade(this.crusadeKey, 'campaign-stories-content');
+            } else {
+                console.error('StoryTable module not loaded');
             }
         }
     }
