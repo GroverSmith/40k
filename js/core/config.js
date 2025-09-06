@@ -216,10 +216,6 @@ const CrusadeConfig = {
 // Make it globally available
 window.CrusadeConfig = CrusadeConfig;
 
-// Export for use in modules (if using module system)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = CrusadeConfig;
-}
 
 console.log('CrusadeConfig loaded:', CrusadeConfig.app.name, 'v' + CrusadeConfig.app.version);
 console.log('Key system initialized for relational data management');

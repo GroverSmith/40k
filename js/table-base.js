@@ -195,8 +195,3 @@ const TableBase = {
 
 // Make globally available
 window.TableBase = TableBase;
-
-// Export for modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = TableBase;
-}

@@ -69,9 +69,5 @@ const TableDefs = {
 // Make it globally available
 window.TableDefs = TableDefs;
 
-// Export for use in modules (if using module system)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = TableDefs;
-}
 
 console.log('TableDefs loaded with', Object.keys(TableDefs).length, 'table definitions');

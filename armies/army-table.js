@@ -242,8 +242,3 @@ TableBase.initAutoLoad('recent-armies-container', () => ArmyTable.loadRecentArmy
 
 // Make globally available
 window.ArmyTable = ArmyTable;
-
-// Export for modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = ArmyTable;
-}

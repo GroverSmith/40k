@@ -4,72 +4,6 @@
 
 const ForceTable = {
 
-    // Simplified link creator using base
-    createForceLink(name, key) {
-        return TableBase.createEntityLink('force', name || 'Unknown Force', key);
-    },
-
-    /**
-     * Build force row
-     */
-    buildForceRow(force, columns) {
-        const forceKey = force['force_key'] || force['Force Key'] || force['Key'] || force.key;
-        const forceName = force['force_name'] || force['Force Name'] || force.forceName || 'Unnamed Force';
-        const userName = force['user_name'] || force['User Name'] || force['Player Name'] || force.playerName || 'Unknown';
-        const faction = force['faction'] || force['Faction'] || force.faction || 'Unknown';
-        const detachment = force['detachment'] || force['Detachment'] || force.detachment || '-';
-        const timestamp = force['timestamp'] || force['Timestamp'] || force.timestamp;
-
-        const columnData = {
-            force: this.createForceLink(forceName, forceKey),
-            commander: userName,
-            faction: faction,
-            detachment: detachment,
-            joined: TableBase.formatters.date(timestamp),
-            supply: force['supply_limit'] || force['Supply Limit'] || force.supplyLimit || '-',
-            battles: force['battle_count'] || force['Battle Count'] || force.battleCount || '0',
-            points: force['total_points'] || force['Total Points'] || force.totalPoints || '0'
-        };
-
-        return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
-    },
-
-    /**
-     * Fetch forces configuration
-     */
-    getFetchConfig(type, key) {
-        const forceUrl = CrusadeConfig.getSheetUrl('forces');
-        const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
-
-        const configs = {
-            'all': {
-                url: forceUrl,
-                cacheType: 'forces',
-                cacheKey: 'all',
-                dataKey: null, // Uses raw array format
-                loadingMessage: 'Loading forces...'
-            },
-            'crusade': {
-                url: participantsUrl,
-                cacheType: 'participants',
-                cacheKey: 'all',
-                dataKey: null,
-                loadingMessage: 'Loading crusade forces...'
-            },
-            'user': {
-                url: `${forceUrl}?action=user-forces&userKey=${encodeURIComponent(key)}`,
-                cacheType: 'forces',
-                cacheKey: `user_${key}`,
-                dataKey: 'forces',
-                loadingMessage: 'Loading user forces...'
-            }
-        };
-        return configs[type] || configs['all'];
-    },
-
-    /**
-     * Get display configuration
-     */
     getDisplayConfig(type) {
         const configs = {
             'all': {
@@ -102,10 +36,61 @@ const ForceTable = {
         };
         return configs[type] || configs['all'];
     },
+    
+    buildForceRow(force, columns) {
+        const forceKey = force['force_key'] || force['Force Key'] || force['Key'] || force.key;
+        const forceName = force['force_name'] || force['Force Name'] || force.forceName || 'Unnamed Force';
+        const userName = force['user_name'] || force['User Name'] || force['Player Name'] || force.playerName || 'Unknown';
+        const faction = force['faction'] || force['Faction'] || force.faction || 'Unknown';
+        const detachment = force['detachment'] || force['Detachment'] || force.detachment || '-';
+        const timestamp = force['timestamp'] || force['Timestamp'] || force.timestamp;
 
-    /**
-     * Generic loader using base utility
-     */
+        const columnData = {
+            force: this.createForceLink(forceName, forceKey),
+            commander: userName,
+            faction: faction,
+            detachment: detachment,
+            joined: TableBase.formatters.date(timestamp),
+            supply: force['supply_limit'] || force['Supply Limit'] || force.supplyLimit || '-',
+            battles: force['battle_count'] || force['Battle Count'] || force.battleCount || '0',
+            points: force['total_points'] || force['Total Points'] || force.totalPoints || '0'
+        };
+
+        return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
+    },
+ 
+    getFetchConfig(type, key) {
+        const forceUrl = CrusadeConfig.getSheetUrl('forces');
+        const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
+
+        const configs = {
+            'all': {
+                url: forceUrl,
+                cacheType: 'forces',
+                cacheKey: 'all',
+                dataKey: null, // Uses raw array format
+                loadingMessage: 'Loading forces...'
+            },
+            'crusade': {
+                url: participantsUrl,
+                cacheType: 'participants',
+                cacheKey: 'all',
+                dataKey: null,
+                loadingMessage: 'Loading crusade forces...'
+            },
+            'user': {
+                url: `${forceUrl}?action=user-forces&userKey=${encodeURIComponent(key)}`,
+                cacheType: 'forces',
+                cacheKey: `user_${key}`,
+                dataKey: 'forces',
+                loadingMessage: 'Loading user forces...'
+            }
+        };
+        return configs[type] || configs['all'];
+    },
+
+    
+    
     async loadForces(type, key, containerId) {
         const fetchConfig = this.getFetchConfig(type, key);
         const displayConfig = this.getDisplayConfig(type, key);
@@ -179,6 +164,10 @@ const ForceTable = {
         }
     },
 
+    createForceLink(name, key) {
+        return TableBase.createEntityLink('force', name || 'Unknown Force', key);
+    },
+
     /**
      * Calculate force statistics
      */
@@ -206,14 +195,5 @@ const ForceTable = {
     }
 };
 
-// Maintain backward compatibility
-window.ForceDisplay = ForceTable;
+
 window.ForceTable = ForceTable;
-
-// Initialize auto-loading
-TableBase.initAutoLoad('all-forces-container', () => ForceTable.loadAllForces('all-forces-container'));
-
-// Export for modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = ForceTable;
-}

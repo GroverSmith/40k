@@ -155,27 +155,7 @@ const CrusadeApp = {
         CacheManager.clearAll();
     },
 
-    // Navigate to a specific crusade force page
-    viewForce(forceName) {
-        if (CrusadeConfig) {
-            window.location.href = CrusadeConfig.buildForceUrl(forceName);
-        } else {
-            // Fallback if config not loaded
-            const encodedName = encodeURIComponent(forceName);
-            window.location.href = `forces/force-details.html?force=${encodedName}`;
-        }
-    },
-
-    // Navigate to a specific crusade page
-    viewCrusade(crusadeName) {
-        if (CrusadeConfig) {
-            window.location.href = CrusadeConfig.buildCrusadeUrl(crusadeName);
-        } else {
-            // Fallback if config not loaded
-            const encodedName = encodeURIComponent(crusadeName);
-            window.location.href = `crusades/crusade-details.html?crusade=${encodedName}`;
-        }
-    }
+    
 };
 
 // Initialize error handling

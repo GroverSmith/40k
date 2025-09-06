@@ -327,8 +327,3 @@ const UnitTable = {
 
 // Make globally available
 window.UnitTable = UnitTable;
-
-// Export for modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = UnitTable;
-}
