@@ -153,6 +153,13 @@ const TableBase = {
     },
 
     /**
+     * Build header cells helper
+     */
+    buildHeaderCells(columns) {
+        return columns.map(col => `<th>${col}</th>`).join('');
+    },
+
+    /**
      * Format common data types
      */
     formatters: {

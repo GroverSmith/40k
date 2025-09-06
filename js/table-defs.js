@@ -60,7 +60,7 @@ const TableDefs = {
     },
 
     xref_story_units: {
-        url: '',
+        url: 'https://script.google.com/macros/s/AKfycbzHfmILYbrf83JjdZkqaCHi5xfUif1oQo0EXGX9SztblPg0FXmXNiVxPYyE9E9ii2eE/exec',
         sheetId: '1YbPSfXMJro_x9d1W18RyZ4MQyfhoOwjgtDR0RhSju1E',
         sheetName: 'xref_story_units'
     }

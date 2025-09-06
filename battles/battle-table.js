@@ -84,7 +84,7 @@ const BattleTable = {
      * Fetch battles configuration
      */
     getFetchConfig(type, key) {
-        const battleUrl = CrusadeConfig.getSheetUrl('battles');
+        const battleUrl = CrusadeConfig.getSheetUrl('battle_history');
         const configs = {
             'force': {
                 url: `${battleUrl}?action=force-battles&forceKey=${encodeURIComponent(key)}`,
