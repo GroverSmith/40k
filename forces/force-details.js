@@ -28,8 +28,7 @@ class ForceDetails {
            // Load additional data in parallel
            await Promise.all([
                this.loadArmyLists(),
-               this.loadBattleHistory(),
-               this.loadParticipatingCrusades()
+               this.loadBattleHistory()
            ]);
            
        } catch (error) {
@@ -194,44 +193,7 @@ class ForceDetails {
    
 			
    
-   async loadParticipatingCrusades() {
-       try {
-           // Show the section
-           CoreUtils.dom.show('crusades-section');
-           
-           // Get participating crusades
-           const crusades = await this.getParticipatingCrusades();
-           
-           const container = document.getElementById('crusades-content');
-           if (crusades && crusades.length > 0) {
-               let html = '<div class="crusades-list">';
-               
-               crusades.forEach(crusade => {
-                   const crusadeKey = crusade['crusade_key'] || crusade.Key || crusade.key;
-                   const crusadeName = crusade['crusade_name'] || crusade['Crusade Name'] || crusade.crusadeName;
-                   const state = crusade['state'] || crusade.State || crusade.state || 'Active';
-                   const startDate = (crusade['start_date'] || crusade['Start Date']) ? new Date(crusade['start_date'] || crusade['Start Date']).toLocaleDateString() : '';
-                   
-                   html += `
-                       <div class="crusade-card">
-                           <h4><a href="../crusades/crusade-details.html?key=${encodeURIComponent(crusadeKey)}" 
-                                  style="color: #4ecdc4;">${crusadeName}</a></h4>
-                           <p>Status: ${state}</p>
-                           ${startDate ? `<p>Started: ${startDate}</p>` : ''}
-                       </div>
-                   `;
-               });
-               
-               html += '</div>';
-               container.innerHTML = html;
-           } else {
-               container.innerHTML = '<p class="no-data-message">Not registered for any crusades yet.</p>';
-           }
-       } catch (error) {
-           console.error('Error loading crusades:', error);
-           CoreUtils.dom.setLoading('crusades-content', 'Failed to load participating crusades');
-       }
-   }
+   
    
    showError(message) {
        // Hide loading state
