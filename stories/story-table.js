@@ -41,16 +41,13 @@ const StoryTable = {
     },
 
     buildStoryRow(story, columns) {
-        // Extract author name from User Key
-        const authorName = this.extractUserName(story['user_key'] || story['User Key']);
-
         // Calculate word count from the three story text fields
         const wordCount = this.calculateWordCount(story);
 
         const columnData = {
             date: TableBase.formatters.date(story['timestamp'] || story['Timestamp']),
             title: this.createStoryLink(story['title'] || story['Title'], story['story_key'] || story['Key']),
-            author: authorName,
+            author: story['author_name'] || story['Author Name'] || 'Unknown',
             type: story['story_type'] || story['Story Type'] || '',
             length: wordCount > 0 ? `${wordCount} words` : '-',
             force: (story['force_key'] || story['Force Key']) ? this.createForceLink('Force', story['force_key'] || story['Force Key']) : '-',
@@ -65,33 +62,23 @@ const StoryTable = {
      */
     getFetchConfig(type, key) {
         const storyUrl = CrusadeConfig.getSheetUrl('stories');
-        const configs = {
-            'force': {
-                url: `${storyUrl}?action=list`,
-                cacheType: 'stories',
-                dataKey: 'data',
-                loadingMessage: 'Loading stories...'
-            },
-            'crusade': {
-                url: `${storyUrl}?action=list`,
-                cacheType: 'stories',
-                dataKey: 'data',
-                loadingMessage: 'Loading stories...'
-            },
-            'recent': {
-                url: `${storyUrl}?action=list`,
-                cacheType: 'stories',
-                dataKey: 'data',
-                loadingMessage: 'Loading recent stories...'
-            },
-            'all': {
-                url: `${storyUrl}?action=list`,
-                cacheType: 'stories',
-                dataKey: 'data',
-                loadingMessage: 'Loading all stories...'
-            }
+        const baseConfig = {
+            url: `${storyUrl}?action=list`,
+            cacheType: 'stories',
+            dataKey: 'data'
         };
-        return configs[type] || configs['all'];
+        
+        const loadingMessages = {
+            'force': 'Loading stories...',
+            'crusade': 'Loading stories...',
+            'recent': 'Loading recent stories...',
+            'all': 'Loading all stories...'
+        };
+        
+        return {
+            ...baseConfig,
+            loadingMessage: loadingMessages[type] || loadingMessages['all']
+        };
     },
 
     
@@ -130,10 +117,6 @@ const StoryTable = {
         return this.loadStories('crusade', crusadeKey, containerId);
     },
 
-    async loadRecentStories() {
-        const container = document.getElementById('recent-stories-container');
-        if (container) return this.loadStories('recent', null, container);
-    },
 
     /**
      * Fetch stories (for external use)
@@ -154,13 +137,6 @@ const StoryTable = {
         return TableBase.createEntityLink('crusade', name || 'Unknown Crusade', key);
     },
 
-    
-    extractUserName(userKey) {
-        if (!userKey) return 'Unknown';
-        // User keys are typically just the username with no spaces/special chars
-        // Try to add spaces before capital letters for readability
-        return userKey.replace(/([A-Z])/g, ' $1').trim();
-    },
 
     
     calculateWordCount(story) {
