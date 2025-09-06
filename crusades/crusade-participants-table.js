@@ -87,11 +87,17 @@ const CrusadeParticipantsTable = {
     filterParticipantsByCrusade(data, crusadeKey) {
         if (!Array.isArray(data)) return data;
         
-        const processedData = TableBase.processResponseData(data);
-        return processedData.filter(participant => {
-            const participantCrusadeKey = participant['crusade_key'] || participant['Crusade Key'] || '';
-            return participantCrusadeKey === crusadeKey;
-        });
+        // Filter raw data before processing
+        const headers = data[0];
+        const crusadeKeyIndex = headers.indexOf('crusade_key');
+        
+        if (crusadeKeyIndex === -1) return data;
+        
+        const filteredRows = [headers].concat(
+            data.slice(1).filter(row => row[crusadeKeyIndex] === crusadeKey)
+        );
+        
+        return filteredRows;
     },
 
     /**
@@ -100,11 +106,17 @@ const CrusadeParticipantsTable = {
     filterParticipantsByForce(data, forceKey) {
         if (!Array.isArray(data)) return data;
         
-        const processedData = TableBase.processResponseData(data);
-        return processedData.filter(participant => {
-            const participantForceKey = participant['force_key'] || participant['Force Key'] || '';
-            return participantForceKey === forceKey;
-        });
+        // Filter raw data before processing
+        const headers = data[0];
+        const forceKeyIndex = headers.indexOf('force_key');
+        
+        if (forceKeyIndex === -1) return data;
+        
+        const filteredRows = [headers].concat(
+            data.slice(1).filter(row => row[forceKeyIndex] === forceKey)
+        );
+        
+        return filteredRows;
     },
 
     /**
@@ -113,11 +125,17 @@ const CrusadeParticipantsTable = {
     filterParticipantsByUser(data, userKey) {
         if (!Array.isArray(data)) return data;
         
-        const processedData = TableBase.processResponseData(data);
-        return processedData.filter(participant => {
-            const participantUserKey = participant['user_key'] || participant['User Key'] || '';
-            return participantUserKey === userKey;
-        });
+        // Filter raw data before processing
+        const headers = data[0];
+        const userKeyIndex = headers.indexOf('user_key');
+        
+        if (userKeyIndex === -1) return data;
+        
+        const filteredRows = [headers].concat(
+            data.slice(1).filter(row => row[userKeyIndex] === userKey)
+        );
+        
+        return filteredRows;
     },
 
     /**
@@ -220,8 +238,8 @@ const CrusadeParticipantsTable = {
     async getCrusadeParticipantCount(crusadeKey) {
         try {
             const data = await this.fetchData('by-crusade', crusadeKey);
-            const processedData = TableBase.processResponseData(data);
-            return processedData ? processedData.length : 0;
+            if (!Array.isArray(data) || data.length <= 1) return 0;
+            return data.length - 1; // Subtract 1 for header row
         } catch (error) {
             console.error('Error getting participant count:', error);
             return 0;
@@ -234,14 +252,13 @@ const CrusadeParticipantsTable = {
     async isForceRegistered(crusadeKey, forceKey) {
         try {
             const data = await this.fetchData('by-crusade', crusadeKey);
-            const processedData = TableBase.processResponseData(data);
+            if (!Array.isArray(data) || data.length <= 1) return false;
             
-            if (!processedData) return false;
+            const headers = data[0];
+            const forceKeyIndex = headers.indexOf('force_key');
+            if (forceKeyIndex === -1) return false;
             
-            return processedData.some(participant => {
-                const participantForceKey = participant['force_key'] || participant['Force Key'] || '';
-                return participantForceKey === forceKey;
-            });
+            return data.slice(1).some(row => row[forceKeyIndex] === forceKey);
         } catch (error) {
             console.error('Error checking force registration:', error);
             return false;
