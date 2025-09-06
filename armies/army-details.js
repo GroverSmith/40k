@@ -2,7 +2,7 @@
 // Army List Viewer - Display full army list content
 // 40k Crusade Campaign Tracker
 
-class ArmyListViewer {
+class ArmyDetails {
     constructor() {
         this.armyListId = null;
         this.armyListData = null;
@@ -242,10 +242,10 @@ function showCopyError() {
 
 // Initialize the army list viewer when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    const viewer = new ArmyListViewer();
+    const app = new ArmyDetails();
     
     // Make it globally available for debugging
-    window.ArmyListViewer = viewer;
+    window.armyDetails = app;
     
     console.log('Army List Viewer initialized');
 });

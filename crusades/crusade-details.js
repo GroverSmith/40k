@@ -2,7 +2,7 @@
 // Complete Crusade Details Controller with all sections working
 // 40k Crusade Campaign Tracker
 
-class CrusadeDetailsController {
+class CrusadeDetails {
     constructor() {
         this.crusadeKey = null;
         this.crusadeData = null;
@@ -237,5 +237,5 @@ class CrusadeDetailsController {
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    window.crusadeController = new CrusadeDetailsController();
+    window.crusadeDetails = new CrusadeDetails();
 });

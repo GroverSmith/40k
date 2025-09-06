@@ -2,7 +2,7 @@
 // Battle Details Viewer
 // 40k Crusade Campaign Tracker
 
-class BattleDetailsViewer {
+class BattleDetails {
     constructor() {
         this.battleKey = null;
         this.battleData = null;
@@ -121,5 +121,5 @@ class BattleDetailsViewer {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    new BattleDetailsViewer();
+    window.battleDetails = new BattleDetails();
 });

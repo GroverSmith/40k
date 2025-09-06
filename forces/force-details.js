@@ -2,7 +2,7 @@
 // Main orchestrator for Force Details page - coordinates existing modules
 // 40k Crusade Campaign Tracker
 
-class ForceDetailsApp {
+class ForceDetails {
    constructor() {
        this.forceKey = null;
        this.forceData = null;
@@ -412,13 +412,13 @@ document.addEventListener('DOMContentLoaded', () => {
    }
    
    // Initialize the app
-   const app = new ForceDetailsApp();
-   window.forceDetailsApp = app; // Make available globally for debugging
+   const app = new ForceDetails();
+   window.forceDetails = app; // Make available globally for debugging
    
    console.log('Force Details page initialized');
 });
 
 // Export for modules
 if (typeof module !== 'undefined' && module.exports) {
-   module.exports = ForceDetailsApp;
+   module.exports = ForceDetails;
 }
