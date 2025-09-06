@@ -92,9 +92,6 @@ const BattleTable = {
     },
 
     
-    
-
-    
     async loadBattles(type, key, containerId) {
         const fetchConfig = this.getFetchConfig(type, key);
         const displayConfig = this.getDisplayConfig(type, key);

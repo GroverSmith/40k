@@ -105,10 +105,7 @@ const CrusadeTable = {
     },
 
     getRelativePath: (dir) => TableBase.getRelativePath(dir),
-
-    
-
-    
+     
 
     filterActiveCrusades(crusade) {
         const state = crusade['state'] || crusade['State'] || '';

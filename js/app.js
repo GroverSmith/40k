@@ -1,30 +1,18 @@
 // filename: app.js
 // Application initialization and configuration
 // 40k Crusade Campaign Tracker
-// REFACTORED: Using CoreUtils for common utilities
 
 // Initialize sheets when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     // Check for success notifications from other pages
     CrusadeApp.checkForSuccessNotifications();
-
-    // Wait for config to be available
-    if (typeof CrusadeConfig === 'undefined') {
-        console.error('CrusadeConfig not loaded! Make sure config.js is included before app.js');
-        return;
-    }
-
-    // Debug the config to see what's available
-    console.log('CrusadeConfig available:', !!CrusadeConfig);
-    console.log('CrusadeConfig.cache:', CrusadeConfig.app.cache);
-
+    
     console.log('40k Crusade Campaign Tracker - Initializing...');
 
     try {
         // Initialize Crusades display using CrusadeTable
         const crusadesContainer = document.getElementById('crusades-sheet');
         if (crusadesContainer) {
-            // Use CrusadeTable for consistent crusade display
             if (window.CrusadeTable) {
                 CrusadeTable.loadAllCrusades('crusades-sheet');
             } else {
@@ -43,20 +31,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize Forces display using ForceTable
         const forcesContainer = document.getElementById('crusade-forces-sheet');
         if (forcesContainer) {
-            // Use ForceTable for consistent force display
             if (window.ForceTable) {
-                ForceTable.displayForces('crusade-forces-sheet', {
-                    columns: ['force', 'commander', 'faction', 'detachment', 'joined'],
-                    sortable: true
-                });
+                ForceTable.loadAllForces('crusade-forces-sheet');
             } else {
                 // Fallback if ForceTable not loaded yet
                 setTimeout(() => {
                     if (window.ForceTable) {
-                        ForceTable.displayForces('crusade-forces-sheet', {
-                            columns: ['force', 'commander', 'faction', 'detachment', 'joined'],
-                            sortable: true
-                        });
+                        ForceTable.loadAllForces('crusade-forces-sheet');
                     } else {
                         console.warn('ForceTable module not available');
                         forcesContainer.innerHTML = '<p class="no-data">⚔️ Crusade forces will be displayed here.</p>';
