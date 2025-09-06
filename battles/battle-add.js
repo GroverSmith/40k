@@ -152,14 +152,13 @@ class BattleReportForm extends BaseForm {
             this.dataLoaders.forces = await CacheManager.fetchSheetData('forces');
             console.log('Forces data loaded:', this.dataLoaders.forces);
                 
-                // Show structure of forces data
-                if (this.dataLoaders.forces && this.dataLoaders.forces.length > 0) {
-                    console.log('Forces data structure:');
-                    console.log('Header row:', this.dataLoaders.forces[0]);
-                    if (this.dataLoaders.forces.length > 1) {
-                        console.log('Sample data row:', this.dataLoaders.forces[1]);
-                        console.log('Total rows:', this.dataLoaders.forces.length);
-                    }
+            // Show structure of forces data
+            if (this.dataLoaders.forces && this.dataLoaders.forces.length > 0) {
+                console.log('Forces data structure:');
+                console.log('Header row:', this.dataLoaders.forces[0]);
+                if (this.dataLoaders.forces.length > 1) {
+                    console.log('Sample data row:', this.dataLoaders.forces[1]);
+                    console.log('Total rows:', this.dataLoaders.forces.length);
                 }
             }
         } catch (error) {

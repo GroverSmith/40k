@@ -27,22 +27,32 @@ const UserAPI = {
             }
             
             // Use CacheManager for fetching with cache
-            const data = await CacheManager.fetchWithCache(usersUrl, 'users');
+            const response = await CacheManager.fetchWithCache(usersUrl, 'users');
             
-            // Convert to user objects (skip header row)
-            const users = data.slice(1).map((row, index) => ({
-                id: index + 2,
-                key: row[0] || '',
-                timestamp: row[1] || new Date(),
-                name: row[2] || 'Unknown User',
-                discordHandle: row[3] || '',
-                email: row[4] || '',
-                notes: row[5] || '',
-                selfRating: row[6] || '',
-                yearsExperience: row[7] || '',
-                gamesPerYear: row[8] || '',
-                isActive: true
-            })).filter(user => user.name !== 'Unknown User');
+            // Handle different response formats
+            let users = [];
+            if (response && response.success && Array.isArray(response.data)) {
+                // New format: response from Google Apps Script
+                users = response.data;
+            } else if (Array.isArray(response)) {
+                // Legacy format: raw array data (skip header row)
+                users = response.slice(1).map((row, index) => ({
+                    id: index + 2,
+                    key: row[0] || '',
+                    timestamp: row[1] || new Date(),
+                    name: row[2] || 'Unknown User',
+                    discordHandle: row[3] || '',
+                    email: row[4] || '',
+                    notes: row[5] || '',
+                    selfRating: row[6] || '',
+                    yearsExperience: row[7] || '',
+                    gamesPerYear: row[8] || '',
+                    isActive: true
+                })).filter(user => user.name !== 'Unknown User');
+            } else {
+                console.warn('Unexpected response format from users API:', response);
+                users = [];
+            }
             
             console.log('Loaded users from API/cache:', users);
             return users;
