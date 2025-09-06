@@ -201,16 +201,16 @@ const UserManager = {
      */
     clearAllDataCaches() {
         if (confirm('Clear all cached data? This will force fresh data loads on all pages.')) {
-            const clearedCount = CacheManager.clearAll();
-            
-            // Clear any SheetsManager caches if available
-            if (typeof SheetsManager !== 'undefined' && SheetsManager.clearAllCaches) {
-                SheetsManager.clearAllCaches();
+            // Clear all caches using CacheManager
+            if (typeof CacheManager !== 'undefined' && CacheManager.clearAll) {
+                const clearedCount = CacheManager.clearAll();
+                
+                // Show success and refresh
+                alert(`Cache cleared! ${clearedCount} entries removed.\n\nRefreshing page...`);
+                location.reload();
+            } else {
+                alert('Cache manager not available');
             }
-            
-            // Show success and refresh
-            alert(`Cache cleared! ${clearedCount} entries removed.\n\nRefreshing page...`);
-            location.reload();
         }
     },
     

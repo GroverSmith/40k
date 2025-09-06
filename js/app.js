@@ -46,47 +46,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Initialize Forces sheet
-        const forcesUrl = CrusadeConfig.getSheetUrl('forces');
-        if (forcesUrl) {
-            const forcesEmbed = SheetsManager.embed('crusade-forces-sheet',
-                forcesUrl,
-                {
-                    maxHeight: '350px',
-                    showStats: true,
-                    sortable: true,
-                    linkColumn: 2,
-                    linkDataColumn: 0,
-                    linkPattern: 'forces/force-details.html?key={slug}',
-                    cacheMinutes: CrusadeConfig.getCacheConfig('default'),
-                    hideColumns: [0, 6],
-                    columnNames: {
-                        1: 'User Name',
-                        2: 'Force Name',
-                        3: 'Faction',
-                        4: 'Detachment',
-                        5: 'Notes'
-                    }
-                }
-            );
-
-            // Cache data globally for other pages
-            const originalLoadData = forcesEmbed.loadData.bind(forcesEmbed);
-            forcesEmbed.loadData = async function() {
-                await originalLoadData();
-
-                if (this.rawData) {
-                    try {
-                        CoreUtils.storage.set('forces_cache_global', {
-                            data: this.rawData,
-                            timestamp: Date.now()
+        // Initialize Forces display using ForceTable
+        const forcesContainer = document.getElementById('crusade-forces-sheet');
+        if (forcesContainer) {
+            // Use ForceTable for consistent force display
+            if (window.ForceTable) {
+                ForceTable.displayForces('crusade-forces-sheet', {
+                    columns: ['force', 'commander', 'faction', 'detachment', 'joined'],
+                    sortable: true
+                });
+            } else {
+                // Fallback if ForceTable not loaded yet
+                setTimeout(() => {
+                    if (window.ForceTable) {
+                        ForceTable.displayForces('crusade-forces-sheet', {
+                            columns: ['force', 'commander', 'faction', 'detachment', 'joined'],
+                            sortable: true
                         });
-                        console.log('Forces data cached globally for other pages');
-                    } catch (e) {
-                        console.warn('Error setting global forces cache:', e);
+                    } else {
+                        console.warn('ForceTable module not available');
+                        forcesContainer.innerHTML = '<p class="no-data">⚔️ Crusade forces will be displayed here.</p>';
                     }
-                }
-            };
+                }, 100);
+            }
         }
 
         // Initialize Stories display using StoryTable
@@ -169,13 +151,15 @@ const CrusadeApp = {
     // Refresh all data in the application
     refreshAllData() {
         console.log('Refreshing all application data...');
-        SheetsManager.refreshAll();
+        // Force refresh by clearing caches and reloading page
+        this.clearAllCaches();
+        location.reload();
     },
 
     // Clear all application caches
     clearAllCaches() {
         console.log('Clearing all application caches...');
-        SheetsManager.clearAllCaches();
+        CacheManager.clearAll();
     },
 
     // Navigate to a specific crusade force page

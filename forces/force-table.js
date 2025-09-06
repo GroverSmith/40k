@@ -146,6 +146,28 @@ const ForceTable = {
     },
 
     /**
+     * Display forces in a container (for index.html and other pages)
+     */
+    async displayForces(containerId, options = {}) {
+        const container = document.getElementById(containerId);
+        if (!container) {
+            console.warn(`Container ${containerId} not found`);
+            return;
+        }
+
+        try {
+            // Show loading state
+            container.innerHTML = '<div class="loading-spinner"></div><span>Loading forces...</span>';
+
+            // Load all forces
+            await this.loadAllForces(containerId);
+        } catch (error) {
+            console.error('Error displaying forces:', error);
+            container.innerHTML = '<p class="error">Failed to load forces. Please try again later.</p>';
+        }
+    },
+
+    /**
      * Calculate force statistics
      */
     calculateForceStats(forces) {
