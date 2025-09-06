@@ -3,19 +3,8 @@
 // 40k Crusade Campaign Tracker
 
 const CrusadeTable = {
-    // Use base utility for common methods
     getRelativePath: (dir) => TableBase.getRelativePath(dir),
-
-    // Simplified link creator using base
-    createCrusadeLink(name, key) {
-        return TableBase.createEntityLink('crusade', name || 'Unnamed Crusade', key);
-    },
-
     
-
-    /**
-     * Build crusade row
-     */
     buildCrusadeRow(crusade, columns) {
         const crusadeKey = crusade['crusade_key'] || crusade['Key'] || crusade.key;
         const crusadeName = crusade['crusade_name'] || crusade['Crusade Name'] || 'Unnamed Crusade';
@@ -33,77 +22,8 @@ const CrusadeTable = {
 
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
     },
+    
 
-    /**
-     * Fetch crusades configuration
-     */
-    getFetchConfig(type, key) {
-        const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
-
-        const configs = {
-            'all': {
-                url: crusadesUrl,
-                cacheType: 'crusades'
-            },
-            'active': {
-                url: crusadesUrl,
-                cacheType: 'crusades'
-            },
-            'by-state': {
-                url: crusadesUrl,
-                cacheType: 'crusades'
-            }
-        };
-
-        return configs[type] || configs['all'];
-    },
-
-    /**
-     * Fetch crusades data
-     */
-    async fetchData(action, key) {
-        const config = this.getFetchConfig(action, key);
-        const data = await TableBase.fetchWithCache(config.url, config.cacheType);
-        
-        // Apply filtering based on action
-        if (action === 'active') {
-            return this.filterActiveCrusades(data);
-        } else if (action === 'by-state' && key) {
-            return this.filterCrusadesByState(data, key);
-        }
-        
-        return data;
-    },
-
-    /**
-     * Filter active crusades
-     */
-    filterActiveCrusades(data) {
-        if (!Array.isArray(data)) return data;
-        
-        const processedData = TableBase.processResponseData(data);
-        return processedData.filter(crusade => {
-            const state = crusade['state'] || crusade['State'] || '';
-            return state.toLowerCase() === 'active';
-        });
-    },
-
-    /**
-     * Filter crusades by state
-     */
-    filterCrusadesByState(data, state) {
-        if (!Array.isArray(data)) return data;
-        
-        const processedData = TableBase.processResponseData(data);
-        return processedData.filter(crusade => {
-            const crusadeState = crusade['state'] || crusade['State'] || '';
-            return crusadeState.toLowerCase() === state.toLowerCase();
-        });
-    },
-
-    /**
-     * Display crusades table
-     */
     async displayCrusades(containerId, options = {}) {
         const container = document.getElementById(containerId);
         if (!container) {
@@ -169,13 +89,48 @@ const CrusadeTable = {
     },
 
     
-    async displayCrusadesByState(containerId, state, options = {}) {
-        const stateOptions = {
-            ...options,
-            action: 'by-state',
-            key: state
+    async fetchData(action, key) {
+        const config = this.getFetchConfig(action, key);
+        const data = await TableBase.fetchWithCache(config.url, config.cacheType);
+        
+        // Apply filtering based on action
+        if (action === 'active') {
+            return this.filterActiveCrusades(data);
+        } 
+        
+        return data;
+    },
+
+    
+    createCrusadeLink(name, key) {
+        return TableBase.createEntityLink('crusade', name || 'Unnamed Crusade', key);
+    },
+
+    getFetchConfig(type, key) {
+        const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
+
+        const configs = {
+            'all': {
+                url: crusadesUrl,
+                cacheType: 'crusades'
+            },
+            'active': {
+                url: crusadesUrl,
+                cacheType: 'crusades'
+            }
         };
-        return await this.displayCrusades(containerId, stateOptions);
+
+        return configs[type] || configs['all'];
+    },
+
+    filterActiveCrusades(data) {
+        if (!Array.isArray(data)) return data;
+        
+        const processedData = TableBase.processResponseData(data);
+        return processedData.filter(crusade => {
+            const state = crusade['state'] || crusade['State'] || '';
+            return state.toLowerCase() === 'active';
+        });
     },
 
 
