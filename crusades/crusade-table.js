@@ -2,8 +2,31 @@
 // Crusade display module using TableBase utility
 // 40k Crusade Campaign Tracker
 
-const CrusadeTable = {
-    getRelativePath: (dir) => TableBase.getRelativePath(dir),
+const CrusadeTable = {    
+
+    getDisplayConfig(type) {
+        const configs = {
+            'all': {
+                columns: ['type', 'crusade', 'state', 'dates'],
+                headers: ['Type', 'Crusade', 'State', 'Dates'],
+                tableId: 'all-crusades-table',
+                buildRow: this.buildCrusadeRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('timestamp'),
+                noDataMessage: 'No crusades found.',
+                errorMessage: 'Failed to load crusades.'
+            },
+            'active': {
+                columns: ['crusade', 'type', 'dates'],
+                headers: ['Crusade', 'Type', 'Dates'],
+                tableId: 'active-crusades-table',
+                buildRow: this.buildCrusadeRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('timestamp'),
+                noDataMessage: 'No active crusades found.',
+                errorMessage: 'Failed to load active crusades.'
+            }
+        };
+        return configs[type] || configs['all'];
+    },
     
     buildCrusadeRow(crusade, columns) {
         const crusadeKey = crusade['crusade_key'] || crusade['Key'] || crusade.key;
@@ -14,96 +37,13 @@ const CrusadeTable = {
         const endDate = crusade['end_date'] || crusade['End Date'];
 
         const columnData = {
-            'Crusade Name': this.createCrusadeLink(crusadeName, crusadeKey),
-            'Type': crusadeType,
-            'State': this.formatState(state),
-            'Dates': this.formatDateRange(startDate, endDate)
+            crusade: this.createCrusadeLink(crusadeName, crusadeKey),
+            type: crusadeType,
+            state: this.formatState(state),
+            dates: this.formatDateRange(startDate, endDate)
         };
 
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
-    },
-    
-
-    async displayCrusades(containerId, options = {}) {
-        const container = document.getElementById(containerId);
-        if (!container) {
-            console.error(`Container ${containerId} not found`);
-            return;
-        }
-
-        try {
-            // Show loading state
-            container.innerHTML = '<div class="loading-spinner"></div><span>Loading crusades...</span>';
-
-            // Fetch data
-            const data = await this.fetchData(options.action || 'all', options.key);
-            const processedData = TableBase.processResponseData(data);
-
-            if (!processedData || processedData.length === 0) {
-                container.innerHTML = '<div class="no-data">No crusades found</div>';
-                return;
-            }
-
-            // Define columns
-            const columns = options.columns || ['State', 'Crusade Name', 'Type', 'Dates'];
-
-            // Build table
-            let html = `
-                <table class="data-table">
-                    <thead>
-                        <tr>${TableBase.buildHeaderCells(columns)}</tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            // Add rows
-            processedData.forEach(crusade => {
-                html += this.buildCrusadeRow(crusade, columns);
-            });
-
-            html += `
-                    </tbody>
-                </table>
-            `;
-
-            container.innerHTML = html;
-
-            // Make sortable if requested
-            if (options.sortable !== false) {
-                UIHelpers.makeSortable(container.querySelector('table'));
-            }
-
-        } catch (error) {
-            console.error('Error displaying crusades:', error);
-            container.innerHTML = `<div class="error-message">Error loading crusades: ${error.message}</div>`;
-        }
-    },
-
-    
-    async displayActiveCrusades(containerId, options = {}) {
-        const activeOptions = {
-            ...options,
-            action: 'active'
-        };
-        return await this.displayCrusades(containerId, activeOptions);
-    },
-
-    
-    async fetchData(action, key) {
-        const config = this.getFetchConfig(action, key);
-        const data = await TableBase.fetchWithCache(config.url, config.cacheType);
-        
-        // Apply filtering based on action
-        if (action === 'active') {
-            return this.filterActiveCrusades(data);
-        } 
-        
-        return data;
-    },
-
-    
-    createCrusadeLink(name, key) {
-        return TableBase.createEntityLink('crusade', name || 'Unnamed Crusade', key);
     },
 
     getFetchConfig(type, key) {
@@ -112,25 +52,67 @@ const CrusadeTable = {
         const configs = {
             'all': {
                 url: crusadesUrl,
-                cacheType: 'crusades'
+                cacheType: 'crusades',
+                cacheKey: 'all',
+                dataKey: null,
+                loadingMessage: 'Loading crusades...'
             },
             'active': {
                 url: crusadesUrl,
-                cacheType: 'crusades'
+                cacheType: 'crusades',
+                cacheKey: 'active',
+                dataKey: null,
+                loadingMessage: 'Loading active crusades...'
             }
         };
 
         return configs[type] || configs['all'];
     },
+    
 
-    filterActiveCrusades(data) {
-        if (!Array.isArray(data)) return data;
+    async loadCrusades(type, key, containerId) {
+        const fetchConfig = this.getFetchConfig(type, key);
+        const displayConfig = this.getDisplayConfig(type, key);
         
-        const processedData = TableBase.processResponseData(data);
-        return processedData.filter(crusade => {
-            const state = crusade['state'] || crusade['State'] || '';
-            return state.toLowerCase() === 'active';
-        });
+        // Apply filtering for active crusades
+        const filterFn = type === 'active' ? this.filterActiveCrusades : null;
+        
+        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
+    },
+
+    
+    // Convenience methods
+    async loadAllCrusades(containerId) {
+        return this.loadCrusades('all', null, containerId);
+    },
+
+    async loadActiveCrusades(containerId) {
+        return this.loadCrusades('active', null, containerId);
+    },
+
+    
+    /**
+     * Fetch crusades (for external use, like calculating stats)
+     */
+    async fetchCrusades(action, key) {
+        const config = this.getFetchConfig(action, key);
+        return await TableBase.fetchWithCache(config.url, config.cacheType, config.cacheKey);
+    },
+
+    
+    createCrusadeLink(name, key) {
+        return TableBase.createEntityLink('crusade', name || 'Unnamed Crusade', key);
+    },
+
+    getRelativePath: (dir) => TableBase.getRelativePath(dir),
+
+    
+
+    
+
+    filterActiveCrusades(crusade) {
+        const state = crusade['state'] || crusade['State'] || '';
+        return state.toLowerCase() === 'active';
     },
 
 

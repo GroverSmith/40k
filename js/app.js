@@ -26,16 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (crusadesContainer) {
             // Use CrusadeTable for consistent crusade display
             if (window.CrusadeTable) {
-                CrusadeTable.displayCrusades('crusades-sheet', {
-                    sortable: true
-                });
+                CrusadeTable.loadAllCrusades('crusades-sheet');
             } else {
                 // Fallback if CrusadeTable not loaded yet
                 setTimeout(() => {
                     if (window.CrusadeTable) {
-                        CrusadeTable.displayCrusades('crusades-sheet', {
-                            sortable: true
-                        });
+                        CrusadeTable.loadAllCrusades('crusades-sheet');
                     } else {
                         console.warn('CrusadeTable module not available');
                         crusadesContainer.innerHTML = '<p class="no-data">📜 Crusade campaigns will be displayed here.</p>';
