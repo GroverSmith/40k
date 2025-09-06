@@ -87,17 +87,7 @@ const CrusadeConfig = {
             'World Eaters'
         ],
         
-        detachmentTypes: [
-            'Patrol Detachment',
-            'Battalion Detachment',
-            'Brigade Detachment',
-            'Vanguard Detachment',
-            'Spearhead Detachment',
-            'Outrider Detachment',
-            'Supreme Command Detachment',
-            'Fortification Network',
-            'Auxiliary Support Detachment'
-        ],
+        
         
         mfmVersions: [
             '3.2 (Aug 25)',
