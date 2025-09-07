@@ -229,6 +229,7 @@ function doPost(e) {
       const headers = [
         'story_key',
         'user_key',
+        'author_name',
         'crusade_key',
         'story_type',
         'title',
@@ -254,23 +255,23 @@ function doPost(e) {
       headerRange.setFontColor('#ffffff');
       
       // Set column widths
-      sheet.setColumnWidth(1, 250); // Key
-      sheet.setColumnWidth(2, 150); // Timestamp
-      sheet.setColumnWidth(3, 150); // User Key
-      sheet.setColumnWidth(4, 150); // Force Key
-      sheet.setColumnWidth(5, 150); // Crusade Key
-      sheet.setColumnWidth(6, 120); // Story Type
-      sheet.setColumnWidth(7, 300); // Title
-      sheet.setColumnWidth(8, 150); // Imperial Date
-      sheet.setColumnWidth(9, 500); // Story Text 1
-      sheet.setColumnWidth(10, 500); // Story Text 2
-      sheet.setColumnWidth(11, 500); // Story Text 3
-      sheet.setColumnWidth(12, 200); // Text Link
-      sheet.setColumnWidth(13, 200); // Image 1
-      sheet.setColumnWidth(14, 200); // Image 2
-      sheet.setColumnWidth(15, 200); // Image 3
-      sheet.setColumnWidth(16, 200); // Audio Link
-      sheet.setColumnWidth(17, 150); // Deleted Timestamp
+      sheet.setColumnWidth(1, 250); // story_key
+      sheet.setColumnWidth(2, 150); // user_key
+      sheet.setColumnWidth(3, 150); // author_name
+      sheet.setColumnWidth(4, 150); // crusade_key
+      sheet.setColumnWidth(5, 150); // story_type
+      sheet.setColumnWidth(6, 200); // title
+      sheet.setColumnWidth(7, 150); // imperial_date
+      sheet.setColumnWidth(8, 300); // story_text_1
+      sheet.setColumnWidth(9, 300); // story_text_2
+      sheet.setColumnWidth(10, 300); // story_text_3
+      sheet.setColumnWidth(11, 200); // text_link
+      sheet.setColumnWidth(12, 200); // image_1
+      sheet.setColumnWidth(13, 200); // image_2
+      sheet.setColumnWidth(14, 200); // image_3
+      sheet.setColumnWidth(15, 200); // audio_link
+      sheet.setColumnWidth(16, 150); // timestamp
+      sheet.setColumnWidth(17, 150); // deleted_timestamp
     }
     
     // Generate unique key
@@ -280,26 +281,25 @@ function doPost(e) {
     // Parse timestamp
     const timestamp = new Date();
     
-    // Prepare row data
+    // Prepare row data - must match headers array order exactly
     const rowData = [
-      storyKey,                     // Key
-      timestamp,                    // Timestamp
-      data.userKey || '',           // User Key
-      data.authorName || '',        // Author Name
-      data.forceKey || '',          // Force Key
-      data.crusadeKey || '',        // Crusade Key
-      data.storyType || '',         // Story Type
-      data.title || '',             // Title
-      data.imperialDate || '',      // Imperial Date
-      data.storyText1 || '',        // Story Text 1
-      data.storyText2 || '',        // Story Text 2
-      data.storyText3 || '',        // Story Text 3
-      data.textLink || '',          // Text Link
-      data.image1 || '',            // Image 1
-      data.image2 || '',            // Image 2
-      data.image3 || '',            // Image 3
-      data.audioLink || '',         // Audio Link
-      ''                            // Deleted Timestamp (empty for new records)
+      storyKey,                     // story_key
+      data.userKey || '',           // user_key
+      data.authorName || '',        // author_name
+      data.crusadeKey || '',        // crusade_key
+      data.storyType || '',         // story_type
+      data.title || '',             // title
+      data.imperialDate || '',      // imperial_date
+      data.storyText1 || '',        // story_text_1
+      data.storyText2 || '',        // story_text_2
+      data.storyText3 || '',        // story_text_3
+      data.textLink || '',          // text_link
+      data.image1 || '',            // image_1
+      data.image2 || '',            // image_2
+      data.image3 || '',            // image_3
+      data.audioLink || '',         // audio_link
+      timestamp,                    // timestamp
+      ''                            // deleted_timestamp (empty for new records)
     ];
     
     const lastRow = sheet.getLastRow();
@@ -308,11 +308,11 @@ function doPost(e) {
     sheet.getRange(newRowNumber, 1, 1, rowData.length).setValues([rowData]);
     
     // Format the new row
-    sheet.getRange(newRowNumber, 1).setFontWeight('bold'); // Key
-    sheet.getRange(newRowNumber, 2).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
+    sheet.getRange(newRowNumber, 1).setFontWeight('bold'); // story_key
+    sheet.getRange(newRowNumber, 16).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // timestamp (now column 16)
     
-    // Set text wrapping for story text columns
-    sheet.getRange(newRowNumber, 10, 1, 3).setWrap(true); // Story Text 1-3
+    // Set text wrapping for story text columns (now columns 8, 9, 10)
+    sheet.getRange(newRowNumber, 8, 1, 3).setWrap(true); // story_text_1, story_text_2, story_text_3
     
     console.log('Story saved successfully');
     
