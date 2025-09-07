@@ -251,6 +251,16 @@ class ForceForm extends BaseForm {
             timestamp: formData.timestamp
         };
     }
+
+    clearCachesOnSuccess() {
+        // Call the base form's method first
+        super.clearCachesOnSuccess();
+        
+        // Also manually clear forces cache using the correct method
+        if (typeof CacheManager !== 'undefined') {
+            CacheManager.clear('forces');
+        }
+    }
 }
 
 // Global functions for backward compatibility

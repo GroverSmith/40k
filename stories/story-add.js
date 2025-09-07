@@ -14,7 +14,26 @@ class StoryForm extends BaseForm {
         });
 
         this.contextData = {};
+        this.setupStoryLoadingState();
         this.init();
+    }
+
+    setupStoryLoadingState() {
+        // Override the base form's setLoadingState method to use our custom overlay
+        this.originalSetLoadingState = this.setLoadingState;
+        this.setLoadingState = (isLoading) => {
+            // Call the original method to handle button state
+            this.originalSetLoadingState(isLoading);
+            // Also show/hide our custom overlay
+            this.toggleStoryLoadingOverlay(isLoading);
+        };
+    }
+
+    toggleStoryLoadingOverlay(show) {
+        const overlay = document.getElementById('story-loading-overlay');
+        if (overlay) {
+            overlay.style.display = show ? 'flex' : 'none';
+        }
     }
 
     async init() {
@@ -132,19 +151,46 @@ class StoryForm extends BaseForm {
             forceSelect.classList.add('multi-select');
 
             try {
-                const forces = await CacheManager.fetchSheetData('forces');
+                const forcesData = await CacheManager.fetchSheetData('forces');
+                console.log('Forces data loaded for story form:', forcesData);
 
                 forceSelect.innerHTML = '';
 
-                forces.slice(1).forEach(row => {
-                    const forceKeyIndex = TableDefs.getColumnIndex('forces', 'force_key');
-                    const forceNameIndex = TableDefs.getColumnIndex('forces', 'force_name');
-                    const userNameIndex = TableDefs.getColumnIndex('forces', 'user_name');
+                // Handle different data formats
+                let forces = [];
+                if (forcesData && forcesData.success && forcesData.data) {
+                    // Standardized format: {success: true, data: [...]}
+                    forces = forcesData.data;
+                } else if (Array.isArray(forcesData)) {
+                    // Direct array format
+                    forces = forcesData;
+                }
+
+                console.log('Processed forces array:', forces);
+
+                // Process forces data
+                forces.forEach((force, index) => {
+                    let forceKey, forceName, userName;
                     
-                    if (row[forceKeyIndex] && row[forceNameIndex]) {
+                    if (Array.isArray(force)) {
+                        // Array format: [force_key, user_key, user_name, force_name, faction, detachment, notes, timestamp]
+                        const forceKeyIndex = TableDefs.getColumnIndex('forces', 'force_key');
+                        const forceNameIndex = TableDefs.getColumnIndex('forces', 'force_name');
+                        const userNameIndex = TableDefs.getColumnIndex('forces', 'user_name');
+                        forceKey = force[forceKeyIndex];
+                        forceName = force[forceNameIndex];
+                        userName = force[userNameIndex];
+                    } else {
+                        // Object format
+                        forceKey = force.force_key || force['force_key'];
+                        forceName = force.force_name || force['force_name'];
+                        userName = force.user_name || force['user_name'];
+                    }
+                    
+                    if (forceKey && forceName) {
                         const option = document.createElement('option');
-                        option.value = row[forceKeyIndex];
-                        option.textContent = `${row[forceNameIndex]} (${row[userNameIndex]})`;
+                        option.value = forceKey;
+                        option.textContent = `${forceName} (${userName || 'Unknown User'})`;
                         forceSelect.appendChild(option);
                     }
                 });
@@ -389,6 +435,16 @@ class StoryForm extends BaseForm {
         }
 
         return result;
+    }
+
+    clearCachesOnSuccess() {
+        // Call the base form's method first
+        super.clearCachesOnSuccess();
+        
+        // Also manually clear stories cache using the correct method
+        if (typeof CacheManager !== 'undefined') {
+            CacheManager.clear('stories');
+        }
     }
 }
 
