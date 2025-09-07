@@ -26,6 +26,53 @@ class ForceForm extends BaseForm {
 
         // Pre-select current user if available
         this.preselectCurrentUser();
+
+        // Override loading state for force-specific messaging
+        this.setupForceLoadingState();
+    }
+
+    /**
+     * Setup force-specific loading state
+     */
+    setupForceLoadingState() {
+        // Store original setLoadingState method
+        const originalSetLoadingState = this.setLoadingState.bind(this);
+        
+        // Override with force-specific implementation
+        this.setLoadingState = (isLoading) => {
+            // Call original method for basic functionality
+            originalSetLoadingState(isLoading);
+            
+            // Add force-specific loading overlay
+            this.toggleForceLoadingOverlay(isLoading);
+        };
+    }
+
+    /**
+     * Toggle force-specific loading overlay
+     */
+    toggleForceLoadingOverlay(isLoading) {
+        let overlay = document.getElementById('force-loading-overlay');
+        
+        if (isLoading) {
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'force-loading-overlay';
+                overlay.className = 'form-loading-overlay';
+                overlay.innerHTML = `
+                    <div class="loading-content">
+                        <div class="loading-spinner"></div>
+                        <p>Creating your force...</p>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+            }
+            overlay.style.display = 'flex';
+        } else {
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
     }
 
     setupSubfactionHandling() {
@@ -180,19 +227,28 @@ class ForceForm extends BaseForm {
     gatherFormData() {
         const formData = super.gatherFormData();
 
+        // Get current user for user_key
+        const currentUser = UserManager.getCurrentUser();
+        if (!currentUser || !currentUser.key) {
+            throw new Error('No user selected. Please select a user from the dropdown above.');
+        }
+
         // Generate force key
         const forceKey = KeyUtils.generateForceKey(
             formData.forceName,
             formData.userName
         );
 
-        // Add key and ensure all fields
+        // Map form field names to expected API field names
         return {
             key: forceKey,
-            ...formData,
-            subfaction: formData.subfaction || '',
-            crusadeName: formData.crusadeName || '',
-            notes: formData.notes || ''
+            user_key: currentUser.key,           // Required by Google Apps Script
+            user_name: formData.userName,        // Map userName to user_name
+            force_name: formData.forceName,      // Map forceName to force_name
+            faction: formData.faction,
+            detachment: formData.detachment || '',
+            notes: formData.notes || '',
+            timestamp: formData.timestamp
         };
     }
 }
