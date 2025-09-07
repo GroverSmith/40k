@@ -33,7 +33,7 @@ const BattleTable = {
                 tableId: 'recent-battles-table',
                 buildRow: this.buildBattleRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('date_played'),
-                limit: 10,
+                limit: 30,
                 noDataMessage: 'No battles recorded yet.',
                 errorMessage: 'Failed to load recent battles.',
                 responsiveColumns: this.getResponsiveColumns()

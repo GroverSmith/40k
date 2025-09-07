@@ -7,7 +7,7 @@ class BattleReportForm extends BaseForm {
             submitUrl: CrusadeConfig.getSheetUrl('battle_history'),
             successMessage: 'Battle report submitted successfully!',
             errorMessage: 'Failed to submit battle report',
-            clearCacheOnSuccess: ['battle_history', 'forces']
+            clearCacheOnSuccess: ['battles']
         });
         this.dataLoaders = {
             forces: null,
@@ -15,7 +15,37 @@ class BattleReportForm extends BaseForm {
             users: null,
             armies: null
         };
+        this.setupBattleLoadingState();
         this.init();
+    }
+    
+    setupBattleLoadingState() {
+        // Override the base form's setLoadingState method to use our custom overlay
+        this.originalSetLoadingState = this.setLoadingState;
+        this.setLoadingState = (isLoading) => {
+            // Call the original method to handle button state
+            this.originalSetLoadingState(isLoading);
+            // Only show overlay, don't disable form elements (they're already disabled by button state)
+            if (isLoading) {
+                const overlay = document.getElementById('battle-loading-overlay');
+                if (overlay) {
+                    overlay.style.display = 'flex';
+                }
+            } else {
+                const overlay = document.getElementById('battle-loading-overlay');
+                if (overlay) {
+                    overlay.style.display = 'none';
+                }
+            }
+        };
+    }
+    
+    toggleBattleLoadingOverlay(show) {
+        const overlay = document.getElementById('battle-loading-overlay');
+        if (overlay) {
+            overlay.style.display = show ? 'flex' : 'none';
+        }
+        // Don't disable form elements - let the base form handle button state only
     }
     async init() {
         // Initialize base functionality
@@ -514,16 +544,20 @@ class BattleReportForm extends BaseForm {
     }
     gatherFormData() {
         const formData = super.gatherFormData();
+        
         // Handle custom battle size
         if (formData.battleSize === 'Custom') {
             formData.battleSize = formData.customBattleSize || '';
         }
+        
         // Get army list names from hidden fields (populated by handleArmySelection)
         const army1Name = document.getElementById('army1-name');
         const army2Name = document.getElementById('army2-name');
+        
         // Add user_key for the current user
         const userKey = window.UserManager && window.UserManager.currentUser ? 
             window.UserManager.currentUser.user_key || window.UserManager.currentUser.name : '';
+        
         const finalData = {
             ...formData,
             army1: army1Name ? army1Name.value : '',
@@ -532,16 +566,14 @@ class BattleReportForm extends BaseForm {
         };
         return finalData;
     }
-    async submitToGoogleSheets(data) {
-        const result = await super.submitToGoogleSheets(data);
-        // Clear specific battle caches
-        if (data.force1Key) {
-            CacheManager.clear('battleHistory', `force_${data.force1Key}`);
+    clearCachesOnSuccess() {
+        // Call the base form's method first
+        super.clearCachesOnSuccess();
+        
+        // Also manually clear battles cache using the correct method
+        if (typeof CacheManager !== 'undefined') {
+            CacheManager.clear('battles');
         }
-        if (data.force2Key) {
-            CacheManager.clear('battleHistory', `force_${data.force2Key}`);
-        }
-        return result;
     }
 }
 // Global functions for backward compatibility

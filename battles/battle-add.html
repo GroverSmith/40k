@@ -16,7 +16,8 @@
 	<link rel="stylesheet" href="../css/responsive.css">
 	<link rel="stylesheet" href="../css/user-dropdown.css">
 	<link rel="stylesheet" href="../css/modal.css">
-	<link rel="stylesheet" href="../css/user-field.css">
+    <link rel="stylesheet" href="../css/user-field.css">
+    <link rel="stylesheet" href="../css/force-page.css">
 </head>
 <body>
     <div class="container">
@@ -179,6 +180,15 @@
                 </button>
             </div>
         </form>
+        
+        <!-- Battle Loading Overlay -->
+        <div id="battle-loading-overlay" class="form-loading-overlay" style="display: none;">
+            <div class="loading-content">
+                <div class="loading-spinner-large"></div>
+                <h3>Saving Battle Report...</h3>
+                <p>Please wait while we record your battle in the campaign history.</p>
+            </div>
+        </div>
         
         <!-- Success Message -->
         <div id="success-message" class="message success" style="display: none;">
