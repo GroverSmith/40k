@@ -74,8 +74,17 @@ const TableBase = {
             config.buildRow(item, config.columns, config.context || {})
         ).join('');
 
+        // Build table wrapper classes
+        const wrapperClasses = ['table-wrapper'];
+        if (config.noScroll) {
+            wrapperClasses.push('no-scroll');
+        }
+
+        // Build table wrapper style for custom max-height
+        const wrapperStyle = config.maxHeight ? `style="max-height: ${config.maxHeight}px;"` : '';
+
         container.innerHTML = `
-            <div class="table-wrapper">
+            <div class="${wrapperClasses.join(' ')}" ${wrapperStyle}>
                 <table class="data-table" ${config.tableId ? `id="${config.tableId}"` : ''}>
                     <thead>
                         <tr>${config.headers.map(h => `<th>${h}</th>`).join('')}</tr>
@@ -192,6 +201,17 @@ const TableBase = {
                 setTimeout(loadFunction, delay);
             }
         });
+    },
+
+    /**
+     * Helper to create table config with height settings
+     */
+    createTableConfig(baseConfig, heightOptions = {}) {
+        return {
+            ...baseConfig,
+            maxHeight: heightOptions.maxHeight || 500,
+            noScroll: heightOptions.noScroll || false
+        };
     }
 };
 

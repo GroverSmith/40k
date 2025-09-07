@@ -419,12 +419,54 @@ th:not(.sort-asc):not(.sort-desc) .sort-indicator::after {
   border-radius: var(--radius-sm);
   margin-top: 10px;
   background-color: var(--color-bg-card);
+  /* Ensure smooth scrolling */
+  scroll-behavior: smooth;
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-secondary) var(--color-bg-card-alt);
+}
+
+/* Webkit scrollbar styling for better appearance */
+.table-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: var(--color-bg-card-alt);
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--color-secondary);
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary-light);
 }
 
 .table-wrapper.no-scroll {
   max-height: none;
   overflow: visible;
   border: none;
+}
+
+/* Responsive table wrapper */
+@media (max-width: 768px) {
+  .table-wrapper {
+    max-height: 300px;
+    margin-left: -10px;
+    margin-right: -10px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-wrapper {
+    max-height: 250px;
+  }
 }
 
 /* ===============================
