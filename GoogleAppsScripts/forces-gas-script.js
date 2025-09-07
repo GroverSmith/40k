@@ -348,8 +348,6 @@ function doGet(e) {
         return getForceByKey(e.parameter.key);
       case 'get-by-name':
         return getForceByName(e.parameter.name, e.parameter.user);
-      case 'user-forces':
-        return getUserForces(e.parameter.user);
       case 'delete':
         return softDeleteForce(e.parameter.key);
       default:
@@ -528,64 +526,6 @@ function getForceByName(forceName, userName) {
   }
 }
 
-function getUserForces(userName) {
-  try {
-    console.log('getUserForces called for:', userName);
-    
-    if (!userName) {
-      throw new Error('User name is required');
-    }
-    
-    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-    
-    if (!sheet) {
-      return ContentService
-        .createTextOutput(JSON.stringify({
-          success: true,
-          forces: []
-        }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    const data = sheet.getDataRange().getValues();
-    
-    // Filter out deleted rows first
-    const activeData = filterActiveRows(data);
-    
-    const headers = activeData[0];
-    
-    // Filter for this user's forces (User Name is now column 1)
-    const userForces = activeData.slice(1)
-      .filter(row => row[1] && row[1].toString().toLowerCase().trim() === userName.toLowerCase().trim())
-      .map(row => {
-        const force = {};
-        headers.forEach((header, index) => {
-          force[header] = row[index];
-        });
-        return force;
-      });
-    
-    console.log(`Found ${userForces.length} active forces for user "${userName}"`);
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        forces: userForces
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    console.error('Error getting user forces:', error);
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: false,
-        error: error.message
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
 
 // Soft delete function
 function softDeleteForce(forceKey) {

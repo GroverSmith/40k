@@ -209,12 +209,26 @@ class ForceDetails {
            CoreUtils.dom.show('battle-history-section');
            
            if (window.BattleTable) {
-               // First, fetch battles data to calculate stats
+               // First, fetch all battles data to calculate stats
                const battlesResult = await BattleTable.fetchBattles('force', this.forceKey);
                
-               if (battlesResult.success && battlesResult.battles) {
+               if (battlesResult.success && battlesResult.data) {
+                   console.log('Fetched battles result:', battlesResult);
+                   console.log('Total battles found:', battlesResult.data.length);
+                   
+                   // Filter battles for this force
+                   const forceBattles = battlesResult.data.filter(battle => {
+                       const force1Key = battle.force_key_1;
+                       const force2Key = battle.force_key_2;
+                       return force1Key === this.forceKey || force2Key === this.forceKey;
+                   });
+                   
+                   console.log('Filtered battles for force:', forceBattles.length);
+                   
                    // Calculate and display stats
-                   this.updateStatsFromBattles(battlesResult.battles, this.forceKey);
+                   this.updateStatsFromBattles(forceBattles, this.forceKey);
+               } else {
+                   console.log('No battles data found or fetch failed:', battlesResult);
                }
                
                // Then display the battles table

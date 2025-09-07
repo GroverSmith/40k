@@ -360,10 +360,6 @@ function doGet(e) {
         return getBattlesList(e.parameter);
       case 'get':
         return getBattleByKey(e.parameter.key);
-      case 'force-battles':
-        return getBattlesForForce(e.parameter.forceKey);
-      case 'crusade-battles':
-        return getBattlesForCrusade(e.parameter.crusadeKey);
       case 'recent':
         return getRecentBattles(e.parameter.limit);
       case 'delete':
@@ -501,119 +497,7 @@ function getBattleByKey(battleKey) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function getBattlesForCrusade(crusadeKey) {
-  if (!crusadeKey) {
-    throw new Error('Crusade key is required');
-  }
 
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-
-  if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        count: 0,
-        totalCount: 0,
-        data: [],
-        hasMore: false
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-
-  const data = sheet.getDataRange().getValues();
-
-  // Filter out deleted rows first
-  const activeData = filterActiveRows(data);
-
-  // Convert to objects with normalized headers (no filtering - done client-side)
-  // Convert to objects with consistent field names
-  const headers = activeData[0];
-  let rows = activeData.slice(1);
-  
-  const allBattles = rows.map((row) => {
-    const obj = { 
-      id: row[0], // Use the key as ID
-      key: row[0], // Also include as 'key' for clarity
-      Key: row[0]  // Include uppercase for compatibility
-    };
-    
-    headers.forEach((header, headerIndex) => {
-      obj[header] = row[headerIndex];
-    });
-    
-    return obj;
-  });
-
-  console.log(`Found ${allBattles.length} active battles`);
-
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      count: allBattles.length,
-      totalCount: allBattles.length,
-      data: allBattles,
-      hasMore: false
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function getBattlesForForce(forceKey) {
-  if (!forceKey) {
-    throw new Error('Force key is required');
-  }
-
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-
-  if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        count: 0,
-        totalCount: 0,
-        data: [],
-        hasMore: false
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-
-  const data = sheet.getDataRange().getValues();
-
-  // Filter out deleted rows first
-  const activeData = filterActiveRows(data);
-
-  // Convert to objects with normalized headers (no filtering - done client-side)
-  // Convert to objects with consistent field names
-  const headers = activeData[0];
-  let rows = activeData.slice(1);
-  
-  const allBattles = rows.map((row) => {
-    const obj = { 
-      id: row[0], // Use the key as ID
-      key: row[0], // Also include as 'key' for clarity
-      Key: row[0]  // Include uppercase for compatibility
-    };
-    
-    headers.forEach((header, headerIndex) => {
-      obj[header] = row[headerIndex];
-    });
-    
-    return obj;
-  });
-
-  console.log(`Found ${allBattles.length} active battles`);
-
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      count: allBattles.length,
-      totalCount: allBattles.length,
-      data: allBattles,
-      hasMore: false
-    }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
 
 function getRecentBattles(limit = 10) {
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);

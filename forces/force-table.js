@@ -105,11 +105,15 @@ const ForceTable = {
                 loadingMessage: 'Loading crusade forces...'
             },
             'user': {
-                url: `${forceUrl}?action=user-forces&userKey=${encodeURIComponent(key)}`,
+                url: forceUrl,
                 cacheType: 'forces',
-                cacheKey: `user_${key}`,
-                dataKey: 'forces',
-                loadingMessage: 'Loading user forces...'
+                cacheKey: 'all',
+                dataKey: 'data',
+                loadingMessage: 'Loading user forces...',
+                filterFunction: (data) => {
+                    // Filter forces by user key (column 1)
+                    return data.filter(row => row[1] === key);
+                }
             }
         };
         return configs[type] || configs['all'];

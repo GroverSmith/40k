@@ -59,19 +59,19 @@ const BattleTable = {
 
     buildBattleRow(battle, columns, context = {}) {
         const columnData = {
-            date: TableBase.formatters.date(battle['date_played'] || battle['Date Played']),
-            battle: this.createBattleLink(battle['battle_name'] || battle['Battle Name'], battle['battle_key'] || battle.Key),
+            date: TableBase.formatters.date(battle['date_played']),
+            battle: this.createBattleLink(battle['battle_name'], battle['battle_key']),
             outcome: this.formatOutcome(battle),
             score: this.formatScore(battle, context.forceKey),
-            size: TableBase.formatters.points(battle['battle_size'] || battle['Battle Size'])
+            size: TableBase.formatters.points(battle['battle_size'])
         };
 
         // Add force-specific columns if needed
         if (context.forceKey) {
-            const isForce1 = (battle['force_key_1'] || battle['Force 1 Key']) === context.forceKey;
+            const isForce1 = battle['force_key_1'] === context.forceKey;
             columnData.opponent = this.createForceLink(
-                isForce1 ? (battle['force_2'] || battle['Force 2']) : (battle['force_1'] || battle['Force 1']),
-                isForce1 ? (battle['force_key_2'] || battle['Force 2 Key']) : (battle['force_key_1'] || battle['Force 1 Key'])
+                isForce1 ? battle['force_2'] : battle['force_1'],
+                isForce1 ? battle['force_key_2'] : battle['force_key_1']
             );
 
             const result = this.getBattleResult(battle, context.forceKey);
@@ -116,7 +116,7 @@ const BattleTable = {
     // Convenience methods
     async loadForForce(forceKey, containerId) {
         const fetchConfig = this.getFetchConfig('force', forceKey);
-        const displayConfig = this.getDisplayConfig('force');
+        const displayConfig = this.getDisplayConfig('force', forceKey);
         
         // Filter battles to only show those involving this force
         const filterFn = (battle) => {
@@ -129,7 +129,16 @@ const BattleTable = {
     },
 
     async loadForCrusade(crusadeKey, containerId) {
-        return this.loadBattles('crusade', crusadeKey, containerId);
+        const fetchConfig = this.getFetchConfig('crusade', crusadeKey);
+        const displayConfig = this.getDisplayConfig('crusade', crusadeKey);
+        
+        // Filter battles to only show those for this crusade
+        const filterFn = (battle) => {
+            const battleCrusadeKey = battle.crusade_key || battle['crusade_key'] || battle['Crusade Key'] || '';
+            return battleCrusadeKey === crusadeKey;
+        };
+        
+        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
     },
 
     async loadRecentBattles() {
@@ -158,8 +167,8 @@ const BattleTable = {
     
     getScores(battle) {
         return {
-            player1: parseInt(battle['player_1_score'] || battle['Player 1 Score']) || 0,
-            player2: parseInt(battle['player_2_score'] || battle['Player 2 Score']) || 0
+            player1: parseInt(battle['player_1_score']) || 0,
+            player2: parseInt(battle['player_2_score']) || 0
         };
     },
 
@@ -174,25 +183,25 @@ const BattleTable = {
     },
 
     getBattleResult(battle, forceKey) {
-        const victorKey = battle['victor_force_key'] || battle['Victor Force Key'];
+        const victorKey = battle['victor_force_key'];
         if (victorKey === 'Draw') return 'Draw';
         return victorKey === forceKey ? 'Victory' : 'Defeat';
     },
 
     formatOutcome(battle) {
         const force1Link = this.createForceLink(
-            battle['force_1'] || battle['Force 1'] || battle['player_1'] || battle['Player 1'], 
-            battle['force_key_1'] || battle['Force 1 Key']
+            battle['force_1'] || battle['player_1'], 
+            battle['force_key_1']
         );
         const force2Link = this.createForceLink(
-            battle['force_2'] || battle['Force 2'] || battle['player_2'] || battle['Player 2'], 
-            battle['force_key_2'] || battle['Force 2 Key']
+            battle['force_2'] || battle['player_2'], 
+            battle['force_key_2']
         );
-        const victorKey = battle['victor_force_key'] || battle['Victor Force Key'];
+        const victorKey = battle['victor_force_key'];
 
         if (victorKey === 'Draw') return `${force1Link} draws ${force2Link}`;
-        if (victorKey === (battle['force_key_1'] || battle['Force 1 Key'])) return `${force1Link} defeats ${force2Link}`;
-        if (victorKey === (battle['force_key_2'] || battle['Force 2 Key'])) return `${force2Link} defeats ${force1Link}`;
+        if (victorKey === battle['force_key_1']) return `${force1Link} defeats ${force2Link}`;
+        if (victorKey === battle['force_key_2']) return `${force2Link} defeats ${force1Link}`;
         return `${force1Link} vs ${force2Link}`;
     },
     
@@ -206,8 +215,8 @@ const BattleTable = {
         };
 
         battles.forEach(battle => {
-            const victorKey = battle['victor_force_key'] || battle['Victor Force Key'];
-            const isForce1 = (battle['force_key_1'] || battle['Force 1 Key']) === forceKey;
+            const victorKey = battle['victor_force_key'];
+            const isForce1 = battle['force_key_1'] === forceKey;
             const scores = this.getScores(battle);
 
             if (victorKey === 'Draw') stats.draws++;
