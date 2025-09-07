@@ -14,7 +14,8 @@ const BattleTable = {
                 buildRow: this.buildBattleRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('date_played'),
                 noDataMessage: 'No battles recorded yet for this force.',
-                errorMessage: 'Failed to load battles.'
+                errorMessage: 'Failed to load battles.',
+                responsiveColumns: this.getResponsiveColumns()
             },
             'crusade': {
                 columns: ['date', 'battle', 'outcome', 'score'],
@@ -23,7 +24,8 @@ const BattleTable = {
                 buildRow: this.buildBattleRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('date_played'),
                 noDataMessage: 'No battles recorded yet for this crusade.',
-                errorMessage: 'Failed to load battles.'
+                errorMessage: 'Failed to load battles.',
+                responsiveColumns: this.getResponsiveColumns()
             },
             'recent': {
                 columns: ['date', 'battle', 'outcome', 'score', 'size'],
@@ -33,10 +35,26 @@ const BattleTable = {
                 sortBy: TableBase.sortByDateDesc('date_played'),
                 limit: 10,
                 noDataMessage: 'No battles recorded yet.',
-                errorMessage: 'Failed to load recent battles.'
+                errorMessage: 'Failed to load recent battles.',
+                responsiveColumns: this.getResponsiveColumns()
             }
         };
         return configs[type] || configs['recent'];
+    },
+
+    // Shared responsive column configuration
+    getResponsiveColumns() {
+        return {
+            mobile: {
+                columns: ['outcome', 'score'],
+                headers: ['Outcome', 'Score']
+            },
+            tablet: {
+                columns: ['date', 'outcome', 'score'],
+                headers: ['Date', 'Outcome', 'Score']
+            }
+            // desktop uses default columns
+        };
     },
 
     buildBattleRow(battle, columns, context = {}) {

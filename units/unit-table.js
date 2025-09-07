@@ -8,12 +8,13 @@ const UnitTable = {
         const configs = {
             'force': {
                 columns: ['name', 'datasheet', 'role', 'points', 'cp', 'xp', 'rank', 'battles', 'kills'],
-                headers: ['Name', 'Data Sheet', 'Role', 'Points', 'CP', 'XP', 'Rank', 'Battles', 'Kills'],
+                headers: ['Name', 'Data Sheet', 'Type', 'Points', 'CP', 'XP', 'Rank', 'Battles', 'Kills'],
                 tableId: 'force-units-table',
                 buildRow: this.buildDetailedUnitRow.bind(this),
                 sortBy: (a, b) => (b.XP || 0) - (a.XP || 0), // Sort by XP descending
                 noDataMessage: 'No units registered for this force yet.',
-                errorMessage: 'Failed to load units.'
+                errorMessage: 'Failed to load units.',
+                responsiveColumns: this.getResponsiveColumns()
                 // Removed groupBy
             },
             'crusade': {
@@ -24,7 +25,8 @@ const UnitTable = {
                 context: { showUnitLinks: true },
                 sortBy: (a, b) => (b.XP || 0) - (a.XP || 0),
                 noDataMessage: 'No units in this crusade yet.',
-                errorMessage: 'Failed to load crusade units.'
+                errorMessage: 'Failed to load crusade units.',
+                responsiveColumns: this.getResponsiveColumns()
             },
             'user': {
                 columns: ['name', 'force', 'datasheet', 'points', 'xp', 'rank', 'battles'],
@@ -34,7 +36,8 @@ const UnitTable = {
                 context: { showUnitLinks: true },
                 sortBy: (a, b) => (b.XP || 0) - (a.XP || 0),
                 noDataMessage: 'No units created by this user yet.',
-                errorMessage: 'Failed to load user units.'
+                errorMessage: 'Failed to load user units.',
+                responsiveColumns: this.getResponsiveColumns()
             },
             'all': {
                 columns: ['name', 'force', 'datasheet', 'points', 'xp', 'rank'],
@@ -44,10 +47,26 @@ const UnitTable = {
                 context: { showUnitLinks: true },
                 sortBy: (a, b) => (b.XP || 0) - (a.XP || 0),
                 noDataMessage: 'No units registered yet.',
-                errorMessage: 'Failed to load units.'
+                errorMessage: 'Failed to load units.',
+                responsiveColumns: this.getResponsiveColumns()
             }
         };
         return configs[type] || configs['force'];
+    },
+
+    // Shared responsive column configuration
+    getResponsiveColumns() {
+        return {
+            mobile: {
+                columns: ['name', 'datasheet', 'points', 'cp'],
+                headers: ['Name', 'Data Sheet', 'Points', 'CP']
+            },
+            tablet: {
+                columns: ['name', 'datasheet', 'points', 'cp', 'xp'],
+                headers: ['Name', 'Data Sheet', 'Points', 'CP', 'XP']
+            }
+            // desktop uses default columns
+        };
     },
 
     

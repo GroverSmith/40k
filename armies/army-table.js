@@ -4,6 +4,8 @@
 
 const ArmyTable = {
 
+    
+
     getDisplayConfig(type, key) {
         const configs = {
             'force': {
@@ -13,7 +15,8 @@ const ArmyTable = {
                 buildRow: this.buildArmyRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('Timestamp'),
                 noDataMessage: 'No army lists uploaded for this force yet.',
-                errorMessage: 'Failed to load army lists.'
+                errorMessage: 'Failed to load army lists.',
+                responsiveColumns: this.getResponsiveColumns()
             },
             'user': {
                 columns: ['army', 'force', 'faction', 'points', 'date'],
@@ -22,12 +25,28 @@ const ArmyTable = {
                 buildRow: this.buildArmyRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('Timestamp'),
                 noDataMessage: 'No army lists created by this user yet.',
-                errorMessage: 'Failed to load user army lists.'
+                errorMessage: 'Failed to load user army lists.',
+                responsiveColumns: this.getResponsiveColumns()
             }
         };
 
         return configs[type] || configs['all'];
-    },    
+    }, 
+    
+    // Shared responsive column configuration
+    getResponsiveColumns() {
+        return {
+            mobile: {
+                columns: ['army', 'points'],
+                headers: ['Army Name', 'Points']
+            },
+            tablet: {
+                columns: ['army', 'detachment', 'points'],
+                headers: ['Army Name', 'Detachment', 'Points']
+            }
+            // desktop uses default columns
+        };
+    },
 
     buildArmyRow(army, columns, context = {}) {
         const armyKey = army.army_key || army.Key || army.key || army.id;

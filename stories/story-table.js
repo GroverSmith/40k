@@ -11,7 +11,18 @@ const StoryTable = {
             headers: ['Date', 'Title', 'Author', 'Type', 'Length'],
             buildRow: this.buildStoryRow.bind(this),
             sortBy: TableBase.sortByDateDesc('timestamp'),
-            errorMessage: 'Failed to load stories.'
+            errorMessage: 'Failed to load stories.',
+            responsiveColumns: {
+                mobile: {
+                    columns: ['title', 'author', 'type'],
+                    headers: ['Title', 'Author', 'Type']
+                },
+                tablet: {
+                    columns: ['title', 'author', 'type'],
+                    headers: ['Title', 'Author', 'Type']
+                }
+                // desktop uses default columns
+            }
         };
 
         const configs = {

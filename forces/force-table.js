@@ -13,7 +13,8 @@ const ForceTable = {
                 buildRow: this.buildForceRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('timestamp'),
                 noDataMessage: 'No forces registered yet.',
-                errorMessage: 'Failed to load forces.'
+                errorMessage: 'Failed to load forces.',
+                responsiveColumns: this.getResponsiveColumns()
             },
             'crusade': {
                 columns: ['commander', 'force', 'faction', 'joined'],
@@ -22,7 +23,8 @@ const ForceTable = {
                 buildRow: this.buildForceRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('timestamp'),
                 noDataMessage: 'No forces registered for this crusade yet.',
-                errorMessage: 'Failed to load crusade forces.'
+                errorMessage: 'Failed to load crusade forces.',
+                responsiveColumns: this.getResponsiveColumns()
             },
             'user': {
                 columns: ['force', 'faction', 'detachment', 'battles', 'joined'],
@@ -31,10 +33,36 @@ const ForceTable = {
                 buildRow: this.buildForceRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('timestamp'),
                 noDataMessage: 'No forces created by this user yet.',
-                errorMessage: 'Failed to load user forces.'
+                errorMessage: 'Failed to load user forces.',
+                responsiveColumns: {
+                    mobile: {
+                        columns: ['force', 'faction', 'battles'],
+                        headers: ['Force Name', 'Faction', 'Battles']
+                    },
+                    tablet: {
+                        columns: ['force', 'faction', 'battles'],
+                        headers: ['Force Name', 'Faction', 'Battles']
+                    }
+                    // desktop uses default columns
+                }
             }
         };
         return configs[type] || configs['all'];
+    },
+
+    // Shared responsive column configuration
+    getResponsiveColumns() {
+        return {
+            mobile: {
+                columns: ['commander', 'force', 'faction'],
+                headers: ['Commander', 'Force Name', 'Faction']
+            },
+            tablet: {
+                columns: ['commander', 'force', 'faction'],
+                headers: ['Commander', 'Force Name', 'Faction']
+            }
+            // desktop uses default columns
+        };
     },
     
     buildForceRow(force, columns) {
