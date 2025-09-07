@@ -93,16 +93,17 @@ function doPost(e) {
       headerRange.setFontColor('#ffffff');
       
       // Set column widths
-      sheet.setColumnWidth(1, 180); // Key
-      sheet.setColumnWidth(2, 150); // Timestamp
-      sheet.setColumnWidth(3, 150); // Name
-      sheet.setColumnWidth(4, 150); // Discord Handle
-      sheet.setColumnWidth(5, 200); // Email
-      sheet.setColumnWidth(6, 300); // Notes
-      sheet.setColumnWidth(7, 100); // Self Rating
-      sheet.setColumnWidth(8, 120); // Years Experience
-      sheet.setColumnWidth(9, 120); // Games Per Year
-      sheet.setColumnWidth(10, 150); // Deleted Timestamp
+      sheet.setColumnWidth(1, 180); // user_key
+      sheet.setColumnWidth(2, 150); // name
+      sheet.setColumnWidth(3, 150); // discord_handle
+      sheet.setColumnWidth(4, 200); // email
+      sheet.setColumnWidth(5, 300); // notes
+      sheet.setColumnWidth(6, 100); // composite_rating
+      sheet.setColumnWidth(7, 100); // self_rating
+      sheet.setColumnWidth(8, 120); // years_experience
+      sheet.setColumnWidth(9, 120); // games_per_year
+      sheet.setColumnWidth(10, 150); // timestamp
+      sheet.setColumnWidth(11, 150); // deleted_timestamp
     }
     
     // Generate user key
@@ -135,16 +136,17 @@ function doPost(e) {
     // Add new user
     const timestamp = new Date();
     const newRow = [
-      userKey,                             // Key
-      timestamp,                           // Timestamp
-      data.name.trim(),                    // Name
-      data.discordHandle || '',            // Discord Handle
-      data.email || '',                    // Email
-      data.notes || '',                    // Notes
-      data.selfRating || '',               // Self Rating
-      data.yearsExperience || '',          // Years Experience
-      data.gamesPerYear || '',             // Games Per Year
-      ''                                    // Deleted Timestamp (empty for new records)
+      userKey,                             // user_key
+      data.name.trim(),                    // name
+      data.discordHandle || '',            // discord_handle
+      data.email || '',                    // email
+      data.notes || '',                    // notes
+      '',                                  // composite_rating (empty for new records)
+      data.selfRating || '',               // self_rating
+      data.yearsExperience || '',          // years_experience
+      data.gamesPerYear || '',             // games_per_year
+      timestamp,                           // timestamp
+      ''                                   // deleted_timestamp (empty for new records)
     ];
     
     const lastRow = sheet.getLastRow();
@@ -152,8 +154,8 @@ function doPost(e) {
     
     // Format key column
     sheet.getRange(lastRow + 1, 1).setFontWeight('bold');
-    // Format timestamp column
-    sheet.getRange(lastRow + 1, 2).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+    // Format timestamp column (now in column 10)
+    sheet.getRange(lastRow + 1, 10).setNumberFormat('yyyy-mm-dd hh:mm:ss');
     
     console.log('User created successfully with key:', userKey);
     
