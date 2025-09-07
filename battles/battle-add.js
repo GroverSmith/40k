@@ -125,15 +125,42 @@ class BattleReportForm extends BaseForm {
         // Setup force selection handlers
         ['force1-select', 'force2-select'].forEach((id, index) => {
             const select = CoreUtils.dom.getElement(id);
-            console.log(`Found force select element for ${id}:`, select);
+            console.log(`=== SETTING UP FORCE SELECT ${id} ===`);
+            console.log(`Found force select element:`, select);
+            console.log(`Element tag name:`, select?.tagName);
+            console.log(`Element ID:`, select?.id);
+            
             if (select) {
-                select.addEventListener('change', (e) => {
-                    console.log(`Force ${index + 1} dropdown changed to:`, e.target.value);
+                const eventHandler = (e) => {
+                    console.log(`=== FORCE ${index + 1} DROPDOWN CHANGED ===`);
+                    console.log(`Selected value: "${e.target.value}"`);
+                    console.log(`Selected text: "${e.target.options[e.target.selectedIndex]?.textContent}"`);
+                    console.log(`Event target:`, e.target);
                     this.handleForceSelection(index + 1, e.target.value);
-                });
+                };
+                
+                select.addEventListener('change', eventHandler);
                 console.log(`Event listener added to force select ${id}`);
+                
+                // Store the event handler for potential debugging
+                select._forceChangeHandler = eventHandler;
             } else {
                 console.log(`Force select element not found for ${id}`);
+            }
+        });
+
+        // Setup army dropdowns
+        ['army1-select', 'army2-select'].forEach((id, index) => {
+            const select = CoreUtils.dom.getElement(id);
+            console.log(`Found army select element for ${id}:`, select);
+            if (select) {
+                select.addEventListener('change', (e) => {
+                    console.log(`Army ${index + 1} dropdown changed to:`, e.target.value);
+                    this.handleArmySelection(index + 1, e.target.value);
+                });
+                console.log(`Event listener added to army select ${id}`);
+            } else {
+                console.log(`Army select element not found for ${id}`);
             }
         });
     }
@@ -163,11 +190,12 @@ class BattleReportForm extends BaseForm {
                 this.loadUsers(),
                 this.loadForces(),
                 this.loadCrusades(),
-                this.loadArmyLists()
+                this.loadArmies()
             ]);
             console.log('All data loaded successfully');
             console.log('Forces data available:', !!this.dataLoaders.forces);
             console.log('Users data available:', !!this.dataLoaders.users);
+            console.log('Armies data available:', !!this.dataLoaders.armies);
         } catch (error) {
             console.error('Error loading data:', error);
         } finally {
@@ -241,13 +269,42 @@ class BattleReportForm extends BaseForm {
         }
     }
 
-    async loadArmyLists() {
+    async loadArmies() {
         try {
+            console.log('Loading armies data...');
             const data = await CacheManager.fetchSheetData('armies');
-            this.dataLoaders.armies = Array.isArray(data) ? data :
-                (data.data ? data.data : []);
+            console.log('Raw armies data loaded:', data);
+            
+            // Handle different data formats
+            if (data && data.success && data.data) {
+                // Standardized format: {success: true, data: [...]}
+                this.dataLoaders.armies = data.data;
+                console.log('Using standardized format, armies count:', this.dataLoaders.armies.length);
+            } else if (Array.isArray(data)) {
+                // Direct array format
+                this.dataLoaders.armies = data;
+                console.log('Using direct array format, armies count:', this.dataLoaders.armies.length);
+            } else {
+                this.dataLoaders.armies = [];
+                console.log('No armies data found');
+            }
+            
+            console.log('Armies data structure:');
+            if (this.dataLoaders.armies.length > 0) {
+                console.log('First army object:', this.dataLoaders.armies[0]);
+                console.log('First army keys:', Object.keys(this.dataLoaders.armies[0]));
+                console.log('Total armies:', this.dataLoaders.armies.length);
+                
+                // Log all army force keys to debug
+                console.log('All army force keys:');
+                this.dataLoaders.armies.forEach((army, index) => {
+                    const forceKey = army.force_key || army.Force_Key || army.forceKey;
+                    const armyName = army.army_name || army.armyName || army.Name;
+                    console.log(`Army ${index}: ${armyName} -> force_key: ${forceKey}`);
+                });
+            }
         } catch (error) {
-            console.error('Error loading army lists:', error);
+            console.error('Error loading armies:', error);
             this.dataLoaders.armies = [];
         }
     }
@@ -294,6 +351,7 @@ class BattleReportForm extends BaseForm {
             }
         }
     }
+
 
     populateCrusadeDropdown(data) {
         const select = document.getElementById('crusade-select');
@@ -462,7 +520,7 @@ class BattleReportForm extends BaseForm {
                 option.textContent = `${forceName} - ${faction || 'Unknown Faction'}`;
                 option.dataset.forceName = forceName;
                 select.appendChild(option);
-                console.log(`Added force option: ${forceName} - ${faction || 'Unknown Faction'}`);
+                console.log(`Added force option: "${forceName}" with value: "${forceKey}"`);
             } else {
                 console.log('Skipping force due to missing data:', { forceKey, forceName, faction });
             }
@@ -470,16 +528,57 @@ class BattleReportForm extends BaseForm {
 
         console.log(`Force dropdown updated with ${select.options.length - 1} options for player ${playerNum}`);
 
+        // Re-add event listener to ensure it's properly attached
+        console.log(`Re-adding event listener to force${playerNum}-select...`);
+        const eventHandler = (e) => {
+            console.log(`=== FORCE ${playerNum} DROPDOWN CHANGED (RE-ATTACHED) ===`);
+            console.log(`Selected value: "${e.target.value}"`);
+            console.log(`Selected text: "${e.target.options[e.target.selectedIndex]?.textContent}"`);
+            this.handleForceSelection(playerNum, e.target.value);
+        };
+        
+        // Remove any existing event listener first
+        if (select._forceChangeHandler) {
+            select.removeEventListener('change', select._forceChangeHandler);
+        }
+        
+        // Add the new event listener
+        select.addEventListener('change', eventHandler);
+        select._forceChangeHandler = eventHandler;
+        console.log(`Event listener re-attached to force${playerNum}-select`);
+
+        // Test if event listener is working by manually triggering a change event
+        console.log(`Testing event listener for force${playerNum}-select...`);
+        setTimeout(() => {
+            const testSelect = document.getElementById(`force${playerNum}-select`);
+            if (testSelect) {
+                console.log(`Force select element found:`, testSelect);
+                console.log(`Element has _forceChangeHandler:`, !!testSelect._forceChangeHandler);
+                
+                // Try to manually trigger the event listener
+                if (testSelect.options.length > 1) {
+                    console.log(`Manually testing event listener with first force option...`);
+                    testSelect.value = testSelect.options[1].value;
+                    testSelect.dispatchEvent(new Event('change'));
+                }
+            }
+        }, 100);
+
         // Auto-select if only one force
         if (forces.length === 1) {
             const firstForce = forces[0];
             const forceKey = Array.isArray(firstForce) ? firstForce[0] : (firstForce.force_key || firstForce['force_key']);
             select.value = forceKey;
+            console.log(`Auto-selecting single force for player ${playerNum}: ${forceKey}`);
             this.handleForceSelection(playerNum, forceKey);
+        } else if (forces.length > 1) {
+            console.log(`Player ${playerNum} has ${forces.length} forces - user must select one to see armies`);
         }
     }
 
     handleForceSelection(playerNum, forceKey) {
+        console.log(`handleForceSelection called for player ${playerNum} with forceKey: "${forceKey}"`);
+        
         // Store force name in hidden field
         const select = document.getElementById(`force${playerNum}-select`);
         const hiddenField = document.getElementById(`force${playerNum}-name`);
@@ -487,6 +586,7 @@ class BattleReportForm extends BaseForm {
         if (select && hiddenField) {
             const selectedOption = select.options[select.selectedIndex];
             hiddenField.value = selectedOption.dataset.forceName || '';
+            console.log(`Set force name for player ${playerNum}: ${hiddenField.value}`);
         }
 
         // Update army list dropdown
@@ -494,30 +594,85 @@ class BattleReportForm extends BaseForm {
     }
 
     updateArmyListDropdown(playerNum, forceKey) {
+        console.log(`Updating army dropdown for player ${playerNum}, force: ${forceKey}`);
         const select = document.getElementById(`army${playerNum}-select`);
-        if (!select || !this.dataLoaders.armies) return;
+        if (!select || !this.dataLoaders.armies) {
+            console.log('Army select not found or no armies data');
+            return;
+        }
 
-        select.innerHTML = '<option value="">Select army list (optional)...</option>';
+        select.innerHTML = '<option value="">Select army list...</option>';
 
-        const forceArmyLists = this.dataLoaders.armies.filter(item => {
-            if (Array.isArray(item)) {
-                return item[1] === forceKey; // Force Key column
-            } else {
-                return item['force_key'] === forceKey || item.forceKey === forceKey;
-            }
+        if (!forceKey) {
+            console.log('No force selected - army dropdown will remain empty');
+            return;
+        }
+
+        // Filter armies for the selected force
+        console.log(`=== FILTERING ARMIES FOR FORCE: "${forceKey}" ===`);
+        console.log(`Total armies available: ${this.dataLoaders.armies.length}`);
+        
+        const forceArmies = this.dataLoaders.armies.filter(army => {
+            const armyForceKey = army.force_key || army.Force_Key || army.forceKey;
+            const armyName = army.army_name || army.armyName || 'unknown';
+            const matches = armyForceKey === forceKey;
+            console.log(`Army "${armyName}": force_key="${army.force_key}", matches="${matches}"`);
+            return matches;
         });
 
-        forceArmyLists.forEach(item => {
-            const name = Array.isArray(item) ? item[5] : (item['army_name'] || item.armyName);
-            const points = Array.isArray(item) ? item[9] : (item['points_value'] || item.pointsValue);
+        console.log(`Found ${forceArmies.length} armies for force ${forceKey}`);
 
-            if (name) {
+        // Add army options
+        forceArmies.forEach(army => {
+            const armyKey = army.army_key || army.Army_Key || army.armyKey || army.Key;
+            const armyName = army.army_name || army.Army_Name || army.armyName || army.Name;
+            const points = army.points_value || army.Points_Value || army.pointsValue || '';
+            const detachment = army.detachment || army.Detachment || '';
+
+            if (armyKey && armyName) {
                 const option = document.createElement('option');
-                option.value = name;
-                option.textContent = points ? `${name} (${points} pts)` : name;
+                option.value = armyKey;
+                
+                // Create display text with army name, points, and detachment
+                let displayText = armyName;
+                if (points) displayText += ` (${points}pts)`;
+                if (detachment) displayText += ` - ${detachment}`;
+                
+                option.textContent = displayText;
                 select.appendChild(option);
+                console.log(`Added army option: ${armyKey} - ${displayText}`);
             }
         });
+
+        console.log(`Army dropdown updated with ${forceArmies.length} options`);
+    }
+
+    handleArmySelection(playerNum, armyKey) {
+        console.log(`Army ${playerNum} selected: ${armyKey}`);
+        
+        // Store army name in hidden field
+        const select = document.getElementById(`army${playerNum}-select`);
+        const hiddenField = document.getElementById(`army${playerNum}-name`);
+
+        if (select && hiddenField) {
+            const selectedOption = select.options[select.selectedIndex];
+            if (selectedOption && selectedOption.value) {
+                // Find the army data to get the army name
+                const army = this.dataLoaders.armies.find(a => {
+                    const aKey = a.army_key || a.Army_Key || a.armyKey || a.Key;
+                    return aKey === armyKey;
+                });
+                
+                if (army) {
+                    const armyName = army.army_name || army.Army_Name || army.armyName || army.Name;
+                    hiddenField.value = armyName || '';
+                    console.log(`Set army name for player ${playerNum}: ${armyName}`);
+                }
+            } else {
+                hiddenField.value = '';
+                console.log(`Cleared army name for player ${playerNum}`);
+            }
+        }
     }
 
     checkUrlParameters() {
@@ -568,14 +723,14 @@ class BattleReportForm extends BaseForm {
             formData.battleSize = formData.customBattleSize || '';
         }
 
-        // Get army list names
-        const army1Select = document.getElementById('army1-select');
-        const army2Select = document.getElementById('army2-select');
+        // Get army list names from hidden fields (populated by handleArmySelection)
+        const army1Name = document.getElementById('army1-name');
+        const army2Name = document.getElementById('army2-name');
 
         return {
             ...formData,
-            army1: army1Select ? army1Select.value : '',
-            army2: army2Select ? army2Select.value : ''
+            army1: army1Name ? army1Name.value : '',
+            army2: army2Name ? army2Name.value : ''
         };
     }
 

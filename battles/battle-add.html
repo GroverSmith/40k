@@ -89,10 +89,11 @@
             </div>
             
             <div class="form-group">
-                <label for="army1-name">Player 1 Army List</label>
-                <input type="text" id="army1-name" name="army1" 
-                       placeholder="e.g., 1000pt Strike Force List">
-                <small class="help-text">Name or description of the army list used (optional).</small>
+                <label for="army1-select">Player 1 Army List</label>
+                <select id="army1-select" name="army1Key">
+                    <option value="">Select army list...</option>
+                </select>
+                <small class="help-text">Select the army list used by Player 1 (optional).</small>
             </div>
             
             <!-- Player 2 Information -->
@@ -115,10 +116,11 @@
             </div>
             
             <div class="form-group">
-                <label for="army2-name">Player 2 Army List</label>
-                <input type="text" id="army2-name" name="army2" 
-                       placeholder="e.g., 1000pt Patrol Detachment">
-                <small class="help-text">Name or description of the army list used (optional).</small>
+                <label for="army2-select">Player 2 Army List</label>
+                <select id="army2-select" name="army2Key">
+                    <option value="">Select army list...</option>
+                </select>
+                <small class="help-text">Select the army list used by Player 2 (optional).</small>
             </div>
             
             <!-- Battle Results -->
@@ -160,6 +162,10 @@
             <!-- Hidden fields for force names (will be populated by JS) -->
             <input type="hidden" id="force1-name" name="force1">
             <input type="hidden" id="force2-name" name="force2">
+            
+            <!-- Hidden fields for army names (will be populated by JS) -->
+            <input type="hidden" id="army1-name" name="army1">
+            <input type="hidden" id="army2-name" name="army2">
             
             <!-- Submit Buttons -->
             <div class="form-actions">
