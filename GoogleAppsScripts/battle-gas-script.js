@@ -283,28 +283,29 @@ function doPost(e) {
       victorForceKey = 'Draw';
     }
 
-    // Prepare row data
+    // Prepare row data - must match header row order exactly
     const rowData = [
-      battleKey,                    // Column 0: Key
-      timestamp,                    // Column 1: Timestamp
-      data.battleSize || '',        // Column 2: Battle Size
-      data.force1Key || '',         // Column 3: Force 1 Key
-      data.force2Key || '',         // Column 4: Force 2 Key
-      data.datePlayed || '',        // Column 5: Date Played
-      data.player1 || '',           // Column 6: Player 1
-      data.force1 || '',            // Column 7: Force 1
-      data.army1 || '',             // Column 8: Army 1
-      data.player2 || '',           // Column 9: Player 2
-      data.force2 || '',            // Column 10: Force 2
-      data.army2 || '',             // Column 11: Army 2
-      victor,                       // Column 12: Victor
-      data.player1Score || '',      // Column 13: Player 1 Score
-      data.player2Score || '',      // Column 14: Player 2 Score
-      data.battleName || '',        // Column 15: Battle Name
-      data.summaryNotes || '',      // Column 16: Summary Notes
-      data.crusadeKey || '',        // Column 17: Crusade Key
-      victorForceKey,               // Column 18: Victor Force Key
-      ''                            // Column 19: Deleted Timestamp
+      battleKey,                    // Column 0: battle_key
+      data.user_key || '',          // Column 1: user_key
+      data.crusadeKey || '',        // Column 2: crusade_key
+      victorForceKey,               // Column 3: victor_force_key
+      data.battleSize || '',        // Column 4: battle_size
+      data.force1Key || '',         // Column 5: force_key_1
+      data.force2Key || '',         // Column 6: force_key_2
+      data.datePlayed || '',        // Column 7: date_played
+      data.player1 || '',           // Column 8: player_1
+      data.force1 || '',            // Column 9: force_1
+      data.army1 || '',             // Column 10: army_1
+      data.player2 || '',           // Column 11: player_2
+      data.force2 || '',            // Column 12: force_2
+      data.army2 || '',             // Column 13: army_2
+      victor,                       // Column 14: victor
+      data.player1Score || '',      // Column 15: player_1_score
+      data.player2Score || '',      // Column 16: player_2_score
+      data.battleName || '',        // Column 17: battle_name
+      data.summaryNotes || '',      // Column 18: summary_notes
+      timestamp,                    // Column 19: timestamp
+      ''                            // Column 20: deleted_timestamp
     ];
 
     const lastRow = sheet.getLastRow();
@@ -313,20 +314,20 @@ function doPost(e) {
     sheet.getRange(newRowNumber, 1, 1, rowData.length).setValues([rowData]);
 
     // Format the new row
-    sheet.getRange(newRowNumber, 1).setFontWeight('bold'); // Key
-    sheet.getRange(newRowNumber, 2).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
-    sheet.getRange(newRowNumber, 6).setNumberFormat('yyyy-mm-dd'); // Date Played
+    sheet.getRange(newRowNumber, 1).setFontWeight('bold'); // battle_key
+    sheet.getRange(newRowNumber, 8).setNumberFormat('yyyy-mm-dd'); // date_played
+    sheet.getRange(newRowNumber, 20).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // timestamp
 
     // Format score columns as numbers
     if (data.player1Score) {
-      sheet.getRange(newRowNumber, 14).setNumberFormat('#,##0');
+      sheet.getRange(newRowNumber, 16).setNumberFormat('#,##0'); // player_1_score
     }
     if (data.player2Score) {
-      sheet.getRange(newRowNumber, 15).setNumberFormat('#,##0');
+      sheet.getRange(newRowNumber, 17).setNumberFormat('#,##0'); // player_2_score
     }
 
     // Set text wrapping for notes
-    sheet.getRange(newRowNumber, 17).setWrap(true);
+    sheet.getRange(newRowNumber, 19).setWrap(true); // summary_notes
 
     console.log('Battle report saved successfully');
 
