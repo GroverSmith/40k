@@ -4,6 +4,140 @@
 
 const TableBase = {
 
+    // Responsive breakpoints
+    breakpoints: {
+        mobile: 480,
+        tablet: 768,
+        desktop: 1024
+    },
+
+    // Current screen state
+    currentScreenState: {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait',
+        size: 'desktop'
+    },
+
+    /**
+     * Initialize responsive table functionality
+     */
+    initResponsive() {
+        this.updateScreenState();
+        this.setupResizeListener();
+        this.setupOrientationListener();
+    },
+
+    /**
+     * Update current screen state
+     */
+    updateScreenState() {
+        this.currentScreenState = {
+            width: window.innerWidth,
+            height: window.innerHeight,
+            orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait',
+            size: this.getScreenSize()
+        };
+    },
+
+    /**
+     * Get current screen size category
+     */
+    getScreenSize() {
+        const width = window.innerWidth;
+        if (width <= this.breakpoints.mobile) return 'mobile';
+        if (width <= this.breakpoints.tablet) return 'tablet';
+        return 'desktop';
+    },
+
+    /**
+     * Setup window resize listener
+     */
+    setupResizeListener() {
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const oldState = { ...this.currentScreenState };
+                this.updateScreenState();
+                
+                // Only trigger responsive update if size category changed
+                if (oldState.size !== this.currentScreenState.size) {
+                    this.triggerResponsiveUpdate();
+                }
+            }, 250);
+        });
+    },
+
+    /**
+     * Setup orientation change listener for mobile devices
+     */
+    setupOrientationListener() {
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                const oldState = { ...this.currentScreenState };
+                this.updateScreenState();
+                
+                // Trigger update on orientation change for mobile
+                if (this.currentScreenState.size === 'mobile') {
+                    this.triggerResponsiveUpdate();
+                }
+            }, 100);
+        });
+    },
+
+    /**
+     * Trigger responsive update for all tables
+     */
+    triggerResponsiveUpdate() {
+        // Dispatch custom event for tables to listen to
+        window.dispatchEvent(new CustomEvent('tableResponsiveUpdate', {
+            detail: { screenState: this.currentScreenState }
+        }));
+    },
+
+    /**
+     * Get responsive column configuration
+     */
+    getResponsiveColumns(config, screenState = null) {
+        const state = screenState || this.currentScreenState;
+        
+        // If config has responsive columns defined
+        if (config.responsiveColumns) {
+            const responsiveConfig = config.responsiveColumns[state.size];
+            if (responsiveConfig) {
+                return {
+                    columns: responsiveConfig.columns || config.columns,
+                    headers: responsiveConfig.headers || config.headers
+                };
+            }
+        }
+
+        // Default responsive behavior - hide less important columns on smaller screens
+        return this.getDefaultResponsiveColumns(config, state);
+    },
+
+    /**
+     * Get default responsive column configuration
+     */
+    getDefaultResponsiveColumns(config, screenState) {
+        const { columns, headers } = config;
+        
+        if (screenState.size === 'mobile') {
+            // On mobile, show only the most important columns
+            const mobileColumns = columns.slice(0, 3); // First 3 columns
+            const mobileHeaders = headers.slice(0, 3);
+            return { columns: mobileColumns, headers: mobileHeaders };
+        } else if (screenState.size === 'tablet') {
+            // On tablet, show more columns but not all
+            const tabletColumns = columns.slice(0, 5); // First 5 columns
+            const tabletHeaders = headers.slice(0, 5);
+            return { columns: tabletColumns, headers: tabletHeaders };
+        }
+
+        // Desktop shows all columns
+        return { columns, headers };
+    },
 
     /**
      * Create a hyperlink for any entity type
@@ -70,8 +204,12 @@ const TableBase = {
             return;
         }
 
+        // Get responsive column configuration
+        const responsiveConfig = this.getResponsiveColumns(config);
+        const { columns, headers } = responsiveConfig;
+
         const rows = items.map(item =>
-            config.buildRow(item, config.columns, config.context || {})
+            config.buildRow(item, columns, config.context || {})
         ).join('');
 
         // Build table wrapper classes
@@ -87,7 +225,7 @@ const TableBase = {
             <div class="${wrapperClasses.join(' ')}" ${wrapperStyle}>
                 <table class="data-table" ${config.tableId ? `id="${config.tableId}"` : ''}>
                     <thead>
-                        <tr>${config.headers.map(h => `<th>${h}</th>`).join('')}</tr>
+                        <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
                     </thead>
                     <tbody>${rows}</tbody>
                 </table>
@@ -96,6 +234,11 @@ const TableBase = {
 
         if (config.tableId && window.UIHelpers?.makeSortable) {
             UIHelpers.makeSortable(config.tableId);
+        }
+
+        // Store original config for responsive updates
+        if (config.tableId) {
+            this.storeTableConfig(config.tableId, { items, config, container });
         }
     },
 
@@ -212,8 +355,50 @@ const TableBase = {
             maxHeight: heightOptions.maxHeight || 500,
             noScroll: heightOptions.noScroll || false
         };
+    },
+
+    /**
+     * Store table configuration for responsive updates
+     */
+    storeTableConfig(tableId, tableData) {
+        if (!this.tableConfigs) {
+            this.tableConfigs = new Map();
+        }
+        this.tableConfigs.set(tableId, tableData);
+    },
+
+    /**
+     * Update table responsively
+     */
+    updateTableResponsive(tableId) {
+        const tableData = this.tableConfigs?.get(tableId);
+        if (tableData) {
+            const { items, config, container } = tableData;
+            this.displayTable(items, container, config);
+        }
+    },
+
+    /**
+     * Update all tables responsively
+     */
+    updateAllTablesResponsive() {
+        if (this.tableConfigs) {
+            this.tableConfigs.forEach((tableData, tableId) => {
+                this.updateTableResponsive(tableId);
+            });
+        }
     }
 };
 
 // Make globally available
 window.TableBase = TableBase;
+
+// Initialize responsive functionality when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    TableBase.initResponsive();
+    
+    // Listen for responsive update events
+    window.addEventListener('tableResponsiveUpdate', () => {
+        TableBase.updateAllTablesResponsive();
+    });
+});

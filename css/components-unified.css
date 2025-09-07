@@ -96,12 +96,14 @@ a.add-section-btn,
 a.section-action-btn,
 button.add-section-btn,
 button.section-action-btn {
-    /* All the same styles apply */
+    /* All the same styles apply from .section-action-btn */
+    display: inline-block;
 }
 
 /* Special case: Register Force button (modal trigger) */
 #register-force-btn {
     /* Inherits all styles from .section-action-btn */
+    display: inline-block;
 }
 
 /* Responsive adjustments */
@@ -260,6 +262,7 @@ button.section-action-btn {
 
 .section-actions .btn-primary {
     /* Inherits from buttons-unified.css */
+    margin: 0;
 }
 
 /* ===============================
@@ -466,6 +469,52 @@ th:not(.sort-asc):not(.sort-desc) .sort-indicator::after {
 @media (max-width: 480px) {
   .table-wrapper {
     max-height: 250px;
+  }
+}
+
+/* Responsive table columns */
+@media (max-width: 480px) {
+  .data-table th,
+  .data-table td {
+    padding: 6px 4px;
+    font-size: 14px;
+  }
+  
+  .data-table th:first-child,
+  .data-table td:first-child {
+    padding-left: 8px;
+  }
+  
+  .data-table th:last-child,
+  .data-table td:last-child {
+    padding-right: 8px;
+  }
+}
+
+/* Hide columns on very small screens */
+@media (max-width: 360px) {
+  .data-table th:nth-child(n+4),
+  .data-table td:nth-child(n+4) {
+    display: none;
+  }
+}
+
+/* Orientation-specific adjustments */
+@media (max-width: 480px) and (orientation: landscape) {
+  .table-wrapper {
+    max-height: 200px;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 4px 2px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) and (orientation: portrait) {
+  .table-wrapper {
+    max-height: 300px;
   }
 }
 

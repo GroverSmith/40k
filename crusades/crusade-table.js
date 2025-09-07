@@ -13,7 +13,19 @@ const CrusadeTable = {
                 buildRow: this.buildCrusadeRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('timestamp'),
                 noDataMessage: 'No crusades found.',
-                errorMessage: 'Failed to load crusades.'
+                errorMessage: 'Failed to load crusades.',
+                // Custom responsive column configuration
+                responsiveColumns: {
+                    mobile: {
+                        columns: ['crusade', 'state'],
+                        headers: ['Crusade', 'State']
+                    },
+                    tablet: {
+                        columns: ['crusade', 'state', 'dates'],
+                        headers: ['Crusade', 'State', 'Dates']
+                    }
+                    // desktop uses default columns
+                }
             },
             'active': {
                 columns: ['crusade', 'type', 'dates'],
@@ -22,7 +34,15 @@ const CrusadeTable = {
                 buildRow: this.buildCrusadeRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('timestamp'),
                 noDataMessage: 'No active crusades found.',
-                errorMessage: 'Failed to load active crusades.'
+                errorMessage: 'Failed to load active crusades.',
+                // Custom responsive column configuration
+                responsiveColumns: {
+                    mobile: {
+                        columns: ['crusade', 'dates'],
+                        headers: ['Crusade', 'Dates']
+                    }
+                    // tablet and desktop use default columns
+                }
             }
         };
         return configs[type] || configs['all'];
