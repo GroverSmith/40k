@@ -38,6 +38,12 @@
         <div class="battle-header" style="background: linear-gradient(135deg, #2c5aa0 0%, #1e4080 100%); padding: 30px 20px; border-radius: 10px; margin-bottom: 30px; text-align: center;">
             <h1 id="battle-title" style="color: white; margin: 0;">Loading...</h1>
             <p id="battle-date" style="color: #ccc; margin-top: 10px;">Loading date...</p>
+            <p id="battle-size" style="color: #4ecdc4; margin-top: 5px; font-size: 1.1em; font-weight: 500;">Loading size...</p>
+        </div>
+
+        <!-- Battle Result -->
+        <div class="data-section" style="text-align: center; padding: 20px; margin-bottom: 30px;">
+            <h2 id="battle-result" style="color: #4ecdc4; margin: 0;">-</h2>
         </div>
 
         <!-- Battle Details Grid -->
@@ -69,12 +75,6 @@
             </div>
         </div>
 
-        <!-- Battle Result -->
-        <div class="data-section" style="text-align: center; padding: 20px;">
-            <h2 id="battle-result" style="color: #4ecdc4; margin: 0;">-</h2>
-            <p id="battle-size" style="color: #ccc; margin-top: 10px;">-</p>
-        </div>
-
         <!-- Battle Summary -->
         <div class="data-section" id="summary-section" style="display: none;">
             <div class="section-header">
@@ -88,6 +88,7 @@
 </div>
 
 <!-- JavaScript Files -->
+<script src="../js/table-defs.js"></script>
 <script src="../js/core/config.js"></script>
 <script src="../js/core/utils.js"></script>
 <script src="../js/core/cache-manager.js"></script>

@@ -467,7 +467,7 @@ function getBattleByKey(battleKey) {
   }
 
   const data = sheet.getDataRange().getValues();
-  const headers = normalizeHeaders(data[0]);
+  const headers = data[0];
 
   // Check if row is deleted
   const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
