@@ -8,32 +8,22 @@ class UnifiedCacheFacade {
         this.dbName = 'CrusadeTrackerCache';
         this.dbVersion = 1;
         this.db = null;
-        this.scriptUrls = {
-            users: 'https://script.google.com/macros/s/AKfycbzbIx-wGm2hxFzLClVPWTwA6YeFfJvQaPkr6A5IQJom6jqYab-4DHJ_JeBgVDDgG0s/exec',
-            crusades: 'https://script.google.com/macros/s/AKfycbyYInudtrcqZvk4BYepzUxEGSLRPkIUuQknOtUOL-I0Rl4LVDGqyD0QMso3ds_Cu_BqZw/exec',
-            forces: 'https://script.google.com/macros/s/AKfycbw9gjWBeUEyKDpyB-TLOMrs5cmjrNV6EoaEV87LXfv-MfdquKVYGHCRLePsdOk9PIsz/exec',
-            armies: 'https://script.google.com/macros/s/AKfycbxjF1xuneyqEQCcPM6iGQ9CZHyAyUeH8834gUnX6c-wgSQbghhj2kYAeDcETs0K5KQ/exec',
-            xref_crusade_participants: 'https://script.google.com/macros/s/AKfycbx79dYbG5yCDKa-kz0iKPlJowWekbJkhmJRNIJ5b0HjcVfV1JXrJqqeIejxDpHoWzsIZg/exec',
-            battle_history: 'https://script.google.com/macros/s/AKfycbyO76bOvui0w5SgGfDQEpBw1nt9PGZXDNnlzTY_l84-PkMWOm-Y86A2hjC05x-Fn2D_/exec',
-            units: 'https://script.google.com/macros/s/AKfycbz7xVqEw5qHx9r_fHTmIe8D5tSjL6b_LPxTqP3wzGH5KNMUI_ATXnSlzBQX0DzYyuBNXw/exec',
-            stories: 'https://script.google.com/macros/s/AKfycbza1Ir9QjydYpiUA3C4YXcJdeXd15gZ5HVuSk_mLnyMoyNmcUhQ82c49gHP5qSEp5Xp/exec',
-            xref_story_forces: 'https://script.google.com/macros/s/AKfycbx1KvSAWcliHW0xTxq4kP9cJn2yeW9Oh72nHb7c7q8ThdRWx5ZS6lA_8hyW-yqufqw/exec',
-            xref_story_units: 'https://script.google.com/macros/s/AKfycbz7xVqEw5qHx9r_fHTmIe8D5tSjL6b_LPxTqP3wzGH5KNMUI_ATXnSlzBQX0DzYyuBNXw/exec'
-        };
         
-        // Primary key mappings for each sheet
-        this.primaryKeys = {
-            users: 'user_key',
-            crusades: 'crusade_key',
-            forces: 'force_key',
-            armies: 'army_key',
-            xref_crusade_participants: 'crusade_key', // Composite key: crusade_key + force_key
-            battle_history: 'battle_key',
-            units: 'unit_key',
-            stories: 'story_key',
-            xref_story_forces: 'story_key', // Composite key: story_key + force_key
-            xref_story_units: 'story_key' // Composite key: story_key + unit_key
-        };
+        // Extract URLs from TableDefs (if available) or use fallback
+        this.scriptUrls = {};
+        
+        Object.keys(TableDefs).forEach(sheetName => {
+            this.scriptUrls[sheetName] = TableDefs[sheetName].url;
+        });
+        
+        // Extract primary keys and composite keys from TableDefs
+        this.primaryKeys = {};
+        this.compositeKeys = {};
+        Object.keys(TableDefs).forEach(sheetName => {
+            this.primaryKeys[sheetName] = TableDefs[sheetName].primaryKey;
+            this.compositeKeys[sheetName] = TableDefs[sheetName].compositeKey;
+        });
+        console.log('UnifiedCacheFacade: Loaded primary keys from TableDefs for', Object.keys(this.primaryKeys).length, 'tables');
         
         // Cache TTL settings (in milliseconds)
         this.cacheTTL = {
@@ -86,14 +76,10 @@ class UnifiedCacheFacade {
                         store.createIndex('deleted', 'deleted', { unique: false });
                         
                         // Create composite indexes for junction tables
-                        if (sheetName.includes('xref_')) {
-                            if (sheetName === 'xref_crusade_participants') {
-                                store.createIndex('crusade_force', ['crusade_key', 'force_key'], { unique: true });
-                            } else if (sheetName === 'xref_story_forces') {
-                                store.createIndex('story_force', ['story_key', 'force_key'], { unique: true });
-                            } else if (sheetName === 'xref_story_units') {
-                                store.createIndex('story_unit', ['story_key', 'unit_key'], { unique: true });
-                            }
+                        const compositeKey = this.compositeKeys[sheetName];
+                        if (compositeKey && Array.isArray(compositeKey)) {
+                            const indexName = compositeKey.join('_');
+                            store.createIndex(indexName, compositeKey, { unique: true });
                         }
                     }
                 });
@@ -123,24 +109,20 @@ class UnifiedCacheFacade {
         // console.log(`UnifiedCacheFacade: generateRowId for ${sheetName}:`, { row, primaryKey });
         
         // Handle composite keys for junction tables
-        if (sheetName === 'xref_crusade_participants') {
-            if (!row.crusade_key || !row.force_key) {
-                console.error(`UnifiedCacheFacade: Missing required keys for ${sheetName}:`, { crusade_key: row.crusade_key, force_key: row.force_key });
-                throw new Error(`Missing required keys for ${sheetName}: crusade_key=${row.crusade_key}, force_key=${row.force_key}`);
+        const compositeKey = this.compositeKeys[sheetName];
+        if (compositeKey && Array.isArray(compositeKey)) {
+            // Check that all composite key fields are present
+            const missingKeys = compositeKey.filter(key => !row[key]);
+            if (missingKeys.length > 0) {
+                const missingInfo = missingKeys.reduce((acc, key) => {
+                    acc[key] = row[key];
+                    return acc;
+                }, {});
+                console.error(`UnifiedCacheFacade: Missing required keys for ${sheetName}:`, missingInfo);
+                throw new Error(`Missing required keys for ${sheetName}: ${missingKeys.map(key => `${key}=${row[key]}`).join(', ')}`);
             }
-            return `${row.crusade_key}_${row.force_key}`;
-        } else if (sheetName === 'xref_story_forces') {
-            if (!row.story_key || !row.force_key) {
-                console.error(`UnifiedCacheFacade: Missing required keys for ${sheetName}:`, { story_key: row.story_key, force_key: row.force_key });
-                throw new Error(`Missing required keys for ${sheetName}: story_key=${row.story_key}, force_key=${row.force_key}`);
-            }
-            return `${row.story_key}_${row.force_key}`;
-        } else if (sheetName === 'xref_story_units') {
-            if (!row.story_key || !row.unit_key) {
-                console.error(`UnifiedCacheFacade: Missing required keys for ${sheetName}:`, { story_key: row.story_key, unit_key: row.unit_key });
-                throw new Error(`Missing required keys for ${sheetName}: story_key=${row.story_key}, unit_key=${row.unit_key}`);
-            }
-            return `${row.story_key}_${row.unit_key}`;
+            // Generate composite key by joining all fields with underscores
+            return compositeKey.map(key => row[key]).join('_');
         }
         
         if (!row[primaryKey]) {
@@ -223,6 +205,37 @@ class UnifiedCacheFacade {
         
         // Wait a bit for any pending transactions to complete
         await new Promise(resolve => setTimeout(resolve, 50));
+    }
+
+    /**
+     * Get table definitions (for debugging)
+     */
+    getTableDefs() {
+        if (typeof TableDefs !== 'undefined') {
+            return TableDefs;
+        }
+        return null;
+    }
+
+    /**
+     * Get script URLs (for debugging)
+     */
+    getScriptUrls() {
+        return this.scriptUrls;
+    }
+
+    /**
+     * Get primary keys (for debugging)
+     */
+    getPrimaryKeys() {
+        return this.primaryKeys;
+    }
+
+    /**
+     * Get composite keys (for debugging)
+     */
+    getCompositeKeys() {
+        return this.compositeKeys;
     }
 
     /**

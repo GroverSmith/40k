@@ -14,12 +14,15 @@ The Unified Cache Facade provides a clean, IndexedDB-based caching layer in fron
 
 ### 1. Include the Scripts
 
-Add these to your HTML files:
+Add these to your HTML files (in this order):
 
 ```html
+<script src="js/table-defs.js"></script>
 <script src="js/core/unified-cache-facade.js"></script>
 <script src="js/core/unified-cache-examples.js"></script>
 ```
+
+**Note**: `table-defs.js` must be included first as the unified cache facade depends on it for URLs and primary keys.
 
 ### 2. Basic Usage
 
@@ -143,6 +146,27 @@ The facade supports all Google Apps Scripts:
 | `xref_story_units` | `story_key` + `unit_key` | Story-unit relationships |
 
 ## Cache Configuration
+
+### Table Definitions
+
+The unified cache facade automatically loads configuration from `table-defs.js`:
+
+- **Script URLs**: Automatically extracted from `TableDefs[tableName].url`
+- **Primary Keys**: Automatically extracted from `TableDefs[tableName].primaryKey`
+- **Composite Keys**: Automatically extracted from `TableDefs[tableName].compositeKey` (for junction tables)
+- **Column Mappings**: Available via `TableDefs[tableName].columns`
+
+### Composite Keys
+
+Junction tables (tables with `xref_` prefix) use composite keys for uniqueness:
+
+- **Primary Key**: Single field for simple lookups (e.g., `crusade_key`)
+- **Composite Key**: Array of fields that together form a unique identifier (e.g., `['crusade_key', 'force_key']`)
+
+The unified cache facade automatically:
+- Generates unique row IDs by joining composite key fields with underscores
+- Creates IndexedDB indexes on composite key fields for efficient querying
+- Validates that all composite key fields are present in data
 
 ### TTL Settings
 

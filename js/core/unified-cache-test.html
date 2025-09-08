@@ -112,6 +112,10 @@
         <button class="button" onclick="testGetAllUsers()">Get All Users</button>
         <button class="button" onclick="testGetAllStories()">Get All Stories</button>
         <button class="button" onclick="testGetAllUnits()">Get All Units</button>
+        <button class="button" onclick="testGetAllBattleHistory()">Get All Battle History</button>
+        <button class="button" onclick="testGetAllStoryForces()">Get All Story Forces</button>
+        <button class="button" onclick="testGetAllStoryUnits()">Get All Story Units</button>
+        <button class="button" onclick="testForceRefreshStoryUnits()">Force Refresh Story Units</button>
         
         <div id="basic-output" class="output"></div>
     </div>
@@ -132,11 +136,13 @@
         <button class="button" onclick="testRefreshCache()">Refresh All Caches</button>
         <button class="button" onclick="testClearCache()">Clear All Caches</button>
         <button class="button" onclick="testForceRefresh()">Force Refresh Crusades</button>
+        <button class="button" onclick="testTableDefs()">Check Table Definitions</button>
         
         <div id="cache-output" class="output"></div>
     </div>
 
-    <!-- Include the unified cache facade -->
+    <!-- Include dependencies first -->
+    <script src="../table-defs.js"></script>
     <script src="unified-cache-facade.js"></script>
     <script src="unified-cache-examples.js"></script>
     
@@ -304,6 +310,90 @@
             }
         }
 
+        async function testGetAllBattleHistory() {
+            clearOutput(testOutputs.basic);
+            log(testOutputs.basic, 'Testing: Get All Battle History');
+            
+            try {
+                const startTime = performance.now();
+                const battles = await UnifiedCache.getAllRows('battle_history');
+                const endTime = performance.now();
+                
+                log(testOutputs.basic, `✅ Success! Found ${battles.length} battle history records in ${(endTime - startTime).toFixed(2)}ms`);
+                if (battles.length > 0) {
+                    log(testOutputs.basic, `Sample battle: ${JSON.stringify(battles[0], null, 2)}`);
+                } else {
+                    log(testOutputs.basic, 'No battle history records found');
+                }
+                
+            } catch (error) {
+                log(testOutputs.basic, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testGetAllStoryForces() {
+            clearOutput(testOutputs.basic);
+            log(testOutputs.basic, 'Testing: Get All Story Forces (xref_story_forces)');
+            
+            try {
+                const startTime = performance.now();
+                const storyForces = await UnifiedCache.getAllRows('xref_story_forces');
+                const endTime = performance.now();
+                
+                log(testOutputs.basic, `✅ Success! Found ${storyForces.length} story-force relationships in ${(endTime - startTime).toFixed(2)}ms`);
+                if (storyForces.length > 0) {
+                    log(testOutputs.basic, `Sample story-force: ${JSON.stringify(storyForces[0], null, 2)}`);
+                } else {
+                    log(testOutputs.basic, 'No story-force relationships found');
+                }
+                
+            } catch (error) {
+                log(testOutputs.basic, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testGetAllStoryUnits() {
+            clearOutput(testOutputs.basic);
+            log(testOutputs.basic, 'Testing: Get All Story Units (xref_story_units)');
+            
+            try {
+                const startTime = performance.now();
+                const storyUnits = await UnifiedCache.getAllRows('xref_story_units');
+                const endTime = performance.now();
+                
+                log(testOutputs.basic, `✅ Success! Found ${storyUnits.length} story-unit relationships in ${(endTime - startTime).toFixed(2)}ms`);
+                if (storyUnits.length > 0) {
+                    log(testOutputs.basic, `Sample story-unit: ${JSON.stringify(storyUnits[0], null, 2)}`);
+                } else {
+                    log(testOutputs.basic, 'No story-unit relationships found');
+                }
+                
+            } catch (error) {
+                log(testOutputs.basic, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testForceRefreshStoryUnits() {
+            clearOutput(testOutputs.basic);
+            log(testOutputs.basic, 'Testing: Force Refresh Story Units (bypasses cache)');
+            
+            try {
+                const startTime = performance.now();
+                const storyUnits = await UnifiedCache.getAllRows('xref_story_units', true); // Force refresh
+                const endTime = performance.now();
+                
+                log(testOutputs.basic, `✅ Success! Force refreshed and found ${storyUnits.length} story-unit relationships in ${(endTime - startTime).toFixed(2)}ms`);
+                if (storyUnits.length > 0) {
+                    log(testOutputs.basic, `Sample story-unit: ${JSON.stringify(storyUnits[0], null, 2)}`);
+                } else {
+                    log(testOutputs.basic, 'No story-unit relationships found (sheet is empty)');
+                }
+                
+            } catch (error) {
+                log(testOutputs.basic, `❌ Error: ${error.message}`);
+            }
+        }
+
         async function testActiveCrusades() {
             clearOutput(testOutputs.advanced);
             log(testOutputs.advanced, 'Testing: Active Crusades with Participants');
@@ -457,6 +547,49 @@
                 // Update stats
                 const stats = await UnifiedCache.getCacheStats();
                 updateStats(stats);
+                
+            } catch (error) {
+                log(testOutputs.cache, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testTableDefs() {
+            clearOutput(testOutputs.cache);
+            log(testOutputs.cache, 'Testing: Table Definitions');
+            
+            try {
+                const tableDefs = UnifiedCache.getTableDefs();
+                const scriptUrls = UnifiedCache.getScriptUrls();
+                const primaryKeys = UnifiedCache.getPrimaryKeys();
+                const compositeKeys = UnifiedCache.getCompositeKeys();
+                
+                if (tableDefs) {
+                    log(testOutputs.cache, `✅ TableDefs loaded successfully!`);
+                    log(testOutputs.cache, `Available tables: ${Object.keys(tableDefs).join(', ')}`);
+                    
+                    // Show a few sample URLs and primary keys
+                    const sampleTables = Object.keys(scriptUrls).slice(0, 3);
+                    sampleTables.forEach(tableName => {
+                        const primaryKey = primaryKeys[tableName] || 'N/A';
+                        const compositeKey = compositeKeys[tableName] ? `[${compositeKeys[tableName].join(', ')}]` : 'N/A';
+                        log(testOutputs.cache, `${tableName}: ${scriptUrls[tableName].substring(0, 50)}... (PK: ${primaryKey}, Composite: ${compositeKey})`);
+                    });
+                    
+                    log(testOutputs.cache, `Total tables configured: ${Object.keys(scriptUrls).length}`);
+                    log(testOutputs.cache, `Primary keys loaded: ${Object.keys(primaryKeys).length}`);
+                    
+                    // Show composite key summary
+                    const tablesWithCompositeKeys = Object.keys(compositeKeys).filter(tableName => compositeKeys[tableName]);
+                    if (tablesWithCompositeKeys.length > 0) {
+                        log(testOutputs.cache, `Tables with composite keys: ${tablesWithCompositeKeys.join(', ')}`);
+                        tablesWithCompositeKeys.forEach(tableName => {
+                            log(testOutputs.cache, `  ${tableName}: [${compositeKeys[tableName].join(', ')}]`);
+                        });
+                    }
+                } else {
+                    log(testOutputs.cache, `❌ TableDefs not available, using fallback URLs`);
+                    log(testOutputs.cache, `Fallback tables: ${Object.keys(scriptUrls).join(', ')}`);
+                }
                 
             } catch (error) {
                 log(testOutputs.cache, `❌ Error: ${error.message}`);
