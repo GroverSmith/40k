@@ -30,23 +30,75 @@ class ArmyDetails {
     
     async loadArmyData() {
         try {
-            const armyListUrl = CrusadeConfig.getSheetUrl('armies');
-            
-            if (!armyListUrl) {
-                throw new Error('Army Lists sheet URL not configured');
+            let army = null;
+
+            // First, check if we have cached armies
+            const cached = CacheManager.get('armies');
+            if (cached && cached.valid && cached.data) {
+                army = this.findArmyInCache(cached.data, this.armyKey);
+                if (army) {
+                    console.log('Found army in cache');
+                }
             }
-            
-            // Use the GET endpoint to fetch specific army list by ID
-            const fetchUrl = `${armyListUrl}?action=get&key=${encodeURIComponent(this.armyKey)}`;
-            
-            // Use utility for standard data fetching
-            this.armyData = await fetchEntityData(fetchUrl, 'army list');
-            this.displayArmy();
-            
+
+            // If not in cache, fetch from API
+            if (!army) {
+                console.log('Army not in cache, fetching from API');
+                const armiesUrl = CrusadeConfig.getSheetUrl('armies');
+
+                // Try to get specific army first using utility
+                const fetchUrl = `${armiesUrl}?action=get&key=${encodeURIComponent(this.armyKey)}`;
+                
+                try {
+                    army = await fetchEntityData(fetchUrl, 'army list');
+                    // Cache this specific army for future use
+                    CacheManager.set('armies', army);
+                } catch (error) {
+                    // Fallback: fetch all armies and cache them
+                    const allArmiesResponse = await CacheManager.fetchWithCache(armiesUrl, 'armies');
+                    army = this.findArmyInCache(allArmiesResponse, this.armyKey);
+                }
+            }
+
+            if (army) {
+                this.armyData = army;
+                this.displayArmy();
+            } else {
+                this.showError('Army list not found');
+            }
+
         } catch (error) {
             console.error('Error loading army list:', error);
-            this.showError('Failed to load army list: ' + error.message);
+            this.showError('Error loading army list');
         }
+    }
+
+    /**
+     * Find an army in cached data (handles both array and object formats)
+     */
+    findArmyInCache(data, armyKey) {
+        if (!data || !armyKey) return null;
+
+        // Handle success/data format
+        if (data.success && data.data) {
+            return this.findArmyInCache(data.data, armyKey);
+        }
+
+        // Handle array format
+        if (Array.isArray(data)) {
+            return data.find(army => {
+                const key = army.army_key || army.Key || army.key || army.id;
+                return key === armyKey;
+            });
+        }
+
+        // Handle single object format
+        if (typeof data === 'object') {
+            const key = data.army_key || data.Key || data.key || data.id;
+            return key === armyKey ? data : null;
+        }
+
+        return null;
     }
     
     displayArmy() {
@@ -54,12 +106,12 @@ class ArmyDetails {
         toggleLoadingState('loading-state', 'army-list-content', true);
         
         // Update page title
-        const armyName = this.armyData['Army Name'] || 'Unnamed Army List';
+        const armyName = this.armyData.army_name || this.armyData['Army Name'] || 'Unnamed Army List';
         document.title = `${armyName} - Army List Viewer`;
         
         // Update header using utility
-        const forceName = this.armyData['Force Name'] || 'Unknown Force';
-        const faction = this.armyData.Faction || 'Unknown Faction';
+        const forceName = this.armyData.force_name || this.armyData['Force Name'] || 'Unknown Force';
+        const faction = this.armyData.faction || this.armyData.Faction || 'Unknown Faction';
         setElementTexts({
             'army-list-title': armyName,
             'army-list-subtitle': `${forceName} • ${faction}`
@@ -69,7 +121,7 @@ class ArmyDetails {
         this.displayMetadata();
         
         // Display army list text
-        const armyListText = this.armyData['Army List Text'] || 'No army list content available.';
+        const armyListText = this.armyData.army_list_text || this.armyData['Army List Text'] || 'No army list content available.';
         const charCount = armyListText.length.toLocaleString();
         setElementTexts({
             'army-list-text': armyListText,
@@ -96,43 +148,44 @@ class ArmyDetails {
         const metaItems = [
             {
                 label: 'Force Name',
-                value: this.armyData['Force Name'] || 'Unknown'
+                value: this.armyData.force_name || this.armyData['Force Name'] || 'Unknown'
             },
             {
                 label: 'Player',
-                value: this.armyData['User Name'] || 'Unknown'
+                value: this.armyData.user_name || this.armyData['User Name'] || 'Unknown'
             },
             {
                 label: 'Faction',
-                value: this.armyData.Faction || 'Unknown'
+                value: this.armyData.faction || this.armyData.Faction || 'Unknown'
             },
             {
                 label: 'Detachment',
-                value: this.armyData.Detachment || 'Not specified'
+                value: this.armyData.detachment || this.armyData.Detachment || 'Not specified'
             },
             {
                 label: 'Points Value',
-                value: this.armyData['Points Value'] ? 
-                       parseInt(this.armyData['Points Value']).toLocaleString() + ' pts' : 
+                value: (this.armyData.points_value || this.armyData['Points Value']) ? 
+                       parseInt(this.armyData.points_value || this.armyData['Points Value']).toLocaleString() + ' pts' : 
                        'Not specified'
             },
             {
                 label: 'MFM Version',
-                value: this.armyData['MFM Version'] || 'Not specified'
+                value: this.armyData.mfm_version || this.armyData['MFM Version'] || 'Not specified'
             },
             {
                 label: 'Date Added',
-                value: this.armyData.Timestamp ? 
-                       new Date(this.armyData.Timestamp).toLocaleDateString() : 
+                value: (this.armyData.timestamp || this.armyData.Timestamp) ? 
+                       new Date(this.armyData.timestamp || this.armyData.Timestamp).toLocaleDateString() : 
                        'Unknown'
             }
         ];
         
         // Add notes if available
-        if (this.armyData.Notes && this.armyData.Notes.trim()) {
+        const notes = this.armyData.notes || this.armyData.Notes;
+        if (notes && notes.trim()) {
             metaItems.push({
                 label: 'Notes',
-                value: this.armyData.Notes
+                value: notes
             });
         }
         

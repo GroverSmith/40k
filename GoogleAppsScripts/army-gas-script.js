@@ -367,7 +367,7 @@ function doGet(e) {
       case 'list':
         return getArmyLists(e.parameter);
       case 'get':
-        return getArmyListByKey(e.parameter.key);
+        return getArmyByKey(e.parameter.key);
       // Test case removed - no longer needed
       case 'delete':
         return softDeleteArmyList(e.parameter.key);
