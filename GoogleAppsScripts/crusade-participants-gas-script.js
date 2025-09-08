@@ -264,24 +264,70 @@ function doGet(e) {
 }
 
 function getParticipantsList(params = {}) {
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  
-  if (!sheet) {
+  try {
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      // Return empty standardized format if sheet doesn't exist
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: true,
+          count: 0,
+          totalCount: 0,
+          data: [],
+          hasMore: false
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    
+    // Filter out deleted rows
+    const activeData = filterActiveRows(data);
+    
+    const headers = activeData[0];
+    const rows = activeData.slice(1);
+    
+    console.log('getParticipantsList - Total active rows found:', rows.length);
+    console.log('getParticipantsList - Headers:', headers);
+    
+    // Convert to objects with consistent field names
+    const participants = rows.map((row) => {
+      const obj = {};
+      
+      headers.forEach((header, headerIndex) => {
+        obj[header] = row[headerIndex];
+      });
+      
+      return obj;
+    });
+    
+    console.log('getParticipantsList - Returning participants:', participants.map(participant => ({ 
+      crusadeKey: participant['crusade_key'], 
+      forceKey: participant['force_key']
+    })));
+    
     return ContentService
-      .createTextOutput(JSON.stringify([]))
+      .createTextOutput(JSON.stringify({
+        success: true,
+        count: participants.length,
+        totalCount: participants.length,
+        data: participants,
+        hasMore: false
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    console.error('Error getting participants list:', error);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
       .setMimeType(ContentService.MimeType.JSON);
   }
-  
-  const data = sheet.getDataRange().getValues();
-  
-  // Filter out deleted rows
-  const activeData = filterActiveRows(data);
-  
-  // Return raw data for compatibility with existing sheets system
-  return ContentService
-    .createTextOutput(JSON.stringify(activeData))
-    .setMimeType(ContentService.MimeType.JSON);
 }
 
 
