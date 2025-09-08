@@ -44,6 +44,57 @@ const CacheManager = {
     },
     
     /**
+     * Convert raw Google Sheets data to objects
+     * @param {any} data - Raw data from Google Sheets API
+     * @param {string} dataType - Type of data for column mapping
+     * @returns {any} Processed data in object format
+     */
+    convertToObjects(data, dataType) {
+        // If data is already in object format, return as-is
+        if (data && typeof data === 'object' && !Array.isArray(data)) {
+            return data;
+        }
+        
+        // If data is an array of arrays (raw Google Sheets format)
+        if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
+            console.log(`Converting raw Google Sheets data to objects for ${dataType}`);
+            
+            // Get column definitions from TableDefs
+            const columns = window.TableDefs && window.TableDefs.getColumns ? 
+                window.TableDefs.getColumns(dataType) : null;
+            
+            if (!columns) {
+                console.warn(`No column definitions found for ${dataType}, returning raw data`);
+                return data;
+            }
+            
+            const headers = data[0];
+            const rows = data.slice(1);
+            
+            // Convert rows to objects
+            const objects = rows.map(row => {
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = row[index] || '';
+                });
+                return obj;
+            });
+            
+            // Return in the expected format: { data: [objects...] }
+            return { data: objects };
+        }
+        
+        // If data is already an array of objects, wrap it in the expected format
+        if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'object' && !Array.isArray(data[0])) {
+            return { data: data };
+        }
+        
+        // Return data as-is if we can't process it
+        console.warn(`Unable to convert data for ${dataType}, returning as-is`);
+        return data;
+    },
+    
+    /**
      * Get cached data if valid
      * @param {string} dataType - Type of data (forces, users, etc.)
      * @returns {Object|null} Cached data or null if invalid/missing
@@ -155,10 +206,13 @@ const CacheManager = {
             
             const data = await response.json();
             
-            // Cache the response using dataType as the cache key
-            this.set(dataType, data, { url });
+            // Convert raw Google Sheets data to objects if needed
+            const processedData = this.convertToObjects(data, dataType);
             
-            return data;
+            // Cache the processed data using dataType as the cache key
+            this.set(dataType, processedData, { url });
+            
+            return processedData;
             
         } catch (error) {
             console.error('Fetch error:', error);

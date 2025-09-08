@@ -185,7 +185,7 @@ class StoryDetails {
                     ${story['force_key'] || story['Force Key'] ? `<p>Force: ${story['force_key'] || story['Force Key']}</p>` : ''}
                 </div>
                 <div id="related-units-section"></div>
-                ${story['crusade_key'] || story['Crusade Key'] ? `<p>Crusade: ${story['crusade_key'] || story['Crusade Key']}</p>` : ''}
+                <div id="crusade-section"></div>
             </footer>
         </article>
         `;
@@ -193,7 +193,6 @@ class StoryDetails {
         container.innerHTML = html;
 
         // Load related forces asynchronously (non-blocking)
-        console.log('Calling loadRelatedForcesAsync for story:', story.story_key || story.Key);
         this.loadRelatedForcesAsync(story);
     }
 
@@ -202,17 +201,16 @@ class StoryDetails {
      */
     async loadRelatedForcesAsync(story) {
         if (!story.story_key && !story.Key) {
-            console.log('No story key found for related forces/units');
             return;
         }
 
         const storyKey = story.story_key || story.Key;
-        console.log('Loading related forces and units for story:', storyKey);
         
-        // Load related forces and units in parallel
+        // Load related forces, units, and crusade in parallel
         await Promise.all([
             this.loadRelatedForces(storyKey),
-            this.loadRelatedUnits(storyKey)
+            this.loadRelatedUnits(storyKey),
+            this.loadCrusadeInfo(story)
         ]);
     }
 
@@ -220,53 +218,37 @@ class StoryDetails {
      * Load related forces from cache or API
      */
     async loadRelatedForces(storyKey) {
-        console.log('loadRelatedForces called with storyKey:', storyKey);
         try {
             // First check cache
             const cachedForces = CacheManager.get('xref_story_forces', 'all');
-            console.log('Cached forces data:', cachedForces);
             let junctionData = null;
 
             if (cachedForces && cachedForces.valid && cachedForces.data) {
-                console.log('Using cached junction data');
                 junctionData = cachedForces.data;
             } else {
-                console.log('Fetching junction data from API');
                 const junctionUrl = CrusadeConfig.getSheetUrl('xref_story_forces');
                 if (!junctionUrl) return;
                 junctionData = await CacheManager.fetchWithCache(junctionUrl, 'xref_story_forces');
             }
 
-            // Handle object format (all GAS scripts return objects)
+            // Handle object format (all cached data is objects)
             let storyForces = [];
             
             if (junctionData && junctionData.data && Array.isArray(junctionData.data)) {
-                console.log('Processing junction data with', junctionData.data.length, 'objects');
-                storyForces = junctionData.data.filter(item => {
-                    console.log('Checking object:', item, 'story_key:', item.story_key, 'against:', storyKey, 'match:', item.story_key === storyKey);
-                    return item.story_key === storyKey;
-                });
+                storyForces = junctionData.data.filter(item => item.story_key === storyKey);
             }
 
             // Update the related forces section if we found any
             if (storyForces.length > 0) {
-                console.log('Found related forces:', storyForces);
                 const relatedForcesSection = document.getElementById('related-forces-section');
                 if (relatedForcesSection) {
-                    const forcesHtml = storyForces.map(fk => 
-                        `<a href="../forces/force-details.html?key=${fk.force_key}">${fk.force_key}</a>`
-                    ).join(', ');
+                    // Get force names from cache
+                    const forcesHtml = await this.buildForcesHtml(storyForces);
                     relatedForcesSection.innerHTML = `<p>Related Forces: ${forcesHtml}</p>`;
-                    console.log('Updated related forces section');
-                } else {
-                    console.log('Related forces section element not found');
                 }
-            } else {
-                console.log('No related forces found for story:', storyKey);
             }
         } catch (error) {
             console.error('Error loading related forces:', error);
-            console.error('Error stack:', error.stack);
         }
     }
 
@@ -287,32 +269,21 @@ class StoryDetails {
                 junctionData = await CacheManager.fetchWithCache(junctionUrl, 'xref_story_units');
             }
 
-            // Handle object format (all GAS scripts return objects)
+            // Handle object format (all cached data is objects)
             let storyUnits = [];
             
             if (junctionData && junctionData.data && Array.isArray(junctionData.data)) {
-                console.log('Processing units junction data with', junctionData.data.length, 'objects');
-                storyUnits = junctionData.data.filter(item => {
-                    console.log('Checking unit object:', item, 'story_key:', item.story_key, 'against:', storyKey, 'match:', item.story_key === storyKey);
-                    return item.story_key === storyKey;
-                });
+                storyUnits = junctionData.data.filter(item => item.story_key === storyKey);
             }
 
             // Update the related units section if we found any
             if (storyUnits.length > 0) {
-                console.log('Found related units:', storyUnits);
                 const relatedUnitsSection = document.getElementById('related-units-section');
                 if (relatedUnitsSection) {
-                    const unitsHtml = storyUnits.map(uk => 
-                        `<a href="../units/unit-details.html?key=${uk.unit_key}">${uk.unit_key}</a>`
-                    ).join(', ');
+                    // Get unit names from cache
+                    const unitsHtml = await this.buildUnitsHtml(storyUnits);
                     relatedUnitsSection.innerHTML = `<p>Related Units: ${unitsHtml}</p>`;
-                    console.log('Updated related units section');
-                } else {
-                    console.log('Related units section element not found');
                 }
-            } else {
-                console.log('No related units found for story:', storyKey);
             }
         } catch (error) {
             console.error('Error loading related units:', error);
@@ -342,6 +313,75 @@ class StoryDetails {
         const container = CoreUtils.dom.getElement('story-content');
         if (container) {
             container.innerHTML = CoreUtils.details.createErrorHtml(message);
+        }
+    }
+
+    /**
+     * Build HTML for related forces with names from cache
+     */
+    async buildForcesHtml(storyForces) {
+        const forcesCache = CacheManager.get('forces', 'all');
+        
+        if (!forcesCache || !forcesCache.valid || !forcesCache.data || !forcesCache.data.data) {
+            // Fallback to force keys if cache not available
+            return storyForces.map(fk => 
+                `<a href="../forces/force-details.html?key=${fk.force_key}">${fk.force_key}</a>`
+            ).join(', ');
+        }
+
+        const forcesData = forcesCache.data.data;
+        return storyForces.map(fk => {
+            const force = forcesData.find(f => f.force_key === fk.force_key);
+            const displayName = force ? force.force_name : fk.force_key;
+            return `<a href="../forces/force-details.html?key=${fk.force_key}">${displayName}</a>`;
+        }).join(', ');
+    }
+
+    /**
+     * Build HTML for related units with names from cache
+     */
+    async buildUnitsHtml(storyUnits) {
+        const unitsCache = CacheManager.get('units', 'all');
+        if (!unitsCache || !unitsCache.valid || !unitsCache.data || !unitsCache.data.data) {
+            // Fallback to unit keys if cache not available
+            return storyUnits.map(uk => 
+                `<a href="../units/unit-details.html?key=${uk.unit_key}">${uk.unit_key}</a>`
+            ).join(', ');
+        }
+
+        const unitsData = unitsCache.data.data;
+        return storyUnits.map(uk => {
+            const unit = unitsData.find(u => u.unit_key === uk.unit_key);
+            const displayName = unit ? unit.unit_name : uk.unit_key;
+            return `<a href="../units/unit-details.html?key=${uk.unit_key}">${displayName}</a>`;
+        }).join(', ');
+    }
+
+    /**
+     * Load crusade information and display as hyperlink
+     */
+    async loadCrusadeInfo(story) {
+        const crusadeKey = story.crusade_key || story['Crusade Key'];
+        if (!crusadeKey) return;
+
+        try {
+            const crusadesCache = CacheManager.get('crusades', 'all');
+            let crusadeName = crusadeKey; // Fallback to key if cache not available
+
+            if (crusadesCache && crusadesCache.valid && crusadesCache.data && crusadesCache.data.data) {
+                const crusadesData = crusadesCache.data.data;
+                const crusade = crusadesData.find(c => c.crusade_key === crusadeKey);
+                if (crusade) {
+                    crusadeName = crusade.crusade_name;
+                }
+            }
+
+            const crusadeSection = document.getElementById('crusade-section');
+            if (crusadeSection) {
+                crusadeSection.innerHTML = `<p>Crusade: <a href="../crusades/crusade-details.html?key=${crusadeKey}">${crusadeName}</a></p>`;
+            }
+        } catch (error) {
+            console.error('Error loading crusade info:', error);
         }
     }
 }

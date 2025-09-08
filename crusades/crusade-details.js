@@ -52,7 +52,18 @@ class CrusadeDetails {
             // If API doesn't work, fetch all crusades and find ours
             const allCrusades = await CacheManager.fetchSheetData('crusades');
 
-            if (allCrusades && allCrusades.length > 1) {
+            // Handle new object format: {data: [objects...]}
+            if (allCrusades && allCrusades.data && Array.isArray(allCrusades.data)) {
+                const crusade = allCrusades.data.find(c => c.crusade_key === this.crusadeKey);
+                if (crusade) {
+                    this.crusadeData = crusade;
+                    this.displayCrusade();
+                    return;
+                }
+            }
+            
+            // Handle legacy array format (fallback)
+            if (allCrusades && Array.isArray(allCrusades) && allCrusades.length > 1) {
                 const headers = allCrusades[0];
                 const crusadeKeyIndex = TableDefs.getColumnIndex('crusades', 'crusade_key');
                 const crusadeRow = allCrusades.find((row, index) => {

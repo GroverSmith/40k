@@ -176,12 +176,17 @@ const TableBase = {
     processResponseData(data, dataKey = null) {
         if (!data) return [];
 
-        // Handle success/data format
+        // Handle new cached object format: {data: [objects...]}
+        if (data.data && Array.isArray(data.data)) {
+            return data.data;
+        }
+
+        // Handle success/data format (legacy)
         if (data.success && dataKey && data[dataKey]) {
             return data[dataKey];
         }
 
-        // Handle raw array format with headers
+        // Handle raw array format with headers (legacy)
         if (Array.isArray(data) && data.length > 1) {
             const headers = data[0];
             return data.slice(1).map(row => {
@@ -191,6 +196,16 @@ const TableBase = {
                 });
                 return item;
             });
+        }
+
+        // Handle direct array of objects
+        if (Array.isArray(data)) {
+            return data;
+        }
+
+        // Handle single object
+        if (typeof data === 'object') {
+            return [data];
         }
 
         return [];
