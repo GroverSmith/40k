@@ -120,13 +120,32 @@ class UnifiedCacheFacade {
             throw new Error(`No primary key defined for sheet: ${sheetName}`);
         }
         
+        // console.log(`UnifiedCacheFacade: generateRowId for ${sheetName}:`, { row, primaryKey });
+        
         // Handle composite keys for junction tables
         if (sheetName === 'xref_crusade_participants') {
+            if (!row.crusade_key || !row.force_key) {
+                console.error(`UnifiedCacheFacade: Missing required keys for ${sheetName}:`, { crusade_key: row.crusade_key, force_key: row.force_key });
+                throw new Error(`Missing required keys for ${sheetName}: crusade_key=${row.crusade_key}, force_key=${row.force_key}`);
+            }
             return `${row.crusade_key}_${row.force_key}`;
         } else if (sheetName === 'xref_story_forces') {
+            if (!row.story_key || !row.force_key) {
+                console.error(`UnifiedCacheFacade: Missing required keys for ${sheetName}:`, { story_key: row.story_key, force_key: row.force_key });
+                throw new Error(`Missing required keys for ${sheetName}: story_key=${row.story_key}, force_key=${row.force_key}`);
+            }
             return `${row.story_key}_${row.force_key}`;
         } else if (sheetName === 'xref_story_units') {
+            if (!row.story_key || !row.unit_key) {
+                console.error(`UnifiedCacheFacade: Missing required keys for ${sheetName}:`, { story_key: row.story_key, unit_key: row.unit_key });
+                throw new Error(`Missing required keys for ${sheetName}: story_key=${row.story_key}, unit_key=${row.unit_key}`);
+            }
             return `${row.story_key}_${row.unit_key}`;
+        }
+        
+        if (!row[primaryKey]) {
+            console.error(`UnifiedCacheFacade: Missing primary key for ${sheetName}:`, { primaryKey, value: row[primaryKey] });
+            throw new Error(`Missing primary key for ${sheetName}: ${primaryKey}=${row[primaryKey]}`);
         }
         
         return row[primaryKey];
@@ -183,6 +202,15 @@ class UnifiedCacheFacade {
         };
         
         store.put(metadata);
+        
+        // Wait for transaction to complete
+        await new Promise((resolve, reject) => {
+            transaction.oncomplete = () => resolve();
+            transaction.onerror = () => {
+                console.error(`UnifiedCacheFacade: Metadata transaction failed for ${sheetName}:`, transaction.error);
+                reject(transaction.error);
+            };
+        });
     }
 
     /**
@@ -276,26 +304,37 @@ class UnifiedCacheFacade {
         const timestamp = Date.now();
         const cacheRows = [];
         
+        console.log(`UnifiedCacheFacade: Processing ${rows.length} rows for ${sheetName}`);
+        // if (rows.length > 0) {
+        //     console.log(`UnifiedCacheFacade: Sample row for ${sheetName}:`, rows[0]);
+        //     console.log(`UnifiedCacheFacade: Available fields:`, Object.keys(rows[0]));
+        // }
+        
         for (const row of rows) {
-            const rowId = this.generateRowId(sheetName, row);
-            
-            // Skip duplicates
-            if (storedIds.has(rowId)) {
-                console.warn(`UnifiedCacheFacade: Skipping duplicate row for ${sheetName}: ${rowId}`);
-                continue;
+            try {
+                const rowId = this.generateRowId(sheetName, row);
+                
+                // Skip duplicates
+                if (storedIds.has(rowId)) {
+                    console.warn(`UnifiedCacheFacade: Skipping duplicate row for ${sheetName}: ${rowId}`);
+                    continue;
+                }
+                
+                storedIds.add(rowId);
+                
+                const cacheRow = {
+                    id: rowId,
+                    primaryKey: rowId, // Use the generated rowId as the primaryKey for consistency
+                    data: row,
+                    timestamp: timestamp,
+                    deleted: !!(row.deleted_timestamp)
+                };
+                
+                cacheRows.push(cacheRow);
+            } catch (error) {
+                console.error(`UnifiedCacheFacade: Error processing row for ${sheetName}:`, error, row);
+                // Continue processing other rows
             }
-            
-            storedIds.add(rowId);
-            
-            const cacheRow = {
-                id: rowId,
-                primaryKey: row[this.primaryKeys[sheetName]],
-                data: row,
-                timestamp: timestamp,
-                deleted: !!(row.deleted_timestamp)
-            };
-            
-            cacheRows.push(cacheRow);
         }
         
         // Clear existing data and store new data in a single transaction
@@ -313,13 +352,16 @@ class UnifiedCacheFacade {
         // Wait for transaction to complete
         await new Promise((resolve, reject) => {
             transaction.oncomplete = () => resolve();
-            transaction.onerror = () => reject(transaction.error);
+            transaction.onerror = () => {
+                console.error(`UnifiedCacheFacade: Transaction failed for ${sheetName}:`, transaction.error);
+                reject(transaction.error);
+            };
         });
         
         // Update metadata with the actual count of stored rows
         await this.updateCacheMetadata(sheetName, storedIds.size);
         
-        console.log(`UnifiedCacheFacade: Stored ${storedIds.size} unique rows for ${sheetName}`);
+        console.log(`UnifiedCacheFacade: Successfully stored ${storedIds.size} unique rows for ${sheetName}`);
     }
 
     /**
@@ -335,9 +377,19 @@ class UnifiedCacheFacade {
             
             try {
                 const response = await this.fetchFromScript(sheetName, 'list');
+                console.log(`UnifiedCacheFacade: Fetched data for ${sheetName}:`, response);
                 await this.storeRows(sheetName, response.data);
             } catch (error) {
                 console.error(`UnifiedCacheFacade: Failed to fetch ${sheetName}:`, error);
+                if (error) {
+                    console.error(`UnifiedCacheFacade: Error details:`, {
+                        message: error.message || 'Unknown error',
+                        stack: error.stack || 'No stack trace',
+                        name: error.name || 'Unknown error type'
+                    });
+                } else {
+                    console.error(`UnifiedCacheFacade: Error is null or undefined`);
+                }
                 // Fall back to cached data if available
             }
         }
