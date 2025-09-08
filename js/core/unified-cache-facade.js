@@ -12,14 +12,21 @@ class UnifiedCacheFacade {
         // Extract URLs from TableDefs (if available) or use fallback
         this.scriptUrls = {};
         
-        Object.keys(TableDefs).forEach(sheetName => {
+        // Filter out utility functions from TableDefs
+        const tableNames = Object.keys(TableDefs).filter(key => 
+            typeof TableDefs[key] === 'object' && TableDefs[key].url
+        );
+        
+        console.log('UnifiedCacheFacade: Found table definitions for:', tableNames.join(', '));
+        
+        tableNames.forEach(sheetName => {
             this.scriptUrls[sheetName] = TableDefs[sheetName].url;
         });
         
         // Extract primary keys and composite keys from TableDefs
         this.primaryKeys = {};
         this.compositeKeys = {};
-        Object.keys(TableDefs).forEach(sheetName => {
+        tableNames.forEach(sheetName => {
             this.primaryKeys[sheetName] = TableDefs[sheetName].primaryKey;
             this.compositeKeys[sheetName] = TableDefs[sheetName].compositeKey;
         });
@@ -236,6 +243,13 @@ class UnifiedCacheFacade {
      */
     getCompositeKeys() {
         return this.compositeKeys;
+    }
+
+    /**
+     * Get valid table names (for debugging)
+     */
+    getTableNames() {
+        return Object.keys(this.scriptUrls);
     }
 
     /**

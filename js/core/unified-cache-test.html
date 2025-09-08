@@ -109,13 +109,14 @@
         <h2>📊 Basic Operations</h2>
         <button class="button" onclick="testGetAllCrusades()">Get All Crusades</button>
         <button class="button" onclick="testGetAllForces()">Get All Forces</button>
+        <button class="button" onclick="testGetAllArmies()">Get All Armies</button>
         <button class="button" onclick="testGetAllUsers()">Get All Users</button>
         <button class="button" onclick="testGetAllStories()">Get All Stories</button>
         <button class="button" onclick="testGetAllUnits()">Get All Units</button>
         <button class="button" onclick="testGetAllBattleHistory()">Get All Battle History</button>
+        <button class="button" onclick="testGetAllCrusadeParticipants()">Get All Crusade Participants</button>
         <button class="button" onclick="testGetAllStoryForces()">Get All Story Forces</button>
         <button class="button" onclick="testGetAllStoryUnits()">Get All Story Units</button>
-        <button class="button" onclick="testForceRefreshStoryUnits()">Force Refresh Story Units</button>
         
         <div id="basic-output" class="output"></div>
     </div>
@@ -136,6 +137,7 @@
         <button class="button" onclick="testRefreshCache()">Refresh All Caches</button>
         <button class="button" onclick="testClearCache()">Clear All Caches</button>
         <button class="button" onclick="testForceRefresh()">Force Refresh Crusades</button>
+        <button class="button" onclick="testForceRefreshStoryUnits()">Force Refresh Story Units</button>
         <button class="button" onclick="testTableDefs()">Check Table Definitions</button>
         
         <div id="cache-output" class="output"></div>
@@ -259,6 +261,23 @@
             }
         }
 
+        async function testGetAllArmies() {
+            clearOutput(testOutputs.basic);
+            log(testOutputs.basic, 'Testing: Get All Armies');
+            
+            try {
+                const startTime = performance.now();
+                const armies = await UnifiedCache.getAllRows('armies');
+                const endTime = performance.now();
+                
+                log(testOutputs.basic, `✅ Success! Found ${armies.length} armies in ${(endTime - startTime).toFixed(2)}ms`);
+                log(testOutputs.basic, `Sample army: ${JSON.stringify(armies[0], null, 2)}`);
+                
+            } catch (error) {
+                log(testOutputs.basic, `❌ Error: ${error.message}`);
+            }
+        }
+
         async function testGetAllUsers() {
             clearOutput(testOutputs.basic);
             log(testOutputs.basic, 'Testing: Get All Users');
@@ -324,6 +343,27 @@
                     log(testOutputs.basic, `Sample battle: ${JSON.stringify(battles[0], null, 2)}`);
                 } else {
                     log(testOutputs.basic, 'No battle history records found');
+                }
+                
+            } catch (error) {
+                log(testOutputs.basic, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testGetAllCrusadeParticipants() {
+            clearOutput(testOutputs.basic);
+            log(testOutputs.basic, 'Testing: Get All Crusade Participants (xref_crusade_participants)');
+            
+            try {
+                const startTime = performance.now();
+                const participants = await UnifiedCache.getAllRows('xref_crusade_participants');
+                const endTime = performance.now();
+                
+                log(testOutputs.basic, `✅ Success! Found ${participants.length} crusade participants in ${(endTime - startTime).toFixed(2)}ms`);
+                if (participants.length > 0) {
+                    log(testOutputs.basic, `Sample participant: ${JSON.stringify(participants[0], null, 2)}`);
+                } else {
+                    log(testOutputs.basic, 'No crusade participants found');
                 }
                 
             } catch (error) {
@@ -562,24 +602,23 @@
                 const scriptUrls = UnifiedCache.getScriptUrls();
                 const primaryKeys = UnifiedCache.getPrimaryKeys();
                 const compositeKeys = UnifiedCache.getCompositeKeys();
+                const tableNames = UnifiedCache.getTableNames();
                 
                 if (tableDefs) {
                     log(testOutputs.cache, `✅ TableDefs loaded successfully!`);
-                    log(testOutputs.cache, `Available tables: ${Object.keys(tableDefs).join(', ')}`);
+                    log(testOutputs.cache, `Valid table names: ${tableNames.join(', ')}`);
+                    log(testOutputs.cache, `Total valid tables: ${tableNames.length}`);
                     
                     // Show a few sample URLs and primary keys
-                    const sampleTables = Object.keys(scriptUrls).slice(0, 3);
+                    const sampleTables = tableNames.slice(0, 3);
                     sampleTables.forEach(tableName => {
                         const primaryKey = primaryKeys[tableName] || 'N/A';
                         const compositeKey = compositeKeys[tableName] ? `[${compositeKeys[tableName].join(', ')}]` : 'N/A';
                         log(testOutputs.cache, `${tableName}: ${scriptUrls[tableName].substring(0, 50)}... (PK: ${primaryKey}, Composite: ${compositeKey})`);
                     });
                     
-                    log(testOutputs.cache, `Total tables configured: ${Object.keys(scriptUrls).length}`);
-                    log(testOutputs.cache, `Primary keys loaded: ${Object.keys(primaryKeys).length}`);
-                    
                     // Show composite key summary
-                    const tablesWithCompositeKeys = Object.keys(compositeKeys).filter(tableName => compositeKeys[tableName]);
+                    const tablesWithCompositeKeys = tableNames.filter(tableName => compositeKeys[tableName]);
                     if (tablesWithCompositeKeys.length > 0) {
                         log(testOutputs.cache, `Tables with composite keys: ${tablesWithCompositeKeys.join(', ')}`);
                         tablesWithCompositeKeys.forEach(tableName => {
@@ -588,7 +627,7 @@
                     }
                 } else {
                     log(testOutputs.cache, `❌ TableDefs not available, using fallback URLs`);
-                    log(testOutputs.cache, `Fallback tables: ${Object.keys(scriptUrls).join(', ')}`);
+                    log(testOutputs.cache, `Fallback tables: ${tableNames.join(', ')}`);
                 }
                 
             } catch (error) {
