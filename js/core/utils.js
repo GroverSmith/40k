@@ -566,15 +566,16 @@ const CoreUtils = {
         getRelativePath(targetDir) {
             const currentPath = window.location.pathname;
             const pathMap = {
-                'battles': { battles: '', forces: '../forces/', crusades: '../crusades/', stories: '../stories/' },
-                'forces': { battles: '../battles/', forces: '', crusades: '../crusades/', stories: '../stories/' },
-                'crusades': { battles: '../battles/', forces: '../forces/', crusades: '', stories: '../stories/' },
-                'stories': { battles: '../battles/', forces: '../forces/', crusades: '../crusades/', stories: '' },
-                'default': { battles: 'battles/', forces: 'forces/', crusades: 'crusades/', stories: 'stories/' }
+                'battles': { battles: '', forces: '../forces/', crusades: '../crusades/', stories: '../stories/', armies: '../armies/' },
+                'forces': { battles: '../battles/', forces: '', crusades: '../crusades/', stories: '../stories/', armies: '../armies/' },
+                'crusades': { battles: '../battles/', forces: '../forces/', crusades: '', stories: '../stories/', armies: '../armies/' },
+                'stories': { battles: '../battles/', forces: '../forces/', crusades: '../crusades/', stories: '', armies: '../armies/' },
+                'armies': { battles: '../battles/', forces: '../forces/', crusades: '../crusades/', stories: '../stories/', armies: '' },
+                'default': { battles: 'battles/', forces: 'forces/', crusades: 'crusades/', stories: 'stories/', armies: 'armies/' }
             };
 
             let currentDir = 'default';
-            ['battles', 'forces', 'crusades', 'stories'].forEach(dir => {
+            ['battles', 'forces', 'crusades', 'stories', 'armies'].forEach(dir => {
                 if (currentPath.includes(`/${dir}/`)) currentDir = dir;
             });
 
