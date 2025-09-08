@@ -130,9 +130,10 @@ class ArmyDetails {
         
         // Set up back to force button
         const backBtn = CoreUtils.dom.getElement('back-to-force-btn');
-        if (forceName && forceName !== 'Unknown Force') {
+        const forceKey = this.armyData.force_key || this.armyData['Force Key'];
+        if (forceKey && forceName && forceName !== 'Unknown Force') {
             // Use CrusadeConfig to build the URL with proper relative path from armies directory
-            const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceName);
+            const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceKey);
             backBtn.href = forceUrl;
             backBtn.textContent = `← Back to ${forceName}`;
         } else {
