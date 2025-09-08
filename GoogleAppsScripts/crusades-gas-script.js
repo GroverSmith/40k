@@ -90,7 +90,7 @@ function getCrusadesList() {
     console.log('getCrusadesList - Headers:', activeData[0]);
     
     // Convert to objects with consistent field names
-    const headers = activeData[0];
+    const activeHeaders = activeData[0];
     const rows = activeData.slice(1);
     
     const crusades = rows.map((row) => {
@@ -100,7 +100,7 @@ function getCrusadesList() {
         Key: row[0]  // Include uppercase for compatibility
       };
       
-      headers.forEach((header, headerIndex) => {
+      activeHeaders.forEach((header, headerIndex) => {
         obj[header] = row[headerIndex];
       });
       

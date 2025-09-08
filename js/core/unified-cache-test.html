@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Cache Facade Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .button {
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .button:hover {
+            background: #45b7b8;
+        }
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .output {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .stat-item {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Unified Cache Facade Test</h1>
+        <p>Test the new IndexedDB-based cache facade for Google Apps Scripts</p>
+        
+        <div id="status" class="status info">
+            Initializing Unified Cache Facade...
+        </div>
+        
+        <div id="stats" class="stats" style="display: none;">
+            <!-- Cache statistics will be populated here -->
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📊 Basic Operations</h2>
+        <button class="button" onclick="testGetAllCrusades()">Get All Crusades</button>
+        <button class="button" onclick="testGetAllForces()">Get All Forces</button>
+        <button class="button" onclick="testGetAllUsers()">Get All Users</button>
+        <button class="button" onclick="testGetAllStories()">Get All Stories</button>
+        <button class="button" onclick="testGetAllUnits()">Get All Units</button>
+        
+        <div id="basic-output" class="output"></div>
+    </div>
+
+    <div class="container">
+        <h2>🔍 Advanced Queries</h2>
+        <button class="button" onclick="testActiveCrusades()">Active Crusades with Participants</button>
+        <button class="button" onclick="testUserProfile()">User Profile (First User)</button>
+        <button class="button" onclick="testStoriesByType()">Stories by Type</button>
+        <button class="button" onclick="testBatchOperations()">Batch Operations</button>
+        
+        <div id="advanced-output" class="output"></div>
+    </div>
+
+    <div class="container">
+        <h2>⚙️ Cache Management</h2>
+        <button class="button" onclick="testCacheStats()">Get Cache Statistics</button>
+        <button class="button" onclick="testRefreshCache()">Refresh All Caches</button>
+        <button class="button" onclick="testClearCache()">Clear All Caches</button>
+        <button class="button" onclick="testForceRefresh()">Force Refresh Crusades</button>
+        
+        <div id="cache-output" class="output"></div>
+    </div>
+
+    <!-- Include the unified cache facade -->
+    <script src="unified-cache-facade.js"></script>
+    <script src="unified-cache-examples.js"></script>
+    
+    <script>
+        let testOutputs = {
+            basic: document.getElementById('basic-output'),
+            advanced: document.getElementById('advanced-output'),
+            cache: document.getElementById('cache-output')
+        };
+
+        function log(output, message) {
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput(output) {
+            output.textContent = '';
+        }
+
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        function updateStats(stats) {
+            const statsContainer = document.getElementById('stats');
+            statsContainer.style.display = 'block';
+            statsContainer.innerHTML = '';
+            
+            Object.entries(stats).forEach(([sheetName, stat]) => {
+                const statItem = document.createElement('div');
+                statItem.className = 'stat-item';
+                statItem.innerHTML = `
+                    <div class="stat-value">${stat.recordCount}</div>
+                    <div class="stat-label">${sheetName}</div>
+                    <div style="font-size: 10px; color: ${stat.cacheValid ? '#28a745' : '#dc3545'}">
+                        ${stat.cacheValid ? 'Valid' : 'Expired'}
+                    </div>
+                `;
+                statsContainer.appendChild(statItem);
+            });
+        }
+
+        // Initialize and test
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                updateStatus('Waiting for UnifiedCache to initialize...', 'info');
+                
+                // Wait for UnifiedCache to be ready
+                let attempts = 0;
+                while (!window.UnifiedCache) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    attempts++;
+                    if (attempts > 50) {
+                        throw new Error('UnifiedCache failed to initialize');
+                    }
+                }
+                
+                // Ensure database is ready
+                await UnifiedCache.ensureDatabaseReady();
+                
+                updateStatus('UnifiedCache initialized successfully!', 'success');
+                
+                // Get initial cache stats
+                const stats = await UnifiedCache.getCacheStats();
+                updateStats(stats);
+                
+                log(testOutputs.basic, 'UnifiedCache ready for testing!');
+                
+            } catch (error) {
+                updateStatus(`Failed to initialize: ${error.message}`, 'error');
+                console.error('Initialization error:', error);
+            }
+        });
+
+        // Test functions
+        async function testGetAllCrusades() {
+            clearOutput(testOutputs.basic);
+            log(testOutputs.basic, 'Testing: Get All Crusades');
+            
+            try {
+                const startTime = performance.now();
+                const crusades = await UnifiedCache.getAllRows('crusades');
+                const endTime = performance.now();
+                
+                log(testOutputs.basic, `✅ Success! Found ${crusades.length} crusades in ${(endTime - startTime).toFixed(2)}ms`);
+                log(testOutputs.basic, `Sample crusade: ${JSON.stringify(crusades[0], null, 2)}`);
+                
+                // Update stats
+                const stats = await UnifiedCache.getCacheStats();
+                updateStats(stats);
+                
+            } catch (error) {
+                log(testOutputs.basic, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testGetAllForces() {
+            clearOutput(testOutputs.basic);
+            log(testOutputs.basic, 'Testing: Get All Forces');
+            
+            try {
+                const startTime = performance.now();
+                const forces = await UnifiedCache.getAllRows('forces');
+                const endTime = performance.now();
+                
+                log(testOutputs.basic, `✅ Success! Found ${forces.length} forces in ${(endTime - startTime).toFixed(2)}ms`);
+                log(testOutputs.basic, `Sample force: ${JSON.stringify(forces[0], null, 2)}`);
+                
+            } catch (error) {
+                log(testOutputs.basic, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testGetAllUsers() {
+            clearOutput(testOutputs.basic);
+            log(testOutputs.basic, 'Testing: Get All Users');
+            
+            try {
+                const startTime = performance.now();
+                const users = await UnifiedCache.getAllRows('users');
+                const endTime = performance.now();
+                
+                log(testOutputs.basic, `✅ Success! Found ${users.length} users in ${(endTime - startTime).toFixed(2)}ms`);
+                log(testOutputs.basic, `Sample user: ${JSON.stringify(users[0], null, 2)}`);
+                
+            } catch (error) {
+                log(testOutputs.basic, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testGetAllStories() {
+            clearOutput(testOutputs.basic);
+            log(testOutputs.basic, 'Testing: Get All Stories');
+            
+            try {
+                const startTime = performance.now();
+                const stories = await UnifiedCache.getAllRows('stories');
+                const endTime = performance.now();
+                
+                log(testOutputs.basic, `✅ Success! Found ${stories.length} stories in ${(endTime - startTime).toFixed(2)}ms`);
+                log(testOutputs.basic, `Sample story: ${JSON.stringify(stories[0], null, 2)}`);
+                
+            } catch (error) {
+                log(testOutputs.basic, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testGetAllUnits() {
+            clearOutput(testOutputs.basic);
+            log(testOutputs.basic, 'Testing: Get All Units');
+            
+            try {
+                const startTime = performance.now();
+                const units = await UnifiedCache.getAllRows('units');
+                const endTime = performance.now();
+                
+                log(testOutputs.basic, `✅ Success! Found ${units.length} units in ${(endTime - startTime).toFixed(2)}ms`);
+                log(testOutputs.basic, `Sample unit: ${JSON.stringify(units[0], null, 2)}`);
+                
+            } catch (error) {
+                log(testOutputs.basic, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testActiveCrusades() {
+            clearOutput(testOutputs.advanced);
+            log(testOutputs.advanced, 'Testing: Active Crusades with Participants');
+            
+            try {
+                const startTime = performance.now();
+                const result = await CacheExamples.getActiveCrusadesWithParticipants();
+                const endTime = performance.now();
+                
+                log(testOutputs.advanced, `✅ Success! Found ${result.length} active crusades in ${(endTime - startTime).toFixed(2)}ms`);
+                result.forEach((item, index) => {
+                    log(testOutputs.advanced, `Crusade ${index + 1}: ${item.crusade.crusade_name} (${item.participantCount} participants)`);
+                });
+                
+            } catch (error) {
+                log(testOutputs.advanced, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testUserProfile() {
+            clearOutput(testOutputs.advanced);
+            log(testOutputs.advanced, 'Testing: User Profile (First User)');
+            
+            try {
+                // Get first user
+                const users = await UnifiedCache.getAllRows('users');
+                if (users.length === 0) {
+                    log(testOutputs.advanced, '❌ No users found');
+                    return;
+                }
+                
+                const firstUser = users[0];
+                const startTime = performance.now();
+                const profile = await CacheExamples.getUserCompleteProfile(firstUser.user_key);
+                const endTime = performance.now();
+                
+                if (profile) {
+                    log(testOutputs.advanced, `✅ Success! Profile loaded in ${(endTime - startTime).toFixed(2)}ms`);
+                    log(testOutputs.advanced, `User: ${profile.user.name}`);
+                    log(testOutputs.advanced, `Forces: ${profile.totalForces}, Armies: ${profile.totalArmies}, Units: ${profile.totalUnits}, Crusades: ${profile.totalCrusades}`);
+                } else {
+                    log(testOutputs.advanced, '❌ Failed to load user profile');
+                }
+                
+            } catch (error) {
+                log(testOutputs.advanced, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testStoriesByType() {
+            clearOutput(testOutputs.advanced);
+            log(testOutputs.advanced, 'Testing: Stories by Type');
+            
+            try {
+                const startTime = performance.now();
+                const stories = await CacheExamples.getStoriesByType('Battle Report');
+                const endTime = performance.now();
+                
+                log(testOutputs.advanced, `✅ Success! Found ${stories.length} Battle Report stories in ${(endTime - startTime).toFixed(2)}ms`);
+                stories.forEach((story, index) => {
+                    log(testOutputs.advanced, `Story ${index + 1}: ${story.title}`);
+                });
+                
+            } catch (error) {
+                log(testOutputs.advanced, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testBatchOperations() {
+            clearOutput(testOutputs.advanced);
+            log(testOutputs.advanced, 'Testing: Batch Operations');
+            
+            try {
+                const startTime = performance.now();
+                await CacheExamples.demonstrateBatchOperations();
+                const endTime = performance.now();
+                
+                log(testOutputs.advanced, `✅ Success! Batch operations completed in ${(endTime - startTime).toFixed(2)}ms`);
+                
+            } catch (error) {
+                log(testOutputs.advanced, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testCacheStats() {
+            clearOutput(testOutputs.cache);
+            log(testOutputs.cache, 'Testing: Cache Statistics');
+            
+            try {
+                const stats = await UnifiedCache.getCacheStats();
+                log(testOutputs.cache, '✅ Cache Statistics:');
+                Object.entries(stats).forEach(([sheetName, stat]) => {
+                    log(testOutputs.cache, `${sheetName}: ${stat.recordCount} records, ${stat.cacheValid ? 'Valid' : 'Expired'}, TTL: ${stat.ttl}ms`);
+                });
+                
+                updateStats(stats);
+                
+            } catch (error) {
+                log(testOutputs.cache, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testRefreshCache() {
+            clearOutput(testOutputs.cache);
+            log(testOutputs.cache, 'Testing: Refresh All Caches');
+            
+            try {
+                const startTime = performance.now();
+                await UnifiedCache.refreshAllCaches();
+                const endTime = performance.now();
+                
+                log(testOutputs.cache, `✅ Success! All caches refreshed in ${(endTime - startTime).toFixed(2)}ms`);
+                
+                // Update stats
+                const stats = await UnifiedCache.getCacheStats();
+                updateStats(stats);
+                
+            } catch (error) {
+                log(testOutputs.cache, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testClearCache() {
+            clearOutput(testOutputs.cache);
+            log(testOutputs.cache, 'Testing: Clear All Caches');
+            
+            try {
+                await UnifiedCache.clearAllCaches();
+                log(testOutputs.cache, '✅ Success! All caches cleared');
+                
+                // Update stats
+                const stats = await UnifiedCache.getCacheStats();
+                updateStats(stats);
+                
+            } catch (error) {
+                log(testOutputs.cache, `❌ Error: ${error.message}`);
+            }
+        }
+
+        async function testForceRefresh() {
+            clearOutput(testOutputs.cache);
+            log(testOutputs.cache, 'Testing: Force Refresh Crusades');
+            
+            try {
+                const startTime = performance.now();
+                await UnifiedCache.getAllRows('crusades', true);
+                const endTime = performance.now();
+                
+                log(testOutputs.cache, `✅ Success! Crusades cache force refreshed in ${(endTime - startTime).toFixed(2)}ms`);
+                
+                // Update stats
+                const stats = await UnifiedCache.getCacheStats();
+                updateStats(stats);
+                
+            } catch (error) {
+                log(testOutputs.cache, `❌ Error: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>
