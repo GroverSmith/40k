@@ -89,10 +89,37 @@ function getCrusadesList() {
     console.log('getCrusadesList - Total active rows:', activeData.length);
     console.log('getCrusadesList - Headers:', activeData[0]);
     
-    // Return the raw data array format (like the other sheets)
-    // This will be compatible with the existing GoogleSheetsEmbed component
+    // Convert to objects with consistent field names
+    const activeHeaders = activeData[0];
+    const rows = activeData.slice(1);
+    
+    const crusades = rows.map((row) => {
+      const obj = { 
+        id: row[0], // Use the key as ID
+        key: row[0], // Also include as 'key' for clarity
+        Key: row[0]  // Include uppercase for compatibility
+      };
+      
+      activeHeaders.forEach((header, headerIndex) => {
+        obj[header] = row[headerIndex];
+      });
+      
+      return obj;
+    });
+    
+    console.log('getCrusadesList - Returning crusades with keys:', crusades.map(crusade => ({ 
+      name: crusade['Crusade Name'] || crusade.crusade_name, 
+      key: crusade.key
+    })));
+    
     return ContentService
-      .createTextOutput(JSON.stringify(activeData))
+      .createTextOutput(JSON.stringify({
+        success: true,
+        count: crusades.length,
+        totalCount: crusades.length,
+        data: crusades,
+        hasMore: false
+      }))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {

@@ -138,12 +138,41 @@ function doPost(e) {
 
 function doGet(e) {
   try {
+    const action = e.parameter.action || 'list';
+    
+    switch(action) {
+      case 'list':
+        return getStoryUnitsList();
+      default:
+        return getStoryUnitsList();
+    }
+      
+  } catch (error) {
+    console.error('Error in story-units doGet:', error);
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function getStoryUnitsList() {
+  try {
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = spreadsheet.getSheetByName(SHEET_NAME);
     
     if (!sheet) {
+      // Return empty standardized format if sheet doesn't exist
       return ContentService
-        .createTextOutput(JSON.stringify([]))
+        .createTextOutput(JSON.stringify({
+          success: true,
+          count: 0,
+          totalCount: 0,
+          data: [],
+          hasMore: false
+        }))
         .setMimeType(ContentService.MimeType.JSON);
     }
     
@@ -153,22 +182,49 @@ function doGet(e) {
     const headers = data[0];
     const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
     
+    let activeRows;
     if (deletedTimestampIndex === -1) {
-      return ContentService
-        .createTextOutput(JSON.stringify(data))
-        .setMimeType(ContentService.MimeType.JSON);
+      activeRows = data;
+    } else {
+      activeRows = [headers].concat(
+        data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
+      );
     }
     
-    const activeRows = [headers].concat(
-      data.slice(1).filter(row => !row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')
-    );
+    const rows = activeRows.slice(1);
+    
+    console.log('getStoryUnitsList - Total active rows found:', rows.length);
+    console.log('getStoryUnitsList - Headers:', headers);
+    
+    // Convert to objects with consistent field names
+    const storyUnits = rows.map((row) => {
+      const obj = {};
+      
+      headers.forEach((header, headerIndex) => {
+        obj[header] = row[headerIndex];
+      });
+      
+      return obj;
+    });
+    
+    console.log('getStoryUnitsList - Returning story-units:', storyUnits.map(storyUnit => ({ 
+      storyKey: storyUnit['story_key'], 
+      unitKey: storyUnit['unit_key']
+    })));
     
     return ContentService
-      .createTextOutput(JSON.stringify(activeRows))
+      .createTextOutput(JSON.stringify({
+        success: true,
+        count: storyUnits.length,
+        totalCount: storyUnits.length,
+        data: storyUnits,
+        hasMore: false
+      }))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
-    console.error('Error in story-units doGet:', error);
+    console.error('Error getting story-units list:', error);
+    
     return ContentService
       .createTextOutput(JSON.stringify({
         success: false,
