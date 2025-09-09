@@ -3,26 +3,69 @@
 // 40k Crusade Campaign Tracker
 
 const CrusadeParticipantsTable = {
+    
+    getDisplayConfig(type, key) {
+        const configs = {
+            'by-crusade': {
+                columns: ['force', 'player', 'registered'],
+                headers: ['Force', 'Player', 'Registered'],
+                tableId: 'crusade-participants-table',
+                buildRow: this.buildParticipantRow.bind(this),
+                sortBy: TableBase.sortByDateDesc('timestamp'),
+                noDataMessage: 'No forces registered for this crusade.',
+                errorMessage: 'Failed to load crusade participants.',
+                responsiveColumns: {
+                    mobile: {
+                        columns: ['force', 'player'],
+                        headers: ['Force', 'Player']
+                    }
+                }
+            }
+        };
 
-    // Simplified link creators using base
-    createForceLink(name, key) {
-        return TableBase.createEntityLink('force', name || 'Unknown Force', key);
+        return configs[type] || configs['by-crusade'];
     },
 
-    createCrusadeLink(name, key) {
-        return TableBase.createEntityLink('crusade', name || 'Unknown Crusade', key);
+    
+    async loadParticipants(type, key, containerId) {
+        try {
+            const displayConfig = this.getDisplayConfig(type, key);
+            
+            // Use UnifiedCache to fetch participants data
+            const participants = await UnifiedCache.getAllRows('xref_crusade_participants');
+            
+            // Apply filtering based on type and key
+            let filteredParticipants = participants;
+            if (type === 'by-crusade' && key) {
+                filteredParticipants = participants.filter(p => p.crusade_key === key);
+            } 
+            
+            // Display the data using TableBase
+            const container = document.getElementById(containerId);
+            if (container) {
+                if (filteredParticipants.length > 0) {
+                    // Apply sorting if configured
+                    if (displayConfig.sortBy) {
+                        filteredParticipants.sort(displayConfig.sortBy);
+                    }
+                    TableBase.displayTable(filteredParticipants, container, displayConfig);
+                } else {
+                    UIHelpers.showNoData(container, displayConfig.noDataMessage);
+                }
+            }
+        } catch (error) {
+            console.error('Error in loadParticipants:', error);
+            throw error;
+        }
     },
 
-    /**
-     * Build participant row
-     */
     buildParticipantRow(participant, columns) {
-        const forceKey = participant['force_key'] || participant['Force Key'];
-        const forceName = participant['force_name'] || participant['Force Name'] || 'Unknown Force';
-        const userName = participant['user_name'] || participant['User Name'] || 'Unknown Player';
-        const crusadeKey = participant['crusade_key'] || participant['Crusade Key'];
-        const crusadeName = participant['crusade_name'] || participant['Crusade Name'];
-        const timestamp = participant['timestamp'] || participant['Timestamp'];
+        const forceKey = participant.force_key;
+        const forceName = participant.force_name || 'Unknown Force';
+        const userName = participant.user_name || 'Unknown Player';
+        const crusadeKey = participant.crusade_key;
+        const crusadeName = participant.crusade_name;
+        const timestamp = participant.timestamp;
 
         const columnData = {
             force: this.createForceLink(forceName, forceKey),
@@ -32,13 +75,9 @@ const CrusadeParticipantsTable = {
         };
 
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
-    },
+    },   
 
     
-
-    /**
-     * Fetch participants data
-     */
     async fetchData(action, key) {
         // Use UnifiedCache to get all participants
         const participants = await UnifiedCache.getAllRows('xref_crusade_participants');
@@ -46,112 +85,21 @@ const CrusadeParticipantsTable = {
         // Apply filtering based on action
         if (action === 'by-crusade' && key) {
             return participants.filter(p => p.crusade_key === key);
-        } else if (action === 'by-force' && key) {
-            return participants.filter(p => p.force_key === key);
-        } else if (action === 'by-user' && key) {
-            return participants.filter(p => p.user_key === key);
-        }
+        } 
         
         return participants;
     },
-
-
-    /**
-     * Display participants table
-     */
-    async displayParticipants(containerId, options = {}) {
-        const container = document.getElementById(containerId);
-        if (!container) {
-            console.error(`Container ${containerId} not found`);
-            return;
-        }
-
-        try {
-            // Show loading state
-            container.innerHTML = '<div class="loading-spinner"></div><span>Loading participants...</span>';
-
-            // Fetch data
-            const participants = await this.fetchData(options.action || 'all', options.key);
-
-            if (!participants || participants.length === 0) {
-                container.innerHTML = '<div class="no-data">No participants found</div>';
-                return;
-            }
-
-            // Define columns
-            const columns = options.columns || ['force', 'player', 'crusade', 'registered'];
-
-            // Build table
-            let html = `
-                <table class="data-table">
-                    <thead>
-                        <tr>${TableBase.buildHeaderCells(columns)}</tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            // Add rows
-            participants.forEach(participant => {
-                html += this.buildParticipantRow(participant, columns);
-            });
-
-            html += `
-                    </tbody>
-                </table>
-            `;
-
-            container.innerHTML = html;
-
-            // Make sortable if requested
-            if (options.sortable !== false) {
-                UIHelpers.makeSortable(container.querySelector('table'));
-            }
-
-        } catch (error) {
-            console.error('Error displaying participants:', error);
-            container.innerHTML = `<div class="error-message">Error loading participants: ${error.message}</div>`;
-        }
-    },
-
-    /**
-     * Display participants for a specific crusade
-     */
+    
     async displayCrusadeParticipants(containerId, crusadeKey, options = {}) {
         const crusadeOptions = {
             ...options,
             action: 'by-crusade',
             key: crusadeKey
         };
-        return await this.displayParticipants(containerId, crusadeOptions);
+        return await this.loadParticipants(crusadeOptions.action || 'all', crusadeOptions.key, containerId);
     },
 
-    /**
-     * Display crusades for a specific force
-     */
-    async displayForceCrusades(containerId, forceKey, options = {}) {
-        const forceOptions = {
-            ...options,
-            action: 'by-force',
-            key: forceKey
-        };
-        return await this.displayParticipants(containerId, forceOptions);
-    },
-
-    /**
-     * Display crusades for a specific user
-     */
-    async displayUserCrusades(containerId, userKey, options = {}) {
-        const userOptions = {
-            ...options,
-            action: 'by-user',
-            key: userKey
-        };
-        return await this.displayParticipants(containerId, userOptions);
-    },
-
-    /**
-     * Get participant count for a crusade
-     */
+    
     async getCrusadeParticipantCount(crusadeKey) {
         try {
             const participants = await this.fetchData('by-crusade', crusadeKey);
@@ -162,9 +110,7 @@ const CrusadeParticipantsTable = {
         }
     },
 
-    /**
-     * Check if a force is registered for a crusade
-     */
+    
     async isForceRegistered(crusadeKey, forceKey) {
         try {
             const participants = await this.fetchData('by-crusade', crusadeKey);
@@ -175,38 +121,14 @@ const CrusadeParticipantsTable = {
         }
     },
 
-    /**
-     * Register a force for a crusade
-     */
-    async registerForce(registrationData) {
-        const participantsUrl = TableDefs.xref_crusade_participants?.url;
-        
-        if (!participantsUrl) {
-            throw new Error('Participants sheet URL not configured');
-        }
-        
-        // Submit registration
-        const response = await fetch(participantsUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams(registrationData).toString()
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to register force');
-        }
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            // Clear the participants cache using UnifiedCache
-            await UnifiedCache.clearCache('xref_crusade_participants');
-        }
-        
-        return result;
-    }
+
+    createForceLink(name, key) {
+        return TableBase.createEntityLink('force', name || 'Unknown Force', key);
+    },
+
+    createCrusadeLink(name, key) {
+        return TableBase.createEntityLink('crusade', name || 'Unknown Crusade', key);
+    },
 };
 
 // Make globally available
