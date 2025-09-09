@@ -75,37 +75,15 @@ const ArmyTable = {
     },
        
     async loadArmyLists(type, key, containerId) {
-        try {
-            const displayConfig = this.getDisplayConfig(type, key);
+        const displayConfig = this.getDisplayConfig(type, key);
+        
+        // Create filter function based on type and key
+        const filterFn = (type === 'force' && key) ? 
+            (army => army.force_key === key) :
+            (type === 'user' && key) ? 
+            (army => army.user_key === key) : null;
             
-            // Use UnifiedCache to fetch armies data
-            const armies = await UnifiedCache.getAllRows('armies');
-            
-            // Apply filtering based on type and key
-            let filteredArmies = armies;
-            if (type === 'force' && key) {
-                filteredArmies = armies.filter(army => army.force_key === key);
-            } else if (type === 'user' && key) {
-                filteredArmies = armies.filter(army => army.user_key === key);
-            }
-            
-            // Display the data using TableBase
-            const container = document.getElementById(containerId);
-            if (container) {
-                if (filteredArmies.length > 0) {
-                    // Apply sorting if configured
-                    if (displayConfig.sortBy) {
-                        filteredArmies.sort(displayConfig.sortBy);
-                    }
-                    TableBase.displayTable(filteredArmies, container, displayConfig);
-                } else {
-                    UIHelpers.showNoData(container, displayConfig.noDataMessage);
-                }
-            }
-        } catch (error) {
-            console.error('Error in loadArmyLists:', error);
-            throw error;
-        }
+        await TableBase.loadAndDisplay('armies', displayConfig, containerId, filterFn);
     },
 
     // Convenience methods

@@ -162,12 +162,6 @@ const TableBase = {
     /**
      * Generic fetch with caching
      */
-    async fetchWithCache(url, cacheType, cacheKey) {
-        if (!url) {
-            throw new Error(`${cacheType} not configured`);
-        }
-        return await CacheManager.fetchWithCache(url, cacheType, cacheKey);
-    },
 
     /**
      * Process raw data into structured format
@@ -259,33 +253,71 @@ const TableBase = {
     },
 
     /**
-     * Generic loader pattern for all table types
+     * Generic loader pattern for all table types - now uses UnifiedCache
      */
-    async loadAndDisplay(fetchConfig, displayConfig, container, filterFn = null) {
+    async loadAndDisplay(sheetName, displayConfig, container, filterFn = null) {
         if (typeof container === 'string') {
             container = document.getElementById(container);
         }
         if (!container) {
-            console.error('Container not found:', containerId);
+            console.error('Container not found:', container);
             return;
         }
 
         try {
-            UIHelpers.showLoading(container, fetchConfig.loadingMessage || 'Loading...');
+            UIHelpers.showLoading(container, displayConfig.loadingMessage || 'Loading...');
 
-            const result = await this.fetchWithCache(
-                fetchConfig.url,
-                fetchConfig.cacheType,
-                fetchConfig.cacheKey
-            );
-
-            console.log('TableBase.loadAndDisplay - Raw result:', result);
-            let items = this.processResponseData(result, fetchConfig.dataKey);
-            console.log('TableBase.loadAndDisplay - Processed items:', items);
+            // Use UnifiedCache to get data
+            const items = await UnifiedCache.getAllRows(sheetName);
 
             // Apply filtering if provided
+            let filteredItems = items;
             if (filterFn && typeof filterFn === 'function') {
-                items = items.filter(filterFn);
+                filteredItems = items.filter(filterFn);
+            }
+
+            if (filteredItems.length > 0) {
+                // Apply sorting if configured
+                if (displayConfig.sortBy) {
+                    filteredItems.sort(displayConfig.sortBy);
+                }
+
+                // Apply limit if configured
+                const displayItems = displayConfig.limit ?
+                    filteredItems.slice(0, displayConfig.limit) : filteredItems;
+
+                this.displayTable(displayItems, container, displayConfig);
+            } else {
+                UIHelpers.showNoData(container, displayConfig.noDataMessage);
+            }
+        } catch (error) {
+            console.error(`Error loading data:`, error);
+            UIHelpers.showError(container, displayConfig.errorMessage || 'Failed to load data.');
+        }
+    },
+
+    /**
+     * Load and display with complex filtering (for cases like crusade forces)
+     */
+    async loadAndDisplayWithComplexFilter(sheetName, displayConfig, container, complexFilterFn = null) {
+        if (typeof container === 'string') {
+            container = document.getElementById(container);
+        }
+        if (!container) {
+            console.error('Container not found:', container);
+            return;
+        }
+
+        try {
+            UIHelpers.showLoading(container, displayConfig.loadingMessage || 'Loading...');
+
+            // Use complex filter function if provided (e.g., for crusade forces)
+            let items = [];
+            if (complexFilterFn && typeof complexFilterFn === 'function') {
+                items = await complexFilterFn();
+            } else {
+                // Fallback to simple UnifiedCache call
+                items = await UnifiedCache.getAllRows(sheetName);
             }
 
             if (items.length > 0) {

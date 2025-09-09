@@ -56,72 +56,45 @@ const StoryTable = {
         const wordCount = this.calculateWordCount(story);
 
         const columnData = {
-            date: TableBase.formatters.date(story['timestamp'] || story['Timestamp']),
-            title: this.createStoryLink(story['title'] || story['Title'], story['story_key'] || story['Key']),
-            author: story['author_name'] || story['Author Name'] || 'Unknown',
-            type: story['story_type'] || story['Story Type'] || '',
+            date: TableBase.formatters.date(story.timestamp),
+            title: this.createStoryLink(story.title, story.story_key),
+            author: story.author_name || 'Unknown',
+            type: story.story_type || '',
             length: wordCount > 0 ? `${wordCount} words` : '-',
-            force: (story['force_key'] || story['Force Key']) ? this.createForceLink('Force', story['force_key'] || story['Force Key']) : '-',
-            crusade: (story['crusade_key'] || story['Crusade Key']) ? this.createCrusadeLink('Crusade', story['crusade_key'] || story['Crusade Key']) : '-'
+            force: story.force_key ? this.createForceLink('Force', story.force_key) : '-',
+            crusade: story.crusade_key ? this.createCrusadeLink('Crusade', story.crusade_key) : '-'
         };
 
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
     },
 
-    /**
-     * Fetch stories configuration
-     */
-    getFetchConfig(type, key) {
-        const storyUrl = CrusadeConfig.getSheetUrl('stories');
-        const baseConfig = {
-            url: `${storyUrl}?action=list`,
-            cacheType: 'stories',
-            dataKey: 'data'
-        };
-        
-        const loadingMessages = {
-            'force': 'Loading stories...',
-            'crusade': 'Loading stories...',
-            'recent': 'Loading recent stories...',
-            'all': 'Loading all stories...'
-        };
-        
-        return {
-            ...baseConfig,
-            loadingMessage: loadingMessages[type] || loadingMessages['all']
-        };
-    },
 
     
     /**
      * Generic loader using base utility
      */
     async loadStories(type, key, containerId) {
-        const fetchConfig = this.getFetchConfig(type, key);
         const displayConfig = this.getDisplayConfig(type, key);
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId);
+        await TableBase.loadAndDisplay('stories', displayConfig, containerId);
     },
 
     // Convenience methods
     async loadForForce(forceKey, containerId) {
-        const fetchConfig = this.getFetchConfig('all');
         const displayConfig = this.getDisplayConfig('force');
         
-        // Pre-load story-force relationships for filtering
-        const storyForces = await CacheManager.fetchSheetData('xref_story_forces');
-        const storyForcesData = storyForces && storyForces.success ? storyForces.data : [];
-        const forceStoryKeys = storyForcesData
-            .filter(rel => this.getFieldValue(rel, 'force_key') === forceKey)
-            .map(rel => this.getFieldValue(rel, 'story_key'))
-            .filter(key => key);
-        
-        // Filter stories to only show those linked to this force
-        const filterFn = (story) => {
-            const storyKey = this.getFieldValue(story, 'story_key') || this.getFieldValue(story, 'key');
-            return forceStoryKeys.includes(storyKey);
+        // Use complex filter for force stories (needs to join with story-forces relationships)
+        const complexFilterFn = async () => {
+            const stories = await UnifiedCache.getAllRows('stories');
+            const storyForcesData = await UnifiedCache.getAllRows('xref_story_forces');
+            const forceStoryKeys = storyForcesData
+                .filter(rel => rel.force_key === forceKey)
+                .map(rel => rel.story_key)
+                .filter(key => key);
+            
+            return stories.filter(story => forceStoryKeys.includes(story.story_key));
         };
         
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
+        await TableBase.loadAndDisplayWithComplexFilter('stories', displayConfig, containerId, complexFilterFn);
     },
 
     async loadForCrusade(crusadeKey, containerId) {
@@ -129,13 +102,6 @@ const StoryTable = {
     },
 
 
-    /**
-     * Fetch stories (for external use)
-     */
-    async fetchStories(action, key) {
-        const config = this.getFetchConfig(action, key);
-        return await TableBase.fetchWithCache(config.url, config.cacheType, config.cacheKey);
-    },
 
     // Simplified link creators using base
     createStoryLink(title, key) {
@@ -150,9 +116,9 @@ const StoryTable = {
     
     calculateWordCount(story) {
         let totalText = '';
-        if (story['story_text_1'] || story['Story Text 1']) totalText += (story['story_text_1'] || story['Story Text 1']) + ' ';
-        if (story['story_text_2'] || story['Story Text 2']) totalText += (story['story_text_2'] || story['Story Text 2']) + ' ';
-        if (story['story_text_3'] || story['Story Text 3']) totalText += (story['story_text_3'] || story['Story Text 3']);
+        if (story.story_text_1) totalText += story.story_text_1 + ' ';
+        if (story.story_text_2) totalText += story.story_text_2 + ' ';
+        if (story.story_text_3) totalText += story.story_text_3;
 
         if (!totalText.trim()) return 0;
 

@@ -5,7 +5,7 @@
 class ForceForm extends BaseForm {
     constructor() {
         super('add-force-form', {
-            submitUrl: CrusadeConfig.getSheetUrl('forces'),
+            submitUrl: TableDefs.forces?.url,
             successMessage: 'Force created successfully!',
             errorMessage: 'Failed to create force',
             clearCacheOnSuccess: ['forces', 'users'],
@@ -252,13 +252,13 @@ class ForceForm extends BaseForm {
         };
     }
 
-    clearCachesOnSuccess() {
+    async clearCachesOnSuccess() {
         // Call the base form's method first
-        super.clearCachesOnSuccess();
+        await super.clearCachesOnSuccess();
         
-        // Also manually clear forces cache using the correct method
-        if (typeof CacheManager !== 'undefined') {
-            CacheManager.clear('forces');
+        // Also manually clear forces cache using UnifiedCache
+        if (typeof UnifiedCache !== 'undefined') {
+            await UnifiedCache.clearCache('forces');
         }
     }
 }

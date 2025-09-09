@@ -67,36 +67,13 @@ const CrusadeTable = {
     },    
 
     async loadCrusades(type, key, containerId) {
-        try {
-            console.log('CrusadeTable.loadCrusades called with:', { type, key, containerId });
-            const displayConfig = this.getDisplayConfig(type, key);
+        const displayConfig = this.getDisplayConfig(type, key);
+        
+        // Create filter function for active crusades
+        const filterFn = (type === 'active') ? 
+            (crusade => this.filterActiveCrusades(crusade)) : null;
             
-            // Use UnifiedCache to fetch crusades data
-            const crusades = await UnifiedCache.getAllRows('crusades');
-            
-            // Apply filtering for active crusades
-            let filteredCrusades = crusades;
-            if (type === 'active') {
-                filteredCrusades = crusades.filter(crusade => this.filterActiveCrusades(crusade));
-            }
-            
-            // Display the data using TableBase
-            const container = document.getElementById(containerId);
-            if (container) {
-                if (filteredCrusades.length > 0) {
-                    // Apply sorting if configured
-                    if (displayConfig.sortBy) {
-                        filteredCrusades.sort(displayConfig.sortBy);
-                    }
-                    TableBase.displayTable(filteredCrusades, container, displayConfig);
-                } else {
-                    UIHelpers.showNoData(container, displayConfig.noDataMessage);
-                }
-            }
-        } catch (error) {
-            console.error('Error in loadCrusades:', error);
-            throw error;
-        }
+        await TableBase.loadAndDisplay('crusades', displayConfig, containerId, filterFn);
     },
 
     

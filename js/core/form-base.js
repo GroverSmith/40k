@@ -354,14 +354,14 @@ class BaseForm {
     /**
      * Clear caches on success
      */
-    clearCachesOnSuccess() {
+    async clearCachesOnSuccess() {
         if (this.config.clearCacheOnSuccess && Array.isArray(this.config.clearCacheOnSuccess)) {
-            this.config.clearCacheOnSuccess.forEach(cacheType => {
-                if (typeof CacheManager !== 'undefined') {
-                    CacheManager.clearType(cacheType);
+            for (const cacheType of this.config.clearCacheOnSuccess) {
+                if (typeof UnifiedCache !== 'undefined') {
+                    await UnifiedCache.clearCache(cacheType);
                     console.log(`Cleared ${cacheType} cache`);
                 }
-            });
+            }
         }
     }
 

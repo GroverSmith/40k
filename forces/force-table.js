@@ -66,12 +66,12 @@ const ForceTable = {
     },
     
     buildForceRow(force, columns) {
-        const forceKey = force['force_key'] || force['Force Key'] || force['Key'] || force.key;
-        const forceName = force['force_name'] || force['Force Name'] || force.forceName || 'Unnamed Force';
-        const userName = force['user_name'] || force['User Name'] || force['Player Name'] || force.playerName || 'Unknown';
-        const faction = force['faction'] || force['Faction'] || force.faction || 'Unknown';
-        const detachment = force['detachment'] || force['Detachment'] || force.detachment || '-';
-        const timestamp = force['timestamp'] || force['Timestamp'] || force.timestamp;
+        const forceKey = force.force_key;
+        const forceName = force.force_name || 'Unnamed Force';
+        const userName = force.user_name || 'Unknown';
+        const faction = force.faction || 'Unknown';
+        const detachment = force.detachment || '-';
+        const timestamp = force.timestamp;
 
         const columnData = {
             force: this.createForceLink(forceName, forceKey),
@@ -79,52 +79,34 @@ const ForceTable = {
             faction: faction,
             detachment: detachment,
             joined: TableBase.formatters.date(timestamp),
-            supply: force['supply_limit'] || force['Supply Limit'] || force.supplyLimit || '-',
-            battles: force['battle_count'] || force['Battle Count'] || force.battleCount || '0',
-            points: force['total_points'] || force['Total Points'] || force.totalPoints || '0'
+            supply: force.supply_limit || '-',
+            battles: force.battle_count || '0',
+            points: force.total_points || '0'
         };
 
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
-    },
- 
-    getFetchConfig(type, key) {
-        const forceUrl = CrusadeConfig.getSheetUrl('forces');
-        const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
-
-        const configs = {
-            'all': {
-                url: `${forceUrl}?action=list`,
-                cacheType: 'forces',
-                dataKey: 'data',
-                loadingMessage: 'Loading forces...'
-            },
-            'crusade': {
-                url: participantsUrl,
-                cacheType: 'participants',
-                dataKey: null,
-                loadingMessage: 'Loading crusade forces...'
-            },
-            'user': {
-                url: forceUrl,
-                cacheType: 'forces',
-                cacheKey: 'all',
-                dataKey: 'data',
-                loadingMessage: 'Loading user forces...',
-                filterFunction: (data) => {
-                    // Filter forces by user key (column 1)
-                    return data.filter(row => row[1] === key);
-                }
-            }
-        };
-        return configs[type] || configs['all'];
-    },
-
-    
+    },    
     
     async loadForces(type, key, containerId) {
-        const fetchConfig = this.getFetchConfig(type, key);
         const displayConfig = this.getDisplayConfig(type, key);
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId);
+        
+        if (type === 'crusade' && key) {
+            // Use complex filter for crusade forces (needs to join with participants)
+            const complexFilterFn = async () => {
+                const forces = await UnifiedCache.getAllRows('forces');
+                const participants = await UnifiedCache.getAllRows('xref_crusade_participants');
+                return participants
+                    .filter(p => p.crusade_key === key)
+                    .map(p => forces.find(f => f.force_key === p.force_key))
+                    .filter(f => f); // Remove undefined entries
+            };
+            await TableBase.loadAndDisplayWithComplexFilter('forces', displayConfig, containerId, complexFilterFn);
+        } else {
+            // Use simple filter for user and all forces
+            const filterFn = type === 'user' && key ? 
+                (force => force.user_key === key) : null;
+            await TableBase.loadAndDisplay('forces', displayConfig, containerId, filterFn);
+        }
     },
 
     // Convenience methods
@@ -133,16 +115,7 @@ const ForceTable = {
     },
 
     async loadForCrusade(crusadeKey, containerId) {
-        const fetchConfig = this.getFetchConfig('crusade', crusadeKey);
-        const displayConfig = this.getDisplayConfig('crusade');
-        
-        // Filter participants to only show forces for this crusade
-        const filterFn = (participant) => {
-            const participantCrusadeKey = participant['crusade_key'] || participant['Crusade Key'] || '';
-            return participantCrusadeKey === crusadeKey;
-        };
-        
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
+        return await this.loadForces('crusade', crusadeKey, containerId);
     },
 
     async loadForUser(userKey, containerId) {
@@ -153,8 +126,21 @@ const ForceTable = {
      * Fetch forces (for external use)
      */
     async fetchForces(action, key) {
-        const config = this.getFetchConfig(action, key);
-        return await TableBase.fetchWithCache(config.url, config.cacheType, config.cacheKey);
+        const forces = await UnifiedCache.getAllRows('forces');
+        
+        // Apply filtering based on action and key
+        if (action === 'user' && key) {
+            return forces.filter(force => force.user_key === key);
+        } else if (action === 'crusade' && key) {
+            // For crusade forces, we need to get participants and then get the forces
+            const participants = await UnifiedCache.getAllRows('xref_crusade_participants');
+            return participants
+                .filter(p => p.crusade_key === key)
+                .map(p => forces.find(f => f.force_key === p.force_key))
+                .filter(f => f); // Remove undefined entries
+        }
+        
+        return forces;
     },
 
     /**
@@ -162,8 +148,8 @@ const ForceTable = {
      */
     async loadAvailableForces() {
         try {
-            // Use CacheManager with automatic URL resolution
-            return await CacheManager.fetchSheetData('forces');
+            // Use UnifiedCache to get all forces
+            return await UnifiedCache.getAllRows('forces');
             
         } catch (error) {
             console.error('Error loading available forces:', error);
