@@ -30,42 +30,20 @@ class ArmyDetails {
     
     async loadArmyData() {
         try {
-            let army = null;
-
-            // First, check if we have cached armies
-            const cached = CacheManager.get('armies');
-            if (cached && cached.valid && cached.data) {
-                army = this.findArmyInCache(cached.data, this.armyKey);
-                if (army) {
-                    console.log('Found army in cache');
-                }
-            }
-
-            // If not in cache, fetch from API
-            if (!army) {
-                console.log('Army not in cache, fetching from API');
-                const armiesUrl = CrusadeConfig.getSheetUrl('armies');
-
-                // Try to get specific army first using utility
-                const fetchUrl = `${armiesUrl}?action=get&key=${encodeURIComponent(this.armyKey)}`;
-                
-                try {
-                    army = await fetchEntityData(fetchUrl, 'army list');
-                    // Cache this specific army for future use
-                    CacheManager.set('armies', army);
-                } catch (error) {
-                    // Fallback: fetch all armies and cache them
-                    const allArmiesResponse = await CacheManager.fetchWithCache(armiesUrl, 'armies');
-                    army = this.findArmyInCache(allArmiesResponse, this.armyKey);
-                }
-            }
-
+            // Use UnifiedCache to get the specific army
+            const army = await UnifiedCache.getRowByKey('armies', this.armyKey);
+            
             if (army) {
                 this.armyData = army;
                 this.displayArmy();
-            } else {
-                this.showError('Army list not found');
+                return;
             }
+
+            // If not found, get all armies to show available keys in error message
+            const allArmies = await UnifiedCache.getAllRows('armies');
+            const availableKeys = allArmies.map(a => a.army_key).join(', ');
+            
+            throw new Error(`Army "${this.armyKey}" not found. Available armies: ${availableKeys}`);
 
         } catch (error) {
             console.error('Error loading army list:', error);
@@ -73,33 +51,6 @@ class ArmyDetails {
         }
     }
 
-    /**
-     * Find an army in cached data (handles both array and object formats)
-     */
-    findArmyInCache(data, armyKey) {
-        if (!data || !armyKey) return null;
-
-        // Handle success/data format
-        if (data.success && data.data) {
-            return this.findArmyInCache(data.data, armyKey);
-        }
-
-        // Handle array format
-        if (Array.isArray(data)) {
-            return data.find(army => {
-                const key = army.army_key || army.Key || army.key || army.id;
-                return key === armyKey;
-            });
-        }
-
-        // Handle single object format
-        if (typeof data === 'object') {
-            const key = data.army_key || data.Key || data.key || data.id;
-            return key === armyKey ? data : null;
-        }
-
-        return null;
-    }
     
     displayArmy() {
         // Hide loading state and show content using utility

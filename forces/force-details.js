@@ -73,10 +73,10 @@ class ForceDetails {
        html += `
            <div class="info-card">
                <h4>Force Information</h4>
-               <p><strong>Force Name:</strong> ${this.forceData.forceName}</p>
+               <p><strong>Force Name:</strong> ${this.forceData.force_name}</p>
                <p><strong>Faction:</strong> ${this.forceData.faction}</p>
                <p><strong>Detachment:</strong> ${this.forceData.detachment || 'Not specified'}</p>
-               <p><strong>Commander:</strong> ${this.forceData.playerName}</p>
+               <p><strong>Commander:</strong> ${this.forceData.user_name}</p>
                ${this.forceData.timestamp ? `<p><strong>Created:</strong> ${new Date(this.forceData.timestamp).toLocaleDateString()}</p>` : ''}
            </div>
        `;
@@ -98,19 +98,19 @@ class ForceDetails {
 	
 	updateActionButtons() {
 		const forceData = this.forceData;
-		const forceKey = forceData.key;
+		const forceKey = forceData.force_key;
 		
 		// Update Add Army List button
 		const addArmyListBtn = document.getElementById('add-army-list-btn');
 		if (addArmyListBtn) {
 			const params = new URLSearchParams({
 				forceKey: forceKey,
-				forceName: forceData.forceName,
-				userName: forceData.playerName,
+				forceName: forceData.force_name,
+				userName: forceData.user_name,
 				faction: forceData.faction,
 				detachment: forceData.detachment || ''
 			});
-			addArmyListBtn.href = `../armies/add-army-list.html?${params.toString()}`;
+			addArmyListBtn.href = `../armies/army-add.html?${params.toString()}`;
 		}
 		
 		// Update Add Unit button
@@ -118,11 +118,11 @@ class ForceDetails {
 		if (addUnitBtn) {
 			const params = new URLSearchParams({
 				forceKey: forceKey,
-				forceName: forceData.forceName,
-				userName: forceData.playerName,
+				forceName: forceData.force_name,
+				userName: forceData.user_name,
 				faction: forceData.faction
 			});
-			addUnitBtn.href = `../units/add-unit.html?${params.toString()}`;
+			addUnitBtn.href = `../units/unit-add.html?${params.toString()}`;
 		}
 		
 		// Update Record Battle button (now in Battle History section)
@@ -130,10 +130,10 @@ class ForceDetails {
 		if (recordBattleBtn) {
 			const params = new URLSearchParams({
 				forceKey: forceKey,
-				forceName: forceData.forceName,
-				userName: forceData.playerName
+				forceName: forceData.force_name,
+				userName: forceData.user_name
 			});
-			recordBattleBtn.href = `../battles/add-battle-report.html?${params.toString()}`;
+			recordBattleBtn.href = `../battles/battle-add.html?${params.toString()}`;
 		}
 		
 		// Update Add Story button (now in Stories section)
@@ -141,10 +141,10 @@ class ForceDetails {
 		if (addStoryBtn) {
 			const params = new URLSearchParams({
 				forceKey: forceKey,
-				forceName: forceData.forceName,
-				userName: forceData.playerName
+				forceName: forceData.force_name,
+				userName: forceData.user_name
 			});
-			addStoryBtn.href = `../stories/add-story.html?${params.toString()}`;
+			addStoryBtn.href = `../stories/story-add.html?${params.toString()}`;
 		}
 	}
 
@@ -265,70 +265,24 @@ class ForceDetails {
     */
    async loadForceDataByKey(forceKey) {
        try {
-           // Use CacheManager with automatic URL resolution
-           const data = await CacheManager.fetchSheetData('forces');
+           // Use UnifiedCache to get the specific force
+           const force = await UnifiedCache.getRowByKey('forces', forceKey);
            
-           const force = this.findForceInData(data, forceKey);
-           this.forceData = force;
-           return force;
+           if (force) {
+               this.forceData = force;
+               return force;
+           }
+
+           // If not found, get all forces to show available keys in error message
+           const allForces = await UnifiedCache.getAllRows('forces');
+           const availableKeys = allForces.map(f => f.force_key).join(', ');
+           
+           throw new Error(`Force "${forceKey}" not found. Available forces: ${availableKeys}`);
            
        } catch (error) {
            console.error('Error loading force data:', error);
            throw error;
        }
-   }
-   
-   /**
-    * Find specific force in data array
-    */
-   findForceInData(data, forceKey) {
-       console.log('Processed data:', data);
-       console.log('Looking for force key:', forceKey);
-       
-       // Handle standardized format
-       let forcesArray = [];
-       if (data && data.success && Array.isArray(data.data)) {
-           forcesArray = data.data;
-       } else if (Array.isArray(data)) {
-           forcesArray = data;
-       } else {
-           throw new Error('No force data available or invalid data format');
-       }
-       
-       if (forcesArray.length === 0) {
-           throw new Error('No force data available or invalid data format');
-       }
-       
-       // Find the force by key - data is already in object format
-       const force = forcesArray.find(forceObj => {
-           const objForceKey = forceObj.force_key || forceObj['force_key'] || forceObj['Force Key'] || forceObj.Key || forceObj.key;
-           return objForceKey === forceKey;
-       });
-       
-       if (!force) {
-           const availableKeys = forcesArray.map(forceObj => {
-               return forceObj.force_key || forceObj['force_key'] || forceObj['Force Key'] || forceObj.Key || forceObj.key;
-           }).filter(key => key);
-           console.log('Available force keys:', availableKeys);
-           throw new Error(`Force with key "${forceKey}" not found. Available keys: ${availableKeys.slice(0, 5).join(', ')}`);
-       }
-       
-       // Data is already in object format, no need to map
-       const forceData = force;
-       
-       // Map to expected property names for backward compatibility
-       const mappedForceData = {
-           key: forceData.force_key || '',
-           playerName: forceData.user_name || '',
-           forceName: forceData.force_name || '',
-           faction: forceData.faction || '',
-           detachment: forceData.detachment || '',
-           notes: forceData.notes || '',
-           timestamp: forceData.timestamp || ''
-       };
-       
-       console.log('Successfully found and loaded force data:', mappedForceData);
-       return mappedForceData;
    }
 
    // ===== UI METHODS (consolidated from force-ui.js) =====
