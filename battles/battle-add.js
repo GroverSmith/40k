@@ -7,7 +7,7 @@ class BattleReportForm extends BaseForm {
             submitUrl: CrusadeConfig.getSheetUrl('battle_history'),
             successMessage: 'Battle report submitted successfully!',
             errorMessage: 'Failed to submit battle report',
-            clearCacheOnSuccess: ['battles']
+            clearCacheOnSuccess: ['battle_history']
         });
         this.dataLoaders = {
             forces: null,
@@ -16,6 +16,10 @@ class BattleReportForm extends BaseForm {
             armies: null
         };
         this.setupBattleLoadingState();
+        
+        // Override gatherFormData method to extract user keys
+        this.gatherFormData = this.gatherFormDataOverride.bind(this);
+        
         this.init();
     }
     
@@ -134,6 +138,82 @@ class BattleReportForm extends BaseForm {
             }
         });
     }
+
+    /**
+     * Override gatherFormData to extract user keys from selected forces
+     */
+    gatherFormDataOverride() {
+        console.log('=== BATTLE REPORT FORM gatherFormData() CALLED ===');
+        const formData = new FormData(this.form);
+        const data = {};
+
+        for (let [key, value] of formData.entries()) {
+            data[key] = value.trim();
+        }
+
+        // Extract user keys from selected forces
+        const force1Key = data.force1Key;
+        const force2Key = data.force2Key;
+
+        console.log('=== USER KEY EXTRACTION DEBUG ===');
+        console.log('force1Key:', force1Key);
+        console.log('force2Key:', force2Key);
+        console.log('Available forces:', this.dataLoaders.forces?.length || 0);
+        console.log('Forces data:', this.dataLoaders.forces);
+
+        if (force1Key && this.dataLoaders.forces) {
+            const force1 = this.dataLoaders.forces.find(f => f.force_key === force1Key);
+            console.log('Found force1:', force1);
+            if (force1) {
+                // Try to get user_key from force object first
+                data.user_key_1 = force1.user_key;
+                console.log('Extracted user_key_1 from force object:', data.user_key_1, 'from force:', force1.force_name);
+            } else {
+                console.warn('Force1 not found for key:', force1Key);
+            }
+        } else {
+            console.warn('Cannot extract user_key_1 - force1Key:', force1Key, 'forces loaded:', !!this.dataLoaders.forces);
+        }
+
+        // Fallback: Extract user key from force key if not found in force object
+        if (!data.user_key_1 && force1Key) {
+            const parts = force1Key.split('_');
+            if (parts.length >= 2) {
+                data.user_key_1 = parts[1]; // Second part should be the user key
+                console.log('Fallback: Extracted user_key_1 from force key:', data.user_key_1);
+            }
+        }
+
+        if (force2Key && this.dataLoaders.forces) {
+            const force2 = this.dataLoaders.forces.find(f => f.force_key === force2Key);
+            console.log('Found force2:', force2);
+            if (force2) {
+                // Try to get user_key from force object first
+                data.user_key_2 = force2.user_key;
+                console.log('Extracted user_key_2 from force object:', data.user_key_2, 'from force:', force2.force_name);
+            } else {
+                console.warn('Force2 not found for key:', force2Key);
+            }
+        } else {
+            console.warn('Cannot extract user_key_2 - force2Key:', force2Key, 'forces loaded:', !!this.dataLoaders.forces);
+        }
+
+        // Fallback: Extract user key from force key if not found in force object
+        if (!data.user_key_2 && force2Key) {
+            const parts = force2Key.split('_');
+            if (parts.length >= 2) {
+                data.user_key_2 = parts[1]; // Second part should be the user key
+                console.log('Fallback: Extracted user_key_2 from force key:', data.user_key_2);
+            }
+        }
+
+        // Add timestamp
+        data.timestamp = new Date().toISOString();
+
+        console.log('Final form data with user keys:', data);
+        return data;
+    }
+
     createSelect(id, name, required) {
         const select = document.createElement('select');
         select.id = id;
