@@ -139,9 +139,11 @@ const CrusadeApp = {
     },
 
     // Clear all application caches
-    clearAllCaches() {
+    async clearAllCaches() {
         console.log('Clearing all application caches...');
-        CacheManager.clearAll();
+        if (typeof UnifiedCache !== 'undefined' && UnifiedCache.clearAllCaches) {
+            await UnifiedCache.clearAllCaches();
+        }
     },
 
     // Initialize crusades table with proper dependency checking
@@ -150,7 +152,7 @@ const CrusadeApp = {
         let retries = 0;
         
         const tryLoad = async () => {
-            if (window.CrusadeTable && window.TableBase && window.CacheManager) {
+            if (window.CrusadeTable && window.TableBase && window.UnifiedCache) {
                 try {
                     console.log('All dependencies ready, loading crusades...');
                     await CrusadeTable.loadAllCrusades('crusades-sheet');

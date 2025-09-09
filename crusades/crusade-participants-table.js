@@ -34,109 +34,27 @@ const CrusadeParticipantsTable = {
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
     },
 
-    /**
-     * Fetch participants configuration
-     */
-    getFetchConfig(type, key) {
-        const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
-
-        const configs = {
-            'all': {
-                url: participantsUrl,
-                cacheType: 'participants'
-            },
-            'by-crusade': {
-                url: participantsUrl,
-                cacheType: 'participants'
-            },
-            'by-force': {
-                url: participantsUrl,
-                cacheType: 'participants'
-            },
-            'by-user': {
-                url: participantsUrl,
-                cacheType: 'participants'
-            }
-        };
-
-        return configs[type] || configs['all'];
-    },
+    
 
     /**
      * Fetch participants data
      */
     async fetchData(action, key) {
-        const config = this.getFetchConfig(action, key);
-        const data = await TableBase.fetchWithCache(config.url, config.cacheType);
+        // Use UnifiedCache to get all participants
+        const participants = await UnifiedCache.getAllRows('xref_crusade_participants');
         
         // Apply filtering based on action
         if (action === 'by-crusade' && key) {
-            return this.filterParticipantsByCrusade(data, key);
+            return participants.filter(p => p.crusade_key === key);
         } else if (action === 'by-force' && key) {
-            return this.filterParticipantsByForce(data, key);
+            return participants.filter(p => p.force_key === key);
         } else if (action === 'by-user' && key) {
-            return this.filterParticipantsByUser(data, key);
+            return participants.filter(p => p.user_key === key);
         }
         
-        return data;
+        return participants;
     },
 
-    /**
-     * Filter participants by crusade
-     */
-    filterParticipantsByCrusade(data, crusadeKey) {
-        if (!Array.isArray(data)) return data;
-        
-        // Filter raw data before processing
-        const headers = data[0];
-        const crusadeKeyIndex = headers.indexOf('crusade_key');
-        
-        if (crusadeKeyIndex === -1) return data;
-        
-        const filteredRows = [headers].concat(
-            data.slice(1).filter(row => row[crusadeKeyIndex] === crusadeKey)
-        );
-        
-        return filteredRows;
-    },
-
-    /**
-     * Filter participants by force
-     */
-    filterParticipantsByForce(data, forceKey) {
-        if (!Array.isArray(data)) return data;
-        
-        // Filter raw data before processing
-        const headers = data[0];
-        const forceKeyIndex = headers.indexOf('force_key');
-        
-        if (forceKeyIndex === -1) return data;
-        
-        const filteredRows = [headers].concat(
-            data.slice(1).filter(row => row[forceKeyIndex] === forceKey)
-        );
-        
-        return filteredRows;
-    },
-
-    /**
-     * Filter participants by user
-     */
-    filterParticipantsByUser(data, userKey) {
-        if (!Array.isArray(data)) return data;
-        
-        // Filter raw data before processing
-        const headers = data[0];
-        const userKeyIndex = headers.indexOf('user_key');
-        
-        if (userKeyIndex === -1) return data;
-        
-        const filteredRows = [headers].concat(
-            data.slice(1).filter(row => row[userKeyIndex] === userKey)
-        );
-        
-        return filteredRows;
-    },
 
     /**
      * Display participants table
@@ -153,10 +71,9 @@ const CrusadeParticipantsTable = {
             container.innerHTML = '<div class="loading-spinner"></div><span>Loading participants...</span>';
 
             // Fetch data
-            const data = await this.fetchData(options.action || 'all', options.key);
-            const processedData = TableBase.processResponseData(data);
+            const participants = await this.fetchData(options.action || 'all', options.key);
 
-            if (!processedData || processedData.length === 0) {
+            if (!participants || participants.length === 0) {
                 container.innerHTML = '<div class="no-data">No participants found</div>';
                 return;
             }
@@ -174,7 +91,7 @@ const CrusadeParticipantsTable = {
             `;
 
             // Add rows
-            processedData.forEach(participant => {
+            participants.forEach(participant => {
                 html += this.buildParticipantRow(participant, columns);
             });
 
@@ -237,9 +154,8 @@ const CrusadeParticipantsTable = {
      */
     async getCrusadeParticipantCount(crusadeKey) {
         try {
-            const data = await this.fetchData('by-crusade', crusadeKey);
-            if (!Array.isArray(data) || data.length <= 1) return 0;
-            return data.length - 1; // Subtract 1 for header row
+            const participants = await this.fetchData('by-crusade', crusadeKey);
+            return participants ? participants.length : 0;
         } catch (error) {
             console.error('Error getting participant count:', error);
             return 0;
@@ -251,14 +167,8 @@ const CrusadeParticipantsTable = {
      */
     async isForceRegistered(crusadeKey, forceKey) {
         try {
-            const data = await this.fetchData('by-crusade', crusadeKey);
-            if (!Array.isArray(data) || data.length <= 1) return false;
-            
-            const headers = data[0];
-            const forceKeyIndex = headers.indexOf('force_key');
-            if (forceKeyIndex === -1) return false;
-            
-            return data.slice(1).some(row => row[forceKeyIndex] === forceKey);
+            const participants = await this.fetchData('by-crusade', crusadeKey);
+            return participants.some(p => p.force_key === forceKey);
         } catch (error) {
             console.error('Error checking force registration:', error);
             return false;
@@ -269,7 +179,7 @@ const CrusadeParticipantsTable = {
      * Register a force for a crusade
      */
     async registerForce(registrationData) {
-        const participantsUrl = CrusadeConfig.getSheetUrl('xref_crusade_participants');
+        const participantsUrl = TableDefs.xref_crusade_participants?.url;
         
         if (!participantsUrl) {
             throw new Error('Participants sheet URL not configured');
@@ -291,8 +201,8 @@ const CrusadeParticipantsTable = {
         const result = await response.json();
         
         if (result.success) {
-            // Clear the participants cache
-            CacheManager.clear('participants');
+            // Clear the participants cache using UnifiedCache
+            await UnifiedCache.clearCache('xref_crusade_participants');
         }
         
         return result;

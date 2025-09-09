@@ -172,25 +172,10 @@ class BattleReportForm extends BaseForm {
     }
     async loadForces() {
         try {
-            const forcesData = await CacheManager.fetchSheetData('forces');
-            // Handle different data formats
-            if (forcesData && forcesData.success && forcesData.data) {
-                // Standardized format with success/data structure
-                this.dataLoaders.forces = forcesData.data;
-            } else if (Array.isArray(forcesData)) {
-                // Direct array format
-                this.dataLoaders.forces = forcesData;
-            } else {
-                this.dataLoaders.forces = [];
-            }
-            // Show structure of forces data
-            if (this.dataLoaders.forces && this.dataLoaders.forces.length > 0) {
-                // Check if it's array format (with header row) or object format
-                const firstItem = this.dataLoaders.forces[0];
-                if (Array.isArray(firstItem)) {
-                } else if (typeof firstItem === 'object' && firstItem.user_name) {
-                }
-                // Refresh any currently selected players
+            const forcesData = await UnifiedCache.getAllRows('forces');
+            this.dataLoaders.forces = forcesData || [];
+            // Refresh any currently selected players
+            if (this.dataLoaders.forces.length > 0) {
                 this.refreshSelectedPlayers();
             }
         } catch (error) {
@@ -200,7 +185,7 @@ class BattleReportForm extends BaseForm {
     }
     async loadCrusades() {
         try {
-            const data = await CacheManager.fetchSheetData('crusades');
+            const data = await UnifiedCache.getAllRows('crusades');
             this.dataLoaders.crusades = data;
             this.populateCrusadeDropdown(data);
         } catch (error) {
@@ -209,22 +194,13 @@ class BattleReportForm extends BaseForm {
     }
     async loadArmies() {
         try {
-            const data = await CacheManager.fetchSheetData('armies');
-            // Handle different data formats
-            if (data && data.success && data.data) {
-                // Standardized format: {success: true, data: [...]}
-                this.dataLoaders.armies = data.data;
-            } else if (Array.isArray(data)) {
-                // Direct array format
-                this.dataLoaders.armies = data;
-            } else {
-                this.dataLoaders.armies = [];
-            }
+            const data = await UnifiedCache.getAllRows('armies');
+            this.dataLoaders.armies = data || [];
             if (this.dataLoaders.armies.length > 0) {
                 // Log all army force keys to debug
                 this.dataLoaders.armies.forEach((army, index) => {
-                    const forceKey = army.force_key || army.Force_Key || army.forceKey;
-                    const armyName = army.army_name || army.armyName || army.Name;
+                    const forceKey = army.force_key;
+                    const armyName = army.army_name;
                 });
             }
         } catch (error) {
@@ -267,14 +243,11 @@ class BattleReportForm extends BaseForm {
         const select = document.getElementById('crusade-select');
         if (!select) return;
         select.innerHTML = '<option value="">Select crusade (optional)...</option>';
-        data.slice(1).forEach(row => {
-            const crusadeKeyIndex = TableDefs.getColumnIndex('crusades', 'crusade_key');
-            const crusadeNameIndex = TableDefs.getColumnIndex('crusades', 'crusade_name');
-            const stateIndex = TableDefs.getColumnIndex('crusades', 'state');
-            if (row[crusadeKeyIndex] && row[crusadeNameIndex]) {
+        data.forEach(crusade => {
+            if (crusade.crusade_key && crusade.crusade_name) {
                 const option = document.createElement('option');
-                option.value = row[crusadeKeyIndex];
-                option.textContent = `${row[crusadeNameIndex]} (${row[stateIndex] || 'Active'})`;
+                option.value = crusade.crusade_key;
+                option.textContent = `${crusade.crusade_name} (${crusade.state || 'Active'})`;
                 select.appendChild(option);
             }
         });
@@ -294,25 +267,12 @@ class BattleReportForm extends BaseForm {
         }
         // Filter forces from cached data
         if (this.dataLoaders.forces) {
-            let playerForces = [];
-            // Check if first item is an array (indicating array format with header row)
-            const firstItem = this.dataLoaders.forces[0];
-            if (Array.isArray(firstItem)) {
-                // Array format - skip header row and filter
-                playerForces = this.dataLoaders.forces.slice(1).filter(row => {
-                    const forceUserName = row[2]; // User Name is in column 2
-                    return forceUserName && playerName && 
-                        forceUserName.toString().trim().toLowerCase() === playerName.toString().trim().toLowerCase();
-                });
-            } else {
-                // Object format - filter directly
-                playerForces = this.dataLoaders.forces.filter(force => {
-                    const forceUserName = force.user_name || force['user_name'];
-                    const matches = forceUserName && playerName && 
-                        forceUserName.toString().trim().toLowerCase() === playerName.toString().trim().toLowerCase();
-                    return matches;
-                });
-            }
+            // Filter forces for the selected player
+            const playerForces = this.dataLoaders.forces.filter(force => {
+                const forceUserName = force.user_name;
+                return forceUserName && playerName && 
+                    forceUserName.toString().trim().toLowerCase() === playerName.toString().trim().toLowerCase();
+            });
             this.updateForceDropdown(playerNum, playerForces);
         } else {
             // Show a loading message in the dropdown
@@ -371,18 +331,9 @@ class BattleReportForm extends BaseForm {
         }
         select.innerHTML = '<option value="">Select force...</option>';
         forces.forEach(force => {
-            let forceKey, forceName, faction;
-            if (Array.isArray(force)) {
-                // Array format: [force_key, user_key, user_name, force_name, faction, detachment, notes, timestamp]
-                forceKey = force[0];    // force_key
-                forceName = force[3];   // force_name
-                faction = force[4];     // faction
-            } else {
-                // Object format
-                forceKey = force.force_key || force['force_key'];
-                forceName = force.force_name || force['force_name'];
-                faction = force.faction || force['faction'];
-            }
+            const forceKey = force.force_key;
+            const forceName = force.force_name;
+            const faction = force.faction;
             if (forceKey && forceName) {
                 const option = document.createElement('option');
                 option.value = forceKey;
@@ -413,7 +364,7 @@ class BattleReportForm extends BaseForm {
         // Auto-select if only one force
         if (forces.length === 1) {
             const firstForce = forces[0];
-            const forceKey = Array.isArray(firstForce) ? firstForce[0] : (firstForce.force_key || firstForce['force_key']);
+            const forceKey = firstForce.force_key;
             select.value = forceKey;
             this.handleForceSelection(playerNum, forceKey);
         } else if (forces.length > 1) {
@@ -446,17 +397,14 @@ class BattleReportForm extends BaseForm {
         }
         // Filter armies for the selected force
         const forceArmies = this.dataLoaders.armies.filter(army => {
-            const armyForceKey = army.force_key || army.Force_Key || army.forceKey;
-            const armyName = army.army_name || army.armyName || 'unknown';
-            const matches = armyForceKey === forceKey;
-            return matches;
+            return army.force_key === forceKey;
         });
         // Add army options
         forceArmies.forEach(army => {
-            const armyKey = army.army_key || army.Army_Key || army.armyKey || army.Key;
-            const armyName = army.army_name || army.Army_Name || army.armyName || army.Name;
-            const points = army.points_value || army.Points_Value || army.pointsValue || '';
-            const detachment = army.detachment || army.Detachment || '';
+            const armyKey = army.army_key;
+            const armyName = army.army_name;
+            const points = army.points_value || '';
+            const detachment = army.detachment || '';
             if (armyKey && armyName) {
                 const option = document.createElement('option');
                 option.value = armyKey;
@@ -493,13 +441,9 @@ class BattleReportForm extends BaseForm {
             const selectedOption = select.options[select.selectedIndex];
             if (selectedOption && selectedOption.value) {
                 // Find the army data to get the army name
-                const army = this.dataLoaders.armies.find(a => {
-                    const aKey = a.army_key || a.Army_Key || a.armyKey || a.Key;
-                    return aKey === armyKey;
-                });
+                const army = this.dataLoaders.armies.find(a => a.army_key === armyKey);
                 if (army) {
-                    const armyName = army.army_name || army.Army_Name || army.armyName || army.Name;
-                    hiddenField.value = armyName || '';
+                    hiddenField.value = army.army_name || '';
                 }
             } else {
                 hiddenField.value = '';
