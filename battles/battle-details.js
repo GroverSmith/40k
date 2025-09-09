@@ -115,7 +115,28 @@ class BattleDetails {
             });
         }
 
-        // Force Point of View sections
+        // Force Point of View sections - wait for UserManager to be ready
+        this.displayForcePOVSectionsWithDelay();
+    }
+
+    async displayForcePOVSectionsWithDelay() {
+        // Wait for UserManager to be ready
+        let attempts = 0;
+        const maxAttempts = 50; // 5 seconds max wait
+        
+        while (attempts < maxAttempts) {
+            const activeUser = UserManager.getCurrentUser();
+            if (activeUser) {
+                this.displayForcePOVSections();
+                return;
+            }
+            
+            // Wait 100ms before trying again
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        console.warn('UserManager not ready after 5 seconds, displaying POV sections without user permissions');
         this.displayForcePOVSections();
     }
 
@@ -129,6 +150,7 @@ class BattleDetails {
         const activeUser = UserManager.getCurrentUser();
         const activeUserKey = activeUser ? activeUser.user_key : null;
 
+
         // Always show Force 1 POV section
         CoreUtils.dom.show('force-1-pov-section');
         setElementTexts({
@@ -136,9 +158,10 @@ class BattleDetails {
         });
 
         // Show/hide Force 1 POV button based on user match
-        const force1UserKey = this.battleData.force_key_1 ? this.battleData.force_key_1.split('_').pop() : null;
+        const battleUserKey1 = this.battleData.user_key_1;
         const force1Button = CoreUtils.dom.getElement('add-pov-1-btn');
-        if (activeUserKey && force1UserKey && activeUserKey === force1UserKey) {
+        const showForce1Button = activeUserKey && battleUserKey1 && activeUserKey === battleUserKey1;
+        if (showForce1Button) {
             CoreUtils.dom.show('add-pov-1-btn');
         } else {
             CoreUtils.dom.hide('add-pov-1-btn');
@@ -151,9 +174,10 @@ class BattleDetails {
         });
 
         // Show/hide Force 2 POV button based on user match
-        const force2UserKey = this.battleData.force_key_2 ? this.battleData.force_key_2.split('_').pop() : null;
+        const battleUserKey2 = this.battleData.user_key_2;
         const force2Button = CoreUtils.dom.getElement('add-pov-2-btn');
-        if (activeUserKey && force2UserKey && activeUserKey === force2UserKey) {
+        const showForce2Button = activeUserKey && battleUserKey2 && activeUserKey === battleUserKey2;
+        if (showForce2Button) {
             CoreUtils.dom.show('add-pov-2-btn');
         } else {
             CoreUtils.dom.hide('add-pov-2-btn');
