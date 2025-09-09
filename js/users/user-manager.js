@@ -1,5 +1,5 @@
 // filename: js/user-manager.js
-// Core User Management System for 40k Crusade Campaign Tracker (using CacheManager)
+// Core User Management System for 40k Crusade Campaign Tracker (using UnifiedCache)
 // Orchestrates storage, API, UI, and modal modules
 
 const UserManager = {
@@ -46,11 +46,12 @@ const UserManager = {
      */
     async loadUsers() {
         if (this.usersLoaded) {
-            console.log('Users already loaded');
+            console.log('Users already loaded, skipping reload');
             return;
         }
         
         const users = await UserAPI.loadUsers();
+        
         if (users) {
             this.users = users;
             this.usersLoaded = true;
@@ -96,10 +97,8 @@ const UserManager = {
         }
         
         UserModal.showCreateUserModal(async (userData) => {
-            console.log('User created, refreshing and selecting:', userData.name);
-            
             // Clear cache and reload users
-            CacheManager.clear('users');
+            await UnifiedCache.clearCache('users');
             this.usersLoaded = false;
             this.users = [];
             
@@ -109,9 +108,7 @@ const UserManager = {
             // Find and select the newly created user
             const newUser = this.users.find(u => u.name === userData.name);
             if (newUser) {
-                console.log('Found and selecting new user:', newUser);
                 this.selectUser(newUser);
-                
                 // Update dropdown immediately to show the new user
                 UserUI.populateUserDropdown(this.users, newUser, (user) => this.selectUser(user));
             } else {
@@ -185,53 +182,29 @@ const UserManager = {
     },
     
     /**
-     * Refresh user data from server
-     */
-    async refreshUsers() {
-        // Clear the cache to force reload
-        CacheManager.clear('users');
-        this.usersLoaded = false;
-        this.users = [];
-        
-        await this.loadUsers();
-    },
-    
-    /**
      * Clear all cached data
      */
-    clearAllDataCaches() {
+    async clearAllDataCaches() {
         if (confirm('Clear all cached data? This will force fresh data loads on all pages.')) {
-            // Clear all caches using CacheManager
-            if (typeof CacheManager !== 'undefined' && CacheManager.clearAll) {
-                const clearedCount = CacheManager.clearAll();
+            // Clear all caches using UnifiedCache
+            if (typeof UnifiedCache !== 'undefined' && UnifiedCache.clearAllCaches) {
+                await UnifiedCache.clearAllCaches();
                 
                 // Show success and refresh
-                alert(`Cache cleared! ${clearedCount} entries removed.\n\nRefreshing page...`);
+                alert('Cache cleared! All cached data removed.\n\nRefreshing page...');
                 location.reload();
             } else {
-                alert('Cache manager not available');
+                alert('UnifiedCache not available');
             }
         }
     },
     
     /**
-     * Clear current user selection
-     */
-    clearUser() {
-        console.log('Clearing user selection');
-        this.currentUser = null;
-        UserStorage.saveCurrentUser(null);
-        UserUI.updateUserDisplayName(null);
-        UserUI.populateUserDropdown(this.users, null, (user) => this.selectUser(user));
-        this.onUserChanged(null);
-    },
-    
-    /**
      * Clear all UserManager data from localStorage
      */
-    clearAllData() {
+    async clearAllData() {
         console.log('Clearing all UserManager data');
-        UserStorage.clearAllData();
+        await UserStorage.clearAllData();
         this.currentUser = null;
         this.users = [];
         this.usersLoaded = false;
@@ -249,16 +222,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make UserManager globally available immediately
     window.UserManager = UserManager;
     
-    // Add slight delay to ensure config is loaded
-    setTimeout(async () => {
-        try {
-            // Check if config is available, if not try a bit longer
-            if (typeof CrusadeConfig === 'undefined') {
-                console.log('Waiting for CrusadeConfig...');
-                await new Promise(resolve => setTimeout(resolve, 500));
-            }
-            
-            // Check that all modules are loaded
+        // Add slight delay to ensure modules are loaded
+        setTimeout(async () => {
+            try {
+                // Check that all modules are loaded
             if (typeof UserStorage === 'undefined') {
                 console.error('UserStorage module not loaded!');
             }
@@ -271,8 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof UserModal === 'undefined') {
                 console.error('UserModal module not loaded!');
             }
-            if (typeof CacheManager === 'undefined') {
-                console.error('CacheManager module not loaded!');
+            if (typeof UnifiedCache === 'undefined') {
+                console.error('UnifiedCache module not loaded!');
             }
             
             await UserManager.init();
@@ -292,4 +259,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = UserManager;
 }
 
-console.log('UserManager core module loaded - using unified CacheManager');
+console.log('UserManager core module loaded - using UnifiedCache');
