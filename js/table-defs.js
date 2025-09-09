@@ -113,6 +113,17 @@ const TableDefs = {
         ]
     },
 
+    xref_story_armies: {
+        url: 'https://script.google.com/macros/s/AKfycbxoq8MfSkxpVjVQhuFx8jiSRtEvuoRtU-k95Wrl_8SLw-KgeNsVs7Vp9EwjT4L2T2nX/exec',
+        sheetId: '1YJWI_EiRj2O1mbujWnhh5coUDD2kehA5YUMOFOvEX9Q',
+        sheetName: 'xref_story_armies',
+        primaryKey: 'story_key', // Single field for simple lookups
+        compositeKey: ['story_key', 'army_key'], // Composite key for uniqueness
+        columns: [
+            'story_key', 'army_key', 'timestamp', 'deleted_timestamp'
+        ]
+    },
+
     xref_story_units: {
         url: 'https://script.google.com/macros/s/AKfycbzHfmILYbrf83JjdZkqaCHi5xfUif1oQo0EXGX9SztblPg0FXmXNiVxPYyE9E9ii2eE/exec',
         sheetId: '1YbPSfXMJro_x9d1W18RyZ4MQyfhoOwjgtDR0RhSju1E',

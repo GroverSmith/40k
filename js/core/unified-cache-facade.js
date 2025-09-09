@@ -46,6 +46,7 @@ class UnifiedCacheFacade {
             units: 60 * 60 * 1000, // 1 hour
             stories: 60 * 60 * 1000, // 1 hour
             xref_story_forces: 60 * 60 * 1000, // 1 hour
+            xref_story_armies: 60 * 60 * 1000, // 1 hour
             xref_story_units: 60 * 60 * 1000 // 1 hour
         };
     }
