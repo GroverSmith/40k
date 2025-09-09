@@ -97,33 +97,22 @@ const UserManager = {
         }
         
         UserModal.showCreateUserModal(async (userData) => {
-            console.log('User created, refreshing and selecting:', userData.name);
-            
             // Clear cache and reload users
-            console.log('Clearing users cache...');
             await UnifiedCache.clearCache('users');
-            console.log('Cache cleared, resetting user state...');
             this.usersLoaded = false;
             this.users = [];
             
             // Force reload users from server
-            console.log('Reloading users from server...');
             await this.loadUsers();
-            console.log('Users reloaded, count:', this.users.length);
-            console.log('All users:', this.users.map(u => u.name));
             
             // Find and select the newly created user
             const newUser = this.users.find(u => u.name === userData.name);
             if (newUser) {
-                console.log('Found and selecting new user:', newUser);
                 this.selectUser(newUser);
-                
                 // Update dropdown immediately to show the new user
                 UserUI.populateUserDropdown(this.users, newUser, (user) => this.selectUser(user));
             } else {
                 console.warn('Could not find newly created user in refreshed list');
-                console.log('Available users:', this.users.map(u => u.name));
-                console.log('Looking for:', userData.name);
                 // Still update the dropdown with the refreshed list
                 UserUI.populateUserDropdown(this.users, this.currentUser, (user) => this.selectUser(user));
             }
@@ -193,18 +182,6 @@ const UserManager = {
     },
     
     /**
-     * Refresh user data from server
-     */
-    async refreshUsers() {
-        // Clear the cache to force reload
-        await UnifiedCache.clearCache('users');
-        this.usersLoaded = false;
-        this.users = [];
-        
-        await this.loadUsers();
-    },
-    
-    /**
      * Clear all cached data
      */
     async clearAllDataCaches() {
@@ -220,18 +197,6 @@ const UserManager = {
                 alert('UnifiedCache not available');
             }
         }
-    },
-    
-    /**
-     * Clear current user selection
-     */
-    clearUser() {
-        console.log('Clearing user selection');
-        this.currentUser = null;
-        UserStorage.saveCurrentUser(null);
-        UserUI.updateUserDisplayName(null);
-        UserUI.populateUserDropdown(this.users, null, (user) => this.selectUser(user));
-        this.onUserChanged(null);
     },
     
     /**
@@ -257,16 +222,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make UserManager globally available immediately
     window.UserManager = UserManager;
     
-    // Add slight delay to ensure config is loaded
-    setTimeout(async () => {
-        try {
-            // Check if config is available, if not try a bit longer
-            if (typeof CrusadeConfig === 'undefined') {
-                console.log('Waiting for CrusadeConfig...');
-                await new Promise(resolve => setTimeout(resolve, 500));
-            }
-            
-            // Check that all modules are loaded
+        // Add slight delay to ensure modules are loaded
+        setTimeout(async () => {
+            try {
+                // Check that all modules are loaded
             if (typeof UserStorage === 'undefined') {
                 console.error('UserStorage module not loaded!');
             }

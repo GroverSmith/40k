@@ -15,7 +15,6 @@ const UserStorage = {
             const savedUser = localStorage.getItem(this.STORAGE_KEY);
             if (savedUser) {
                 const user = JSON.parse(savedUser);
-                console.log('Loaded saved user (no expiration):', user);
                 return user;
             }
             return null;
@@ -33,10 +32,8 @@ const UserStorage = {
         try {
             if (user) {
                 localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
-                console.log('Saved current user (no expiration):', user);
             } else {
                 localStorage.removeItem(this.STORAGE_KEY);
-                console.log('Removed user from storage');
             }
             return true;
         } catch (error) {

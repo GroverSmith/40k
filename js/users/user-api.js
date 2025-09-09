@@ -22,7 +22,6 @@ const UserAPI = {
             // Use UnifiedCache for fetching users
             const users = await UnifiedCache.getAllRows('users');
             
-            console.log('Loaded users from UnifiedCache:', users);
             return users;
             
         } catch (error) {
