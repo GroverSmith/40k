@@ -21,7 +21,10 @@ class UnifiedCacheFacade {
         
         tableNames.forEach(sheetName => {
             this.scriptUrls[sheetName] = TableDefs[sheetName].url;
+            console.log(`UnifiedCacheFacade: Loaded URL for ${sheetName}: ${TableDefs[sheetName].url}`);
         });
+        
+        console.log('UnifiedCacheFacade: All loaded URLs:', this.scriptUrls);
         
         // Extract primary keys and composite keys from TableDefs
         this.primaryKeys = {};
@@ -298,7 +301,8 @@ class UnifiedCacheFacade {
             }
             
             console.log(`UnifiedCacheFacade: Fetching from script - ${sheetName} (${action})`);
-            console.log(`UnifiedCacheFacade: URL: ${requestUrl}`);
+            console.log(`UnifiedCacheFacade: Configured URL: ${scriptUrlConfig}`);
+            console.log(`UnifiedCacheFacade: Full request URL: ${requestUrl}`);
             
             const response = await fetch(requestUrl);
             if (!response.ok) {
@@ -399,6 +403,7 @@ class UnifiedCacheFacade {
         
         // Check if we need to refresh the cache
         const cacheValid = await this.isCacheValid(sheetName);
+        console.log(`UnifiedCacheFacade: Cache validation for ${sheetName}: valid=${cacheValid}, forceRefresh=${forceRefresh}`);
         if (!cacheValid || forceRefresh) {
             console.log(`UnifiedCacheFacade: Cache invalid or refresh requested for ${sheetName}, fetching from script...`);
             
@@ -428,11 +433,14 @@ class UnifiedCacheFacade {
         
         return new Promise((resolve, reject) => {
             request.onsuccess = () => {
-                const rows = request.result
+                const allRows = request.result;
+                console.log(`UnifiedCacheFacade: Retrieved ${allRows.length} total rows from cache for ${sheetName}`);
+                
+                const rows = allRows
                     .filter(row => !row.deleted) // Filter out deleted rows
                     .map(row => row.data); // Extract the actual data
                 
-                console.log(`UnifiedCacheFacade: Retrieved ${rows.length} rows for ${sheetName}`);
+                console.log(`UnifiedCacheFacade: Retrieved ${rows.length} active rows for ${sheetName}`);
                 resolve(rows);
             };
             
@@ -514,18 +522,37 @@ class UnifiedCacheFacade {
     async clearCache(sheetName) {
         await this.ensureDatabaseReady();
         
-        const transaction = this.db.transaction([sheetName], 'readwrite');
+        // Clear both the data store and the metadata
+        const transaction = this.db.transaction([sheetName, 'metadata'], 'readwrite');
         const store = transaction.objectStore(sheetName);
+        const metadataStore = transaction.objectStore('metadata');
         
         return new Promise((resolve) => {
-            const request = store.clear();
-            request.onsuccess = () => {
-                console.log(`UnifiedCacheFacade: Cleared cache for ${sheetName}`);
-                resolve();
+            let completed = 0;
+            const total = 2;
+            
+            const checkComplete = () => {
+                completed++;
+                if (completed === total) {
+                    console.log(`UnifiedCacheFacade: Cleared cache for ${sheetName}`);
+                    resolve();
+                }
             };
-            request.onerror = () => {
-                console.error(`UnifiedCacheFacade: Failed to clear cache for ${sheetName}:`, request.error);
-                resolve(); // Don't fail the operation
+            
+            // Clear data store
+            const dataRequest = store.clear();
+            dataRequest.onsuccess = checkComplete;
+            dataRequest.onerror = () => {
+                console.error(`UnifiedCacheFacade: Failed to clear data store for ${sheetName}:`, dataRequest.error);
+                checkComplete();
+            };
+            
+            // Clear metadata
+            const metadataRequest = metadataStore.delete(sheetName);
+            metadataRequest.onsuccess = checkComplete;
+            metadataRequest.onerror = () => {
+                console.error(`UnifiedCacheFacade: Failed to clear metadata for ${sheetName}:`, metadataRequest.error);
+                checkComplete();
             };
         });
     }

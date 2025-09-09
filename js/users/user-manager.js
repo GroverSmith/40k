@@ -1,5 +1,5 @@
 // filename: js/user-manager.js
-// Core User Management System for 40k Crusade Campaign Tracker (using CacheManager)
+// Core User Management System for 40k Crusade Campaign Tracker (using UnifiedCache)
 // Orchestrates storage, API, UI, and modal modules
 
 const UserManager = {
@@ -46,11 +46,12 @@ const UserManager = {
      */
     async loadUsers() {
         if (this.usersLoaded) {
-            console.log('Users already loaded');
+            console.log('Users already loaded, skipping reload');
             return;
         }
         
         const users = await UserAPI.loadUsers();
+        
         if (users) {
             this.users = users;
             this.usersLoaded = true;
@@ -99,12 +100,17 @@ const UserManager = {
             console.log('User created, refreshing and selecting:', userData.name);
             
             // Clear cache and reload users
-            CacheManager.clear('users');
+            console.log('Clearing users cache...');
+            await UnifiedCache.clearCache('users');
+            console.log('Cache cleared, resetting user state...');
             this.usersLoaded = false;
             this.users = [];
             
             // Force reload users from server
+            console.log('Reloading users from server...');
             await this.loadUsers();
+            console.log('Users reloaded, count:', this.users.length);
+            console.log('All users:', this.users.map(u => u.name));
             
             // Find and select the newly created user
             const newUser = this.users.find(u => u.name === userData.name);
@@ -116,6 +122,8 @@ const UserManager = {
                 UserUI.populateUserDropdown(this.users, newUser, (user) => this.selectUser(user));
             } else {
                 console.warn('Could not find newly created user in refreshed list');
+                console.log('Available users:', this.users.map(u => u.name));
+                console.log('Looking for:', userData.name);
                 // Still update the dropdown with the refreshed list
                 UserUI.populateUserDropdown(this.users, this.currentUser, (user) => this.selectUser(user));
             }
@@ -189,7 +197,7 @@ const UserManager = {
      */
     async refreshUsers() {
         // Clear the cache to force reload
-        CacheManager.clear('users');
+        await UnifiedCache.clearCache('users');
         this.usersLoaded = false;
         this.users = [];
         
@@ -199,17 +207,17 @@ const UserManager = {
     /**
      * Clear all cached data
      */
-    clearAllDataCaches() {
+    async clearAllDataCaches() {
         if (confirm('Clear all cached data? This will force fresh data loads on all pages.')) {
-            // Clear all caches using CacheManager
-            if (typeof CacheManager !== 'undefined' && CacheManager.clearAll) {
-                const clearedCount = CacheManager.clearAll();
+            // Clear all caches using UnifiedCache
+            if (typeof UnifiedCache !== 'undefined' && UnifiedCache.clearAllCaches) {
+                await UnifiedCache.clearAllCaches();
                 
                 // Show success and refresh
-                alert(`Cache cleared! ${clearedCount} entries removed.\n\nRefreshing page...`);
+                alert('Cache cleared! All cached data removed.\n\nRefreshing page...');
                 location.reload();
             } else {
-                alert('Cache manager not available');
+                alert('UnifiedCache not available');
             }
         }
     },
@@ -229,9 +237,9 @@ const UserManager = {
     /**
      * Clear all UserManager data from localStorage
      */
-    clearAllData() {
+    async clearAllData() {
         console.log('Clearing all UserManager data');
-        UserStorage.clearAllData();
+        await UserStorage.clearAllData();
         this.currentUser = null;
         this.users = [];
         this.usersLoaded = false;
@@ -271,8 +279,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof UserModal === 'undefined') {
                 console.error('UserModal module not loaded!');
             }
-            if (typeof CacheManager === 'undefined') {
-                console.error('CacheManager module not loaded!');
+            if (typeof UnifiedCache === 'undefined') {
+                console.error('UnifiedCache module not loaded!');
             }
             
             await UserManager.init();
@@ -292,4 +300,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = UserManager;
 }
 
-console.log('UserManager core module loaded - using unified CacheManager');
+console.log('UserManager core module loaded - using UnifiedCache');

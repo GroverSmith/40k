@@ -1,5 +1,5 @@
 // filename: js/user-storage.js
-// LocalStorage operations for User Management System (simplified to use CacheManager)
+// LocalStorage operations for User Management System (simplified to use UnifiedCache)
 // 40k Crusade Campaign Tracker
 
 const UserStorage = {
@@ -48,11 +48,13 @@ const UserStorage = {
     /**
      * Clear all UserManager data from localStorage
      */
-    clearAllData() {
+    async clearAllData() {
         console.log('Clearing all UserManager data');
         localStorage.removeItem(this.STORAGE_KEY);
-        // CacheManager will handle clearing cached data
-        CacheManager.clearType('users');
+        // UnifiedCache will handle clearing cached data
+        if (typeof UnifiedCache !== 'undefined') {
+            await UnifiedCache.clearCache('users');
+        }
     }
 };
 
@@ -64,4 +66,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = UserStorage;
 }
 
-console.log('UserStorage module loaded (simplified with CacheManager)');
+console.log('UserStorage module loaded (simplified with UnifiedCache)');

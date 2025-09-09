@@ -1,5 +1,5 @@
 // filename: js/user-api.js
-// Server communication for User Management System (using CacheManager)
+// Server communication for User Management System (using UnifiedCache)
 // 40k Crusade Campaign Tracker
 
 const UserAPI = {
@@ -7,7 +7,7 @@ const UserAPI = {
     isLoadingUsers: false,
     
     /**
-     * Load all users from the backend
+     * Load all users from the backend using UnifiedCache
      */
     async loadUsers() {
         // Prevent multiple simultaneous loads
@@ -19,42 +19,10 @@ const UserAPI = {
         this.isLoadingUsers = true;
         
         try {
-            const usersUrl = CrusadeConfig.getSheetUrl('users');
+            // Use UnifiedCache for fetching users
+            const users = await UnifiedCache.getAllRows('users');
             
-            if (!usersUrl) {
-                console.warn('Users sheet URL not configured');
-                return [];
-            }
-            
-            // Use CacheManager for fetching with cache
-            const response = await CacheManager.fetchWithCache(usersUrl, 'users');
-            
-            // Handle different response formats
-            let users = [];
-            if (response && response.success && Array.isArray(response.data)) {
-                // New format: response from Google Apps Script
-                users = response.data;
-            } else if (Array.isArray(response)) {
-                // Legacy format: raw array data (skip header row)
-                users = response.slice(1).map((row, index) => ({
-                    id: index + 2,
-                    key: row[0] || '',
-                    timestamp: row[1] || new Date(),
-                    name: row[2] || 'Unknown User',
-                    discordHandle: row[3] || '',
-                    email: row[4] || '',
-                    notes: row[5] || '',
-                    selfRating: row[6] || '',
-                    yearsExperience: row[7] || '',
-                    gamesPerYear: row[8] || '',
-                    isActive: true
-                })).filter(user => user.name !== 'Unknown User');
-            } else {
-                console.warn('Unexpected response format from users API:', response);
-                users = [];
-            }
-            
-            console.log('Loaded users from API/cache:', users);
+            console.log('Loaded users from UnifiedCache:', users);
             return users;
             
         } catch (error) {
@@ -105,16 +73,15 @@ const UserAPI = {
                 reject(new Error('User creation timeout'));
             }, 15000);
             
-            iframe.onload = () => {
+            iframe.onload = async () => {
                 clearTimeout(timeout);
                 try {
                     const response = iframe.contentWindow.document.body.textContent;
                     const result = JSON.parse(response);
                     
                     if (result.success) {
-                        // Clear ALL user-related caches to force reload
-                        CacheManager.clear('users');
-                        CacheManager.clearType('users');
+                        // Clear users cache in UnifiedCache to force reload
+                        await UnifiedCache.clearCache('users');
                         
                         // Include the user data in the response if available
                         if (result.user) {
@@ -134,9 +101,8 @@ const UserAPI = {
                     // Assume success if we can't read the response (CORS)
                     console.log('Could not read response, assuming success');
                     
-                    // Clear ALL user-related caches
-                    CacheManager.clear('users');
-                    CacheManager.clearType('users');
+                    // Clear users cache in UnifiedCache
+                    await UnifiedCache.clearCache('users');
                     
                     resolve({ 
                         success: true,
@@ -162,7 +128,7 @@ const UserAPI = {
      * Create a new user
      */
     async createUser(userData) {
-        const usersUrl = CrusadeConfig.getSheetUrl('users');
+        const usersUrl = TableDefs.users?.url;
         if (!usersUrl) {
             throw new Error('Users sheet not configured');
         }
@@ -191,4 +157,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = UserAPI;
 }
 
-console.log('UserAPI module loaded (using CacheManager)');
+console.log('UserAPI module loaded (using UnifiedCache)');
