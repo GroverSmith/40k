@@ -281,17 +281,17 @@ class ForceDetails {
        const launchDate = UIHelpers.formatDate(forceData.timestamp);
 
        header.innerHTML = `
-           <h1>${forceData.forceName}</h1>
+           <h1>${forceData.force_name}</h1>
            <div class="force-subtitle">
-               ${forceData.faction}${forceData.detachment ? ` - ${forceData.detachment}` : ''} • Commanded by ${forceData.playerName}
+               ${forceData.faction}${forceData.detachment ? ` - ${forceData.detachment}` : ''} • Commanded by ${forceData.user_name}
            </div>
            ${launchDate ? `<div class="force-launch-date">Crusade Force Launched on ${launchDate}</div>` : ''}
            <div class="force-key-display">
-               Force Key: <code>${forceData.key}</code>
+               Force Key: <code>${forceData.force_key}</code>
            </div>
        `;
 
-       document.title = `${forceData.forceName} - Crusade Force`;
+       document.title = `${forceData.force_name} - Crusade Force`;
    }
 
    /**
