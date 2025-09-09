@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="../css/buttons-unified.css">
     <link rel="stylesheet" href="../css/components-unified.css">
     <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/user-dropdown.css">
+    <link rel="stylesheet" href="../css/modal.css">
 </head>
 <body>
 <div class="container">
@@ -84,6 +86,29 @@
                 <p id="battle-summary" style="white-space: pre-wrap;">-</p>
             </div>
         </div>
+
+        
+        <!-- Force 1 Point of View -->
+        <div class="data-section" id="force-1-pov-section" style="display: none;">
+            <div class="section-header-with-action">
+                <h3>Force 1 Point of View</h3>
+                <a href="#" class="add-section-btn" id="add-pov-1-btn">+ Add POV Story</a>
+            </div>
+            <div class="section-content">
+                <p id="force-1-pov" style="white-space: pre-wrap;">-</p>
+            </div>
+        </div>
+
+        <!-- Force 2 Point of View -->
+        <div class="data-section" id="force-2-pov-section" style="display: none;">
+            <div class="section-header-with-action">
+                <h3>Force 2 Point of View</h3>
+                <a href="#" class="add-section-btn" id="add-pov-2-btn">+ Add POV Story</a>
+            </div>
+            <div class="section-content">
+                <p id="force-2-pov" style="white-space: pre-wrap;">-</p>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -93,6 +118,14 @@
 <script src="../js/core/config.js"></script>
 <script src="../js/core/utils.js"></script>
 <script src="../js/core/ui-helpers.js"></script>
+
+<!-- User modules -->
+<script src="../js/users/user-storage.js"></script>
+<script src="../js/users/user-api.js"></script>
+<script src="../js/users/user-ui.js"></script>
+<script src="../js/users/user-modal.js"></script>
+<script src="../js/users/user-manager.js"></script>
+
 <script src="battle-details.js"></script>
 </body>
 </html>

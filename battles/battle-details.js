@@ -114,6 +114,50 @@ class BattleDetails {
                 'battle-summary': summaryNotes
             });
         }
+
+        // Force Point of View sections
+        this.displayForcePOVSections();
+    }
+
+    displayForcePOVSections() {
+        // Always show both Force Point of View sections
+        // Get POV data from battle record (may be empty)
+        const force1POV = this.battleData.force_1_pov || '';
+        const force2POV = this.battleData.force_2_pov || '';
+
+        // Get active user to check permissions
+        const activeUser = UserManager.getCurrentUser();
+        const activeUserKey = activeUser ? activeUser.user_key : null;
+
+        // Always show Force 1 POV section
+        CoreUtils.dom.show('force-1-pov-section');
+        setElementTexts({
+            'force-1-pov': force1POV || 'No point of view recorded for this force.'
+        });
+
+        // Show/hide Force 1 POV button based on user match
+        const force1UserKey = this.battleData.force_key_1 ? this.battleData.force_key_1.split('_').pop() : null;
+        const force1Button = CoreUtils.dom.getElement('add-pov-1-btn');
+        if (activeUserKey && force1UserKey && activeUserKey === force1UserKey) {
+            CoreUtils.dom.show('add-pov-1-btn');
+        } else {
+            CoreUtils.dom.hide('add-pov-1-btn');
+        }
+
+        // Always show Force 2 POV section
+        CoreUtils.dom.show('force-2-pov-section');
+        setElementTexts({
+            'force-2-pov': force2POV || 'No point of view recorded for this force.'
+        });
+
+        // Show/hide Force 2 POV button based on user match
+        const force2UserKey = this.battleData.force_key_2 ? this.battleData.force_key_2.split('_').pop() : null;
+        const force2Button = CoreUtils.dom.getElement('add-pov-2-btn');
+        if (activeUserKey && force2UserKey && activeUserKey === force2UserKey) {
+            CoreUtils.dom.show('add-pov-2-btn');
+        } else {
+            CoreUtils.dom.hide('add-pov-2-btn');
+        }
     }
 
 
