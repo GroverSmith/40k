@@ -57,12 +57,12 @@ class ArmyDetails {
         toggleLoadingState('loading-state', 'army-list-content', true);
         
         // Update page title
-        const armyName = this.armyData.army_name || this.armyData['Army Name'] || 'Unnamed Army List';
+        const armyName = this.armyData.army_name || 'Unnamed Army List';
         document.title = `${armyName} - Army List Viewer`;
         
         // Update header using utility
-        const forceName = this.armyData.force_name || this.armyData['Force Name'] || 'Unknown Force';
-        const faction = this.armyData.faction || this.armyData.Faction || 'Unknown Faction';
+        const forceName = this.armyData.force_name || 'Unknown Force';
+        const faction = this.armyData.faction || 'Unknown Faction';
         setElementTexts({
             'army-list-title': armyName,
             'army-list-subtitle': `${forceName} • ${faction}`
@@ -72,7 +72,7 @@ class ArmyDetails {
         this.displayMetadata();
         
         // Display army list text
-        const armyListText = this.armyData.army_list_text || this.armyData['Army List Text'] || 'No army list content available.';
+        const armyListText = this.armyData.army_list_text || 'No army list content available.';
         const charCount = armyListText.length.toLocaleString();
         setElementTexts({
             'army-list-text': armyListText,
@@ -81,7 +81,7 @@ class ArmyDetails {
         
         // Set up back to force button
         const backBtn = CoreUtils.dom.getElement('back-to-force-btn');
-        const forceKey = this.armyData.force_key || this.armyData['Force Key'];
+        const forceKey = this.armyData.force_key;
         if (forceKey && forceName && forceName !== 'Unknown Force') {
             // Use CrusadeConfig to build the URL with proper relative path from armies directory
             const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceKey);
@@ -100,40 +100,40 @@ class ArmyDetails {
         const metaItems = [
             {
                 label: 'Force Name',
-                value: this.armyData.force_name || this.armyData['Force Name'] || 'Unknown'
+                value: this.armyData.force_name || 'Unknown'
             },
             {
                 label: 'Player',
-                value: this.armyData.user_name || this.armyData['User Name'] || 'Unknown'
+                value: this.armyData.user_name || 'Unknown'
             },
             {
                 label: 'Faction',
-                value: this.armyData.faction || this.armyData.Faction || 'Unknown'
+                value: this.armyData.faction || 'Unknown'
             },
             {
                 label: 'Detachment',
-                value: this.armyData.detachment || this.armyData.Detachment || 'Not specified'
+                value: this.armyData.detachment || 'Not specified'
             },
             {
                 label: 'Points Value',
-                value: (this.armyData.points_value || this.armyData['Points Value']) ? 
-                       parseInt(this.armyData.points_value || this.armyData['Points Value']).toLocaleString() + ' pts' : 
+                value: this.armyData.points_value ? 
+                       parseInt(this.armyData.points_value).toLocaleString() + ' pts' : 
                        'Not specified'
             },
             {
                 label: 'MFM Version',
-                value: this.armyData.mfm_version || this.armyData['MFM Version'] || 'Not specified'
+                value: this.armyData.mfm_version || 'Not specified'
             },
             {
                 label: 'Date Added',
-                value: (this.armyData.timestamp || this.armyData.Timestamp) ? 
-                       new Date(this.armyData.timestamp || this.armyData.Timestamp).toLocaleDateString() : 
+                value: this.armyData.timestamp ? 
+                       new Date(this.armyData.timestamp).toLocaleDateString() : 
                        'Unknown'
             }
         ];
         
         // Add notes if available
-        const notes = this.armyData.notes || this.armyData.Notes;
+        const notes = this.armyData.notes;
         if (notes && notes.trim()) {
             metaItems.push({
                 label: 'Notes',
