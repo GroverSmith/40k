@@ -5,7 +5,7 @@
 class StoryForm extends BaseForm {
     constructor() {
         super('story-form', {
-            submitUrl: CrusadeConfig.getSheetUrl('stories'),
+            submitUrl: TableDefs.stories?.url,
             successMessage: 'Story submitted successfully!',
             errorMessage: 'Failed to submit story',
             maxCharacters: 50000,
@@ -305,7 +305,7 @@ class StoryForm extends BaseForm {
      * Create story-force relationships in junction table
      */
     async createStoryForceRelationships(storyKey, forceKeys) {
-        const junctionUrl = CrusadeConfig.getSheetUrl('xref_story_forces');
+        const junctionUrl = TableDefs.xref_story_forces?.url;
         if (!junctionUrl) {
             console.warn('Story-Forces junction table URL not configured');
             return;
@@ -411,13 +411,13 @@ class StoryForm extends BaseForm {
         return result;
     }
 
-    clearCachesOnSuccess() {
+    async clearCachesOnSuccess() {
         // Call the base form's method first
-        super.clearCachesOnSuccess();
+        await super.clearCachesOnSuccess();
         
-        // Also manually clear stories cache using the correct method
-        if (typeof CacheManager !== 'undefined') {
-            CacheManager.clear('stories');
+        // Also manually clear stories cache using UnifiedCache
+        if (typeof UnifiedCache !== 'undefined') {
+            await UnifiedCache.clearCache('stories');
         }
     }
 }

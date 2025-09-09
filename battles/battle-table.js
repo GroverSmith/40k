@@ -59,19 +59,19 @@ const BattleTable = {
 
     buildBattleRow(battle, columns, context = {}) {
         const columnData = {
-            date: TableBase.formatters.date(battle['date_played']),
-            battle: this.createBattleLink(battle['battle_name'], battle['battle_key']),
+            date: TableBase.formatters.date(battle.date_played),
+            battle: this.createBattleLink(battle.battle_name, battle.battle_key),
             outcome: this.formatOutcome(battle),
             score: this.formatScore(battle, context.forceKey),
-            size: TableBase.formatters.points(battle['battle_size'])
+            size: TableBase.formatters.points(battle.battle_size)
         };
 
         // Add force-specific columns if needed
         if (context.forceKey) {
-            const isForce1 = battle['force_key_1'] === context.forceKey;
+            const isForce1 = battle.force_key_1 === context.forceKey;
             columnData.opponent = this.createForceLink(
-                isForce1 ? battle['force_2'] : battle['force_1'],
-                isForce1 ? battle['force_key_2'] : battle['force_key_1']
+                isForce1 ? battle.force_2 : battle.force_1,
+                isForce1 ? battle.force_key_2 : battle.force_key_1
             );
 
             const result = this.getBattleResult(battle, context.forceKey);
@@ -81,64 +81,37 @@ const BattleTable = {
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
     },
     
-    getFetchConfig(type, key) {
-        const battleUrl = CrusadeConfig.getSheetUrl('battle_history');
-        const configs = {
-            'force': {
-                url: `${battleUrl}?action=list`,
-                cacheType: 'battles',
-                dataKey: 'data',
-                loadingMessage: 'Loading battles...'
-            },
-            'crusade': {
-                url: `${battleUrl}?action=list`,
-                cacheType: 'battles',
-                dataKey: 'data',
-                loadingMessage: 'Loading battles...'
-            },
-            'recent': {
-                url: `${battleUrl}?action=list`,
-                cacheType: 'battles',
-                dataKey: 'data',
-                loadingMessage: 'Loading recent battles...'
-            }
-        };
-        return configs[type] || configs['recent'];
-    },
 
     
     async loadBattles(type, key, containerId) {
-        const fetchConfig = this.getFetchConfig(type, key);
         const displayConfig = this.getDisplayConfig(type, key);
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId);
+        await TableBase.loadAndDisplay('battle_history', displayConfig, containerId);
     },
 
     // Convenience methods
     async loadForForce(forceKey, containerId) {
-        const fetchConfig = this.getFetchConfig('force', forceKey);
         const displayConfig = this.getDisplayConfig('force', forceKey);
         
         // Filter battles to only show those involving this force
         const filterFn = (battle) => {
-            const force1Key = battle.force_key_1 || battle['force_key_1'] || battle['Force 1 Key'] || '';
-            const force2Key = battle.force_key_2 || battle['force_key_2'] || battle['Force 2 Key'] || '';
+            const force1Key = battle.force_key_1 || '';
+            const force2Key = battle.force_key_2 || '';
             return force1Key === forceKey || force2Key === forceKey;
         };
         
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
+        await TableBase.loadAndDisplay('battle_history', displayConfig, containerId, filterFn);
     },
 
     async loadForCrusade(crusadeKey, containerId) {
-        const fetchConfig = this.getFetchConfig('crusade', crusadeKey);
         const displayConfig = this.getDisplayConfig('crusade', crusadeKey);
         
         // Filter battles to only show those for this crusade
         const filterFn = (battle) => {
-            const battleCrusadeKey = battle.crusade_key || battle['crusade_key'] || battle['Crusade Key'] || '';
+            const battleCrusadeKey = battle.crusade_key || '';
             return battleCrusadeKey === crusadeKey;
         };
         
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
+        await TableBase.loadAndDisplay('battle_history', displayConfig, containerId, filterFn);
     },
 
     async loadRecentBattles() {
@@ -150,8 +123,20 @@ const BattleTable = {
      * Fetch battles (for external use, like calculating stats)
      */
     async fetchBattles(action, key) {
-        const config = this.getFetchConfig(action, key);
-        return await TableBase.fetchWithCache(config.url, config.cacheType, config.cacheKey);
+        const battles = await UnifiedCache.getAllRows('battle_history');
+        
+        // Apply filtering based on action and key
+        if (action === 'force' && key) {
+            return battles.filter(battle => {
+                const force1Key = battle.force_key_1 || '';
+                const force2Key = battle.force_key_2 || '';
+                return force1Key === key || force2Key === key;
+            });
+        } else if (action === 'crusade' && key) {
+            return battles.filter(battle => battle.crusade_key === key);
+        }
+        
+        return battles;
     },
 
     createBattleLink(name, key) {
@@ -167,8 +152,8 @@ const BattleTable = {
     
     getScores(battle) {
         return {
-            player1: parseInt(battle['player_1_score']) || 0,
-            player2: parseInt(battle['player_2_score']) || 0
+            player1: parseInt(battle.player_1_score) || 0,
+            player2: parseInt(battle.player_2_score) || 0
         };
     },
 
@@ -176,32 +161,32 @@ const BattleTable = {
         const scores = this.getScores(battle);
         if (!forceKey) return TableBase.formatters.score(scores.player1, scores.player2);
 
-        const isForce1 = (battle['force_key_1'] || battle['Force 1 Key']) === forceKey;
+        const isForce1 = battle.force_key_1 === forceKey;
         return isForce1 ?
             TableBase.formatters.score(scores.player1, scores.player2) :
             TableBase.formatters.score(scores.player2, scores.player1);
     },
 
     getBattleResult(battle, forceKey) {
-        const victorKey = battle['victor_force_key'];
+        const victorKey = battle.victor_force_key;
         if (victorKey === 'Draw') return 'Draw';
         return victorKey === forceKey ? 'Victory' : 'Defeat';
     },
 
     formatOutcome(battle) {
         const force1Link = this.createForceLink(
-            battle['force_1'] || battle['player_1'], 
-            battle['force_key_1']
+            battle.force_1 || battle.player_1, 
+            battle.force_key_1
         );
         const force2Link = this.createForceLink(
-            battle['force_2'] || battle['player_2'], 
-            battle['force_key_2']
+            battle.force_2 || battle.player_2, 
+            battle.force_key_2
         );
-        const victorKey = battle['victor_force_key'];
+        const victorKey = battle.victor_force_key;
 
         if (victorKey === 'Draw') return `${force1Link} draws ${force2Link}`;
-        if (victorKey === battle['force_key_1']) return `${force1Link} defeats ${force2Link}`;
-        if (victorKey === battle['force_key_2']) return `${force2Link} defeats ${force1Link}`;
+        if (victorKey === battle.force_key_1) return `${force1Link} defeats ${force2Link}`;
+        if (victorKey === battle.force_key_2) return `${force2Link} defeats ${force1Link}`;
         return `${force1Link} vs ${force2Link}`;
     },
     

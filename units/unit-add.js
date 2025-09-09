@@ -5,7 +5,7 @@
 class UnitForm extends BaseForm {
     constructor() {
         super('add-unit-form', {
-            submitUrl: CrusadeConfig.getSheetUrl('units'),
+            submitUrl: TableDefs.units?.url,
             successMessage: 'Unit added successfully!',
             errorMessage: 'Failed to add unit',
             clearCacheOnSuccess: ['units'],

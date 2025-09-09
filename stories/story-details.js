@@ -29,43 +29,17 @@ class StoryDetails {
             // Show loading state using utility
             container.innerHTML = CoreUtils.details.createLoadingHtml('Loading story...');
 
-            let story = null;
-
-            // First, check if we have cached stories
-            const cachedAll = CacheManager.get('stories', 'all');
-            const cachedRecent = CacheManager.get('stories', 'recent');
-
-            // Search in cached data
-            if (cachedAll && cachedAll.valid && cachedAll.data) {
-                story = this.findStoryInCache(cachedAll.data, this.storyKey);
-                if (story) {
-                    console.log('Found story in "all" cache');
-                }
-            }
-
-            if (!story && cachedRecent && cachedRecent.valid && cachedRecent.data) {
-                story = this.findStoryInCache(cachedRecent.data, this.storyKey);
-                if (story) {
-                    console.log('Found story in "recent" cache');
-                }
-            }
-
-            // If not in cache, fetch from API
+            // Try to get the specific story by key first
+            let story = await UnifiedCache.getRowByKey('stories', this.storyKey);
+            
+            // If not found, fetch all stories and search
             if (!story) {
-                console.log('Story not in cache, fetching from API');
-                const storiesUrl = CrusadeConfig.getSheetUrl('stories');
-
-                // Try to get specific story first using utility
-                const fetchUrl = `${storiesUrl}?action=get&key=${encodeURIComponent(this.storyKey)}`;
+                const allStories = await UnifiedCache.getAllRows('stories');
+                story = allStories.find(s => s.story_key === this.storyKey);
                 
-                try {
-                    story = await fetchEntityData(fetchUrl, 'story');
-                    // Cache this specific story for future use
-                    CacheManager.set('stories', story);
-                } catch (error) {
-                    // Fallback: fetch all stories and cache them
-                    const allStoriesResponse = await CacheManager.fetchWithCache(storiesUrl, 'stories');
-                    story = this.findStoryInCache(allStoriesResponse, this.storyKey);
+                if (!story) {
+                    const availableKeys = allStories.map(s => s.story_key).join(', ');
+                    throw new Error(`Story "${this.storyKey}" not found. Available stories: ${availableKeys}`);
                 }
             } else {
                 console.log('Story found in cache, skipping API call');
@@ -84,24 +58,6 @@ class StoryDetails {
         }
     }
 
-    /**
-     * Find a story in cached data (all cached data is objects)
-     */
-    findStoryInCache(data, storyKey) {
-        if (!data) return null;
-
-        // Handle object format: { data: [story objects...] }
-        if (data.data && Array.isArray(data.data)) {
-            return data.data.find(s => s.story_key === storyKey);
-        }
-
-        // Handle direct array of story objects (fallback)
-        if (Array.isArray(data) && data.length > 0 && data[0].story_key !== undefined) {
-            return data.find(s => s.story_key === storyKey);
-        }
-
-        return null;
-    }
 
     /**
      * Display the story details on the page
@@ -111,11 +67,11 @@ class StoryDetails {
         const container = CoreUtils.dom.getElement('story-content');
         if (!container) return;
 
-        // Combine all story text parts (handle various field name formats)
+        // Combine all story text parts
         let fullStoryText = '';
-        const text1 = story['story_text_1'] || story['Story Text 1'] || story['Strory Text 1'] || '';
-        const text2 = story['story_text_2'] || story['Story Text 2'] || '';
-        const text3 = story['story_text_3'] || story['Story Text 3'] || '';
+        const text1 = story.story_text_1 || '';
+        const text2 = story.story_text_2 || '';
+        const text3 = story.story_text_3 || '';
 
         if (text1) fullStoryText += text1;
         if (text2) fullStoryText += (fullStoryText ? '\n\n' : '') + text2;
@@ -131,11 +87,11 @@ class StoryDetails {
         let html = `
             <article class="story-article">
                 <header class="story-header">
-                    <h1 class="story-title">${story['title'] || story['Title'] || 'Untitled Story'}</h1>
+                    <h1 class="story-title">${story.title || 'Untitled Story'}</h1>
                     <div class="story-meta">
-                        <span class="story-type">${story['story_type'] || story['Story Type'] || 'Story'}</span>
-                        ${story['imperial_date'] || story['Imperial Date'] ? `<span class="imperial-date">Imperial Date: ${story['imperial_date'] || story['Imperial Date']}</span>` : ''}
-                        <span class="story-date">Posted: ${this.formatDate(story['timestamp'] || story['Timestamp'])}</span>
+                        <span class="story-type">${story.story_type || 'Story'}</span>
+                        ${story.imperial_date ? `<span class="imperial-date">Imperial Date: ${story.imperial_date}</span>` : ''}
+                        <span class="story-date">Posted: ${this.formatDate(story.timestamp)}</span>
                     </div>
                 </header>
 
@@ -144,10 +100,10 @@ class StoryDetails {
                 </div>
         `;
 
-        // Add images if they exist (check various field name formats)
-        const image1 = story['image_1'] || story['Image 1'] || story['image 1'] || '';
-        const image2 = story['image_2'] || story['Image 2'] || story['image 2'] || '';
-        const image3 = story['image_3'] || story['Image 3'] || story['image 3'] || '';
+        // Add images if they exist
+        const image1 = story.image_1 || '';
+        const image2 = story.image_2 || '';
+        const image3 = story.image_3 || '';
 
         if (image1 || image2 || image3) {
             html += '<div class="story-images">';
@@ -163,9 +119,9 @@ class StoryDetails {
             html += '</div>';
         }
 
-        // Add external links if they exist (check various field name formats)
-        const textLink = story['text_link'] || story['Text Link'] || story['text link'] || '';
-        const audioLink = story['audio_link'] || story['Audio Link'] || story['audio link'] || '';
+        // Add external links if they exist
+        const textLink = story.text_link || '';
+        const audioLink = story.audio_link || '';
 
         if (textLink || audioLink) {
             html += '<div class="story-links">';
@@ -180,9 +136,9 @@ class StoryDetails {
 
         html += `
             <footer class="story-footer">
-                <p class="author-info">Written by: ${this.extractUserName(story['user_key'] || story['User Key'])}</p>
+                <p class="author-info">Written by: ${this.extractUserName(story.user_key)}</p>
                 <div id="related-forces-section">
-                    ${story['force_key'] || story['Force Key'] ? `<p>Force: ${story['force_key'] || story['Force Key']}</p>` : ''}
+                    ${story.force_key ? `<p>Force: ${story.force_key}</p>` : ''}
                 </div>
                 <div id="related-units-section"></div>
                 <div id="crusade-section"></div>
@@ -219,24 +175,11 @@ class StoryDetails {
      */
     async loadRelatedForces(storyKey) {
         try {
-            // First check cache
-            const cachedForces = CacheManager.get('xref_story_forces', 'all');
-            let junctionData = null;
+            // Use UnifiedCache to get story-force relationships
+            const junctionData = await UnifiedCache.getAllRows('xref_story_forces');
 
-            if (cachedForces && cachedForces.valid && cachedForces.data) {
-                junctionData = cachedForces.data;
-            } else {
-                const junctionUrl = CrusadeConfig.getSheetUrl('xref_story_forces');
-                if (!junctionUrl) return;
-                junctionData = await CacheManager.fetchWithCache(junctionUrl, 'xref_story_forces');
-            }
-
-            // Handle object format (all cached data is objects)
-            let storyForces = [];
-            
-            if (junctionData && junctionData.data && Array.isArray(junctionData.data)) {
-                storyForces = junctionData.data.filter(item => item.story_key === storyKey);
-            }
+            // Filter for this story's forces
+            const storyForces = junctionData.filter(item => item.story_key === storyKey);
 
             // Update the related forces section if we found any
             if (storyForces.length > 0) {
@@ -257,24 +200,11 @@ class StoryDetails {
      */
     async loadRelatedUnits(storyKey) {
         try {
-            // First check cache
-            const cachedUnits = CacheManager.get('xref_story_units', 'all');
-            let junctionData = null;
+            // Use UnifiedCache to get story-unit relationships
+            const junctionData = await UnifiedCache.getAllRows('xref_story_units');
 
-            if (cachedUnits && cachedUnits.valid && cachedUnits.data) {
-                junctionData = cachedUnits.data;
-            } else {
-                const junctionUrl = CrusadeConfig.getSheetUrl('xref_story_units');
-                if (!junctionUrl) return;
-                junctionData = await CacheManager.fetchWithCache(junctionUrl, 'xref_story_units');
-            }
-
-            // Handle object format (all cached data is objects)
-            let storyUnits = [];
-            
-            if (junctionData && junctionData.data && Array.isArray(junctionData.data)) {
-                storyUnits = junctionData.data.filter(item => item.story_key === storyKey);
-            }
+            // Filter for this story's units
+            const storyUnits = junctionData.filter(item => item.story_key === storyKey);
 
             // Update the related units section if we found any
             if (storyUnits.length > 0) {
@@ -320,61 +250,55 @@ class StoryDetails {
      * Build HTML for related forces with names from cache
      */
     async buildForcesHtml(storyForces) {
-        const forcesCache = CacheManager.get('forces', 'all');
-        
-        if (!forcesCache || !forcesCache.valid || !forcesCache.data || !forcesCache.data.data) {
+        try {
+            const forcesData = await UnifiedCache.getAllRows('forces');
+            
+            return storyForces.map(fk => {
+                const force = forcesData.find(f => f.force_key === fk.force_key);
+                const displayName = force ? force.force_name : fk.force_key;
+                return `<a href="../forces/force-details.html?key=${fk.force_key}">${displayName}</a>`;
+            }).join(', ');
+        } catch (error) {
+            console.error('Error loading forces for display:', error);
             // Fallback to force keys if cache not available
             return storyForces.map(fk => 
                 `<a href="../forces/force-details.html?key=${fk.force_key}">${fk.force_key}</a>`
             ).join(', ');
         }
-
-        const forcesData = forcesCache.data.data;
-        return storyForces.map(fk => {
-            const force = forcesData.find(f => f.force_key === fk.force_key);
-            const displayName = force ? force.force_name : fk.force_key;
-            return `<a href="../forces/force-details.html?key=${fk.force_key}">${displayName}</a>`;
-        }).join(', ');
     }
 
     /**
      * Build HTML for related units with names from cache
      */
     async buildUnitsHtml(storyUnits) {
-        const unitsCache = CacheManager.get('units', 'all');
-        if (!unitsCache || !unitsCache.valid || !unitsCache.data || !unitsCache.data.data) {
+        try {
+            const unitsData = await UnifiedCache.getAllRows('units');
+            
+            return storyUnits.map(uk => {
+                const unit = unitsData.find(u => u.unit_key === uk.unit_key);
+                const displayName = unit ? unit.unit_name : uk.unit_key;
+                return `<a href="../units/unit-details.html?key=${uk.unit_key}">${displayName}</a>`;
+            }).join(', ');
+        } catch (error) {
+            console.error('Error loading units for display:', error);
             // Fallback to unit keys if cache not available
             return storyUnits.map(uk => 
                 `<a href="../units/unit-details.html?key=${uk.unit_key}">${uk.unit_key}</a>`
             ).join(', ');
         }
-
-        const unitsData = unitsCache.data.data;
-        return storyUnits.map(uk => {
-            const unit = unitsData.find(u => u.unit_key === uk.unit_key);
-            const displayName = unit ? unit.unit_name : uk.unit_key;
-            return `<a href="../units/unit-details.html?key=${uk.unit_key}">${displayName}</a>`;
-        }).join(', ');
     }
 
     /**
      * Load crusade information and display as hyperlink
      */
     async loadCrusadeInfo(story) {
-        const crusadeKey = story.crusade_key || story['Crusade Key'];
+        const crusadeKey = story.crusade_key;
         if (!crusadeKey) return;
 
         try {
-            const crusadesCache = CacheManager.get('crusades', 'all');
-            let crusadeName = crusadeKey; // Fallback to key if cache not available
-
-            if (crusadesCache && crusadesCache.valid && crusadesCache.data && crusadesCache.data.data) {
-                const crusadesData = crusadesCache.data.data;
-                const crusade = crusadesData.find(c => c.crusade_key === crusadeKey);
-                if (crusade) {
-                    crusadeName = crusade.crusade_name;
-                }
-            }
+            const crusadesData = await UnifiedCache.getAllRows('crusades');
+            const crusade = crusadesData.find(c => c.crusade_key === crusadeKey);
+            const crusadeName = crusade ? crusade.crusade_name : crusadeKey;
 
             const crusadeSection = document.getElementById('crusade-section');
             if (crusadeSection) {

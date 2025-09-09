@@ -71,53 +71,32 @@ const UnitTable = {
 
     
     buildUnitRow(unit, columns, context = {}) {
-        const rank = unit.rank || unit.Rank || this.calculateRank(unit.xp || unit.XP || unit['Experience Points']);
+        const rank = unit.rank || this.calculateRank(unit.xp);
         const rankClass = `rank-${rank.toLowerCase().replace(/[^a-z]/g, '')}`;
 
         const columnData = {
-            name: `<strong>${unit.unit_name || unit.Name || unit['Unit Name'] || 'Unnamed'}</strong> ${this.formatBadges(unit)}`,
-            datasheet: unit.data_sheet || unit['Data Sheet'] || unit['Unit Type'] || '-',
-            role: unit.unit_type || unit['Battlefield Role'] || unit.Role || '-',
-            points: unit.points || unit.Points || unit['Points Cost'] || '0',
-            power: unit['Power Level'] || unit.PL || '-',
-            cp: unit.crusade_points || unit['Crusade Points'] || unit.CP || '0',
-            xp: unit.xp || unit.XP || unit['Experience Points'] || '0',
+            name: `<strong>${unit.unit_name || 'Unnamed'}</strong> ${this.formatBadges(unit)}`,
+            datasheet: unit.data_sheet || '-',
+            role: unit.unit_type || '-',
+            points: unit.points || '0',
+            power: unit.power_level || '-',
+            cp: unit.crusade_points || '0',
+            xp: unit.xp || '0',
             rank: `<span class="rank-badge ${rankClass}">${rank}</span>`,
-            battles: unit.battle_count || unit['Battle Count'] || unit.Battles || '0',
-            kills: unit.kill_count || unit['Kill Count'] || unit.Kills || '0',
-            deaths: unit.times_killed || unit['Times Killed'] || unit.Deaths || '0',
-            force: unit['Force Name'] ? this.createForceLink(unit['Force Name'], unit['Force Key']) : '-'
+            battles: unit.battle_count || '0',
+            kills: unit.kill_count || '0',
+            deaths: unit.times_killed || '0',
+            force: unit.force_name ? this.createForceLink(unit.force_name, unit.force_key) : '-'
         };
 
         // Add unit link if displaying across forces
-        if (context.showUnitLinks && (unit.unit_key || unit.Key)) {
-            columnData.name = this.createUnitLink(columnData.name, unit.unit_key || unit.Key);
+        if (context.showUnitLinks && unit.unit_key) {
+            columnData.name = this.createUnitLink(columnData.name, unit.unit_key);
         }
 
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
     },
 
-    getFetchConfig(type, key) {
-        const unitsUrl = CrusadeConfig.getSheetUrl('units');        
-
-        const baseConfig = {
-            url: `${unitsUrl}?action=list`,
-            cacheType: 'units',
-            dataKey: 'data'
-        };
-        
-        const loadingMessages = {
-            'force': 'Loading units...',
-            'crusade': 'Loading crusade units...',
-            'user': 'Loading user units...',
-            'all': 'Loading all units...'
-        };
-        
-        return {
-            ...baseConfig,
-            loadingMessage: loadingMessages[type] || loadingMessages['force']
-        };
-    },
 
     /**
      * Build detailed unit display (for force details page)
@@ -127,9 +106,9 @@ const UnitTable = {
         const baseRow = this.buildUnitRow(unit, columns);
 
         // Check if unit has additional details to show
-        const hasDetails = unit.description || unit.Description || unit['Notable History'] ||
-                          unit.wargear || unit.Wargear || unit.enhancements || unit.Enhancements ||
-                          unit.battle_traits || unit['Battle Traits'] || unit.battle_scars || unit['Battle Scars'];
+        const hasDetails = unit.description || unit.notable_history ||
+                          unit.wargear || unit.enhancements ||
+                          unit.battle_traits || unit.battle_scars;
 
         if (!hasDetails) return baseRow;
 
@@ -137,24 +116,23 @@ const UnitTable = {
         let detailsHtml = '<tr class="unit-details-row"><td colspan="' + columns.length + '">';
         detailsHtml += '<div class="unit-details">';
 
-        if (unit.wargear || unit.Wargear) {
-            detailsHtml += `<div class="detail-item"><strong>Wargear:</strong> ${unit.wargear || unit.Wargear}</div>`;
+        if (unit.wargear) {
+            detailsHtml += `<div class="detail-item"><strong>Wargear:</strong> ${unit.wargear}</div>`;
         }
-        if (unit.enhancements || unit.Enhancements) {
-            detailsHtml += `<div class="detail-item"><strong>Enhancements:</strong> ${unit.enhancements || unit.Enhancements}</div>`;
+        if (unit.enhancements) {
+            detailsHtml += `<div class="detail-item"><strong>Enhancements:</strong> ${unit.enhancements}</div>`;
         }
-        if (unit.battle_traits || unit['Battle Traits'] || unit['Battle Honours']) {
-            const traits = unit.battle_traits || unit['Battle Traits'] || unit['Battle Honours'];
-            detailsHtml += `<div class="detail-item"><strong>Battle Traits:</strong> ${traits}</div>`;
+        if (unit.battle_traits) {
+            detailsHtml += `<div class="detail-item"><strong>Battle Traits:</strong> ${unit.battle_traits}</div>`;
         }
-        if (unit.battle_scars || unit['Battle Scars']) {
-            detailsHtml += `<div class="detail-item"><strong>Battle Scars:</strong> ${unit.battle_scars || unit['Battle Scars']}</div>`;
+        if (unit.battle_scars) {
+            detailsHtml += `<div class="detail-item"><strong>Battle Scars:</strong> ${unit.battle_scars}</div>`;
         }
-        if (unit.description || unit.Description) {
-            detailsHtml += `<div class="detail-item"><strong>Description:</strong> ${unit.description || unit.Description}</div>`;
+        if (unit.description) {
+            detailsHtml += `<div class="detail-item"><strong>Description:</strong> ${unit.description}</div>`;
         }
-        if (unit['Notable History']) {
-            detailsHtml += `<div class="detail-item"><strong>Notable History:</strong> ${unit['Notable History']}</div>`;
+        if (unit.notable_history) {
+            detailsHtml += `<div class="detail-item"><strong>Notable History:</strong> ${unit.notable_history}</div>`;
         }
 
         detailsHtml += '</div></td></tr>';
@@ -163,36 +141,21 @@ const UnitTable = {
     },    
     
     async loadUnits(type, key, containerId) {
-        const fetchConfig = this.getFetchConfig(type, key);
-
-        if (!fetchConfig) {
-            console.error('Failed to get fetch configuration for units');
-            const container = typeof containerId === 'string' ?
-                document.getElementById(containerId) : containerId;
-            if (container) {
-                UIHelpers.showError(container, 'Units configuration error');
-            }
-            return;
-        }
-
         const displayConfig = this.getDisplayConfig(type, key);
-
-        // Use standard table display for all types
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId);
+        await TableBase.loadAndDisplay('units', displayConfig, containerId);
     },
 
     // Convenience methods
     async loadForForce(forceKey, containerId) {
-        const fetchConfig = this.getFetchConfig('force', forceKey);
         const displayConfig = this.getDisplayConfig('force');
         
         // Filter units to only show those for this force
         const filterFn = (unit) => {
-            const unitForceKey = unit.force_key || unit['force_key'] || unit['Force Key'] || '';
+            const unitForceKey = unit.force_key || '';
             return unitForceKey === forceKey;
         };
         
-        await TableBase.loadAndDisplay(fetchConfig, displayConfig, containerId, filterFn);
+        await TableBase.loadAndDisplay('units', displayConfig, containerId, filterFn);
     },
 
     async loadForCrusade(crusadeKey, containerId) {
@@ -227,9 +190,9 @@ const UnitTable = {
     
     formatBadges(unit) {
         let badges = '';
-        if (unit['Battle Traits'] || unit['Battle Honours']) badges += '<span class="badge trait">T</span>';
-        if (unit['Battle Scars']) badges += '<span class="badge scar">S</span>';
-        if (unit['Relics'] || unit['Equipment']) badges += '<span class="badge relic">R</span>';
+        if (unit.battle_traits) badges += '<span class="badge trait">T</span>';
+        if (unit.battle_scars) badges += '<span class="badge scar">S</span>';
+        if (unit.relics) badges += '<span class="badge relic">R</span>';
         return badges;
     },
 
@@ -238,13 +201,13 @@ const UnitTable = {
         return {
             totalUnits: units.length,
             totalPoints: units.reduce((sum, unit) =>
-                sum + (parseInt(unit.points || unit.Points || unit['Points Cost']) || 0), 0),
+                sum + (parseInt(unit.points) || 0), 0),
             totalCP: units.reduce((sum, unit) =>
-                sum + (parseInt(unit.crusade_points || unit['Crusade Points'] || unit.CP) || 0), 0),
+                sum + (parseInt(unit.crusade_points) || 0), 0),
             totalKills: units.reduce((sum, unit) =>
-                sum + (parseInt(unit.kill_count || unit['Kill Count'] || unit.Kills) || 0), 0),
+                sum + (parseInt(unit.kill_count) || 0), 0),
             totalXP: units.reduce((sum, unit) =>
-                sum + (parseInt(unit.xp || unit.XP || unit['Experience Points']) || 0), 0)
+                sum + (parseInt(unit.xp) || 0), 0)
         };
     }
 };

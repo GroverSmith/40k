@@ -510,13 +510,13 @@ class BattleReportForm extends BaseForm {
         };
         return finalData;
     }
-    clearCachesOnSuccess() {
+    async clearCachesOnSuccess() {
         // Call the base form's method first
-        super.clearCachesOnSuccess();
+        await super.clearCachesOnSuccess();
         
-        // Also manually clear battles cache using the correct method
-        if (typeof CacheManager !== 'undefined') {
-            CacheManager.clear('battles');
+        // Also manually clear battles cache using UnifiedCache
+        if (typeof UnifiedCache !== 'undefined') {
+            await UnifiedCache.clearCache('battle_history');
         }
     }
 }
