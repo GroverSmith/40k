@@ -22,6 +22,11 @@ class CrusadeDetails {
             // Load crusade details first
             await this.loadCrusadeData();
 
+            // Initialize force registration with crusade data
+            if (window.ForceRegistration && this.crusadeData) {
+                window.ForceRegistration.init(this.crusadeData);
+            }
+
             // Then load related data in parallel
             await Promise.all([
                 this.loadParticipatingForces(),
@@ -36,56 +41,20 @@ class CrusadeDetails {
 
     async loadCrusadeData() {
         try {
-            // First try to get the specific crusade via API
-            const crusadesUrl = CrusadeConfig.getSheetUrl('crusades');
-            const fetchUrl = `${crusadesUrl}?action=get&key=${encodeURIComponent(this.crusadeKey)}`;
-
-            // USE CACHE MANAGER for the API call
-            const data = await CacheManager.fetchWithCache(fetchUrl, 'crusades');
-
-            if (data.success && data.data) {
-                this.crusadeData = data.data;
+            // Use UnifiedCache to get the specific crusade
+            const crusade = await UnifiedCache.getRowByKey('crusades', this.crusadeKey);
+            
+            if (crusade) {
+                this.crusadeData = crusade;
                 this.displayCrusade();
                 return;
             }
 
-            // If API doesn't work, fetch all crusades and find ours
-            const allCrusades = await CacheManager.fetchSheetData('crusades');
-
-            // Handle new object format: {data: [objects...]}
-            if (allCrusades && allCrusades.data && Array.isArray(allCrusades.data)) {
-                const crusade = allCrusades.data.find(c => c.crusade_key === this.crusadeKey);
-                if (crusade) {
-                    this.crusadeData = crusade;
-                    this.displayCrusade();
-                    return;
-                }
-            }
+            // If not found, get all crusades to show available options
+            const allCrusades = await UnifiedCache.getAllRows('crusades');
+            const availableKeys = allCrusades.map(c => c.crusade_key).join(', ');
             
-            // Handle legacy array format (fallback)
-            if (allCrusades && Array.isArray(allCrusades) && allCrusades.length > 1) {
-                const headers = allCrusades[0];
-                const crusadeKeyIndex = TableDefs.getColumnIndex('crusades', 'crusade_key');
-                const crusadeRow = allCrusades.find((row, index) => {
-                    if (index === 0) return false;
-                    return row[crusadeKeyIndex] === this.crusadeKey;
-                });
-
-                if (crusadeRow) {
-                    // Convert to object using TableDefs
-                    this.crusadeData = TableDefs.mapRowToObject('crusades', crusadeRow);
-                    this.displayCrusade();
-                    return;
-                }
-            }
-
-            // Extract available keys from error message if present
-            let errorMessage = 'Crusade not found';
-            if (allCrusades && allCrusades.error && allCrusades.error.includes('Available keys:')) {
-                const availableKeys = allCrusades.error.split('Available keys:')[1]?.trim();
-                errorMessage = `Crusade "${this.crusadeKey}" not found. Available crusades: ${availableKeys}`;
-            }
-            throw new Error(errorMessage);
+            throw new Error(`Crusade "${this.crusadeKey}" not found. Available crusades: ${availableKeys}`);
 
         } catch (error) {
             console.error('Error loading crusade:', error);

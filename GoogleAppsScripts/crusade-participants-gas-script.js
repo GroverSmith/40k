@@ -196,13 +196,14 @@ function doPost(e) {
     // Add new registration
     const timestamp = new Date();
     const newRow = [
-      crusadeKey,                          // Crusade Key (FK)
-      forceKey,                            // Force Key (FK)
-      data.crusadeName || '',              // Crusade Name (for human readability)
-      data.forceName || '',                // Force Name (for human readability)
-      data.userName || '',                 // User Name (for human readability)
-      timestamp,                           // Timestamp
-      ''                                   // Deleted Timestamp (empty for new records)
+      crusadeKey,                          // crusade_key (column 0)
+      forceKey,                            // force_key (column 1)
+      data.userKey || '',                  // user_key (column 2)
+      data.crusadeName || '',              // crusade_name (column 3)
+      data.forceName || '',                // force_name (column 4)
+      data.userName || '',                 // user_name (column 5)
+      timestamp,                           // timestamp (column 6)
+      ''                                   // deleted_timestamp (column 7)
     ];
     
     const lastRow = sheet.getLastRow();

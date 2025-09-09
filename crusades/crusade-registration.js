@@ -54,24 +54,18 @@ const ForceRegistration = {
         CoreUtils.dom.show(modal, 'flex');
         
         try {
-            const data = await ForceTable.loadAvailableForces();
+            const data = await UnifiedCache.getAllRows('forces');
             
             // Clear and populate select
             forceSelect.innerHTML = '<option value="">Select a force...</option>';
             
-            // Add force options (skip header row)
-            // Use TableDefs for column mapping
-            data.slice(1).forEach(row => {
-                const forceKeyIndex = TableDefs.getColumnIndex('forces', 'force_key');
-                const userNameIndex = TableDefs.getColumnIndex('forces', 'user_name');
-                const forceNameIndex = TableDefs.getColumnIndex('forces', 'force_name');
-                const factionIndex = TableDefs.getColumnIndex('forces', 'faction');
-                
-                if (row[forceKeyIndex]) {
-                    const forceKey = row[forceKeyIndex];
-                    const userName = row[userNameIndex];
-                    const forceName = row[forceNameIndex];
-                    const faction = row[factionIndex];
+            // Add force options
+            data.forEach(force => {
+                if (force.force_key) {
+                    const forceKey = force.force_key;
+                    const userName = force.user_name;
+                    const forceName = force.force_name;
+                    const faction = force.faction;
                     
                     const displayName = `${forceName} (${userName})${faction ? ` - ${faction}` : ''}`;
                     
@@ -81,6 +75,7 @@ const ForceRegistration = {
                     option.setAttribute('data-force-key', forceKey);
                     option.setAttribute('data-force-name', forceName);
                     option.setAttribute('data-user-name', userName);
+                    option.setAttribute('data-user-key', force.user_key);
                     forceSelect.appendChild(option);
                 }
             });
@@ -118,9 +113,8 @@ const ForceRegistration = {
             const selectedOption = forceSelect.options[forceSelect.selectedIndex];
             const forceName = selectedOption.getAttribute('data-force-name');
             const userName = selectedOption.getAttribute('data-user-name');
+            const userKey = selectedOption.getAttribute('data-user-key');
             
-            
-
 			const crusadeKey = this.crusadeData.crusade_key || this.crusadeData.key || this.crusadeKey;
             
             // Prepare registration data with keys
@@ -129,7 +123,8 @@ const ForceRegistration = {
                 crusadeName: this.crusadeData['crusade_name'] || this.crusadeData['Crusade Name'],
                 forceKey: forceKey,
                 forceName: forceName,
-                userName: userName
+                userName: userName,
+                userKey: userKey
             };
             
             console.log('Registering with keys:', {
@@ -208,13 +203,13 @@ const ForceRegistration = {
     }
 };
 
+// Make ForceRegistration available globally
+window.ForceRegistration = ForceRegistration;
+
 // Global function for modal control (for onclick handlers)
 function closeRegisterModal() {
     ForceRegistration.closeRegisterModal();
 }
-
-// Make globally available
-window.ForceRegistration = ForceRegistration;
 
 // Export for modules
 if (typeof module !== 'undefined' && module.exports) {

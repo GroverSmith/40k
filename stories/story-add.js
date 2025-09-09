@@ -151,41 +151,18 @@ class StoryForm extends BaseForm {
             forceSelect.classList.add('multi-select');
 
             try {
-                const forcesData = await CacheManager.fetchSheetData('forces');
-                console.log('Forces data loaded for story form:', forcesData);
+                const forces = await UnifiedCache.getAllRows('forces');
+                console.log('Forces data loaded for story form:', forces);
 
                 forceSelect.innerHTML = '';
-
-                // Handle different data formats
-                let forces = [];
-                if (forcesData && forcesData.success && forcesData.data) {
-                    // Standardized format: {success: true, data: [...]}
-                    forces = forcesData.data;
-                } else if (Array.isArray(forcesData)) {
-                    // Direct array format
-                    forces = forcesData;
-                }
 
                 console.log('Processed forces array:', forces);
 
                 // Process forces data
                 forces.forEach((force, index) => {
-                    let forceKey, forceName, userName;
-                    
-                    if (Array.isArray(force)) {
-                        // Array format: [force_key, user_key, user_name, force_name, faction, detachment, notes, timestamp]
-                        const forceKeyIndex = TableDefs.getColumnIndex('forces', 'force_key');
-                        const forceNameIndex = TableDefs.getColumnIndex('forces', 'force_name');
-                        const userNameIndex = TableDefs.getColumnIndex('forces', 'user_name');
-                        forceKey = force[forceKeyIndex];
-                        forceName = force[forceNameIndex];
-                        userName = force[userNameIndex];
-                    } else {
-                        // Object format
-                        forceKey = force.force_key || force['force_key'];
-                        forceName = force.force_name || force['force_name'];
-                        userName = force.user_name || force['user_name'];
-                    }
+                    const forceKey = force.force_key;
+                    const forceName = force.force_name;
+                    const userName = force.user_name;
                     
                     if (forceKey && forceName) {
                         const option = document.createElement('option');
@@ -214,18 +191,15 @@ class StoryForm extends BaseForm {
         const crusadeSelect = document.getElementById('crusade-select');
         if (crusadeSelect) {
             try {
-                const crusades = await CacheManager.fetchSheetData('crusades');
+                const crusades = await UnifiedCache.getAllRows('crusades');
 
                 crusadeSelect.innerHTML = '<option value="">Select crusade (optional)...</option>';
 
-                crusades.slice(1).forEach(row => {
-                    const crusadeKeyIndex = TableDefs.getColumnIndex('crusades', 'crusade_key');
-                    const crusadeNameIndex = TableDefs.getColumnIndex('crusades', 'crusade_name');
-                    
-                    if (row[crusadeKeyIndex] && row[crusadeNameIndex]) {
+                crusades.forEach(crusade => {
+                    if (crusade.crusade_key && crusade.crusade_name) {
                         const option = document.createElement('option');
-                        option.value = row[crusadeKeyIndex];
-                        option.textContent = row[crusadeNameIndex];
+                        option.value = crusade.crusade_key;
+                        option.textContent = crusade.crusade_name;
                         crusadeSelect.appendChild(option);
                     }
                 });
