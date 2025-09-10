@@ -290,9 +290,9 @@ class StoryForm extends BaseForm {
             millennium = millenniumSelect.value || 'M41';
         }
         
-        const year = document.getElementById('imperial-year')?.value || '123';
-        const fraction = document.getElementById('imperial-fraction')?.value || '999';
-        const check = document.getElementById('imperial-check')?.value || '0';
+        const year = document.getElementById('imperial-year')?.value || '999';
+        const fraction = document.getElementById('imperial-fraction')?.value || '0';
+        const check = document.getElementById('imperial-check')?.value || '5';
         
         // New order: Millennium.Year.Fraction.Check
         const imperialDateString = `${millennium}.${year}.${fraction}.${check}`;
