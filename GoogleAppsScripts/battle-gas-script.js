@@ -290,13 +290,6 @@ function doPost(e) {
       victorForceKey = 'Draw';
     }
 
-    // Debug: Log the received data to see what user keys are being sent
-    console.log('=== BATTLE CREATION DEBUG ===');
-    console.log('Received data.user_key_1:', data.user_key_1);
-    console.log('Received data.user_key_2:', data.user_key_2);
-    console.log('Received data.force1Key:', data.force1Key);
-    console.log('Received data.force2Key:', data.force2Key);
-    console.log('Full data object:', data);
 
     // Prepare row data - must match header row order exactly
     const rowData = [

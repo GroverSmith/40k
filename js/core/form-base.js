@@ -265,9 +265,7 @@ class BaseForm {
             }
 
             // Gather form data
-            console.log('BaseForm: About to call gatherFormData()');
             const formData = this.gatherFormData();
-            console.log('BaseForm: gatherFormData() returned:', formData);
 
             // Submit to Google Sheets
             await this.submitToGoogleSheets(formData);
@@ -340,7 +338,6 @@ class BaseForm {
      * Gather form data (override in subclass)
      */
     gatherFormData() {
-        console.log('BaseForm gatherFormData() called - this should be overridden in subclass');
         const formData = new FormData(this.form);
         const data = {};
 
@@ -351,7 +348,6 @@ class BaseForm {
         // Add timestamp
         data.timestamp = new Date().toISOString();
 
-        console.log('BaseForm gatherFormData() returning:', data);
         return data;
     }
 
