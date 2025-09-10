@@ -89,9 +89,24 @@ class StoryDetails {
                 <header class="story-header">
                     <h1 class="story-title">${story.title || 'Untitled Story'}</h1>
                     <div class="story-meta">
-                        <span class="story-type">${story.story_type || 'Story'}</span>
-                        ${story.imperial_date ? `<span class="imperial-date">Imperial Date: ${story.imperial_date}</span>` : ''}
-                        <span class="story-date">Posted: ${this.formatDate(story.timestamp)}</span>
+                        <div class="story-meta-item">
+                            <span class="meta-label">Type</span>
+                            <span class="meta-value">${story.story_type || 'Story'}</span>
+                        </div>
+                        ${story.imperial_date ? `
+                        <div class="story-meta-item">
+                            <span class="meta-label">Imperial Date</span>
+                            <span class="meta-value">${story.imperial_date}</span>
+                        </div>
+                        ` : ''}
+                        <div class="story-meta-item">
+                            <span class="meta-label">Posted</span>
+                            <span class="meta-value">${this.formatDate(story.timestamp)}</span>
+                        </div>
+                        <div class="story-meta-item author-info">
+                            <span class="meta-label">Author</span>
+                            <span class="meta-value">${story.author_name || this.extractUserName(story.user_key)}</span>
+                        </div>
                     </div>
                 </header>
 
@@ -136,7 +151,6 @@ class StoryDetails {
 
         html += `
             <footer class="story-footer">
-                <p class="author-info">Written by: ${story.author_name || this.extractUserName(story.user_key)}</p>
                 <div id="related-forces-section">
                     ${story.force_key ? `<p>Force: ${story.force_key}</p>` : ''}
                 </div>
