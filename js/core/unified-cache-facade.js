@@ -564,13 +564,20 @@ class UnifiedCacheFacade {
     async clearAllCaches() {
         await this.ensureDatabaseReady();
         
-        const clearPromises = Object.keys(this.scriptUrls).map(sheetName => this.clearCache(sheetName));
+        // Only clear caches for object stores that actually exist
+        const existingStores = Array.from(this.db.objectStoreNames);
+        const clearPromises = Object.keys(this.scriptUrls)
+            .filter(sheetName => existingStores.includes(sheetName))
+            .map(sheetName => this.clearCache(sheetName));
+        
         await Promise.all(clearPromises);
         
-        // Also clear metadata
-        const transaction = this.db.transaction(['metadata'], 'readwrite');
-        const store = transaction.objectStore('metadata');
-        store.clear();
+        // Also clear metadata if it exists
+        if (existingStores.includes('metadata')) {
+            const transaction = this.db.transaction(['metadata'], 'readwrite');
+            const store = transaction.objectStore('metadata');
+            store.clear();
+        }
         
         console.log('UnifiedCacheFacade: Cleared all caches');
     }
@@ -613,9 +620,11 @@ class UnifiedCacheFacade {
     async refreshAllCaches() {
         console.log('UnifiedCacheFacade: Refreshing all caches...');
         
-        const refreshPromises = Object.keys(this.scriptUrls).map(sheetName => 
-            this.getAllRows(sheetName, true) // Force refresh
-        );
+        // Only refresh caches for object stores that actually exist
+        const existingStores = Array.from(this.db.objectStoreNames);
+        const refreshPromises = Object.keys(this.scriptUrls)
+            .filter(sheetName => existingStores.includes(sheetName))
+            .map(sheetName => this.getAllRows(sheetName, true)); // Force refresh
         
         await Promise.all(refreshPromises);
         console.log('UnifiedCacheFacade: All caches refreshed');

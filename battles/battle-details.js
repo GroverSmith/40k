@@ -163,6 +163,8 @@ class BattleDetails {
         const showForce1Button = activeUserKey && battleUserKey1 && activeUserKey === battleUserKey1;
         if (showForce1Button) {
             CoreUtils.dom.show('add-pov-1-btn');
+            // Set up click handler for Force 1 POV button
+            this.setupPOVButtonHandler('add-pov-1-btn', this.battleData.force_key_1);
         } else {
             CoreUtils.dom.hide('add-pov-1-btn');
         }
@@ -179,11 +181,44 @@ class BattleDetails {
         const showForce2Button = activeUserKey && battleUserKey2 && activeUserKey === battleUserKey2;
         if (showForce2Button) {
             CoreUtils.dom.show('add-pov-2-btn');
+            // Set up click handler for Force 2 POV button
+            this.setupPOVButtonHandler('add-pov-2-btn', this.battleData.force_key_2);
         } else {
             CoreUtils.dom.hide('add-pov-2-btn');
         }
     }
 
+    /**
+     * Set up click handler for POV story buttons
+     */
+    setupPOVButtonHandler(buttonId, forceKey) {
+        const button = CoreUtils.dom.getElement(buttonId);
+        if (button) {
+            // Remove any existing click handlers
+            button.removeEventListener('click', this.handlePOVButtonClick);
+            
+            // Add new click handler
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.handlePOVButtonClick(forceKey);
+            });
+        }
+    }
+
+    /**
+     * Handle POV button click - navigate to story-add page with parameters
+     */
+    handlePOVButtonClick(forceKey) {
+        // Build URL parameters (no longer need force_key - will be auto-loaded from battle)
+        const params = new URLSearchParams({
+            battle_key: this.battleKey,
+            story_type: 'Battle POV'
+        });
+
+        // Navigate to story-add page
+        const storyAddUrl = `../stories/story-add.html?${params.toString()}`;
+        window.location.href = storyAddUrl;
+    }
 
     showError(message) {
         // Use utility for standard error handling

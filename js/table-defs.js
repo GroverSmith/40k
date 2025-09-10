@@ -96,7 +96,7 @@ const TableDefs = {
         sheetName: 'stories',
         primaryKey: 'story_key',
         columns: [
-            'story_key', 'user_key', 'author_name', 'crusade_key', 'story_type', 'title', 'imperial_date',
+            'story_key', 'user_key', 'author_name', 'crusade_key', 'battle_key', 'story_type', 'title', 'imperial_date',
             'story_text_1', 'story_text_2', 'story_text_3', 'text_link', 'image_1', 'image_2',
             'image_3', 'audio_link', 'timestamp', 'deleted_timestamp'
         ]

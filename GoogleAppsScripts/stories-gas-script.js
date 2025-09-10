@@ -80,24 +80,25 @@ function editStory(storyKey, userKey, data) {
     userKey,                       // user_key - Column 1
     data.author_name || '',        // author_name - Column 2
     data.crusade_key || '',        // crusade_key - Column 3
-    data.story_type || '',         // story_type - Column 4
-    data.title || '',              // title - Column 5
-    data.imperial_date || '',      // imperial_date - Column 6
-    data.story_text_1 || '',       // story_text_1 - Column 7
-    data.story_text_2 || '',       // story_text_2 - Column 8
-    data.story_text_3 || '',       // story_text_3 - Column 9
-    data.text_link || '',          // text_link - Column 10
-    data.image_1 || '',            // image_1 - Column 11
-    data.image_2 || '',            // image_2 - Column 12
-    data.image_3 || '',            // image_3 - Column 13
-    data.audio_link || '',         // audio_link - Column 14
-    timestamp,                     // timestamp - Column 15
-    ''                             // deleted_timestamp - Column 16 (keep empty)
+    data.battle_key || '',         // battle_key - Column 4
+    data.story_type || '',         // story_type - Column 5
+    data.title || '',              // title - Column 6
+    data.imperial_date || '',      // imperial_date - Column 7
+    data.story_text_1 || '',       // story_text_1 - Column 8
+    data.story_text_2 || '',       // story_text_2 - Column 9
+    data.story_text_3 || '',       // story_text_3 - Column 10
+    data.text_link || '',          // text_link - Column 11
+    data.image_1 || '',            // image_1 - Column 12
+    data.image_2 || '',            // image_2 - Column 13
+    data.image_3 || '',            // image_3 - Column 14
+    data.audio_link || '',         // audio_link - Column 15
+    timestamp,                     // timestamp - Column 16
+    ''                             // deleted_timestamp - Column 17 (keep empty)
   ];
   
   // Update the row
   sheet.getRange(rowIndex, 1, 1, updatedRowData.length).setValues([updatedRowData]);
-  sheet.getRange(rowIndex, 16).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  sheet.getRange(rowIndex, 17).setNumberFormat('yyyy-mm-dd hh:mm:ss');
   
   return { success: true, message: 'Story updated successfully' };
 }
@@ -231,6 +232,7 @@ function doPost(e) {
         'user_key',
         'author_name',
         'crusade_key',
+        'battle_key',
         'story_type',
         'title',
         'imperial_date',
@@ -287,6 +289,7 @@ function doPost(e) {
       data.userKey || '',           // user_key
       data.authorName || '',        // author_name
       data.crusadeKey || '',        // crusade_key
+      data.battleKey || '',         // battle_key
       data.storyType || '',         // story_type
       data.title || '',             // title
       data.imperialDate || '',      // imperial_date

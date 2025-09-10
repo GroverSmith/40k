@@ -54,9 +54,27 @@ class StoryForm extends BaseForm {
         this.contextData = CoreUtils.url.getAllParams();
         this.contextData.userName = this.contextData.userName || UserManager.getCurrentUser()?.name || '';
 
-        const userNameField = CoreUtils.dom.getElement('user-name');
-        if (userNameField && this.contextData.userName) {
-            userNameField.value = this.contextData.userName;
+        // Handle POV story parameters from battle details
+        if (this.contextData.battle_key) {
+            this.contextData.battleKey = this.contextData.battle_key;
+        }
+        if (this.contextData.story_type) {
+            this.contextData.storyType = this.contextData.story_type;
+        }
+
+        // Detect if we're in battle POV mode (has both battle_key and story_type)
+        this.contextData.isBattlePOV = this.contextData.battleKey && this.contextData.storyType;
+
+        // User information is now handled by UserManager, no need to set field values
+
+        // Make story type read-only in battle POV mode
+        if (this.contextData.isBattlePOV) {
+            const storyTypeSelect = CoreUtils.dom.getElement('story-type');
+            if (storyTypeSelect) {
+                storyTypeSelect.value = this.contextData.storyType;
+                storyTypeSelect.disabled = true;
+                storyTypeSelect.classList.add('readonly-field');
+            }
         }
 
         this.updateHeaderContext();
@@ -68,7 +86,10 @@ class StoryForm extends BaseForm {
 
         let contextText = 'Write a new campaign story';
 
-        if (this.contextData.forceName) {
+        // Handle battle POV context
+        if (this.contextData.battleKey && this.contextData.forceKey) {
+            contextText = 'Write a Battle Point of View story';
+        } else if (this.contextData.forceName) {
             contextText = `Writing story for ${this.contextData.forceName}`;
         } else if (this.contextData.crusadeName) {
             contextText = `Writing story for ${this.contextData.crusadeName} crusade`;
@@ -172,8 +193,14 @@ class StoryForm extends BaseForm {
                     }
                 });
 
-                // Pre-select if context provided
-                if (this.contextData.forceKey) {
+                // Handle battle POV mode - load both forces from battle
+                if (this.contextData.isBattlePOV) {
+                    await this.loadBattleForces();
+                    // Make force select read-only
+                    forceSelect.disabled = true;
+                    forceSelect.classList.add('readonly-field');
+                } else if (this.contextData.forceKey) {
+                    // Pre-select if context provided (legacy support)
                     const options = forceSelect.options;
                     for (let i = 0; i < options.length; i++) {
                         if (options[i].value === this.contextData.forceKey) {
@@ -207,10 +234,63 @@ class StoryForm extends BaseForm {
                 // Re-select if context provided
                 if (this.contextData.crusadeKey) {
                     crusadeSelect.value = this.contextData.crusadeKey;
+                } else if (this.contextData.battleKey) {
+                    // Try to get crusade from battle data
+                    this.loadCrusadeFromBattle();
+                }
+
+                // Make crusade select read-only in battle POV mode
+                if (this.contextData.isBattlePOV) {
+                    crusadeSelect.disabled = true;
+                    crusadeSelect.classList.add('readonly-field');
                 }
             } catch (error) {
                 console.error('Error loading crusades:', error);
             }
+        }
+    }
+
+    async loadCrusadeFromBattle() {
+        if (!this.contextData.battleKey) return;
+
+        try {
+            const battle = await UnifiedCache.getRowByKey('battle_history', this.contextData.battleKey);
+            if (battle && battle.crusade_key) {
+                const crusadeSelect = document.getElementById('crusade-select');
+                if (crusadeSelect) {
+                    crusadeSelect.value = battle.crusade_key;
+                }
+            }
+        } catch (error) {
+            console.error('Error loading crusade from battle:', error);
+        }
+    }
+
+    async loadBattleForces() {
+        if (!this.contextData.battleKey) return;
+
+        try {
+            const battle = await UnifiedCache.getRowByKey('battle_history', this.contextData.battleKey);
+            if (battle) {
+                const forceSelect = document.getElementById('force-select');
+                if (forceSelect) {
+                    // Select both forces from the battle
+                    const force1Key = battle.force_key_1;
+                    const force2Key = battle.force_key_2;
+                    
+                    if (force1Key) {
+                        const option1 = Array.from(forceSelect.options).find(opt => opt.value === force1Key);
+                        if (option1) option1.selected = true;
+                    }
+                    
+                    if (force2Key) {
+                        const option2 = Array.from(forceSelect.options).find(opt => opt.value === force2Key);
+                        if (option2) option2.selected = true;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error loading battle forces:', error);
         }
     }
 
@@ -345,14 +425,10 @@ class StoryForm extends BaseForm {
             }
         }
 
-        // Get user name from field or context
-        const userName = document.getElementById('user-name')?.value ||
-                        this.contextData.userName ||
-                        formData.userName ||
-                        'Unknown';
-
-        // Generate keys
-        const userKey = KeyUtils.generateUserKey(userName);
+        // Get user information from UserManager
+        const activeUser = UserManager.getCurrentUser();
+        const userName = activeUser?.name || this.contextData.userName || 'Unknown';
+        const userKey = activeUser?.user_key || KeyUtils.generateUserKey(userName);
         const storyKey = KeyUtils.generateStoryKey(userKey, formData.title || 'Untitled');
 
         return {
@@ -366,6 +442,8 @@ class StoryForm extends BaseForm {
             selectedForces: selectedForces,
             // Crusade key
             crusadeKey: document.getElementById('crusade-select')?.value || this.contextData.crusadeKey || '',
+            // Battle key (for POV stories)
+            battleKey: this.contextData.battleKey || '',
             // Story content fields
             storyText1: document.getElementById('story-text-1')?.value || '',
             storyText2: document.getElementById('story-text-2')?.value || '',

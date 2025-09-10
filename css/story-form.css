@@ -154,3 +154,24 @@
     background: linear-gradient(0deg, #4ecdc4 0%, #4ecdc4 100%);
     color: white;
 }
+
+/* Readonly field styling for battle POV mode */
+.readonly-field {
+    background-color: var(--color-bg-card) !important;
+    color: var(--color-text-dim) !important;
+    border-color: var(--color-border-dim) !important;
+    cursor: not-allowed !important;
+    opacity: 0.8;
+}
+
+.readonly-field:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Readonly field labels */
+.readonly-field + label,
+label:has(+ .readonly-field) {
+    color: var(--color-text-dim);
+    font-style: italic;
+}
