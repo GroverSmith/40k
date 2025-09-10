@@ -17,8 +17,7 @@ class BattleReportForm extends BaseForm {
         };
         this.setupBattleLoadingState();
         
-        // Override gatherFormData method to extract user keys
-        this.gatherFormData = this.gatherFormDataOverride.bind(this);
+        // Custom gatherFormData method will be defined later in the class
         
         this.init();
     }
@@ -139,60 +138,6 @@ class BattleReportForm extends BaseForm {
         });
     }
 
-    /**
-     * Override gatherFormData to extract user keys from selected forces
-     */
-    gatherFormDataOverride() {
-        console.log('=== BATTLE REPORT FORM gatherFormData() CALLED ===');
-        const formData = new FormData(this.form);
-        const data = {};
-
-        for (let [key, value] of formData.entries()) {
-            data[key] = value.trim();
-        }
-
-        // Extract user keys from selected forces
-        const force1Key = data.force1Key;
-        const force2Key = data.force2Key;
-
-
-        if (force1Key && this.dataLoaders.forces) {
-            const force1 = this.dataLoaders.forces.find(f => f.force_key === force1Key);
-            if (force1) {
-                // Try to get user_key from force object first
-                data.user_key_1 = force1.user_key;
-            }
-        }
-
-        // Fallback: Extract user key from force key if not found in force object
-        if (!data.user_key_1 && force1Key) {
-            const parts = force1Key.split('_');
-            if (parts.length >= 2) {
-                data.user_key_1 = parts[1]; // Second part should be the user key
-            }
-        }
-
-        if (force2Key && this.dataLoaders.forces) {
-            const force2 = this.dataLoaders.forces.find(f => f.force_key === force2Key);
-            if (force2) {
-                // Try to get user_key from force object first
-                data.user_key_2 = force2.user_key;
-            }
-        }
-
-        // Fallback: Extract user key from force key if not found in force object
-        if (!data.user_key_2 && force2Key) {
-            const parts = force2Key.split('_');
-            if (parts.length >= 2) {
-                data.user_key_2 = parts[1]; // Second part should be the user key
-            }
-        }
-
-        // Add timestamp
-        data.timestamp = new Date().toISOString();
-
-        return data;
-    }
 
     createSelect(id, name, required) {
         const select = document.createElement('select');
@@ -208,12 +153,21 @@ class BattleReportForm extends BaseForm {
     async loadAllData() {
         UIHelpers.showLoading('battle-report-form', 'Loading battle data...');
         try {
-            await Promise.all([
+            // Load data in parallel but with better error handling
+            const [usersResult, forcesResult, crusadesResult, armiesResult] = await Promise.allSettled([
                 this.loadUsers(),
                 this.loadForces(),
                 this.loadCrusades(),
                 this.loadArmies()
             ]);
+            
+            // Log any failures but don't let them block the form
+            [usersResult, forcesResult, crusadesResult, armiesResult].forEach((result, index) => {
+                if (result.status === 'rejected') {
+                    const dataTypes = ['users', 'forces', 'crusades', 'armies'];
+                    console.warn(`Failed to load ${dataTypes[index]}:`, result.reason);
+                }
+            });
         } catch (error) {
             console.error('Error loading data:', error);
         } finally {
@@ -234,8 +188,8 @@ class BattleReportForm extends BaseForm {
         try {
             const forcesData = await UnifiedCache.getAllRows('forces');
             this.dataLoaders.forces = forcesData || [];
-            // Refresh any currently selected players
-            if (this.dataLoaders.forces.length > 0) {
+            // Only refresh if we have data and the form is ready
+            if (this.dataLoaders.forces.length > 0 && !this.isSubmitting) {
                 this.refreshSelectedPlayers();
             }
         } catch (error) {
@@ -290,12 +244,15 @@ class BattleReportForm extends BaseForm {
                 this.handlePlayerSelection(index + 1, e.target.value);
             });
         });
-        // Auto-select current user for player 1
+        // Auto-select current user for player 1 (defer to avoid blocking initial load)
         if (window.UserManager && window.UserManager.currentUser) {
             const player1Select = document.getElementById('player1-name');
             if (player1Select) {
                 player1Select.value = window.UserManager.currentUser.name;
-                this.handlePlayerSelection(1, window.UserManager.currentUser.name);
+                // Defer the player selection to avoid blocking initial load
+                setTimeout(() => {
+                    this.handlePlayerSelection(1, window.UserManager.currentUser.name);
+                }, 50);
             }
         }
     }
@@ -348,8 +305,8 @@ class BattleReportForm extends BaseForm {
         try {
             // Try to reload forces data
             await this.loadForces();
-            // Wait a moment for the data to be processed
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // Reduced delay - just enough for DOM updates
+            await new Promise(resolve => setTimeout(resolve, 10));
             // Try the player selection again
             if (this.dataLoaders.forces && this.dataLoaders.forces.length > 0) {
                 this.handlePlayerSelection(playerNum, playerName);
@@ -377,10 +334,18 @@ class BattleReportForm extends BaseForm {
     }
     refreshSelectedPlayers() {
         // Check if any players are currently selected and refresh their force dropdowns
+        // Only refresh if forces data is actually available
+        if (!this.dataLoaders.forces || this.dataLoaders.forces.length === 0) {
+            return;
+        }
+        
         ['player1-name', 'player2-name'].forEach((playerId, index) => {
             const playerSelect = document.getElementById(playerId);
             if (playerSelect && playerSelect.value) {
-                this.handlePlayerSelection(index + 1, playerSelect.value);
+                // Defer to avoid blocking
+                setTimeout(() => {
+                    this.handlePlayerSelection(index + 1, playerSelect.value);
+                }, 10);
             }
         });
     }
@@ -518,10 +483,15 @@ class BattleReportForm extends BaseForm {
         if (crusadeKey) {
             const crusadeSelect = CoreUtils.dom.getElement('crusade-select');
             if (crusadeSelect) {
-                // Wait for options to load
-                setTimeout(() => {
-                    crusadeSelect.value = crusadeKey;
-                }, 500);
+                // Reduced delay - check if options are already loaded
+                const checkAndSet = () => {
+                    if (crusadeSelect.options.length > 1) {
+                        crusadeSelect.value = crusadeKey;
+                    } else {
+                        setTimeout(checkAndSet, 50);
+                    }
+                };
+                checkAndSet();
             }
         }
     }
@@ -547,11 +517,53 @@ class BattleReportForm extends BaseForm {
         return { isValid: true };
     }
     gatherFormData() {
-        const formData = super.gatherFormData();
-        
-        // Handle custom battle size
-        if (formData.battleSize === 'Custom') {
-            formData.battleSize = formData.customBattleSize || '';
+        console.log('=== BATTLE REPORT FORM gatherFormData() CALLED ===');
+        const formData = new FormData(this.form);
+        const data = {};
+
+        for (let [key, value] of formData.entries()) {
+            data[key] = value.trim();
+        }
+
+        // Handle custom battle size - use the custom value instead of "Custom"
+        if (data.battleSize === 'Custom') {
+            data.battleSize = data.customBattleSize || '';
+        }
+
+        // Extract user keys from selected forces
+        const force1Key = data.force1Key;
+        const force2Key = data.force2Key;
+
+        if (force1Key && this.dataLoaders.forces) {
+            const force1 = this.dataLoaders.forces.find(f => f.force_key === force1Key);
+            if (force1) {
+                // Try to get user_key from force object first
+                data.user_key_1 = force1.user_key;
+            }
+        }
+
+        // Fallback: Extract user key from force key if not found in force object
+        if (!data.user_key_1 && force1Key) {
+            const parts = force1Key.split('_');
+            if (parts.length >= 2) {
+                data.user_key_1 = parts[1]; // Second part should be the user key
+            }
+        }
+
+        if (force2Key && this.dataLoaders.forces) {
+            const force2 = this.dataLoaders.forces.find(f => f.force_key === force2Key);
+            if (force2) {
+                // Try to get user_key from force object first
+                data.user_key_2 = force2.user_key;
+            }
+        }
+
+        // Fallback: Extract user key from force key if not found in force object
+        if (!data.user_key_2 && force2Key) {
+            const parts = force2Key.split('_');
+            if (parts.length >= 2) {
+                data.user_key_2 = parts[1]; // Second part should be the user key
+            }
         }
         
         // Get army list names from hidden fields (populated by handleArmySelection)
@@ -562,8 +574,11 @@ class BattleReportForm extends BaseForm {
         const userKey = window.UserManager && window.UserManager.currentUser ? 
             window.UserManager.currentUser.user_key || window.UserManager.currentUser.name : '';
         
+        // Add timestamp
+        data.timestamp = new Date().toISOString();
+        
         const finalData = {
-            ...formData,
+            ...data,
             army1: army1Name ? army1Name.value : '',
             army2: army2Name ? army2Name.value : '',
             user_key: userKey
