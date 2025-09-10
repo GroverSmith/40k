@@ -15,6 +15,43 @@
     <link rel="stylesheet" href="../css/user-dropdown.css">
     <link rel="stylesheet" href="../css/story-page.css">
     
+    <style>
+        .battle-link {
+            color: var(--color-secondary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .battle-link:hover {
+            color: var(--color-primary);
+            text-decoration: underline;
+        }
+        
+        .edit-story-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: var(--color-secondary);
+            color: var(--color-bg-main);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .edit-story-button:hover {
+            background-color: var(--color-primary);
+            color: var(--color-bg-main);
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+        
+        #story-actions-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--color-border);
+        }
+    </style>
 
 </head>
 <body>
@@ -36,6 +73,11 @@
     <script src="../js/core/config.js"></script>
     <script src="../js/core/utils.js"></script>
     <script src="../js/core/ui-helpers.js"></script>
+    <script src="../js/users/user-storage.js"></script>
+    <script src="../js/users/user-api.js"></script>
+    <script src="../js/users/user-ui.js"></script>
+    <script src="../js/users/user-modal.js"></script>
+    <script src="../js/users/user-manager.js"></script>
     <script src="story-details.js"></script>
 
 </body>

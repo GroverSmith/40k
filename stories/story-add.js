@@ -43,6 +43,11 @@ class StoryForm extends BaseForm {
         // Load context from URL
         this.loadContext();
 
+        // Load existing story data if in edit mode
+        if (this.contextData.isEditMode) {
+            await this.loadStoryForEditing();
+        }
+
         // Setup character counters for each story text field
         this.setupStoryCharacterCounters();
 
@@ -60,6 +65,12 @@ class StoryForm extends BaseForm {
         }
         if (this.contextData.story_type) {
             this.contextData.storyType = this.contextData.story_type;
+        }
+
+        // Handle edit mode (story_key parameter)
+        if (this.contextData.story_key) {
+            this.contextData.storyKey = this.contextData.story_key;
+            this.contextData.isEditMode = true;
         }
 
         // Detect if we're in battle POV mode (has both battle_key and story_type)
@@ -86,8 +97,11 @@ class StoryForm extends BaseForm {
 
         let contextText = 'Write a new campaign story';
 
-        // Handle battle POV context
-        if (this.contextData.battleKey && this.contextData.forceKey) {
+        // Handle edit mode
+        if (this.contextData.isEditMode) {
+            contextText = 'Edit story';
+        } else if (this.contextData.battleKey && this.contextData.forceKey) {
+            // Handle battle POV context
             contextText = 'Write a Battle Point of View story';
         } else if (this.contextData.forceName) {
             contextText = `Writing story for ${this.contextData.forceName}`;
@@ -199,6 +213,9 @@ class StoryForm extends BaseForm {
                     // Make force select read-only
                     forceSelect.disabled = true;
                     forceSelect.classList.add('readonly-field');
+                } else if (this.contextData.isEditMode && this.editingStory) {
+                    // Handle edit mode - select forces from story
+                    await this.selectForcesForEditMode();
                 } else if (this.contextData.forceKey) {
                     // Pre-select if context provided (legacy support)
                     const options = forceSelect.options;
@@ -232,7 +249,10 @@ class StoryForm extends BaseForm {
                 });
 
                 // Re-select if context provided
-                if (this.contextData.crusadeKey) {
+                if (this.contextData.isEditMode && this.editingStory) {
+                    // Handle edit mode - select crusade from story
+                    crusadeSelect.value = this.editingStory.crusade_key || '';
+                } else if (this.contextData.crusadeKey) {
                     crusadeSelect.value = this.contextData.crusadeKey;
                 } else if (this.contextData.battleKey) {
                     // Try to get crusade from battle data
@@ -291,6 +311,136 @@ class StoryForm extends BaseForm {
             }
         } catch (error) {
             console.error('Error loading battle forces:', error);
+        }
+    }
+
+    async loadStoryForEditing() {
+        if (!this.contextData.storyKey) return;
+
+        try {
+            const story = await UnifiedCache.getRowByKey('stories', this.contextData.storyKey);
+            if (!story) {
+                console.error('Story not found for editing:', this.contextData.storyKey);
+                this.showEditPermissionError('Story not found');
+                return;
+            }
+
+            // Check if the active user has permission to edit this story
+            await this.checkEditPermission(story);
+
+            // Store the story data for use in form submission
+            this.editingStory = story;
+
+            // Populate form fields with existing story data
+            this.populateFormWithStoryData(story);
+
+        } catch (error) {
+            console.error('Error loading story for editing:', error);
+            this.showEditPermissionError('Error loading story for editing');
+        }
+    }
+
+    async checkEditPermission(story) {
+        // Wait for UserManager to be ready
+        let attempts = 0;
+        const maxAttempts = 50; // 5 seconds max wait
+        
+        while (attempts < maxAttempts) {
+            if (typeof UserManager !== 'undefined' && UserManager.getCurrentUser) {
+                const activeUser = UserManager.getCurrentUser();
+                if (activeUser) {
+                    // Check if active user matches story user
+                    if (activeUser.user_key !== story.user_key) {
+                        this.showEditPermissionError('You do not have permission to edit this story');
+                        return;
+                    }
+                    // Permission granted, continue with editing
+                    return;
+                }
+            }
+            
+            // Wait 100ms before trying again
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        // If UserManager never becomes ready, show error
+        this.showEditPermissionError('Unable to verify user permissions');
+    }
+
+    showEditPermissionError(message) {
+        const container = CoreUtils.dom.getElement('story-content');
+        if (container) {
+            container.innerHTML = `
+                <div class="error-container">
+                    <h2>Access Denied</h2>
+                    <p>${message}</p>
+                    <a href="../index.html" class="back-button">← Back to Campaign Tracker</a>
+                </div>
+            `;
+        }
+    }
+
+    populateFormWithStoryData(story) {
+        // Populate basic fields
+        const titleField = CoreUtils.dom.getElement('title');
+        if (titleField) titleField.value = story.title || '';
+
+        const storyTypeField = CoreUtils.dom.getElement('story-type');
+        if (storyTypeField) storyTypeField.value = story.story_type || '';
+
+        const imperialDateField = CoreUtils.dom.getElement('imperial-date');
+        if (imperialDateField) imperialDateField.value = story.imperial_date || '';
+
+        // Populate story text fields
+        const storyText1Field = CoreUtils.dom.getElement('story-text-1');
+        if (storyText1Field) storyText1Field.value = story.story_text_1 || '';
+
+        const storyText2Field = CoreUtils.dom.getElement('story-text-2');
+        if (storyText2Field) storyText2Field.value = story.story_text_2 || '';
+
+        const storyText3Field = CoreUtils.dom.getElement('story-text-3');
+        if (storyText3Field) storyText3Field.value = story.story_text_3 || '';
+
+        // Populate image fields
+        const image1Field = CoreUtils.dom.getElement('image-1');
+        if (image1Field) image1Field.value = story.image_1 || '';
+
+        const image2Field = CoreUtils.dom.getElement('image-2');
+        if (image2Field) image2Field.value = story.image_2 || '';
+
+        const image3Field = CoreUtils.dom.getElement('image-3');
+        if (image3Field) image3Field.value = story.image_3 || '';
+
+        // Populate link fields
+        const textLinkField = CoreUtils.dom.getElement('text-link');
+        if (textLinkField) textLinkField.value = story.text_link || '';
+
+        const audioLinkField = CoreUtils.dom.getElement('audio-link');
+        if (audioLinkField) audioLinkField.value = story.audio_link || '';
+
+        // Store the original story data for comparison
+        this.originalStoryData = { ...story };
+    }
+
+    async selectForcesForEditMode() {
+        if (!this.editingStory) return;
+
+        try {
+            // Load the story-forces relationships to get all associated forces
+            const storyForces = await UnifiedCache.getAllRows('xref_story_forces');
+            const relatedForces = storyForces.filter(sf => sf.story_key === this.editingStory.story_key);
+            
+            const forceSelect = document.getElementById('force-select');
+            if (forceSelect && relatedForces.length > 0) {
+                // Select all forces associated with this story
+                relatedForces.forEach(relation => {
+                    const option = Array.from(forceSelect.options).find(opt => opt.value === relation.force_key);
+                    if (option) option.selected = true;
+                });
+            }
+        } catch (error) {
+            console.error('Error selecting forces for edit mode:', error);
         }
     }
 
@@ -414,7 +564,7 @@ class StoryForm extends BaseForm {
     }
 
     gatherFormData() {
-        const formData = super.gatherFormData();
+        const baseFormData = super.gatherFormData();
 
         // Get selected forces (multiple)
         const forceSelect = document.getElementById('force-select');
@@ -429,9 +579,25 @@ class StoryForm extends BaseForm {
         const activeUser = UserManager.getCurrentUser();
         const userName = activeUser?.name || this.contextData.userName || 'Unknown';
         const userKey = activeUser?.user_key || KeyUtils.generateUserKey(userName);
-        const storyKey = KeyUtils.generateStoryKey(userKey, formData.title || 'Untitled');
+        
+        // Use existing story key in edit mode, generate new one for new stories
+        const storyKey = this.contextData.isEditMode ? this.contextData.storyKey : KeyUtils.generateStoryKey(userKey, baseFormData.title || 'Untitled');
 
-        return {
+        // Get form field values
+        const title = document.getElementById('title')?.value || '';
+        const storyType = document.getElementById('story-type')?.value || '';
+        const imperialDate = document.getElementById('imperial-date')?.value || '';
+        const storyText1 = document.getElementById('story-text-1')?.value || '';
+        const storyText2 = document.getElementById('story-text-2')?.value || '';
+        const storyText3 = document.getElementById('story-text-3')?.value || '';
+        const image1 = document.getElementById('image-1')?.value || '';
+        const image2 = document.getElementById('image-2')?.value || '';
+        const image3 = document.getElementById('image-3')?.value || '';
+        const audioLink = document.getElementById('audio-link')?.value || '';
+        const textLink = document.getElementById('text-link')?.value || '';
+        const crusadeKey = document.getElementById('crusade-select')?.value || '';
+
+        const formData = {
             key: storyKey,
             userKey: userKey,
             userName: userName,
@@ -441,23 +607,48 @@ class StoryForm extends BaseForm {
             // Store array of selected forces for junction table
             selectedForces: selectedForces,
             // Crusade key
-            crusadeKey: document.getElementById('crusade-select')?.value || this.contextData.crusadeKey || '',
+            crusadeKey: crusadeKey || this.contextData.crusadeKey || '',
             // Battle key (for POV stories)
             battleKey: this.contextData.battleKey || '',
             // Story content fields
-            storyText1: document.getElementById('story-text-1')?.value || '',
-            storyText2: document.getElementById('story-text-2')?.value || '',
-            storyText3: document.getElementById('story-text-3')?.value || '',
+            storyText1: storyText1,
+            storyText2: storyText2,
+            storyText3: storyText3,
             // Other fields
-            storyType: document.getElementById('story-type')?.value || '',
-            title: document.getElementById('title')?.value || '',
-            imperialDate: document.getElementById('imperial-date')?.value || '',
-            image1: document.getElementById('image-1')?.value || '',
-            image2: document.getElementById('image-2')?.value || '',
-            image3: document.getElementById('image-3')?.value || '',
-            audioLink: document.getElementById('audio-link')?.value || '',
-            textLink: document.getElementById('text-link')?.value || ''
+            storyType: storyType,
+            title: title,
+            imperialDate: imperialDate,
+            image1: image1,
+            image2: image2,
+            image3: image3,
+            audioLink: audioLink,
+            textLink: textLink
         };
+
+        // In edit mode, preserve existing data for fields that weren't changed
+        if (this.contextData.isEditMode && this.originalStoryData) {
+            // Only update fields that have actually changed or are not empty
+            if (!title && this.originalStoryData.title) formData.title = this.originalStoryData.title;
+            if (!storyType && this.originalStoryData.story_type) formData.storyType = this.originalStoryData.story_type;
+            if (!imperialDate && this.originalStoryData.imperial_date) formData.imperialDate = this.originalStoryData.imperial_date;
+            if (!storyText1 && this.originalStoryData.story_text_1) formData.storyText1 = this.originalStoryData.story_text_1;
+            if (!storyText2 && this.originalStoryData.story_text_2) formData.storyText2 = this.originalStoryData.story_text_2;
+            if (!storyText3 && this.originalStoryData.story_text_3) formData.storyText3 = this.originalStoryData.story_text_3;
+            if (!image1 && this.originalStoryData.image_1) formData.image1 = this.originalStoryData.image_1;
+            if (!image2 && this.originalStoryData.image_2) formData.image2 = this.originalStoryData.image_2;
+            if (!image3 && this.originalStoryData.image_3) formData.image3 = this.originalStoryData.image_3;
+            if (!audioLink && this.originalStoryData.audio_link) formData.audioLink = this.originalStoryData.audio_link;
+            if (!textLink && this.originalStoryData.text_link) formData.textLink = this.originalStoryData.text_link;
+            if (!crusadeKey && this.originalStoryData.crusade_key) formData.crusadeKey = this.originalStoryData.crusade_key;
+        }
+
+        // Add explicit story_key and user_key for edit operations
+        if (this.contextData.isEditMode) {
+            formData.story_key = storyKey;
+            formData.user_key = userKey;
+        }
+
+        return formData;
     }
 
     /**
@@ -466,6 +657,11 @@ class StoryForm extends BaseForm {
     async submitToGoogleSheets(data) {
         if (!this.config.submitUrl) {
             throw new Error('Submit URL not configured');
+        }
+
+        // Add operation parameter for edit mode
+        if (this.contextData.isEditMode) {
+            data.operation = 'edit';
         }
 
         const response = await fetch(this.config.submitUrl, {

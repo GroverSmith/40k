@@ -136,12 +136,16 @@ class StoryDetails {
 
         html += `
             <footer class="story-footer">
-                <p class="author-info">Written by: ${this.extractUserName(story.user_key)}</p>
+                <p class="author-info">Written by: ${story.author_name || this.extractUserName(story.user_key)}</p>
                 <div id="related-forces-section">
                     ${story.force_key ? `<p>Force: ${story.force_key}</p>` : ''}
                 </div>
                 <div id="related-units-section"></div>
                 <div id="crusade-section"></div>
+                <div id="related-battle-section"></div>
+                <div id="story-actions-section" style="display: none;">
+                    <a href="#" id="edit-story-btn" class="edit-story-button">✏️ Edit Story</a>
+                </div>
             </footer>
         </article>
         `;
@@ -150,6 +154,14 @@ class StoryDetails {
 
         // Load related forces asynchronously (non-blocking)
         this.loadRelatedForcesAsync(story);
+        
+        // Load related battle if battle_key exists
+        if (story.battle_key) {
+            this.loadRelatedBattleAsync(story.battle_key);
+        }
+        
+        // Set up edit button visibility and handler
+        this.setupEditButton(story);
     }
 
     /**
@@ -307,6 +319,115 @@ class StoryDetails {
         } catch (error) {
             console.error('Error loading crusade info:', error);
         }
+    }
+
+    /**
+     * Load related battle information asynchronously
+     */
+    async loadRelatedBattleAsync(battleKey) {
+        if (!battleKey) return;
+
+        try {
+            const battle = await UnifiedCache.getRowByKey('battle_history', battleKey);
+            
+            const battleSection = document.getElementById('related-battle-section');
+            if (battleSection) {
+                if (battle) {
+                    // Create a descriptive battle name
+                    const battleName = battle.battle_name || 
+                                     `${battle.player_1 || 'Player 1'} vs ${battle.player_2 || 'Player 2'}` ||
+                                     'Battle Details';
+                    
+                    battleSection.innerHTML = `
+                        <p>Related Battle: <a href="../battles/battle-details.html?key=${battleKey}" class="battle-link">${battleName}</a></p>
+                    `;
+                } else {
+                    // Fallback if battle not found
+                    battleSection.innerHTML = `
+                        <p>Related Battle: <a href="../battles/battle-details.html?key=${battleKey}" class="battle-link">View Battle Details</a></p>
+                    `;
+                }
+            }
+        } catch (error) {
+            console.error('Error loading related battle:', error);
+            // Still show the link even if we can't load battle details
+            const battleSection = document.getElementById('related-battle-section');
+            if (battleSection) {
+                battleSection.innerHTML = `
+                    <p>Related Battle: <a href="../battles/battle-details.html?key=${battleKey}" class="battle-link">View Battle Details</a></p>
+                `;
+            }
+        }
+    }
+
+    /**
+     * Set up edit button visibility and click handler
+     */
+    setupEditButton(story) {
+        // Wait for UserManager to be ready, then check permissions
+        this.waitForUserManagerAndSetupEditButton(story);
+    }
+
+    /**
+     * Wait for UserManager to be ready, then set up edit button
+     */
+    async waitForUserManagerAndSetupEditButton(story) {
+        let attempts = 0;
+        const maxAttempts = 50; // 5 seconds max wait
+        
+        while (attempts < maxAttempts) {
+            // Check if UserManager is available (assuming it's globally available)
+            if (typeof UserManager !== 'undefined' && UserManager.getCurrentUser) {
+                const activeUser = UserManager.getCurrentUser();
+                if (activeUser) {
+                    this.configureEditButton(story, activeUser);
+                    return;
+                }
+            }
+            
+            // Wait 100ms before trying again
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        console.warn('UserManager not ready after 5 seconds, edit button will not be shown');
+    }
+
+    /**
+     * Configure edit button based on user permissions
+     */
+    configureEditButton(story, activeUser) {
+        const actionsSection = document.getElementById('story-actions-section');
+        const editButton = document.getElementById('edit-story-btn');
+        
+        if (!actionsSection || !editButton) return;
+
+        // Check if active user matches story user
+        const activeUserKey = activeUser.user_key;
+        const storyUserKey = story.user_key;
+        
+        if (activeUserKey && storyUserKey && activeUserKey === storyUserKey) {
+            // Show edit button
+            actionsSection.style.display = 'block';
+            
+            // Set up click handler
+            editButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.handleEditStoryClick(story);
+            });
+        } else {
+            // Hide edit button
+            actionsSection.style.display = 'none';
+        }
+    }
+
+    /**
+     * Handle edit story button click
+     */
+    handleEditStoryClick(story) {
+        // Navigate to story-add.html with story_key parameter for editing
+        const editUrl = `story-add.html?story_key=${story.story_key}`;
+        window.location.href = editUrl;
     }
 }
 

@@ -176,14 +176,16 @@ class BattleDetails {
         // Always show Force 1 POV section
         CoreUtils.dom.show('force-1-pov-section');
         const force1POVText = this.formatPOVStories(force1POVStories);
-        setElementTexts({
-            'force-1-pov': force1POVText || 'No point of view recorded for this force.'
-        });
+        const force1POVElement = CoreUtils.dom.getElement('force-1-pov');
+        if (force1POVElement) {
+            force1POVElement.innerHTML = force1POVText || 'No point of view recorded for this force.';
+        }
 
-        // Show/hide Force 1 POV button based on user match
+        // Show/hide Force 1 POV button based on user match and existing stories
         const battleUserKey1 = this.battleData.user_key_1;
         const force1Button = CoreUtils.dom.getElement('add-pov-1-btn');
-        const showForce1Button = activeUserKey && battleUserKey1 && activeUserKey === battleUserKey1;
+        const hasForce1POV = force1POVStories && force1POVStories.length > 0;
+        const showForce1Button = activeUserKey && battleUserKey1 && activeUserKey === battleUserKey1 && !hasForce1POV;
         if (showForce1Button) {
             CoreUtils.dom.show('add-pov-1-btn');
             // Set up click handler for Force 1 POV button
@@ -195,14 +197,16 @@ class BattleDetails {
         // Always show Force 2 POV section
         CoreUtils.dom.show('force-2-pov-section');
         const force2POVText = this.formatPOVStories(force2POVStories);
-        setElementTexts({
-            'force-2-pov': force2POVText || 'No point of view recorded for this force.'
-        });
+        const force2POVElement = CoreUtils.dom.getElement('force-2-pov');
+        if (force2POVElement) {
+            force2POVElement.innerHTML = force2POVText || 'No point of view recorded for this force.';
+        }
 
-        // Show/hide Force 2 POV button based on user match
+        // Show/hide Force 2 POV button based on user match and existing stories
         const battleUserKey2 = this.battleData.user_key_2;
         const force2Button = CoreUtils.dom.getElement('add-pov-2-btn');
-        const showForce2Button = activeUserKey && battleUserKey2 && activeUserKey === battleUserKey2;
+        const hasForce2POV = force2POVStories && force2POVStories.length > 0;
+        const showForce2Button = activeUserKey && battleUserKey2 && activeUserKey === battleUserKey2 && !hasForce2POV;
         if (showForce2Button) {
             CoreUtils.dom.show('add-pov-2-btn');
             // Set up click handler for Force 2 POV button
@@ -233,7 +237,8 @@ class BattleDetails {
             let text = '';
             
             if (story.title) {
-                text += `**${story.title}**\n\n`;
+                const storyUrl = `../stories/story-details.html?key=${story.story_key}`;
+                text += `<a href="${storyUrl}" class="story-title-link">${story.title}</a>\n\n`;
             }
             
             if (story.story_text_1) {
@@ -250,7 +255,14 @@ class BattleDetails {
         } else {
             // Multiple stories - show them as separate entries
             return stories.map((story, index) => {
-                let text = `**Story ${index + 1}${story.title ? ': ' + story.title : ''}**\n\n`;
+                let text = '';
+                
+                if (story.title) {
+                    const storyUrl = `../stories/story-details.html?key=${story.story_key}`;
+                    text += `<a href="${storyUrl}" class="story-title-link">Story ${index + 1}: ${story.title}</a>\n\n`;
+                } else {
+                    text += `Story ${index + 1}\n\n`;
+                }
                 
                 if (story.story_text_1) {
                     text += story.story_text_1;
