@@ -175,3 +175,129 @@ label:has(+ .readonly-field) {
     color: var(--color-text-dim);
     font-style: italic;
 }
+
+/* Imperial Date Component */
+.imperial-date-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.imperial-date-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.imperial-date-field label {
+    font-size: var(--font-sm);
+    font-weight: 600;
+    color: var(--color-text);
+    text-align: center;
+}
+
+.number-input {
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-input-bg);
+    overflow: hidden;
+}
+
+.number-input input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    text-align: center;
+    font-weight: bold;
+    font-size: var(--font-md);
+    padding: 8px 4px;
+    color: var(--color-text);
+    outline: none;
+}
+
+.number-input input:focus {
+    background: var(--color-bg-card);
+}
+
+.number-btn {
+    background: var(--color-secondary);
+    color: var(--color-bg-main);
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: var(--font-lg);
+    transition: all 0.2s ease;
+    min-width: 40px;
+}
+
+.number-btn:hover {
+    background: var(--color-primary);
+}
+
+.number-btn:active {
+    transform: scale(0.95);
+}
+
+.imperial-date-field select {
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    padding: 8px 12px;
+    font-size: var(--font-md);
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+}
+
+.imperial-date-field select:focus {
+    border-color: var(--color-secondary);
+    background: var(--color-bg-card);
+}
+
+.custom-millennium-input {
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    padding: 8px 12px;
+    font-size: var(--font-md);
+    font-weight: bold;
+    text-align: center;
+    outline: none;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.custom-millennium-input:focus {
+    border-color: var(--color-secondary);
+    background: var(--color-bg-card);
+}
+
+.custom-millennium-input::placeholder {
+    color: var(--color-text-dim);
+    font-weight: normal;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .imperial-date-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .number-btn {
+        padding: 6px 10px;
+        min-width: 35px;
+    }
+    
+    .number-input input {
+        padding: 6px 4px;
+        font-size: var(--font-sm);
+    }
+}

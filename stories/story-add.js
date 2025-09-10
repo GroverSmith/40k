@@ -51,6 +51,9 @@ class StoryForm extends BaseForm {
         // Setup character counters for each story text field
         this.setupStoryCharacterCounters();
 
+        // Setup Imperial date component
+        this.setupImperialDateComponent();
+
         // Setup related entity selection
         await this.setupRelatedEntities();
     }
@@ -174,6 +177,145 @@ class StoryForm extends BaseForm {
             textarea3.addEventListener('paste', () => setTimeout(updateCount3, 10));
             updateCount3();
         }
+    }
+
+    setupImperialDateComponent() {
+        // Set up number input buttons (only for year and fraction now)
+        const numberButtons = document.querySelectorAll('.number-btn');
+        numberButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const field = button.dataset.field;
+                const action = button.dataset.action;
+                const input = document.getElementById(`imperial-${field}`);
+                
+                if (input) {
+                    let value = parseInt(input.value) || 0;
+                    const min = parseInt(input.min) || 0;
+                    const max = parseInt(input.max) || 999;
+                    
+                    if (action === 'increase') {
+                        value = Math.min(value + 1, max);
+                    } else if (action === 'decrease') {
+                        value = Math.max(value - 1, min);
+                    }
+                    
+                    input.value = value;
+                    this.updateImperialDateString();
+                }
+            });
+        });
+
+        // Set up number input fields (year and fraction)
+        const numberInputs = document.querySelectorAll('#imperial-year, #imperial-fraction');
+        numberInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                this.updateImperialDateString();
+            });
+            
+            input.addEventListener('keydown', (e) => {
+                // Allow arrow keys to increment/decrement
+                if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const value = parseInt(input.value) || 0;
+                    const max = parseInt(input.max) || 999;
+                    input.value = Math.min(value + 1, max);
+                    this.updateImperialDateString();
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const value = parseInt(input.value) || 0;
+                    const min = parseInt(input.min) || 0;
+                    input.value = Math.max(value - 1, min);
+                    this.updateImperialDateString();
+                }
+            });
+        });
+
+        // Set up millennium dropdown with custom option
+        const millenniumSelect = document.getElementById('imperial-millennium');
+        const customMillenniumInput = document.getElementById('imperial-millennium-custom');
+        
+        if (millenniumSelect) {
+            millenniumSelect.addEventListener('change', () => {
+                if (millenniumSelect.value === 'custom') {
+                    millenniumSelect.style.display = 'none';
+                    customMillenniumInput.style.display = 'block';
+                    customMillenniumInput.focus();
+                } else {
+                    millenniumSelect.style.display = 'block';
+                    customMillenniumInput.style.display = 'none';
+                }
+                this.updateImperialDateString();
+            });
+        }
+
+        // Set up custom millennium input
+        if (customMillenniumInput) {
+            customMillenniumInput.addEventListener('input', () => {
+                this.updateImperialDateString();
+            });
+            
+            customMillenniumInput.addEventListener('blur', () => {
+                // If custom input is empty, go back to dropdown
+                if (!customMillenniumInput.value.trim()) {
+                    millenniumSelect.style.display = 'block';
+                    customMillenniumInput.style.display = 'none';
+                    millenniumSelect.value = 'M41'; // Default back to M41
+                    this.updateImperialDateString();
+                }
+            });
+        }
+
+        // Set up check dropdown
+        const checkSelect = document.getElementById('imperial-check');
+        if (checkSelect) {
+            checkSelect.addEventListener('change', () => {
+                this.updateImperialDateString();
+            });
+        }
+
+        // Initialize the date string
+        this.updateImperialDateString();
+    }
+
+    updateImperialDateString() {
+        const millenniumSelect = document.getElementById('imperial-millennium');
+        const customMillenniumInput = document.getElementById('imperial-millennium-custom');
+        
+        // Get millennium value (either from dropdown or custom input)
+        let millennium = 'M41';
+        if (millenniumSelect && millenniumSelect.value === 'custom' && customMillenniumInput) {
+            millennium = customMillenniumInput.value.trim() || 'M41';
+        } else if (millenniumSelect) {
+            millennium = millenniumSelect.value || 'M41';
+        }
+        
+        const year = document.getElementById('imperial-year')?.value || '123';
+        const fraction = document.getElementById('imperial-fraction')?.value || '999';
+        const check = document.getElementById('imperial-check')?.value || '0';
+        
+        // New order: Millennium.Year.Fraction.Check
+        const imperialDateString = `${millennium}.${year}.${fraction}.${check}`;
+        
+        const hiddenInput = document.getElementById('imperial-date');
+        if (hiddenInput) {
+            hiddenInput.value = imperialDateString;
+        }
+    }
+
+    parseImperialDate(imperialDateString) {
+        if (!imperialDateString) return null;
+        
+        const parts = imperialDateString.split('.');
+        if (parts.length !== 4) return null;
+        
+        // New order: Millennium.Year.Fraction.Check
+        return {
+            millennium: parts[0],
+            year: parts[1],
+            fraction: parts[2],
+            check: parts[3]
+        };
     }
 
     async setupRelatedEntities() {
@@ -389,8 +531,42 @@ class StoryForm extends BaseForm {
         const storyTypeField = CoreUtils.dom.getElement('story-type');
         if (storyTypeField) storyTypeField.value = story.story_type || '';
 
-        const imperialDateField = CoreUtils.dom.getElement('imperial-date');
-        if (imperialDateField) imperialDateField.value = story.imperial_date || '';
+        // Handle Imperial date parsing for edit mode
+        if (story.imperial_date) {
+            const parsedDate = this.parseImperialDate(story.imperial_date);
+            if (parsedDate) {
+                const checkField = CoreUtils.dom.getElement('imperial-check');
+                const yearField = CoreUtils.dom.getElement('imperial-year');
+                const fractionField = CoreUtils.dom.getElement('imperial-fraction');
+                const millenniumSelect = CoreUtils.dom.getElement('imperial-millennium');
+                const customMillenniumInput = CoreUtils.dom.getElement('imperial-millennium-custom');
+                
+                if (checkField) checkField.value = parsedDate.check;
+                if (yearField) yearField.value = parsedDate.year;
+                if (fractionField) fractionField.value = parsedDate.fraction;
+                
+                // Handle millennium (check if it's a standard option or custom)
+                if (millenniumSelect) {
+                    const standardMillennia = ['M30', 'M31', 'M32', 'M33', 'M34', 'M35', 'M36', 'M37', 'M38', 'M39', 'M40', 'M41', 'M42'];
+                    if (standardMillennia.includes(parsedDate.millennium)) {
+                        millenniumSelect.value = parsedDate.millennium;
+                        millenniumSelect.style.display = 'block';
+                        if (customMillenniumInput) customMillenniumInput.style.display = 'none';
+                    } else {
+                        // Custom millennium
+                        millenniumSelect.value = 'custom';
+                        millenniumSelect.style.display = 'none';
+                        if (customMillenniumInput) {
+                            customMillenniumInput.value = parsedDate.millennium;
+                            customMillenniumInput.style.display = 'block';
+                        }
+                    }
+                }
+                
+                // Update the hidden field
+                this.updateImperialDateString();
+            }
+        }
 
         // Populate story text fields
         const storyText1Field = CoreUtils.dom.getElement('story-text-1');
