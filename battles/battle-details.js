@@ -127,6 +127,7 @@ class BattleDetails {
         while (attempts < maxAttempts) {
             const activeUser = UserManager.getCurrentUser();
             if (activeUser) {
+                await this.loadBattlePOVStories();
                 this.displayForcePOVSections();
                 return;
             }
@@ -137,24 +138,46 @@ class BattleDetails {
         }
         
         console.warn('UserManager not ready after 5 seconds, displaying POV sections without user permissions');
+        await this.loadBattlePOVStories();
         this.displayForcePOVSections();
+    }
+
+    async loadBattlePOVStories() {
+        if (!this.battleKey) return;
+
+        try {
+            // Load all stories and filter for Battle POV stories for this battle
+            const allStories = await UnifiedCache.getAllRows('stories');
+            const battlePOVStories = allStories.filter(story => 
+                story.battle_key === this.battleKey && 
+                story.story_type === 'Battle POV'
+            );
+
+            // Store the POV stories for use in displayForcePOVSections
+            this.battlePOVStories = battlePOVStories;
+            
+            console.log(`Found ${battlePOVStories.length} Battle POV stories for battle ${this.battleKey}`);
+        } catch (error) {
+            console.error('Error loading Battle POV stories:', error);
+            this.battlePOVStories = [];
+        }
     }
 
     displayForcePOVSections() {
         // Always show both Force Point of View sections
-        // Get POV data from battle record (may be empty)
-        const force1POV = this.battleData.force_1_pov || '';
-        const force2POV = this.battleData.force_2_pov || '';
+        // Get POV stories for each force
+        const force1POVStories = this.getPOVStoriesForForce(this.battleData.user_key_1);
+        const force2POVStories = this.getPOVStoriesForForce(this.battleData.user_key_2);
 
         // Get active user to check permissions
         const activeUser = UserManager.getCurrentUser();
         const activeUserKey = activeUser ? activeUser.user_key : null;
 
-
         // Always show Force 1 POV section
         CoreUtils.dom.show('force-1-pov-section');
+        const force1POVText = this.formatPOVStories(force1POVStories);
         setElementTexts({
-            'force-1-pov': force1POV || 'No point of view recorded for this force.'
+            'force-1-pov': force1POVText || 'No point of view recorded for this force.'
         });
 
         // Show/hide Force 1 POV button based on user match
@@ -171,8 +194,9 @@ class BattleDetails {
 
         // Always show Force 2 POV section
         CoreUtils.dom.show('force-2-pov-section');
+        const force2POVText = this.formatPOVStories(force2POVStories);
         setElementTexts({
-            'force-2-pov': force2POV || 'No point of view recorded for this force.'
+            'force-2-pov': force2POVText || 'No point of view recorded for this force.'
         });
 
         // Show/hide Force 2 POV button based on user match
@@ -185,6 +209,61 @@ class BattleDetails {
             this.setupPOVButtonHandler('add-pov-2-btn', this.battleData.force_key_2);
         } else {
             CoreUtils.dom.hide('add-pov-2-btn');
+        }
+    }
+
+    /**
+     * Get POV stories for a specific force (user_key)
+     */
+    getPOVStoriesForForce(userKey) {
+        if (!this.battlePOVStories || !userKey) return [];
+        
+        return this.battlePOVStories.filter(story => story.user_key === userKey);
+    }
+
+    /**
+     * Format POV stories into display text
+     */
+    formatPOVStories(stories) {
+        if (!stories || stories.length === 0) return '';
+
+        if (stories.length === 1) {
+            // Single story - show the story text
+            const story = stories[0];
+            let text = '';
+            
+            if (story.title) {
+                text += `**${story.title}**\n\n`;
+            }
+            
+            if (story.story_text_1) {
+                text += story.story_text_1;
+            }
+            if (story.story_text_2) {
+                text += (text ? '\n\n' : '') + story.story_text_2;
+            }
+            if (story.story_text_3) {
+                text += (text ? '\n\n' : '') + story.story_text_3;
+            }
+            
+            return text;
+        } else {
+            // Multiple stories - show them as separate entries
+            return stories.map((story, index) => {
+                let text = `**Story ${index + 1}${story.title ? ': ' + story.title : ''}**\n\n`;
+                
+                if (story.story_text_1) {
+                    text += story.story_text_1;
+                }
+                if (story.story_text_2) {
+                    text += (story.story_text_1 ? '\n\n' : '') + story.story_text_2;
+                }
+                if (story.story_text_3) {
+                    text += ((story.story_text_1 || story.story_text_2) ? '\n\n' : '') + story.story_text_3;
+                }
+                
+                return text;
+            }).join('\n\n---\n\n');
         }
     }
 
