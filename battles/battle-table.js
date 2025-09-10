@@ -184,9 +184,22 @@ const BattleTable = {
         );
         const victorKey = battle.victor_force_key;
 
-        if (victorKey === 'Draw') return `${force1Link} draws ${force2Link}`;
-        if (victorKey === battle.force_key_1) return `${force1Link} defeats ${force2Link}`;
-        if (victorKey === battle.force_key_2) return `${force2Link} defeats ${force1Link}`;
+        // Create hyperlink to battle details with orange styling using TableBase method
+        const createOrangeBattleLink = (text) => {
+            const baseLink = TableBase.createEntityLink('battle', text, battle.battle_key);
+            // Add orange styling to the existing link
+            return baseLink.replace('<a href', '<a style="color: #ff8c00; text-decoration: none; font-weight: 500;" href');
+        };
+
+        if (victorKey === 'Draw') {
+            return `${force1Link} ${createOrangeBattleLink('draws')} ${force2Link}`;
+        }
+        if (victorKey === battle.force_key_1) {
+            return `${force1Link} ${createOrangeBattleLink('defeats')} ${force2Link}`;
+        }
+        if (victorKey === battle.force_key_2) {
+            return `${force2Link} ${createOrangeBattleLink('defeats')} ${force1Link}`;
+        }
         return `${force1Link} vs ${force2Link}`;
     },
     
