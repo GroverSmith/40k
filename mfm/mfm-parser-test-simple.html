@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFM Parser Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        input[type="text"], input[type="file"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .file-input-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            text-align: center;
+            background: #f9f9f9;
+        }
+        .file-input-container.dragover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .unit-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .unit-table th,
+        .unit-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .unit-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .unit-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .faction-filter {
+            margin: 10px 0;
+        }
+        .faction-filter select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #155724;
+            background: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Warhammer 40k MFM Parser</h1>
+        <p>This tool parses the Munitorum Field Manual (MFM) to extract unit points costs and details.</p>
+        
+        <div class="instructions">
+            <h3>📁 How to Use:</h3>
+            <ol>
+                <li>Click "Choose File" below and select the <code>RAW_MFM_3_2_AUG25.txt</code> file</li>
+                <li>Or drag and drop the file onto the upload area</li>
+                <li>The parser will automatically process the file and display results</li>
+            </ol>
+        </div>
+
+        <div class="file-input-container" id="fileDropZone">
+            <h3>📄 Select MFM File</h3>
+            <p>Choose the RAW_MFM_3_2_AUG25.txt file to parse</p>
+            <input type="file" id="fileInput" accept=".txt" onchange="handleFileSelect(event)">
+            <p><small>Or drag and drop the file here</small></p>
+        </div>
+
+        <div class="controls">
+            <button onclick="exportToJSON()" id="exportJsonBtn" disabled>Export JSON</button>
+            <button onclick="exportToCSV()" id="exportCsvBtn" disabled>Export CSV</button>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            Loading and parsing MFM file...
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="success" class="success" style="display: none;"></div>
+
+        <div id="stats" class="stats" style="display: none;"></div>
+
+        <div class="container">
+            <h2>Search and Filter</h2>
+            <div class="controls">
+                <input type="text" id="searchInput" placeholder="Search units..." onkeyup="searchUnits()">
+                <div class="faction-filter">
+                    <label for="factionFilter">Filter by Faction:</label>
+                    <select id="factionFilter" onchange="filterByFaction()">
+                        <option value="">All Factions</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <h2>Results</h2>
+            <div id="results" class="results"></div>
+        </div>
+    </div>
+
+    <script src="mfm-parser.js"></script>
+    <script>
+        let parsedData = null;
+        let currentUnits = [];
+
+        // File input handling
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                parseFile(file);
+            }
+        }
+
+        // Drag and drop handling
+        const dropZone = document.getElementById('fileDropZone');
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                parseFile(files[0]);
+            }
+        });
+
+        // Parse the selected file
+        function parseFile(file) {
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const success = document.getElementById('success');
+            const stats = document.getElementById('stats');
+            const results = document.getElementById('results');
+            const exportJsonBtn = document.getElementById('exportJsonBtn');
+            const exportCsvBtn = document.getElementById('exportCsvBtn');
+
+            // Show loading
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            success.style.display = 'none';
+            stats.style.display = 'none';
+            results.innerHTML = '';
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    const parser = new MFMParser();
+                    const units = parser.parse(content);
+                    
+                    parsedData = {
+                        units: units,
+                        json: parser.exportToJSON(),
+                        csv: parser.exportToCSV(),
+                        stats: parser.getStats()
+                    };
+                    currentUnits = parsedData.units;
+
+                    // Show success message
+                    success.textContent = `Successfully parsed ${parsedData.units.length} units from the MFM file!`;
+                    success.style.display = 'block';
+
+                    // Display statistics
+                    displayStats(parsedData.stats);
+
+                    // Populate faction filter
+                    populateFactionFilter(parsedData.stats.factions);
+
+                    // Display initial results
+                    displayUnits(currentUnits);
+
+                    // Enable export buttons
+                    exportJsonBtn.disabled = false;
+                    exportCsvBtn.disabled = false;
+
+                } catch (err) {
+                    error.textContent = `Error parsing file: ${err.message}`;
+                    error.style.display = 'block';
+                } finally {
+                    loading.style.display = 'none';
+                }
+            };
+
+            reader.onerror = function() {
+                error.textContent = 'Error reading file';
+                error.style.display = 'block';
+                loading.style.display = 'none';
+            };
+
+            reader.readAsText(file);
+        }
+
+        function displayStats(stats) {
+            const statsDiv = document.getElementById('stats');
+            
+            const statsHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${stats.totalUnits}</div>
+                    <div class="stat-label">Total Units</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${Object.keys(stats.factions).length}</div>
+                    <div class="stat-label">Factions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.forgeWorldUnits}</div>
+                    <div class="stat-label">Forge World Units</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.totalPoints.toLocaleString()}</div>
+                    <div class="stat-label">Total Points</div>
+                </div>
+            `;
+            
+            statsDiv.innerHTML = statsHTML;
+            statsDiv.style.display = 'grid';
+        }
+
+        function populateFactionFilter(factions) {
+            const select = document.getElementById('factionFilter');
+            select.innerHTML = '<option value="">All Factions</option>';
+            
+            Object.keys(factions).sort().forEach(faction => {
+                const option = document.createElement('option');
+                option.value = faction;
+                option.textContent = `${faction} (${factions[faction]} units)`;
+                select.appendChild(option);
+            });
+        }
+
+        function displayUnits(units) {
+            const results = document.getElementById('results');
+            
+            if (units.length === 0) {
+                results.innerHTML = '<p>No units found matching your criteria.</p>';
+                return;
+            }
+
+            let tableHTML = `
+                <table class="unit-table">
+                    <thead>
+                        <tr>
+                            <th>Faction</th>
+                            <th>Unit Name</th>
+                            <th>Models</th>
+                            <th>Points</th>
+                            <th>Forge World</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            units.forEach(unit => {
+                tableHTML += `
+                    <tr>
+                        <td>${unit.faction || 'N/A'}</td>
+                        <td>${unit.unitName}</td>
+                        <td>${unit.modelCount}</td>
+                        <td>${unit.points}</td>
+                        <td>${unit.isForgeWorld ? 'Yes' : 'No'}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += '</tbody></table>';
+            results.innerHTML = tableHTML;
+        }
+
+        function searchUnits() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (!parsedData) return;
+
+            const filteredUnits = parsedData.units.filter(unit => 
+                unit.unitName.toLowerCase().includes(searchTerm)
+            );
+
+            currentUnits = filteredUnits;
+            displayUnits(filteredUnits);
+        }
+
+        function filterByFaction() {
+            const selectedFaction = document.getElementById('factionFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (!parsedData) return;
+
+            let filteredUnits = parsedData.units;
+
+            // Apply faction filter
+            if (selectedFaction) {
+                filteredUnits = filteredUnits.filter(unit => 
+                    unit.faction === selectedFaction
+                );
+            }
+
+            // Apply search filter
+            if (searchTerm) {
+                filteredUnits = filteredUnits.filter(unit => 
+                    unit.unitName.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            currentUnits = filteredUnits;
+            displayUnits(filteredUnits);
+        }
+
+        function exportToJSON() {
+            if (!parsedData) return;
+
+            const dataStr = JSON.stringify(parsedData.units, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'mfm-units.json';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        function exportToCSV() {
+            if (!parsedData) return;
+
+            const parser = new MFMParser();
+            parser.units = parsedData.units;
+            const csvData = parser.exportToCSV();
+            
+            const dataBlob = new Blob([csvData], {type: 'text/csv'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'mfm-units.csv';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
