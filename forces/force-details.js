@@ -117,10 +117,7 @@ class ForceDetails {
 		const addUnitBtn = document.getElementById('add-unit-btn');
 		if (addUnitBtn) {
 			const params = new URLSearchParams({
-				forceKey: forceKey,
-				forceName: forceData.force_name,
-				userName: forceData.user_name,
-				faction: forceData.faction
+				forceKey: forceKey
 			});
 			addUnitBtn.href = `../units/unit-add.html?${params.toString()}`;
 		}

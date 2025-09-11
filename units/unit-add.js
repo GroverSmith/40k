@@ -13,12 +13,14 @@ class UnitForm extends BaseForm {
         });
 
         this.forceContext = null;
-        this.init();
+        this.init().catch(error => {
+            console.error('Error initializing UnitForm:', error);
+        });
     }
 
-    init() {
+    async init() {
         // Load force context from URL
-        this.loadForceContext();
+        await this.loadForceContext();
 
         // Initialize base functionality
         this.initBase();
@@ -30,26 +32,60 @@ class UnitForm extends BaseForm {
         this.setupExperienceTracking();
     }
 
-    loadForceContext() {
+    async loadForceContext() {
         this.forceContext = CoreUtils.url.getAllParams();
 
-        if (!this.forceContext.forceKey || !this.forceContext.forceName) {
+        if (!this.forceContext.forceKey) {
             FormUtilities.showError('No force selected. Please access this form from a force details page.');
             CoreUtils.dom.hide(this.form);
             return;
         }
 
-        this.config.redirectUrl = `../forces/force-details.html?key=${encodeURIComponent(this.forceContext.forceKey)}`;
-        this.populateForceContext();
-        this.updateNavigation();
+        // Load force data from cache using the forceKey
+        try {
+            const forceData = await UnifiedCache.getRowByKey('forces', this.forceContext.forceKey);
+            if (!forceData) {
+                FormUtilities.showError('Force not found. Please check the force key and try again.');
+                CoreUtils.dom.hide(this.form);
+                return;
+            }
+
+            // Populate force context with data from cache
+            this.forceContext = {
+                forceKey: this.forceContext.forceKey,
+                forceName: forceData.force_name,
+                userName: forceData.user_name,
+                userKey: forceData.user_key,
+                faction: forceData.faction
+            };
+
+            this.config.redirectUrl = `../forces/force-details.html?key=${encodeURIComponent(this.forceContext.forceKey)}`;
+            this.populateForceContext();
+            this.updateNavigation();
+        } catch (error) {
+            console.error('Error loading force data:', error);
+            FormUtilities.showError('Failed to load force data. Please try again.');
+            CoreUtils.dom.hide(this.form);
+        }
     }
 
     populateForceContext() {
-        const fields = ['force-key', 'force-name', 'user-name', 'user-key', 'faction'];
-        fields.forEach(id => {
-            const field = CoreUtils.dom.getElement(id);
-            if (field) field.value = this.forceContext[id.replace('-', '')] || '';
-        });
+        // Set force name display
+        const forceNameEl = CoreUtils.dom.getElement('force-name');
+        if (forceNameEl) {
+            forceNameEl.textContent = this.forceContext.forceName;
+        }
+
+        // Set hidden fields
+        const forceKeyField = CoreUtils.dom.getElement('force-key');
+        if (forceKeyField) {
+            forceKeyField.value = this.forceContext.forceKey || '';
+        }
+
+        const userKeyField = CoreUtils.dom.getElement('user-key');
+        if (userKeyField) {
+            userKeyField.value = this.forceContext.userKey || '';
+        }
 
         const contextEl = CoreUtils.dom.getElement('force-context');
         if (contextEl) {
@@ -183,7 +219,6 @@ class UnitForm extends BaseForm {
             ...formData,
             forceKey: this.forceContext.forceKey,
             forceName: this.forceContext.forceName,
-            userName: this.forceContext.userName,
             userKey: this.forceContext.userKey,
             faction: this.forceContext.faction,
             rank: rank,
