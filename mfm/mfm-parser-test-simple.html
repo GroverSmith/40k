@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MFM Parser Test</title>
+    <title>MFM Parser Test - UI Optimized</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -139,8 +139,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>Warhammer 40k MFM Parser</h1>
-        <p>This tool parses the Munitorum Field Manual (MFM) to extract unit points costs and details.</p>
+        <h1>Warhammer 40k MFM Parser - UI Optimized</h1>
+        <p>This tool parses the Munitorum Field Manual (MFM) to extract unit points costs and details using the improved UI-optimized parser.</p>
         
         <div class="instructions">
             <h3>📁 How to Use:</h3>
@@ -159,7 +159,7 @@
         </div>
 
         <div class="controls">
-            <button onclick="exportToJSON()" id="exportJsonBtn" disabled>Export JSON</button>
+            <button onclick="exportToJSON()" id="exportJsonBtn" disabled>Export UI-Optimized JSON</button>
             <button onclick="exportToCSV()" id="exportCsvBtn" disabled>Export CSV</button>
         </div>
 
@@ -191,7 +191,7 @@
         </div>
     </div>
 
-    <script src="mfm-parser.js"></script>
+    <script src="mfm-parser-ui-standalone.js"></script>
     <script>
         let parsedData = null;
         let currentUnits = [];
@@ -247,14 +247,45 @@
             reader.onload = function(e) {
                 try {
                     const content = e.target.result;
-                    const parser = new MFMParser();
-                    const units = parser.parse(content);
+                    
+                    // Extract version from filename
+                    const versionMatch = file.name.match(/RAW_MFM_(\d+)_(\d+)_(\w+)\.txt/);
+                    const version = versionMatch ? `${versionMatch[1]}.${versionMatch[2]}` : "3.2";
+                    const date = versionMatch ? versionMatch[3] : "AUG25";
+                    
+                    const parser = new MFMParserUIStandalone();
+                    const uiData = parser.parseForUI(content, version, date);
+                    
+                    // Convert UI data back to flat structure for compatibility
+                    const units = Object.keys(uiData.factions).flatMap(factionKey => {
+                        const faction = uiData.factions[factionKey];
+                        return Object.keys(faction.units).flatMap(unitName => {
+                            const unit = faction.units[unitName];
+                            return unit.variants.map(variant => ({
+                                faction: factionKey,
+                                unitName: unitName,
+                                modelCount: variant.modelCount,
+                                points: variant.points,
+                                isForgeWorld: variant.isForgeWorld,
+                                lineNumber: variant.lineNumber
+                            }));
+                        });
+                    });
                     
                     parsedData = {
                         units: units,
-                        json: parser.exportToJSON(),
-                        csv: parser.exportToCSV(),
-                        stats: parser.getStats()
+                        uiData: uiData,
+                        json: JSON.stringify(uiData, null, 2), // Export UI-optimized structure
+                        csv: generateCSV(units),
+                        stats: {
+                            totalUnits: uiData.metadata.totalUnits,
+                            factions: Object.keys(uiData.factions).reduce((acc, key) => {
+                                acc[key] = uiData.factions[key].unitCount;
+                                return acc;
+                            }, {}),
+                            totalPoints: uiData.metadata.totalPoints,
+                            forgeWorldUnits: uiData.metadata.forgeWorldUnits
+                        }
                     };
                     currentUnits = parsedData.units;
 
@@ -407,16 +438,35 @@
             displayUnits(filteredUnits);
         }
 
+        function generateCSV(units) {
+            const headers = ['Faction', 'Unit Name', 'Model Count', 'Points', 'Forge World', 'Line Number'];
+            const csvRows = [headers.join(',')];
+
+            units.forEach(unit => {
+                const row = [
+                    `"${unit.faction || ''}"`,
+                    `"${unit.unitName}"`,
+                    unit.modelCount,
+                    unit.points,
+                    unit.isForgeWorld ? 'Yes' : 'No',
+                    unit.lineNumber
+                ];
+                csvRows.push(row.join(','));
+            });
+
+            return csvRows.join('\n');
+        }
+
         function exportToJSON() {
             if (!parsedData) return;
 
-            const dataStr = JSON.stringify(parsedData.units, null, 2);
+            const dataStr = parsedData.json;
             const dataBlob = new Blob([dataStr], {type: 'application/json'});
             const url = URL.createObjectURL(dataBlob);
             
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'mfm-units.json';
+            link.download = 'mfm-ui-optimized.json';
             link.click();
             
             URL.revokeObjectURL(url);
@@ -425,9 +475,7 @@
         function exportToCSV() {
             if (!parsedData) return;
 
-            const parser = new MFMParser();
-            parser.units = parsedData.units;
-            const csvData = parser.exportToCSV();
+            const csvData = parsedData.csv;
             
             const dataBlob = new Blob([csvData], {type: 'text/csv'});
             const url = URL.createObjectURL(dataBlob);

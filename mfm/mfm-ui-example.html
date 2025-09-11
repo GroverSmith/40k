@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFM UI Example - Hierarchical Dropdowns</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        select, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .unit-variants {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .variant {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .variant:last-child {
+            border-bottom: none;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #2196f3;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #2e7d32;
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Warhammer 40k MFM Unit Selector</h1>
+        <p>Select an MFM file to load unit data, then choose a faction and unit to see available variants.</p>
+        
+        <div class="form-group">
+            <label for="mfmFile">Select MFM File:</label>
+            <input type="file" id="mfmFile" accept=".txt" onchange="loadMFMFile(event)">
+        </div>
+
+        <div id="loading" class="loading hidden">
+            Loading and parsing MFM file...
+        </div>
+
+        <div id="error" class="error hidden"></div>
+        <div id="success" class="success hidden"></div>
+
+        <div id="mfminfo" class="hidden">
+            <h2>MFM Information</h2>
+            <div id="mfmStats" class="stats"></div>
+        </div>
+
+        <div id="selectionControls" class="hidden">
+            <div class="form-group">
+                <label for="factionSelect">Select Faction:</label>
+                <select id="factionSelect" onchange="onFactionChange()">
+                    <option value="">-- Choose a Faction --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="unitSelect">Select Unit:</label>
+                <select id="unitSelect" onchange="onUnitChange()">
+                    <option value="">-- Choose a Unit --</option>
+                </select>
+            </div>
+
+            <div id="unitVariants" class="unit-variants hidden">
+                <h3>Available Variants:</h3>
+                <div id="variantList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="mfm-parser-ui-standalone.js"></script>
+    <script>
+        let uiData = null;
+        let currentFaction = null;
+        let currentUnit = null;
+
+        function loadMFMFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const success = document.getElementById('success');
+            const mfminfo = document.getElementById('mfminfo');
+            const selectionControls = document.getElementById('selectionControls');
+
+            // Show loading
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+            success.classList.add('hidden');
+            mfminfo.classList.add('hidden');
+            selectionControls.classList.add('hidden');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    
+                    // Extract version from filename
+                    const versionMatch = file.name.match(/RAW_MFM_(\d+)_(\d+)_(\w+)\.txt/);
+                    const version = versionMatch ? `${versionMatch[1]}.${versionMatch[2]}` : "3.2";
+                    const date = versionMatch ? versionMatch[3] : "AUG25";
+
+                    // Parse with UI-optimized parser
+                    const parser = new MFMParserUIStandalone();
+                    uiData = parser.parseForUI(content, version, date);
+
+                    // Display MFM info
+                    displayMFMInfo(uiData);
+
+                    // Populate faction dropdown
+                    populateFactionDropdown(uiData);
+
+                    // Show success
+                    success.textContent = `Successfully loaded ${uiData.metadata.totalUnits} units from ${uiData.metadata.factionCount} factions!`;
+                    success.classList.remove('hidden');
+                    mfminfo.classList.remove('hidden');
+                    selectionControls.classList.remove('hidden');
+
+                } catch (err) {
+                    error.textContent = `Error parsing file: ${err.message}`;
+                    error.classList.remove('hidden');
+                } finally {
+                    loading.classList.add('hidden');
+                }
+            };
+
+            reader.onerror = function() {
+                error.textContent = 'Error reading file';
+                error.classList.remove('hidden');
+                loading.classList.add('hidden');
+            };
+
+            reader.readAsText(file);
+        }
+
+        function displayMFMInfo(data) {
+            const statsDiv = document.getElementById('mfmStats');
+            
+            const statsHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${data.metadata.version}</div>
+                    <div class="stat-label">MFM Version</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${data.metadata.totalUnits}</div>
+                    <div class="stat-label">Total Units</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${data.metadata.factionCount}</div>
+                    <div class="stat-label">Factions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${data.metadata.forgeWorldUnits}</div>
+                    <div class="stat-label">Forge World Units</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${data.metadata.totalPoints.toLocaleString()}</div>
+                    <div class="stat-label">Total Points</div>
+                </div>
+            `;
+            
+            statsDiv.innerHTML = statsHTML;
+        }
+
+        function populateFactionDropdown(data) {
+            const select = document.getElementById('factionSelect');
+            select.innerHTML = '<option value="">-- Choose a Faction --</option>';
+            
+            const parser = new MFMParserUIStandalone();
+            const factions = parser.getFactionList(data);
+            
+            factions.forEach(faction => {
+                const option = document.createElement('option');
+                option.value = faction.key;
+                option.textContent = `${faction.name} (${faction.unitCount} units, ${faction.totalPoints.toLocaleString()} pts)`;
+                select.appendChild(option);
+            });
+        }
+
+        function onFactionChange() {
+            const factionSelect = document.getElementById('factionSelect');
+            const unitSelect = document.getElementById('unitSelect');
+            const unitVariants = document.getElementById('unitVariants');
+            
+            currentFaction = factionSelect.value;
+            currentUnit = null;
+            
+            // Clear unit dropdown and variants
+            unitSelect.innerHTML = '<option value="">-- Choose a Unit --</option>';
+            unitVariants.classList.add('hidden');
+            
+            if (!currentFaction || !uiData) return;
+
+            // Populate unit dropdown
+            const parser = new MFMParserUIStandalone();
+            const units = parser.getUnitList(uiData, currentFaction);
+            
+            units.forEach(unit => {
+                const option = document.createElement('option');
+                option.value = unit.name;
+                option.textContent = `${unit.name} (${unit.variantCount} variants, ${unit.minPoints}-${unit.maxPoints} pts)`;
+                unitSelect.appendChild(option);
+            });
+        }
+
+        function onUnitChange() {
+            const unitSelect = document.getElementById('unitSelect');
+            const unitVariants = document.getElementById('unitVariants');
+            const variantList = document.getElementById('variantList');
+            
+            currentUnit = unitSelect.value;
+            
+            if (!currentUnit || !currentFaction || !uiData) {
+                unitVariants.classList.add('hidden');
+                return;
+            }
+
+            // Display unit variants
+            const unit = uiData.factions[currentFaction].units[currentUnit];
+            
+            let variantsHTML = '';
+            unit.variants.forEach(variant => {
+                variantsHTML += `
+                    <div class="variant">
+                        <span>${variant.modelCount} model${variant.modelCount > 1 ? 's' : ''}</span>
+                        <span><strong>${variant.points} pts</strong></span>
+                        <span>${variant.isForgeWorld ? 'Forge World' : 'Standard'}</span>
+                    </div>
+                `;
+            });
+            
+            variantList.innerHTML = variantsHTML;
+            unitVariants.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
