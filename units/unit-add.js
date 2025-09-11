@@ -70,10 +70,11 @@ class UnitForm extends BaseForm {
     }
 
     populateForceContext() {
-        // Set force name display
+        // Set force name display and link
         const forceNameEl = CoreUtils.dom.getElement('force-name');
         if (forceNameEl) {
             forceNameEl.textContent = this.forceContext.forceName;
+            forceNameEl.href = `../forces/force-details.html?key=${encodeURIComponent(this.forceContext.forceKey)}`;
         }
 
         // Set hidden fields
