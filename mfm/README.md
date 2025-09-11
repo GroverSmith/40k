@@ -4,8 +4,10 @@ A JavaScript tool to parse the Warhammer 40k Munitorum Field Manual (MFM) and ex
 
 ## Files
 
-- `mfm-parser.js` - Core parser class with browser and Node.js support
+- `mfm-parser.js` - Core parser class with Node.js support
+- `mfm-parser-ui-standalone.js` - Standalone UI-optimized parser for browser use
 - `parse-mfm.js` - Command-line script for parsing MFM files
+- `generate-ui-data.js` - Command-line script for generating UI-optimized JSON
 - `mfm-parser-test-simple.html` - Web interface for testing the parser (no CORS issues)
 - `RAW_MFM_3_2_AUG25.txt` - The raw MFM file to parse
 
@@ -49,12 +51,14 @@ Open `mfm-parser-test-simple.html` in a web browser to use the interactive parse
 - File input or drag-and-drop to select MFM file
 - Real-time search and filtering
 - Statistics display
-- Export to JSON/CSV
+- Export to UI-optimized JSON/CSV
 - Faction filtering
 - No CORS issues - works with local files
+- Uses improved parser with 1,228 units (vs 464 in original)
 
 ### Programmatic Usage
 
+#### Node.js (Command Line)
 ```javascript
 const { MFMParser } = require('./mfm-parser.js');
 
@@ -74,8 +78,24 @@ const jsonData = parser.exportToJSON();
 const csvData = parser.exportToCSV();
 ```
 
-## Output Format
+#### Browser (UI-Optimized)
+```javascript
+// Load the standalone parser
+const parser = new MFMParserUIStandalone();
 
+// Parse for UI-optimized structure
+const uiData = parser.parseForUI(mfmContent, "3.2", "AUG25");
+
+// Get faction list for dropdowns
+const factions = parser.getFactionList(uiData);
+
+// Get units for selected faction
+const units = parser.getUnitList(uiData, "SPACE MARINES");
+```
+
+## Output Formats
+
+### Flat Structure (Command Line)
 Each parsed unit contains:
 
 ```javascript
@@ -87,6 +107,42 @@ Each parsed unit contains:
   points: 180,                        // Points cost
   isForgeWorld: false,                // Whether it's a Forge World unit
   lineNumber: 123                     // Line number in source file
+}
+```
+
+### UI-Optimized Structure (Browser)
+Hierarchical structure optimized for dropdowns:
+
+```javascript
+{
+  metadata: {
+    version: "3.2",
+    date: "AUG25",
+    totalUnits: 1228,
+    totalPoints: 185385,
+    forgeWorldUnits: 41,
+    factionCount: 27
+  },
+  factions: {
+    "SPACE MARINES": {
+      name: "Space Marines",
+      unitCount: 119,
+      totalPoints: 15680,
+      units: {
+        "Tactical Squad": {
+          name: "Tactical Squad",
+          variants: [
+            {
+              modelCount: 10,
+              points: 180,
+              isForgeWorld: false,
+              lineNumber: 123
+            }
+          ]
+        }
+      }
+    }
+  }
 }
 ```
 

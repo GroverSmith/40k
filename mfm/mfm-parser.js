@@ -265,40 +265,6 @@ class MFMParser {
     }
 }
 
-// Example usage function
-async function parseMFMFile() {
-    try {
-        // In a browser environment, you would fetch the file
-        // For Node.js, you would use fs.readFileSync
-        const response = await fetch('./RAW_MFM_3_2_AUG25.txt');
-        const content = await response.text();
-        
-        const parser = new MFMParser();
-        const units = parser.parse(content);
-        
-        console.log('Parsed units:', units.length);
-        console.log('Statistics:', parser.getStats());
-        
-        // Export to JSON
-        const jsonData = parser.exportToJSON();
-        console.log('JSON export ready');
-        
-        // Export to CSV
-        const csvData = parser.exportToCSV();
-        console.log('CSV export ready');
-        
-        return {
-            units: units,
-            json: jsonData,
-            csv: csvData,
-            stats: parser.getStats()
-        };
-        
-    } catch (error) {
-        console.error('Error parsing MFM file:', error);
-        throw error;
-    }
-}
 
 // Node.js usage function
 function parseMFMFileNode(filePath) {
@@ -333,5 +299,4 @@ if (typeof module !== 'undefined' && module.exports) {
 // Make available globally in browser
 if (typeof window !== 'undefined') {
     window.MFMParser = MFMParser;
-    window.parseMFMFile = parseMFMFile;
 }

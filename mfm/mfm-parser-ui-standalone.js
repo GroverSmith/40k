@@ -340,6 +340,11 @@ class MFMParserUIStandalone {
     }
 }
 
+// Export for use in other modules (Node.js)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { MFMParserUIStandalone };
+}
+
 // Make available globally in browser
 if (typeof window !== 'undefined') {
     window.MFMParserUIStandalone = MFMParserUIStandalone;

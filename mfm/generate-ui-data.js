@@ -5,7 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { MFMParserUI } = require('./mfm-parser-ui.js');
+const { MFMParserUIStandalone } = require('./mfm-parser-ui-standalone.js');
 
 function printUsage() {
     console.log(`
@@ -93,7 +93,7 @@ function main() {
         const date = versionMatch ? versionMatch[3] : "AUG25";
         
         // Parse with UI-optimized parser
-        const parser = new MFMParserUI();
+        const parser = new MFMParserUIStandalone();
         const uiData = parser.parseForUI(content, version, date);
         
         // Generate output filename if not provided
