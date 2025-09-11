@@ -4,6 +4,7 @@
 :root {
   /* Primary Colors */
   --color-primary: #2c5aa0;
+  --color-primary-light: #4a7bc8;
   --color-primary-dark: #1e4080;
   --color-primary-darker: #15325f;
   
@@ -20,6 +21,8 @@
   --color-bg-card-alt: #3a3a3a;
   --color-bg-dark: #0a0a0a;
   --color-bg-input: rgba(26, 26, 26, 0.8);
+  --color-bg: #2a2a2a;
+  --color-bg-hover: #3a3a3a;
   
   /* Text Colors */
   --color-text: #ffffff;

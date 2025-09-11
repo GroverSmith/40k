@@ -13,6 +13,7 @@ class UnitForm extends BaseForm {
         });
 
         this.forceContext = null;
+        this.mfmData = null;
         this.init().catch(error => {
             console.error('Error initializing UnitForm:', error);
         });
@@ -30,6 +31,9 @@ class UnitForm extends BaseForm {
 
         // Setup experience tracking
         this.setupExperienceTracking();
+
+        // Setup MFM integration
+        this.setupMFMIntegration();
     }
 
     async loadForceContext() {
@@ -148,6 +152,177 @@ class UnitForm extends BaseForm {
         updateRank(); // Initial update
     }
 
+    setupMFMIntegration() {
+        // Setup MFM mode toggle
+        const presetRadio = CoreUtils.dom.getElement('mfm-preset');
+        const customRadio = CoreUtils.dom.getElement('mfm-custom');
+        const presetContainer = CoreUtils.dom.getElement('mfm-preset-container');
+        const customContainer = CoreUtils.dom.getElement('mfm-custom-container');
+
+        if (presetRadio && customRadio && presetContainer && customContainer) {
+            presetRadio.addEventListener('change', () => {
+                if (presetRadio.checked) {
+                    CoreUtils.dom.show(presetContainer);
+                    CoreUtils.dom.hide(customContainer);
+                    this.switchToDropdownMode();
+                    this.loadMFMData();
+                }
+            });
+
+            customRadio.addEventListener('change', () => {
+                if (customRadio.checked) {
+                    CoreUtils.dom.hide(presetContainer);
+                    CoreUtils.dom.show(customContainer);
+                    this.switchToTextInputMode();
+                }
+            });
+        }
+
+        // Load MFM data on page load if preset is selected
+        if (presetRadio && presetRadio.checked) {
+            this.loadMFMData();
+        }
+    }
+
+    async loadMFMData() {
+        const dataSheetField = CoreUtils.dom.getElement('data-sheet');
+        if (dataSheetField && dataSheetField.tagName === 'SELECT') {
+            dataSheetField.innerHTML = '<option value="">-- Loading MFM data... --</option>';
+            dataSheetField.disabled = true;
+        }
+
+        try {
+            // Check if embedded data is available
+            if (typeof window.EMBEDDED_MFM_DATA !== 'undefined') {
+                this.mfmData = window.EMBEDDED_MFM_DATA;
+                this.populateDataSheetOptions();
+            } else {
+                // Fallback to fetch if embedded data is not available
+                const response = await fetch('../mfm/mfm-3_2.json');
+                if (!response.ok) {
+                    throw new Error(`Failed to load MFM data: ${response.status}`);
+                }
+                
+                this.mfmData = await response.json();
+                this.populateDataSheetOptions();
+            }
+        } catch (error) {
+            console.error('Error loading MFM data:', error);
+            if (dataSheetField && dataSheetField.tagName === 'SELECT') {
+                dataSheetField.innerHTML = '<option value="">-- Error loading MFM data --</option>';
+                dataSheetField.disabled = false;
+            }
+            FormUtilities.showError('Failed to load MFM data. Please try again or use custom version.');
+        }
+    }
+
+    populateDataSheetOptions() {
+        if (!this.mfmData || !this.forceContext?.faction) {
+            return;
+        }
+
+        const dataSheetField = CoreUtils.dom.getElement('data-sheet');
+        if (!dataSheetField || dataSheetField.tagName !== 'SELECT') {
+            return;
+        }
+
+        // Clear existing options except the first one
+        dataSheetField.innerHTML = '<option value="">-- Select Data Sheet --</option>';
+        dataSheetField.disabled = false;
+
+        // Find the faction in MFM data
+        const factionKey = this.forceContext.faction.toUpperCase();
+        const faction = this.mfmData.factions[factionKey];
+
+        if (!faction) {
+            console.warn(`Faction "${factionKey}" not found in MFM data`);
+            dataSheetField.innerHTML = '<option value="">-- Faction not found in MFM data --</option>';
+            return;
+        }
+
+        // Populate with units from the faction
+        const units = Object.keys(faction.units).sort();
+        units.forEach(unitName => {
+            const option = document.createElement('option');
+            option.value = unitName;
+            option.textContent = unitName;
+            dataSheetField.appendChild(option);
+        });
+
+        // Add change listener to auto-populate points
+        dataSheetField.addEventListener('change', (e) => {
+            this.updatePointsFromMFM(e.target.value);
+        });
+    }
+
+    updatePointsFromMFM(unitName) {
+        if (!this.mfmData || !this.forceContext?.faction || !unitName) {
+            return;
+        }
+
+        const factionKey = this.forceContext.faction.toUpperCase();
+        const faction = this.mfmData.factions[factionKey];
+        
+        if (!faction || !faction.units[unitName]) {
+            return;
+        }
+
+        const unit = faction.units[unitName];
+        const pointsField = CoreUtils.dom.getElement('points');
+        
+        if (pointsField && unit.variants.length > 0) {
+            // Use the first variant's points as default
+            pointsField.value = unit.variants[0].points;
+        }
+    }
+
+    switchToDropdownMode() {
+        const dataSheetContainer = CoreUtils.dom.getElement('data-sheet').parentElement;
+        const currentField = CoreUtils.dom.getElement('data-sheet');
+        
+        // Create dropdown if it doesn't exist or if current field is not a select
+        if (currentField.tagName !== 'SELECT') {
+            const select = document.createElement('select');
+            select.id = 'data-sheet';
+            select.name = 'dataSheet';
+            select.required = true;
+            select.innerHTML = '<option value="">-- Select Data Sheet --</option>';
+            
+            // Replace the current field
+            currentField.parentElement.replaceChild(select, currentField);
+        }
+    }
+
+    switchToTextInputMode() {
+        const dataSheetContainer = CoreUtils.dom.getElement('data-sheet').parentElement;
+        const currentField = CoreUtils.dom.getElement('data-sheet');
+        
+        // Create text input if current field is a select
+        if (currentField.tagName === 'SELECT') {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = 'data-sheet';
+            input.name = 'dataSheet';
+            input.required = true;
+            input.placeholder = 'e.g., Space Marine Captain, Intercessor Squad, Predator Destructor';
+            
+            // Replace the current field
+            currentField.parentElement.replaceChild(input, currentField);
+        }
+    }
+
+    clearDataSheetOptions() {
+        const dataSheetField = CoreUtils.dom.getElement('data-sheet');
+        if (dataSheetField) {
+            if (dataSheetField.tagName === 'SELECT') {
+                dataSheetField.innerHTML = '<option value="">-- Select Data Sheet --</option>';
+            } else {
+                dataSheetField.value = '';
+            }
+            dataSheetField.disabled = false;
+        }
+    }
+
     validateSpecificField(field, value) {
         if (field.id === 'unit-name' && value) {
             if (value.length < 2) {
@@ -203,17 +378,26 @@ class UnitForm extends BaseForm {
         // Generate unit key
         const unitKey = KeyUtils.generateUnitKey(
             this.forceContext.forceKey,
-            formData.unitName
+            formData.name
         );
 
         // Determine rank based on XP
-        const xp = parseInt(formData.experiencePoints) || 0;
+        const xp = parseInt(formData.xp) || 0;
         let rank = 'Battle-ready';
 
         if (xp >= 51) rank = 'Legendary';
         else if (xp >= 31) rank = 'Heroic';
         else if (xp >= 16) rank = 'Veteran';
         else if (xp >= 6) rank = 'Blooded';
+
+        // Handle MFM version
+        let mfmVersion = '';
+        const mfmMode = formData.mfmMode;
+        if (mfmMode === 'preset') {
+            mfmVersion = formData.mfmVersion || '3.2';
+        } else if (mfmMode === 'custom') {
+            mfmVersion = formData.mfmVersionCustom || '';
+        }
 
         return {
             key: unitKey,
@@ -223,10 +407,11 @@ class UnitForm extends BaseForm {
             userKey: this.forceContext.userKey,
             faction: this.forceContext.faction,
             rank: rank,
+            mfmVersion: mfmVersion,
             crusadePoints: formData.crusadePoints || '0',
-            battleHonours: formData.battleHonours || '',
+            battleTraits: formData.battleTraits || '',
             battleScars: formData.battleScars || '',
-            equipment: formData.equipment || '',
+            wargear: formData.wargear || '',
             notes: formData.notes || ''
         };
     }

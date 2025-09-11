@@ -404,3 +404,95 @@ input[type="file"]:hover {
     font-size: 16px;
   }
 }
+
+/* ===============================
+   MFM VERSION TOGGLE
+   =============================== */
+
+.mfm-version-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mfm-toggle-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.mfm-toggle-option {
+  position: relative;
+}
+
+.mfm-toggle-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mfm-toggle-option label {
+  display: block;
+  padding: 16px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.mfm-toggle-option label:hover {
+  border-color: var(--color-primary-light);
+  background-color: var(--color-bg-hover);
+}
+
+.mfm-toggle-option input[type="radio"]:checked + label {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.toggle-label {
+  display: block;
+  font-weight: 600;
+  font-size: var(--font-md);
+  margin-bottom: 4px;
+  color: inherit;
+}
+
+.toggle-description {
+  display: block;
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.mfm-toggle-option input[type="radio"]:checked + label .toggle-description {
+  color: var(--color-primary-dark);
+}
+
+.mfm-input-container {
+  transition: all 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mfm-input-container[style*="display: none"] {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+/* Responsive design for toggle */
+@media (max-width: 768px) {
+  .mfm-toggle-group {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .mfm-toggle-option label {
+    padding: 12px;
+  }
+}

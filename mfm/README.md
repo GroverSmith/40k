@@ -9,7 +9,10 @@ A JavaScript tool to parse the Warhammer 40k Munitorum Field Manual (MFM) and ex
 - `parse-mfm.js` - Command-line script for parsing MFM files
 - `generate-ui-data.js` - Command-line script for generating UI-optimized JSON
 - `mfm-parser-test-simple.html` - Web interface for testing the parser (no CORS issues)
+- `embed-mfm-data.js` - Script to embed MFM data into unit-add.html (fixes CORS issues)
+- `update-embedded-data.js` - Convenience script to update embedded data
 - `RAW_MFM_3_2_AUG25.txt` - The raw MFM file to parse
+- `mfm-3_2.json` - UI-optimized JSON output (used by unit-add form)
 
 ## Usage
 
@@ -44,6 +47,22 @@ node parse-mfm.js --forge-world -f csv
 - `--search <term>` - Search for units containing term
 - `--forge-world` - Show only Forge World units
 - `--help` - Show help message
+
+### Unit-Add Form Integration
+
+The MFM data is integrated into the unit-add form (`units/unit-add.html`) to provide:
+
+- **Automatic Data Sheet Population**: Dropdown populated with units from the selected faction
+- **Auto-Point Calculation**: Points automatically filled when selecting a data sheet
+- **MFM Version Toggle**: Switch between MFM 3.2 and custom versions
+- **CORS-Free Operation**: Data is embedded to avoid browser security restrictions
+
+To update the embedded data when MFM files change:
+
+```bash
+# Update embedded data in unit-add.html
+node mfm/update-embedded-data.js
+```
 
 ### Web Interface
 
