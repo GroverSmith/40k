@@ -213,7 +213,7 @@ function doPost(e) {
     
     // Default operation is create
     // Validate required fields
-    const required = ['userKey', 'title', 'storyType'];
+    const required = ['userKey', 'title', 'story_type'];
     const missing = required.filter(field => !data[field]);
     if (missing.length > 0) {
       throw new Error('Missing required fields: ' + missing.join(', '));
@@ -287,20 +287,20 @@ function doPost(e) {
     const rowData = [
       storyKey,                     // story_key
       data.userKey || '',           // user_key
-      data.authorName || '',        // author_name
-      data.crusadeKey || '',        // crusade_key
-      data.battleKey || '',         // battle_key
-      data.storyType || '',         // story_type
+      data.author_name || '',       // author_name
+      data.crusade_key || '',       // crusade_key
+      data.battle_key || '',        // battle_key
+      data.story_type || '',        // story_type
       data.title || '',             // title
-      data.imperialDate || '',      // imperial_date
-      data.storyText1 || '',        // story_text_1
-      data.storyText2 || '',        // story_text_2
-      data.storyText3 || '',        // story_text_3
-      data.textLink || '',          // text_link
-      data.image1 || '',            // image_1
-      data.image2 || '',            // image_2
-      data.image3 || '',            // image_3
-      data.audioLink || '',         // audio_link
+      data.imperial_date || '',     // imperial_date
+      data.story_text_1 || '',      // story_text_1
+      data.story_text_2 || '',      // story_text_2
+      data.story_text_3 || '',      // story_text_3
+      data.text_link || '',         // text_link
+      data.image_1 || '',           // image_1
+      data.image_2 || '',           // image_2
+      data.image_3 || '',           // image_3
+      data.audio_link || '',        // audio_link
       timestamp,                    // timestamp
       ''                            // deleted_timestamp (empty for new records)
     ];

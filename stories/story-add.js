@@ -777,45 +777,34 @@ class StoryForm extends BaseForm {
             key: storyKey,
             userKey: userKey,
             userName: userName,
-            authorName: userName, // Add authorName for the new column
-            // For backward compatibility, store first force in main table
-            forceKey: selectedForces[0] || this.contextData.forceKey || '',
+            author_name: userName, // Add author_name for the new column
+            // Note: force_key is not stored in main stories table - handled via junction table
             // Store array of selected forces for junction table
             selectedForces: selectedForces,
             // Crusade key
-            crusadeKey: crusadeKey || this.contextData.crusadeKey || '',
+            crusade_key: crusadeKey || this.contextData.crusadeKey || (this.contextData.isEditMode && this.originalStoryData ? this.originalStoryData.crusade_key : '') || '',
             // Battle key (for POV stories)
-            battleKey: this.contextData.battleKey || '',
+            battle_key: this.contextData.battleKey || (this.contextData.isEditMode && this.originalStoryData ? this.originalStoryData.battle_key : '') || '',
             // Story content fields
-            storyText1: storyText1,
-            storyText2: storyText2,
-            storyText3: storyText3,
+            story_text_1: storyText1,
+            story_text_2: storyText2,
+            story_text_3: storyText3,
             // Other fields
-            storyType: storyType,
+            story_type: storyType,
             title: title,
-            imperialDate: imperialDate,
-            image1: image1,
-            image2: image2,
-            image3: image3,
-            audioLink: audioLink,
-            textLink: textLink
+            imperial_date: imperialDate,
+            image_1: image1,
+            image_2: image2,
+            image_3: image3,
+            audio_link: audioLink,
+            text_link: textLink
         };
 
-        // In edit mode, preserve existing data for fields that weren't changed
+        // In edit mode, ensure we have the story_key and user_key for the update operation
         if (this.contextData.isEditMode && this.originalStoryData) {
-            // Only update fields that have actually changed or are not empty
-            if (!title && this.originalStoryData.title) formData.title = this.originalStoryData.title;
-            if (!storyType && this.originalStoryData.story_type) formData.storyType = this.originalStoryData.story_type;
-            if (!imperialDate && this.originalStoryData.imperial_date) formData.imperialDate = this.originalStoryData.imperial_date;
-            if (!storyText1 && this.originalStoryData.story_text_1) formData.storyText1 = this.originalStoryData.story_text_1;
-            if (!storyText2 && this.originalStoryData.story_text_2) formData.storyText2 = this.originalStoryData.story_text_2;
-            if (!storyText3 && this.originalStoryData.story_text_3) formData.storyText3 = this.originalStoryData.story_text_3;
-            if (!image1 && this.originalStoryData.image_1) formData.image1 = this.originalStoryData.image_1;
-            if (!image2 && this.originalStoryData.image_2) formData.image2 = this.originalStoryData.image_2;
-            if (!image3 && this.originalStoryData.image_3) formData.image3 = this.originalStoryData.image_3;
-            if (!audioLink && this.originalStoryData.audio_link) formData.audioLink = this.originalStoryData.audio_link;
-            if (!textLink && this.originalStoryData.text_link) formData.textLink = this.originalStoryData.text_link;
-            if (!crusadeKey && this.originalStoryData.crusade_key) formData.crusadeKey = this.originalStoryData.crusade_key;
+            // Use the current form values as-is - don't try to "preserve" original data
+            // The form should reflect what the user wants to save
+            console.log('Edit mode: Using current form values for story update');
         }
 
         // Add explicit story_key and user_key for edit operations
