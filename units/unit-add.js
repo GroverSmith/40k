@@ -29,8 +29,6 @@ class UnitForm extends BaseForm {
         // Setup battlefield role specific fields
         this.setupBattlefieldRoleFields();
 
-        // Setup experience tracking
-        this.setupExperienceTracking();
 
         // Setup MFM integration
         this.setupMFMIntegration();
@@ -129,28 +127,6 @@ class UnitForm extends BaseForm {
         });
     }
 
-    setupExperienceTracking() {
-        const xpField = document.getElementById('experience-points');
-        const rankDisplay = document.getElementById('rank-display');
-
-        if (!xpField || !rankDisplay) return;
-
-        const updateRank = () => {
-            const xp = parseInt(xpField.value) || 0;
-            let rank = 'Battle-ready';
-
-            if (xp >= 51) rank = 'Legendary';
-            else if (xp >= 31) rank = 'Heroic';
-            else if (xp >= 16) rank = 'Veteran';
-            else if (xp >= 6) rank = 'Blooded';
-
-            rankDisplay.textContent = rank;
-            rankDisplay.className = `rank-${rank.toLowerCase()}`;
-        };
-
-        xpField.addEventListener('input', updateRank);
-        updateRank(); // Initial update
-    }
 
     setupMFMIntegration() {
         // Setup MFM mode toggle
@@ -165,6 +141,8 @@ class UnitForm extends BaseForm {
                     CoreUtils.dom.show(presetContainer);
                     CoreUtils.dom.hide(customContainer);
                     this.switchToDropdownMode();
+                    this.hideUnitTypeField();
+                    this.hidePointsField();
                     this.loadMFMData();
                 }
             });
@@ -174,13 +152,20 @@ class UnitForm extends BaseForm {
                     CoreUtils.dom.hide(presetContainer);
                     CoreUtils.dom.show(customContainer);
                     this.switchToTextInputMode();
+                    this.showUnitTypeField();
+                    this.showPointsField();
                 }
             });
         }
 
         // Load MFM data on page load if preset is selected
         if (presetRadio && presetRadio.checked) {
+            this.hideUnitTypeField();
+            this.hidePointsField();
             this.loadMFMData();
+        } else {
+            this.showUnitTypeField();
+            this.showPointsField();
         }
     }
 
@@ -243,20 +228,31 @@ class UnitForm extends BaseForm {
         // Populate with units from the faction
         const units = Object.keys(faction.units).sort();
         units.forEach(unitName => {
+            const unit = faction.units[unitName];
             const option = document.createElement('option');
             option.value = unitName;
-            option.textContent = unitName;
+            
+            // Create point cost display
+            let pointCosts = '';
+            if (unit.variants && unit.variants.length > 0) {
+                // Get unique point costs and sort them
+                const uniquePoints = [...new Set(unit.variants.map(v => v.points))].sort((a, b) => a - b);
+                pointCosts = ` (${uniquePoints.join(', ')} pts)`;
+            }
+            
+            option.textContent = unitName + pointCosts;
             dataSheetField.appendChild(option);
         });
 
-        // Add change listener to auto-populate points
+        // Add change listener to handle data sheet selection
         dataSheetField.addEventListener('change', (e) => {
-            this.updatePointsFromMFM(e.target.value);
+            this.handleDataSheetSelection(e.target.value);
         });
     }
 
-    updatePointsFromMFM(unitName) {
+    handleDataSheetSelection(unitName) {
         if (!this.mfmData || !this.forceContext?.faction || !unitName) {
+            this.hideVariantDropdown();
             return;
         }
 
@@ -264,15 +260,107 @@ class UnitForm extends BaseForm {
         const faction = this.mfmData.factions[factionKey];
         
         if (!faction || !faction.units[unitName]) {
+            this.hideVariantDropdown();
             return;
         }
 
         const unit = faction.units[unitName];
-        const pointsField = CoreUtils.dom.getElement('points');
         
-        if (pointsField && unit.variants.length > 0) {
-            // Use the first variant's points as default
-            pointsField.value = unit.variants[0].points;
+        // Show variant dropdown if unit has multiple variants
+        if (unit.variants.length > 1) {
+            this.showVariantDropdown(unit.variants);
+        } else {
+            this.hideVariantDropdown();
+            // Auto-populate points for single variant
+            if (unit.variants.length === 1) {
+                this.updatePointsFromVariant(unit.variants[0]);
+            }
+        }
+    }
+
+    showVariantDropdown(variants) {
+        const variantGroup = CoreUtils.dom.getElement('variant-group');
+        const variantSelect = CoreUtils.dom.getElement('unit-variant');
+        
+        if (!variantGroup || !variantSelect) {
+            return;
+        }
+
+        // Clear existing options
+        variantSelect.innerHTML = '<option value="">-- Select Variant --</option>';
+        
+        // Populate with variants
+        variants.forEach((variant, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `${variant.modelCount} models - ${variant.points} pts`;
+            variantSelect.appendChild(option);
+        });
+
+        // Show the variant group
+        CoreUtils.dom.show(variantGroup);
+        variantSelect.required = true;
+
+        // Add change listener for variant selection
+        variantSelect.addEventListener('change', (e) => {
+            const variantIndex = parseInt(e.target.value);
+            if (variantIndex >= 0 && variantIndex < variants.length) {
+                this.updatePointsFromVariant(variants[variantIndex]);
+            }
+        });
+    }
+
+    hideVariantDropdown() {
+        const variantGroup = CoreUtils.dom.getElement('variant-group');
+        const variantSelect = CoreUtils.dom.getElement('unit-variant');
+        
+        if (variantGroup) {
+            CoreUtils.dom.hide(variantGroup);
+        }
+        
+        if (variantSelect) {
+            variantSelect.required = false;
+            variantSelect.innerHTML = '<option value="">-- Select Variant --</option>';
+        }
+    }
+
+    updatePointsFromVariant(variant) {
+        const pointsField = CoreUtils.dom.getElement('points');
+        if (pointsField && variant) {
+            pointsField.value = variant.points;
+        }
+    }
+
+    updatePointsFromMFM(unitName) {
+        // This method is kept for backward compatibility
+        this.handleDataSheetSelection(unitName);
+    }
+
+    showUnitTypeField() {
+        const unitTypeGroup = CoreUtils.dom.getElement('unit-type-group');
+        if (unitTypeGroup) {
+            CoreUtils.dom.show(unitTypeGroup);
+        }
+    }
+
+    hideUnitTypeField() {
+        const unitTypeGroup = CoreUtils.dom.getElement('unit-type-group');
+        if (unitTypeGroup) {
+            CoreUtils.dom.hide(unitTypeGroup);
+        }
+    }
+
+    showPointsField() {
+        const pointsGroup = CoreUtils.dom.getElement('points-group');
+        if (pointsGroup) {
+            CoreUtils.dom.show(pointsGroup);
+        }
+    }
+
+    hidePointsField() {
+        const pointsGroup = CoreUtils.dom.getElement('points-group');
+        if (pointsGroup) {
+            CoreUtils.dom.hide(pointsGroup);
         }
     }
 
@@ -309,6 +397,9 @@ class UnitForm extends BaseForm {
             // Replace the current field
             currentField.parentElement.replaceChild(input, currentField);
         }
+        
+        // Hide variant dropdown when switching to custom mode
+        this.hideVariantDropdown();
     }
 
     clearDataSheetOptions() {
@@ -321,6 +412,9 @@ class UnitForm extends BaseForm {
             }
             dataSheetField.disabled = false;
         }
+        
+        // Hide variant dropdown when clearing data sheet options
+        this.hideVariantDropdown();
     }
 
     validateSpecificField(field, value) {
@@ -381,14 +475,8 @@ class UnitForm extends BaseForm {
             formData.name
         );
 
-        // Determine rank based on XP
-        const xp = parseInt(formData.xp) || 0;
+        // Set default rank since we no longer track XP
         let rank = 'Battle-ready';
-
-        if (xp >= 51) rank = 'Legendary';
-        else if (xp >= 31) rank = 'Heroic';
-        else if (xp >= 16) rank = 'Veteran';
-        else if (xp >= 6) rank = 'Blooded';
 
         // Handle MFM version
         let mfmVersion = '';
@@ -397,6 +485,20 @@ class UnitForm extends BaseForm {
             mfmVersion = formData.mfmVersion || '3.2';
         } else if (mfmMode === 'custom') {
             mfmVersion = formData.mfmVersionCustom || '';
+        }
+
+        // Get variant information if available
+        let variantInfo = null;
+        if (formData.unitVariant && this.mfmData && this.forceContext?.faction) {
+            const factionKey = this.forceContext.faction.toUpperCase();
+            const faction = this.mfmData.factions[factionKey];
+            if (faction && faction.units[formData.dataSheet]) {
+                const unit = faction.units[formData.dataSheet];
+                const variantIndex = parseInt(formData.unitVariant);
+                if (variantIndex >= 0 && variantIndex < unit.variants.length) {
+                    variantInfo = unit.variants[variantIndex];
+                }
+            }
         }
 
         return {
@@ -408,9 +510,7 @@ class UnitForm extends BaseForm {
             faction: this.forceContext.faction,
             rank: rank,
             mfmVersion: mfmVersion,
-            crusadePoints: formData.crusadePoints || '0',
-            battleTraits: formData.battleTraits || '',
-            battleScars: formData.battleScars || '',
+            variantInfo: variantInfo,
             wargear: formData.wargear || '',
             notes: formData.notes || ''
         };

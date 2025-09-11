@@ -73,13 +73,6 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="unit-name">Unit/Character Name <span class="required">*</span></label>
-                        <input type="text" id="unit-name" name="name" required 
-                               placeholder="e.g., Captain Aurelius, Squad Alpha, Predator 'Iron Fist'">
-                        <small class="help-text">Give your unit a unique name for identification</small>
-                    </div>
-                    
-                    <div class="form-group">
                         <label for="data-sheet">Data Sheet <span class="required">*</span></label>
                         <select id="data-sheet" name="dataSheet" required>
                             <option value="">-- Select Data Sheet --</option>
@@ -87,9 +80,17 @@
                         <small class="help-text">Select from available units in your faction</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="unit-type">Unit Type <span class="required">*</span></label>
-                        <select id="unit-type" name="type" required>
+                    <div class="form-group" id="variant-group" style="display: none;">
+                        <label for="unit-variant">Unit Variant <span class="required">*</span></label>
+                        <select id="unit-variant" name="unitVariant" required>
+                            <option value="">-- Select Variant --</option>
+                        </select>
+                        <small class="help-text">Choose the specific variant and model count</small>
+                    </div>
+                    
+                    <div class="form-group" id="unit-type-group" style="display: none;">
+                        <label for="unit-type">Unit Type</label>
+                        <select id="unit-type" name="type">
                             <option value="">-- Select Type --</option>
                             <option value="Character">Character</option>
                             <option value="Battleline">Battleline</option>
@@ -104,30 +105,24 @@
                             <option value="Titanic">Titanic</option>
                             <option value="Other">Other</option>
                         </select>
+                        <small class="help-text">Select the unit type for custom units</small>
+                    </div>
+                    
+                    <div class="form-group" id="points-group" style="display: none;">
+                        <label for="points">Points Value</label>
+                        <input type="number" id="points" name="points" min="0" max="9999" 
+                               placeholder="e.g., 85">
+                        <small class="help-text">Base points cost</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="unit-name">Unit/Character Name <span class="required">*</span></label>
+                        <input type="text" id="unit-name" name="name" required 
+                               placeholder="e.g., Captain Aurelius, Squad Alpha, Predator 'Iron Fist'">
+                        <small class="help-text">Give your unit a unique name for identification</small>
                     </div>
                 </fieldset>
                 
-                <!-- Points and Version -->
-                <fieldset>
-                    <legend>Points and Version</legend>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="points">Points Value</label>
-                            <input type="number" id="points" name="points" min="0" max="9999" 
-                                   placeholder="e.g., 85">
-                            <small class="help-text">Base points cost</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="crusade-points">Crusade Points</label>
-                            <input type="number" id="crusade-points" name="crusadePoints" min="0" max="999" 
-                                   placeholder="e.g., 5" value="0">
-                            <small class="help-text">Power Level for Crusade</small>
-                        </div>
-                        
-                    </div>
-                </fieldset>
                 
                 <!-- Wargear and Upgrades -->
                 <fieldset>
@@ -147,77 +142,9 @@
                         <small class="help-text">List any enhancements (comma-separated)</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="relics">Crusade Relics</label>
-                        <textarea id="relics" name="relics" rows="2" 
-                                  placeholder="e.g., Blade of the Worthy, Storm Shield of Heroes"></textarea>
-                        <small class="help-text">List any Crusade relics (comma-separated)</small>
-                    </div>
                 </fieldset>
                 
-                <!-- Battle Experience -->
-                <fieldset>
-                    <legend>Battle Experience</legend>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="xp">Experience Points (XP)</label>
-                            <input type="number" id="xp" name="xp" min="0" max="999" value="0">
-                            <small class="help-text">Total XP earned</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="rank">Rank</label>
-                            <select id="rank" name="rank">
-                                <option value="">-- Auto-calculated --</option>
-                                <option value="Battle-ready">Battle-ready (0-5 XP)</option>
-                                <option value="Blooded">Blooded (6-15 XP)</option>
-                                <option value="Veteran">Veteran (16-30 XP)</option>
-                                <option value="Heroic">Heroic (31-50 XP)</option>
-                                <option value="Legendary">Legendary (51+ XP)</option>
-                            </select>
-                            <small class="help-text">Leave blank to auto-calculate from XP</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="battle-count">Battles Fought</label>
-                            <input type="number" id="battle-count" name="battleCount" min="0" max="999" value="0">
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="kill-count">Kill Count</label>
-                            <input type="number" id="kill-count" name="killCount" min="0" max="9999" value="0">
-                            <small class="help-text">Total enemy units destroyed</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="times-killed">Times Killed</label>
-                            <input type="number" id="times-killed" name="timesKilled" min="0" max="999" value="0">
-                            <small class="help-text">Times destroyed in battle</small>
-                        </div>
-                    </div>
-                </fieldset>
                 
-                <!-- Battle Honors and Scars -->
-                <fieldset>
-                    <legend>Battle Honors and Scars</legend>
-                    
-                    <div class="form-group">
-                        <label for="battle-traits">Battle Traits</label>
-                        <textarea id="battle-traits" name="battleTraits" rows="2" 
-                                  placeholder="e.g., Swift Strike, Marksman's Honour"></textarea>
-                        <small class="help-text">List battle traits earned (comma-separated)</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="battle-scars">Battle Scars</label>
-                        <textarea id="battle-scars" name="battleScars" rows="2" 
-                                  placeholder="e.g., Mark of Shame, Deep Scars"></textarea>
-                        <small class="help-text">List battle scars suffered (comma-separated)</small>
-                    </div>
-                </fieldset>
                 
                 <!-- Narrative Information -->
                 <fieldset>
@@ -230,12 +157,6 @@
                         <small class="help-text">Describe your unit's character and appearance</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="notable-history">Notable History</label>
-                        <textarea id="notable-history" name="notableHistory" rows="3" 
-                                  placeholder="Record significant battles, heroic deeds, or memorable moments..."></textarea>
-                        <small class="help-text">Record important events and achievements</small>
-                    </div>
                     
                     <div class="form-group">
                         <label for="notes">Additional Notes</label>
