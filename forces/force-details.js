@@ -286,9 +286,6 @@ class ForceDetails {
                ${forceData.faction}${forceData.detachment ? ` - ${forceData.detachment}` : ''} • Commanded by ${forceData.user_name}
            </div>
            ${launchDate ? `<div class="force-launch-date">Crusade Force Launched on ${launchDate}</div>` : ''}
-           <div class="force-key-display">
-               Force Key: <code>${forceData.force_key}</code>
-           </div>
        `;
 
        document.title = `${forceData.force_name} - Crusade Force`;
