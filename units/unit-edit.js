@@ -39,11 +39,10 @@ class UnitEditForm extends BaseForm {
         // Setup battlefield role specific fields
         UnitFormUtilities.setupBattlefieldRoleFields();
 
-        // Setup MFM integration
-        await UnitFormUtilities.setupMFMIntegration(this.form, this.forceContext.faction);
+        // Data sheet is read-only, no MFM integration needed
 
         // Populate form with existing data
-        this.populateForm();
+        await this.populateForm();
 
         // Setup action buttons
         this.setupActionButtons();
@@ -113,15 +112,18 @@ class UnitEditForm extends BaseForm {
         }
     }
 
-    populateForm() {
+    async populateForm() {
         if (!this.unitData) return;
 
         // Populate basic fields
         const nameField = CoreUtils.dom.getElement('unit-name');
         if (nameField) nameField.value = this.unitData.unit_name || '';
 
-        const dataSheetField = CoreUtils.dom.getElement('data-sheet');
-        if (dataSheetField) dataSheetField.value = this.unitData.data_sheet || '';
+        // Populate read-only data sheet field
+        const dataSheetValue = CoreUtils.dom.getElement('data-sheet-value');
+        if (dataSheetValue) {
+            dataSheetValue.textContent = this.unitData.data_sheet || 'Not specified';
+        }
 
         const typeField = CoreUtils.dom.getElement('unit-type');
         if (typeField) typeField.value = this.unitData.unit_type || '';
@@ -167,29 +169,6 @@ class UnitEditForm extends BaseForm {
 
         const notesField = CoreUtils.dom.getElement('notes');
         if (notesField) notesField.value = this.unitData.notes || '';
-
-        // Determine MFM mode based on data
-        const hasMFMVersion = this.unitData.mfm_version && String(this.unitData.mfm_version).trim() !== '';
-        const presetRadio = CoreUtils.dom.getElement('mfm-preset');
-        const customRadio = CoreUtils.dom.getElement('mfm-custom');
-
-        if (hasMFMVersion && presetRadio) {
-            presetRadio.checked = true;
-            UnitFormUtilities.switchToDropdownMode();
-            UnitFormUtilities.hideUnitTypeField();
-            UnitFormUtilities.hidePointsField();
-            await UnitFormUtilities.loadMFMData(this.forceContext.faction);
-            
-            // Set the data sheet value after loading
-            if (dataSheetField && dataSheetField.tagName === 'SELECT') {
-                dataSheetField.value = this.unitData.data_sheet || '';
-            }
-        } else if (customRadio) {
-            customRadio.checked = true;
-            UnitFormUtilities.switchToTextInputMode();
-            UnitFormUtilities.showUnitTypeField();
-            UnitFormUtilities.showPointsField();
-        }
     }
 
     setupActionButtons() {
@@ -202,6 +181,7 @@ class UnitEditForm extends BaseForm {
         }
     }
 
+
     validateSpecificField(field, value) {
         return UnitFormUtilities.validateUnitField(field, value);
     }
@@ -212,39 +192,45 @@ class UnitEditForm extends BaseForm {
         // Add unit key for update operation
         formData.unitKey = this.unitKey;
 
-        // Handle MFM version
-        let mfmVersion = '';
-        const mfmMode = formData.mfmMode;
-        if (mfmMode === 'preset') {
-            mfmVersion = formData.mfmVersion || '3.2';
-        } else if (mfmMode === 'custom') {
-            mfmVersion = formData.mfmVersionCustom || '';
+        // Get data sheet from read-only field
+        const dataSheetValue = CoreUtils.dom.getElement('data-sheet-value');
+        if (dataSheetValue) {
+            formData.dataSheet = dataSheetValue.textContent;
         }
 
-        // Get variant information if available
-        let variantInfo = null;
-        if (formData.unitVariant && window.EMBEDDED_MFM_DATA && this.forceContext?.faction) {
-            const factionKey = this.forceContext.faction.toUpperCase();
-            const faction = window.EMBEDDED_MFM_DATA.factions[factionKey];
-            if (faction && faction.units[formData.dataSheet]) {
-                const unit = faction.units[formData.dataSheet];
-                const variantIndex = parseInt(formData.unitVariant);
-                if (variantIndex >= 0 && variantIndex < unit.variants.length) {
-                    variantInfo = unit.variants[variantIndex];
-                }
-            }
-        }
+        // Handle MFM version - use existing value from unit data
+        const mfmVersion = this.unitData.mfm_version;
 
         return {
             ...formData,
+            operation: 'edit',
+            unit_key: this.unitKey,
+            user_key: this.forceContext.userKey,
+            force_key: this.unitData.force_key, // Use original force_key from unit data
             forceKey: this.forceContext.forceKey,
             forceName: this.forceContext.forceName,
-            userKey: this.forceContext.userKey,
             faction: this.forceContext.faction,
             mfmVersion: mfmVersion,
-            variantInfo: variantInfo,
-            wargear: formData.wargear || '',
-            notes: formData.notes || ''
+            // Preserve all original unit data fields
+            unit_name: formData.name || this.unitData.unit_name,
+            data_sheet: formData.dataSheet || this.unitData.data_sheet,
+            unit_type: formData.type || this.unitData.unit_type,
+            mfm_version: mfmVersion || this.unitData.mfm_version,
+            points: formData.points || this.unitData.points,
+            crusade_points: formData.crusadePoints || this.unitData.crusade_points,
+            wargear: formData.wargear || this.unitData.wargear,
+            enhancements: formData.enhancements || this.unitData.enhancements,
+            relics: formData.relics || this.unitData.relics,
+            battle_traits: formData.battleTraits || this.unitData.battle_traits,
+            battle_scars: formData.battleScars || this.unitData.battle_scars,
+            battle_count: formData.battleCount || this.unitData.battle_count,
+            xp: formData.xp || this.unitData.xp,
+            rank: formData.rank || this.unitData.rank,
+            kill_count: formData.killCount || this.unitData.kill_count,
+            times_killed: formData.timesKilled || this.unitData.times_killed,
+            description: formData.description || this.unitData.description,
+            notable_history: formData.notableHistory || this.unitData.notable_history,
+            notes: formData.notes || this.unitData.notes
         };
     }
 
@@ -256,9 +242,21 @@ class UnitEditForm extends BaseForm {
             return;
         }
 
-        this.setLoadingState(true);
+        const submitBtn = CoreUtils.dom.getElement('submit-btn');
+        const originalText = submitBtn ? submitBtn.innerHTML : '';
 
         try {
+            // Show loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <span class="btn-loading">
+                        <div class="loading-spinner" style="display: inline-block; width: 16px; height: 16px; margin-right: 8px;"></div>
+                        Updating Unit...
+                    </span>
+                `;
+            }
+
             // Validate form
             if (this.config.validateOnSubmit && !this.validateForm()) {
                 throw new Error('Please fix the form errors and try again.');
@@ -270,6 +268,14 @@ class UnitEditForm extends BaseForm {
             // Submit to Google Sheets
             await this.submitToGoogleSheets(formData);
 
+            // Show success state
+            if (submitBtn) {
+                submitBtn.innerHTML = `
+                    <span style="color: green;">✓</span>
+                    Updated Successfully!
+                `;
+            }
+
             // Clear specified caches
             this.clearCachesOnSuccess();
 
@@ -278,14 +284,18 @@ class UnitEditForm extends BaseForm {
 
             // Redirect to unit details page
             setTimeout(() => {
-                window.location.href = `../units/unit-details.html?unit_key=${encodeURIComponent(this.unitKey)}`;
+                window.location.href = `../units/unit-details.html?key=${encodeURIComponent(this.unitKey)}`;
             }, 1500);
 
         } catch (error) {
             console.error('Form submission error:', error);
             this.showError(error.message);
-        } finally {
-            this.setLoadingState(false);
+            
+            // Restore button state on error
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
         }
     }
 }

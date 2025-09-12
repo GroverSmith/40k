@@ -14,7 +14,7 @@ class UnitDetailsView {
 
     async init() {
         // Load unit key from URL
-        this.unitKey = CoreUtils.url.getParam('unit_key');
+        this.unitKey = CoreUtils.url.getParam('key');
         
         if (!this.unitKey) {
             FormUtilities.showError('No unit key provided. Please access this page from a unit details page.');
@@ -95,6 +95,9 @@ class UnitDetailsView {
     populateDisplay() {
         if (!this.unitData) return;
 
+        // Debug: Log the unit data to see what fields are available
+        console.log('Unit data:', this.unitData);
+
         // Populate header
         const nameDisplay = CoreUtils.dom.getElement('unit-display-name');
         if (nameDisplay) nameDisplay.textContent = this.unitData.unit_name || 'Unknown Unit';
@@ -136,7 +139,14 @@ class UnitDetailsView {
     setDisplayValue(elementId, value) {
         const element = CoreUtils.dom.getElement(elementId);
         if (element) {
-            element.textContent = value || 'Not specified';
+            // Handle different types of values
+            if (value === null || value === undefined || value === '') {
+                element.textContent = 'Not specified';
+            } else if (typeof value === 'number' && value === 0) {
+                element.textContent = '0';
+            } else {
+                element.textContent = String(value);
+            }
         }
     }
 
@@ -265,14 +275,26 @@ class UnitDetailsView {
     }
 
     async deleteUnit() {
+        const deleteBtn = CoreUtils.dom.getElement('delete-unit-btn');
+        const originalText = deleteBtn ? deleteBtn.textContent : '';
+        
         try {
+            // Show loading state
+            if (deleteBtn) {
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = `
+                    <div class="loading-spinner" style="display: inline-block; width: 16px; height: 16px; margin-right: 8px;"></div>
+                    Deleting...
+                `;
+            }
+
             const response = await fetch(TableDefs.units?.url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: new URLSearchParams({
-                    action: 'delete',
+                    operation: 'delete',
                     unit_key: this.unitKey,
                     user_key: this.forceContext.userKey
                 }).toString()
@@ -288,6 +310,14 @@ class UnitDetailsView {
                 throw new Error(result.error || 'Failed to delete unit');
             }
 
+            // Show success state
+            if (deleteBtn) {
+                deleteBtn.innerHTML = `
+                    <span style="color: green;">✓</span>
+                    Deleted Successfully!
+                `;
+            }
+
             // Clear cache and redirect
             await UnifiedCache.clearCache('units');
             FormUtilities.showSuccess('Unit deleted successfully!');
@@ -299,6 +329,12 @@ class UnitDetailsView {
         } catch (error) {
             console.error('Error deleting unit:', error);
             FormUtilities.showError('Failed to delete unit. Please try again.');
+            
+            // Restore button state on error
+            if (deleteBtn) {
+                deleteBtn.disabled = false;
+                deleteBtn.textContent = originalText;
+            }
         }
     }
 

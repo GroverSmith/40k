@@ -17,6 +17,62 @@
     <link rel="stylesheet" href="../css/modal.css">
     <link rel="stylesheet" href="../css/user-dropdown.css">
     <link rel="stylesheet" href="../css/user-field.css">
+    
+    <style>
+        .read-only-label {
+            display: flex;
+            align-items: center;
+            font-size: var(--font-base);
+        }
+        
+        .read-only-label .label-text {
+            font-weight: 600;
+            color: var(--color-text, #333);
+            margin-right: var(--spacing-xs);
+        }
+        
+        .read-only-label .label-value {
+            color: var(--color-text-muted, #6c757d);
+            font-weight: 500;
+        }
+        
+        .loading-spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .number-input-container {
+            width: 80px;
+        }
+        
+        .number-input {
+            width: 80px;
+            text-align: center;
+            padding: 8px 12px 8px 4px;
+            font-size: 14px;
+        }
+        
+        /* Two-column layout for battle record fields */
+        @media (min-width: 600px) {
+            .battle-record-fields {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: var(--spacing-md);
+            }
+            
+            .battle-record-fields .form-group:nth-child(3) {
+                grid-column: 1 / -1;
+            }
+        }
+        
+    </style>
 </head>
 <body>
     <div class="container">
@@ -62,19 +118,11 @@
                         </div>
                     </div>
                     
-                    <div class="form-group" id="mfm-preset-container">
-                        <label for="data-sheet">Data Sheet <span class="required">*</span></label>
-                        <select id="data-sheet" name="dataSheet" required>
-                            <option value="">-- Select Data Sheet --</option>
-                        </select>
-                        <small class="help-text">Choose from the Munitorum Field Manual</small>
-                    </div>
-                    
-                    <div class="form-group" id="mfm-custom-container" style="display: none;">
-                        <label for="data-sheet-custom">Data Sheet <span class="required">*</span></label>
-                        <input type="text" id="data-sheet-custom" name="dataSheet" required 
-                               placeholder="e.g., Space Marine Captain, Intercessor Squad, Predator Destructor">
-                        <small class="help-text">Enter the name of the data sheet</small>
+                    <div class="form-group">
+                        <div class="read-only-label">
+                            <span class="label-text">Data Sheet:</span>
+                            <span id="data-sheet-value" class="label-value">Loading...</span>
+                        </div>
                     </div>
                     
                     <div class="form-group" id="variant-group" style="display: none;">
@@ -120,6 +168,60 @@
                     </div>
                 </fieldset>
                 
+                <!-- Battle Record -->
+                <fieldset>
+                    <legend>Battle Record</legend>
+                    <div class="battle-record-fields">
+                        <div class="form-group">
+                            <label for="battle-count">Battle Count</label>
+                            <div class="number-input-container">
+                                <input type="number" id="battle-count" name="battleCount" min="0" max="99" 
+                                       placeholder="0" class="number-input">
+                            </div>
+                            <small class="help-text">Number of battles this unit has fought</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="xp">Experience Points</label>
+                            <div class="number-input-container">
+                                <input type="number" id="xp" name="xp" min="0" max="99" 
+                                       placeholder="0" class="number-input">
+                            </div>
+                            <small class="help-text">Experience points earned in battle</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rank">Rank</label>
+                            <select id="rank" name="rank">
+                                <option value="Battle-ready">Battle-ready</option>
+                                <option value="Blooded">Blooded</option>
+                                <option value="Veteran">Veteran</option>
+                                <option value="Heroic">Heroic</option>
+                                <option value="Legendary">Legendary</option>
+                            </select>
+                            <small class="help-text">Current rank based on experience</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="kill-count">Kill Count</label>
+                            <div class="number-input-container">
+                                <input type="number" id="kill-count" name="killCount" min="0" max="99" 
+                                       placeholder="0" class="number-input">
+                            </div>
+                            <small class="help-text">Number of enemy units destroyed</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="times-killed">Times Killed</label>
+                            <div class="number-input-container">
+                                <input type="number" id="times-killed" name="timesKilled" min="0" max="99" 
+                                       placeholder="0" class="number-input">
+                            </div>
+                            <small class="help-text">Number of times this unit has been destroyed</small>
+                        </div>
+                    </div>
+                </fieldset>
+                
                 <!-- Wargear and Upgrades -->
                 <fieldset>
                     <legend>Wargear and Upgrades</legend>
@@ -157,51 +259,6 @@
                         <textarea id="battle-scars" name="battleScars" rows="2" 
                                   placeholder="e.g., Battle Damage, Veteran of War"></textarea>
                         <small class="help-text">List any battle scars (comma-separated)</small>
-                    </div>
-                </fieldset>
-                
-                <!-- Battle Record -->
-                <fieldset>
-                    <legend>Battle Record</legend>
-                    
-                    <div class="form-group">
-                        <label for="battle-count">Battle Count</label>
-                        <input type="number" id="battle-count" name="battleCount" min="0" max="999" 
-                               placeholder="0">
-                        <small class="help-text">Number of battles this unit has fought</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="xp">Experience Points</label>
-                        <input type="number" id="xp" name="xp" min="0" max="100" 
-                               placeholder="0">
-                        <small class="help-text">Experience points earned in battle</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="rank">Rank</label>
-                        <select id="rank" name="rank">
-                            <option value="Battle-ready">Battle-ready</option>
-                            <option value="Blooded">Blooded</option>
-                            <option value="Veteran">Veteran</option>
-                            <option value="Heroic">Heroic</option>
-                            <option value="Legendary">Legendary</option>
-                        </select>
-                        <small class="help-text">Current rank based on experience</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="kill-count">Kill Count</label>
-                        <input type="number" id="kill-count" name="killCount" min="0" max="999" 
-                               placeholder="0">
-                        <small class="help-text">Number of enemy units destroyed</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="times-killed">Times Killed</label>
-                        <input type="number" id="times-killed" name="timesKilled" min="0" max="999" 
-                               placeholder="0">
-                        <small class="help-text">Number of times this unit has been destroyed</small>
                     </div>
                 </fieldset>
                 
