@@ -7,48 +7,15 @@ const UnitTable = {
     getDisplayConfig(type, key) {
         const configs = {
             'force': {
-                columns: ['name', 'datasheet', 'role', 'points', 'cp', 'xp', 'rank', 'battles', 'kills'],
-                headers: ['Name', 'Data Sheet', 'Type', 'Points', 'CP', 'XP', 'Rank', 'Battles', 'Kills'],
+                columns: ['name', 'datasheet', 'role', 'points', 'cp', 'xp', 'rank'],
+                headers: ['Name', 'Data Sheet', 'Type', 'Points', 'CP', 'XP', 'Rank'],
                 tableId: 'force-units-table',
-                buildRow: this.buildDetailedUnitRow.bind(this),
+                buildRow: this.buildUnitRow.bind(this),
                 sortBy: (a, b) => (b.XP || 0) - (a.XP || 0), // Sort by XP descending
                 noDataMessage: 'No units registered for this force yet.',
                 errorMessage: 'Failed to load units.',
                 responsiveColumns: this.getResponsiveColumns()
                 // Removed groupBy
-            },
-            'crusade': {
-                columns: ['name', 'force', 'datasheet', 'points', 'xp', 'rank'],
-                headers: ['Name', 'Force', 'Data Sheet', 'Points', 'XP', 'Rank'],
-                tableId: 'crusade-units-table',
-                buildRow: this.buildUnitRow.bind(this),
-                context: { showUnitLinks: true },
-                sortBy: (a, b) => (b.XP || 0) - (a.XP || 0),
-                noDataMessage: 'No units in this crusade yet.',
-                errorMessage: 'Failed to load crusade units.',
-                responsiveColumns: this.getResponsiveColumns()
-            },
-            'user': {
-                columns: ['name', 'force', 'datasheet', 'points', 'xp', 'rank', 'battles'],
-                headers: ['Name', 'Force', 'Type', 'Points', 'XP', 'Rank', 'Battles'],
-                tableId: 'user-units-table',
-                buildRow: this.buildUnitRow.bind(this),
-                context: { showUnitLinks: true },
-                sortBy: (a, b) => (b.XP || 0) - (a.XP || 0),
-                noDataMessage: 'No units created by this user yet.',
-                errorMessage: 'Failed to load user units.',
-                responsiveColumns: this.getResponsiveColumns()
-            },
-            'all': {
-                columns: ['name', 'force', 'datasheet', 'points', 'xp', 'rank'],
-                headers: ['Name', 'Force', 'Type', 'Points', 'XP', 'Rank'],
-                tableId: 'all-units-table',
-                buildRow: this.buildUnitRow.bind(this),
-                context: { showUnitLinks: true },
-                sortBy: (a, b) => (b.XP || 0) - (a.XP || 0),
-                noDataMessage: 'No units registered yet.',
-                errorMessage: 'Failed to load units.',
-                responsiveColumns: this.getResponsiveColumns()
             }
         };
         return configs[type] || configs['force'];
@@ -75,7 +42,7 @@ const UnitTable = {
         const rankClass = `rank-${rank.toLowerCase().replace(/[^a-z]/g, '')}`;
 
         const columnData = {
-            name: `<strong>${unit.unit_name || 'Unnamed'}</strong> ${this.formatBadges(unit)}`,
+            name: this.createUnitLink(unit.unit_name || 'Unnamed', unit.unit_key),
             datasheet: unit.data_sheet || '-',
             role: unit.unit_type || '-',
             points: unit.points || '0',
@@ -97,48 +64,7 @@ const UnitTable = {
         return `<tr>${TableBase.buildCells(columnData, columns)}</tr>`;
     },
 
-
-    /**
-     * Build detailed unit display (for force details page)
-     */
-    buildDetailedUnitRow(unit, columns) {
-        // Get the base row from buildUnitRow
-        const baseRow = this.buildUnitRow(unit, columns);
-
-        // Check if unit has additional details to show
-        const hasDetails = unit.description || unit.notable_history ||
-                          unit.wargear || unit.enhancements ||
-                          unit.battle_traits || unit.battle_scars;
-
-        if (!hasDetails) return baseRow;
-
-        // Add expandable details row
-        let detailsHtml = '<tr class="unit-details-row"><td colspan="' + columns.length + '">';
-        detailsHtml += '<div class="unit-details">';
-
-        if (unit.wargear) {
-            detailsHtml += `<div class="detail-item"><strong>Wargear:</strong> ${unit.wargear}</div>`;
-        }
-        if (unit.enhancements) {
-            detailsHtml += `<div class="detail-item"><strong>Enhancements:</strong> ${unit.enhancements}</div>`;
-        }
-        if (unit.battle_traits) {
-            detailsHtml += `<div class="detail-item"><strong>Battle Traits:</strong> ${unit.battle_traits}</div>`;
-        }
-        if (unit.battle_scars) {
-            detailsHtml += `<div class="detail-item"><strong>Battle Scars:</strong> ${unit.battle_scars}</div>`;
-        }
-        if (unit.description) {
-            detailsHtml += `<div class="detail-item"><strong>Description:</strong> ${unit.description}</div>`;
-        }
-        if (unit.notable_history) {
-            detailsHtml += `<div class="detail-item"><strong>Notable History:</strong> ${unit.notable_history}</div>`;
-        }
-
-        detailsHtml += '</div></td></tr>';
-
-        return baseRow + detailsHtml;
-    },    
+    
     
     async loadUnits(type, key, containerId) {
         const displayConfig = this.getDisplayConfig(type, key);
@@ -156,18 +82,6 @@ const UnitTable = {
         };
         
         await TableBase.loadAndDisplay('units', displayConfig, containerId, filterFn);
-    },
-
-    async loadForCrusade(crusadeKey, containerId) {
-        return this.loadUnits('crusade', crusadeKey, containerId);
-    },
-
-    async loadForUser(userKey, containerId) {
-        return this.loadUnits('user', userKey, containerId);
-    },
-
-    async loadAllUnits(containerId) {
-        return this.loadUnits('all', null, containerId);
     },
 
     // Simplified link creators using base

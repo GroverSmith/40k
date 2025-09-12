@@ -150,7 +150,8 @@ const TableBase = {
             'force': 'forces',
             'crusade': 'crusades',
             'story': 'stories',
-            'army': 'armies'
+            'army': 'armies',
+            'unit': 'units'
         };
 
         const path = customPath || CoreUtils.path.getRelativePath(entityPaths[entityType]);
