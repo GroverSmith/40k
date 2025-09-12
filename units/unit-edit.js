@@ -243,18 +243,31 @@ class UnitEditForm extends BaseForm {
         }
 
         const submitBtn = CoreUtils.dom.getElement('submit-btn');
-        const originalText = submitBtn ? submitBtn.innerHTML : '';
+        const btnText = CoreUtils.dom.getElement('.btn-text');
+        const btnLoading = CoreUtils.dom.getElement('.btn-loading');
+
+        console.log('Submit button found:', !!submitBtn);
+        console.log('Button text element found:', !!btnText);
+        console.log('Button loading element found:', !!btnLoading);
 
         try {
             // Show loading state
-            if (submitBtn) {
+            if (submitBtn && btnText && btnLoading) {
+                console.log('Showing loading state...');
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = `
-                    <span class="btn-loading">
-                        <div class="loading-spinner" style="display: inline-block; width: 16px; height: 16px; margin-right: 8px;"></div>
+                btnText.style.display = 'none';
+                btnLoading.style.display = 'inline-block';
+                console.log('Loading state applied');
+            } else {
+                console.log('Missing elements for loading state, using fallback');
+                // Fallback: replace button content directly
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = `
+                        <div class="loading-spinner"></div>
                         Updating Unit...
-                    </span>
-                `;
+                    `;
+                }
             }
 
             // Validate form
@@ -269,8 +282,9 @@ class UnitEditForm extends BaseForm {
             await this.submitToGoogleSheets(formData);
 
             // Show success state
-            if (submitBtn) {
-                submitBtn.innerHTML = `
+            if (btnText && btnLoading) {
+                btnLoading.innerHTML = `
+                    <div class="loading-spinner" style="display: none;"></div>
                     <span style="color: green;">✓</span>
                     Updated Successfully!
                 `;
@@ -292,9 +306,14 @@ class UnitEditForm extends BaseForm {
             this.showError(error.message);
             
             // Restore button state on error
-            if (submitBtn) {
+            if (submitBtn && btnText && btnLoading) {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+                btnText.style.display = 'inline-block';
+                btnLoading.style.display = 'none';
+            } else if (submitBtn) {
+                // Fallback: restore original button text
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="btn-text">Update Unit</span>';
             }
         }
     }

@@ -41,6 +41,11 @@
             border-top: 2px solid #3498db;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            vertical-align: middle;
         }
         
         @keyframes spin {
@@ -298,7 +303,7 @@
                     <button type="submit" id="submit-btn" class="btn-primary">
                         <span class="btn-text">Update Unit</span>
                         <span class="btn-loading" style="display: none;">
-                            <div class="loading-spinner"></div>
+                            <div class="loading-spinner" style="display: inline-block; width: 16px; height: 16px; margin-right: 8px;"></div>
                             Updating Unit...
                         </span>
                     </button>
