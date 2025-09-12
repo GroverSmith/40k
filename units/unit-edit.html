@@ -1,0 +1,658 @@
+<!-- filename: units/unit-edit.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Unit - 40k Crusade Campaign Tracker</title>
+    <meta name="description" content="Edit an existing unit or character in your Crusade force.">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/buttons-unified.css">
+    <link rel="stylesheet" href="../css/components-unified.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/forms-unified.css">
+    <link rel="stylesheet" href="../css/modal.css">
+    <link rel="stylesheet" href="../css/user-dropdown.css">
+    <link rel="stylesheet" href="../css/user-field.css">
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-button">← Back to Campaign Tracker</a>
+        
+        <header>
+            <h1>Edit Unit or Character</h1>
+            <p>Edit an existing unit or character in your Crusade force roster.</p>
+        </header>
+        
+        <main>
+            <form id="edit-unit-form" class="crusade-form">
+                <!-- Basic Information -->
+                <fieldset>
+                    <legend>Basic Information</legend>
+                    
+                    <div class="form-group">
+                        <div class="force-display-container">
+                            <span class="force-label">FORCE:</span>
+                            <a id="force-name" class="force-name-link" href="#"></a>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>MFM Version <span class="required">*</span></label>
+                        <div class="mfm-version-container">
+                            <div class="mfm-toggle-group">
+                                <div class="mfm-toggle-option">
+                                    <input type="radio" id="mfm-preset" name="mfmMode" value="preset" checked>
+                                    <label for="mfm-preset">
+                                        <span class="toggle-label">MFM 3.2 (Aug 2025)</span>
+                                        <span class="toggle-description">Use preset data from Munitorum Field Manual</span>
+                                    </label>
+                                </div>
+                                <div class="mfm-toggle-option">
+                                    <input type="radio" id="mfm-custom" name="mfmMode" value="custom">
+                                    <label for="mfm-custom">
+                                        <span class="toggle-label">Custom Version</span>
+                                        <span class="toggle-description">Enter your own data sheet and points</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="mfm-preset-container">
+                        <label for="data-sheet">Data Sheet <span class="required">*</span></label>
+                        <select id="data-sheet" name="dataSheet" required>
+                            <option value="">-- Select Data Sheet --</option>
+                        </select>
+                        <small class="help-text">Choose from the Munitorum Field Manual</small>
+                    </div>
+                    
+                    <div class="form-group" id="mfm-custom-container" style="display: none;">
+                        <label for="data-sheet-custom">Data Sheet <span class="required">*</span></label>
+                        <input type="text" id="data-sheet-custom" name="dataSheet" required 
+                               placeholder="e.g., Space Marine Captain, Intercessor Squad, Predator Destructor">
+                        <small class="help-text">Enter the name of the data sheet</small>
+                    </div>
+                    
+                    <div class="form-group" id="variant-group" style="display: none;">
+                        <label for="unit-variant">Unit Variant</label>
+                        <select id="unit-variant" name="unitVariant">
+                            <option value="">-- Select Variant --</option>
+                        </select>
+                        <small class="help-text">Choose the specific variant and model count</small>
+                    </div>
+                    
+                    <div class="form-group" id="unit-type-group" style="display: none;">
+                        <label for="unit-type">Unit Type</label>
+                        <select id="unit-type" name="type">
+                            <option value="">-- Select Type --</option>
+                            <option value="Character">Character</option>
+                            <option value="Battleline">Battleline</option>
+                            <option value="Infantry Squad">Infantry Squad</option>
+                            <option value="Vehicle">Vehicle</option>
+                            <option value="Monster">Monster</option>
+                            <option value="Walker">Walker</option>
+                            <option value="Mounted">Mounted</option>
+                            <option value="Fortification">Fortification</option>
+                            <option value="Dedicated Transport">Dedicated Transport</option>
+                            <option value="Flyer">Flyer</option>
+                            <option value="Titanic">Titanic</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <small class="help-text">Select the unit type for custom units</small>
+                    </div>
+                    
+                    <div class="form-group" id="points-group" style="display: none;">
+                        <label for="points">Points Value</label>
+                        <input type="number" id="points" name="points" min="0" max="9999" 
+                               placeholder="e.g., 85">
+                        <small class="help-text">Base points cost</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="unit-name">Unit/Character Name <span class="required">*</span></label>
+                        <input type="text" id="unit-name" name="name" required 
+                               placeholder="e.g., Captain Aurelius, Squad Alpha, Predator 'Iron Fist'">
+                        <small class="help-text">Give your unit a unique name for identification</small>
+                    </div>
+                </fieldset>
+                
+                <!-- Wargear and Upgrades -->
+                <fieldset>
+                    <legend>Wargear and Upgrades</legend>
+                    
+                    <div class="form-group">
+                        <label for="wargear">Wargear</label>
+                        <textarea id="wargear" name="wargear" rows="2" 
+                                  placeholder="e.g., Bolt rifle, Frag grenades, Krak grenades"></textarea>
+                        <small class="help-text">List all wargear (comma-separated)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="enhancements">Enhancements</label>
+                        <textarea id="enhancements" name="enhancements" rows="2" 
+                                  placeholder="e.g., Master of the Vanguard, Artificer Armour"></textarea>
+                        <small class="help-text">List any enhancements (comma-separated)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="relics">Relics</label>
+                        <textarea id="relics" name="relics" rows="2" 
+                                  placeholder="e.g., The Emperor's Will, Artificer Armour"></textarea>
+                        <small class="help-text">List any relics (comma-separated)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="battle-traits">Battle Traits</label>
+                        <textarea id="battle-traits" name="battleTraits" rows="2" 
+                                  placeholder="e.g., Furious Charge, Stealth"></textarea>
+                        <small class="help-text">List any battle traits (comma-separated)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="battle-scars">Battle Scars</label>
+                        <textarea id="battle-scars" name="battleScars" rows="2" 
+                                  placeholder="e.g., Battle Damage, Veteran of War"></textarea>
+                        <small class="help-text">List any battle scars (comma-separated)</small>
+                    </div>
+                </fieldset>
+                
+                <!-- Battle Record -->
+                <fieldset>
+                    <legend>Battle Record</legend>
+                    
+                    <div class="form-group">
+                        <label for="battle-count">Battle Count</label>
+                        <input type="number" id="battle-count" name="battleCount" min="0" max="999" 
+                               placeholder="0">
+                        <small class="help-text">Number of battles this unit has fought</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="xp">Experience Points</label>
+                        <input type="number" id="xp" name="xp" min="0" max="100" 
+                               placeholder="0">
+                        <small class="help-text">Experience points earned in battle</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rank">Rank</label>
+                        <select id="rank" name="rank">
+                            <option value="Battle-ready">Battle-ready</option>
+                            <option value="Blooded">Blooded</option>
+                            <option value="Veteran">Veteran</option>
+                            <option value="Heroic">Heroic</option>
+                            <option value="Legendary">Legendary</option>
+                        </select>
+                        <small class="help-text">Current rank based on experience</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="kill-count">Kill Count</label>
+                        <input type="number" id="kill-count" name="killCount" min="0" max="999" 
+                               placeholder="0">
+                        <small class="help-text">Number of enemy units destroyed</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="times-killed">Times Killed</label>
+                        <input type="number" id="times-killed" name="timesKilled" min="0" max="999" 
+                               placeholder="0">
+                        <small class="help-text">Number of times this unit has been destroyed</small>
+                    </div>
+                </fieldset>
+                
+                <!-- Narrative Information -->
+                <fieldset>
+                    <legend>Narrative Information</legend>
+                    
+                    <div class="form-group">
+                        <label for="description">Unit Description</label>
+                        <textarea id="description" name="description" rows="3" 
+                                  placeholder="Describe the unit's appearance, personality, or combat style..."></textarea>
+                        <small class="help-text">Describe your unit's character and appearance</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notable-history">Notable History</label>
+                        <textarea id="notable-history" name="notableHistory" rows="3" 
+                                  placeholder="Record significant events, victories, or defeats..."></textarea>
+                        <small class="help-text">Record the unit's notable achievements and history</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Additional Notes</label>
+                        <textarea id="notes" name="notes" rows="2" 
+                                  placeholder="Any other information..."></textarea>
+                    </div>
+                </fieldset>
+                
+                <!-- Hidden fields for keys -->
+                <input type="hidden" id="user-key" name="userKey">
+                <input type="hidden" id="force-key" name="forceKey">
+                <input type="hidden" id="unit-key" name="unitKey">
+                
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" id="cancel-edit-btn" class="btn-secondary">Cancel</button>
+                    <button type="submit" id="submit-btn" class="btn-primary">
+                        <span class="btn-text">Update Unit</span>
+                        <span class="btn-loading" style="display: none;">
+                            <div class="loading-spinner"></div>
+                            Updating Unit...
+                        </span>
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Success Message -->
+            <div id="success-message" class="message success" style="display: none;">
+                <h3>✅ Unit Updated Successfully!</h3>
+                <p>The unit has been updated in your force roster.</p>
+                <div class="message-actions">
+                    <a href="../index.html" class="btn-secondary">Back to Home</a>
+                    <button onclick="location.reload()" class="btn-primary">Edit Another Unit</button>
+                </div>
+            </div>
+            
+            <!-- Error Message -->
+            <div id="error-message" class="message error" style="display: none;">
+                <h3>⚠ Error Updating Unit</h3>
+                <p id="error-text">There was an error updating the unit. Please try again.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="../js/core/utils.js"></script>
+    <script src="../js/core/config.js"></script>
+    <script src="../js/core/key-utils.js"></script>
+
+    <!-- NEW consolidated utilities -->
+    <script src="../js/core/form-utilities.js"></script>
+    <script src="../js/core/ui-helpers.js"></script>
+
+    <!-- UnifiedCache dependencies -->
+    <script src="../js/table-defs.js"></script>
+    <script src="../js/core/unified-cache-facade.js"></script>
+    
+    <!-- User modules -->
+    <script src="../js/users/user-storage.js"></script>
+    <script src="../js/users/user-api.js"></script>
+    <script src="../js/users/user-ui.js"></script>
+    <script src="../js/users/user-modal.js"></script>
+    <script src="../js/users/user-manager.js"></script>
+
+    <!-- Form modules -->
+    <script src="../js/core/form-base.js"></script>
+    <script src="unit-form-utils.js"></script>
+    <script src="unit-edit.js"></script>
+
+    <!-- Embedded MFM Data -->
+    <script>
+        window.EMBEDDED_MFM_DATA = {
+  "metadata": {
+    "version": "3.2",
+    "date": "AUG25",
+    "totalUnits": 1228,
+    "totalPoints": 185385,
+    "forgeWorldUnits": 41,
+    "factionCount": 27
+  },
+  "factions": {
+    "ADEPTA SORORITAS": {
+      "name": "Adepta Sororitas",
+      "unitCount": 38,
+      "totalPoints": 4080,
+      "forgeWorldUnits": 0,
+      "units": {
+        "Aestred Thurga and Agathae Dolan": {
+          "name": "Aestred Thurga and Agathae Dolan",
+          "variants": [
+            {
+              "modelCount": 2,
+              "points": 50
+            }
+          ]
+        },
+        "Arco-flagellants": {
+          "name": "Arco-flagellants",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 30
+            },
+            {
+              "modelCount": 6,
+              "points": 60
+            }
+          ]
+        },
+        "Battle Sisters Squad": {
+          "name": "Battle Sisters Squad",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 55
+            },
+            {
+              "modelCount": 10,
+              "points": 110
+            }
+          ]
+        },
+        "Canoness": {
+          "name": "Canoness",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 50
+            }
+          ]
+        },
+        "Celestian Sacresants": {
+          "name": "Celestian Sacresants",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 65
+            },
+            {
+              "modelCount": 10,
+              "points": 130
+            }
+          ]
+        },
+        "Celestian Squad": {
+          "name": "Celestian Squad",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 60
+            },
+            {
+              "modelCount": 10,
+              "points": 120
+            }
+          ]
+        },
+        "Crusaders": {
+          "name": "Crusaders",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 25
+            },
+            {
+              "modelCount": 6,
+              "points": 50
+            }
+          ]
+        },
+        "Death Cult Assassins": {
+          "name": "Death Cult Assassins",
+          "variants": [
+            {
+              "modelCount": 2,
+              "points": 30
+            },
+            {
+              "modelCount": 4,
+              "points": 60
+            }
+          ]
+        },
+        "Dialogus": {
+          "name": "Dialogus",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 35
+            }
+          ]
+        },
+        "Dogmata": {
+          "name": "Dogmata",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 40
+            }
+          ]
+        },
+        "Dominion Squad": {
+          "name": "Dominion Squad",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 60
+            },
+            {
+              "modelCount": 10,
+              "points": 120
+            }
+          ]
+        },
+        "Exorcist": {
+          "name": "Exorcist",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 140
+            }
+          ]
+        },
+        "Hospitaller": {
+          "name": "Hospitaller",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 35
+            }
+          ]
+        },
+        "Imagifier": {
+          "name": "Imagifier",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 40
+            }
+          ]
+        },
+        "Immolator": {
+          "name": "Immolator",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 115
+            }
+          ]
+        },
+        "Junith Eruita": {
+          "name": "Junith Eruita",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 100
+            }
+          ]
+        },
+        "Missionary": {
+          "name": "Missionary",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 30
+            }
+          ]
+        },
+        "Mortifiers": {
+          "name": "Mortifiers",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 60
+            },
+            {
+              "modelCount": 2,
+              "points": 120
+            }
+          ]
+        },
+        "Novitiate Squad": {
+          "name": "Novitiate Squad",
+          "variants": [
+            {
+              "modelCount": 10,
+              "points": 70
+            }
+          ]
+        },
+        "Palatine": {
+          "name": "Palatine",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 50
+            }
+          ]
+        },
+        "Paragon Warsuits": {
+          "name": "Paragon Warsuits",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 200
+            }
+          ]
+        },
+        "Penitent Engines": {
+          "name": "Penitent Engines",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 60
+            },
+            {
+              "modelCount": 2,
+              "points": 120
+            }
+          ]
+        },
+        "Preacher": {
+          "name": "Preacher",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 30
+            }
+          ]
+        },
+        "Repentia Squad": {
+          "name": "Repentia Squad",
+          "variants": [
+            {
+              "modelCount": 4,
+              "points": 55
+            },
+            {
+              "modelCount": 8,
+              "points": 110
+            }
+          ]
+        },
+        "Retributor Squad": {
+          "name": "Retributor Squad",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 60
+            },
+            {
+              "modelCount": 10,
+              "points": 120
+            }
+          ]
+        },
+        "Rhino": {
+          "name": "Rhino",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 75
+            }
+          ]
+        },
+        "Saint Celestine": {
+          "name": "Saint Celestine",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 150
+            }
+          ]
+        },
+        "Seraphim Squad": {
+          "name": "Seraphim Squad",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 70
+            },
+            {
+              "modelCount": 10,
+              "points": 140
+            }
+          ]
+        },
+        "Sisters Novitiate": {
+          "name": "Sisters Novitiate",
+          "variants": [
+            {
+              "modelCount": 10,
+              "points": 70
+            }
+          ]
+        },
+        "Sororitas Rhino": {
+          "name": "Sororitas Rhino",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 75
+            }
+          ]
+        },
+        "Triumph of Saint Katherine": {
+          "name": "Triumph of Saint Katherine",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 125
+            }
+          ]
+        },
+        "Zephyrim Squad": {
+          "name": "Zephyrim Squad",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 70
+            },
+            {
+              "modelCount": 10,
+              "points": 140
+            }
+          ]
+        }
+      }
+    }
+  }
+};
+    </script>
+</body>
+</html>
