@@ -17,18 +17,247 @@
     <link rel="stylesheet" href="../css/modal.css">
     <link rel="stylesheet" href="../css/user-dropdown.css">
     <link rel="stylesheet" href="../css/user-field.css">
+    
+    <style>
+        .unit-details-container {
+            background: var(--color-background);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .unit-header {
+            border-bottom: 2px solid var(--color-primary);
+            padding-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .unit-header h2 {
+            margin: 0 0 var(--spacing-sm) 0;
+            color: var(--color-primary);
+        }
+        
+        .unit-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        .unit-type, .unit-points {
+            background: var(--color-secondary);
+            color: var(--color-background);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: var(--font-sm);
+            font-weight: 500;
+        }
+        
+        .unit-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .detail-section {
+            background: var(--color-surface);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+        }
+        
+        .detail-section h3 {
+            margin: 0 0 var(--spacing-md) 0;
+            color: var(--color-primary);
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: var(--spacing-xs);
+        }
+        
+        .detail-item {
+            display: flex;
+            margin-bottom: var(--spacing-sm);
+            align-items: flex-start;
+        }
+        
+        .detail-item label {
+            font-weight: 600;
+            min-width: 120px;
+            margin-right: var(--spacing-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .detail-item span {
+            flex: 1;
+            word-wrap: break-word;
+        }
+        
+        .unit-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .btn-danger {
+            background-color: var(--color-error);
+            color: white;
+            border: none;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: var(--font-base);
+        }
+        
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+        
+        @media (max-width: 768px) {
+            .unit-details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-item {
+                flex-direction: column;
+            }
+            
+            .detail-item label {
+                min-width: auto;
+                margin-bottom: var(--spacing-xs);
+            }
+            
+            .unit-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <a href="../index.html" class="back-button">← Back to Campaign Tracker</a>
         
         <header>
-            <h1>Edit Unit or Character</h1>
-            <p>Edit an existing unit or character in your Crusade force roster.</p>
+            <h1>Unit Details</h1>
+            <p>View and edit unit or character details in your Crusade force roster.</p>
         </header>
         
         <main>
-            <form id="edit-unit-form" class="crusade-form">
+            <!-- Unit Information Display -->
+            <div id="unit-info-display" class="unit-details-container">
+                <div class="unit-header">
+                    <h2 id="unit-display-name">Loading...</h2>
+                    <div class="unit-meta">
+                        <span id="unit-display-type" class="unit-type"></span>
+                        <span id="unit-display-points" class="unit-points"></span>
+                    </div>
+                </div>
+                
+                <div class="unit-details-grid">
+                    <div class="detail-section">
+                        <h3>Basic Information</h3>
+                        <div class="detail-item">
+                            <label>Data Sheet:</label>
+                            <span id="unit-display-data-sheet"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Unit Type:</label>
+                            <span id="unit-display-unit-type"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>MFM Version:</label>
+                            <span id="unit-display-mfm-version"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Points:</label>
+                            <span id="unit-display-points-value"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Crusade Points:</label>
+                            <span id="unit-display-crusade-points"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Wargear & Upgrades</h3>
+                        <div class="detail-item">
+                            <label>Wargear:</label>
+                            <span id="unit-display-wargear"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Enhancements:</label>
+                            <span id="unit-display-enhancements"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Relics:</label>
+                            <span id="unit-display-relics"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Battle Traits:</label>
+                            <span id="unit-display-battle-traits"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Battle Scars:</label>
+                            <span id="unit-display-battle-scars"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Battle Record</h3>
+                        <div class="detail-item">
+                            <label>Battle Count:</label>
+                            <span id="unit-display-battle-count"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Experience Points:</label>
+                            <span id="unit-display-xp"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Rank:</label>
+                            <span id="unit-display-rank"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Kill Count:</label>
+                            <span id="unit-display-kill-count"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Times Killed:</label>
+                            <span id="unit-display-times-killed"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Narrative Information</h3>
+                        <div class="detail-item">
+                            <label>Description:</label>
+                            <span id="unit-display-description"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Notable History:</label>
+                            <span id="unit-display-notable-history"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Notes:</label>
+                            <span id="unit-display-notes"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Metadata</h3>
+                        <div class="detail-item">
+                            <label>Created:</label>
+                            <span id="unit-display-timestamp"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="unit-actions">
+                    <button id="edit-unit-btn" class="btn-primary">Edit Unit</button>
+                    <button id="delete-unit-btn" class="btn-danger">Delete Unit</button>
+                </div>
+            </div>
+            
+            <!-- Edit Form (initially hidden) -->
+            <form id="edit-unit-form" class="crusade-form" style="display: none;">
                 <!-- Basic Information -->
                 <fieldset>
                     <legend>Basic Information</legend>
@@ -165,7 +394,7 @@
                 
                 <!-- Form Actions -->
                 <div class="form-actions">
-                    <button type="button" onclick="window.history.back()" class="btn-secondary">Cancel</button>
+                    <button type="button" id="cancel-edit-btn" class="btn-secondary">Cancel</button>
                     <button type="submit" id="submit-btn" class="btn-primary">
                         <span class="btn-text">Update Unit</span>
                         <span class="btn-loading" style="display: none;">

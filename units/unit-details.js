@@ -43,8 +43,11 @@ class UnitEditForm extends BaseForm {
         // Setup MFM integration
         this.setupMFMIntegration();
 
-        // Populate form with existing data
-        this.populateForm();
+        // Populate display with existing data
+        this.populateDisplay();
+        
+        // Setup action buttons (wait for UserManager to be ready)
+        this.setupActionButtonsWithDelay();
     }
 
     async loadUnitData() {
@@ -403,6 +406,249 @@ class UnitEditForm extends BaseForm {
         this.hideVariantDropdown();
     }
 
+    populateDisplay() {
+        if (!this.unitData) return;
+
+        // Populate header
+        const nameDisplay = CoreUtils.dom.getElement('unit-display-name');
+        if (nameDisplay) nameDisplay.textContent = this.unitData.unit_name || 'Unknown Unit';
+
+        const typeDisplay = CoreUtils.dom.getElement('unit-display-type');
+        if (typeDisplay) typeDisplay.textContent = this.unitData.unit_type || 'Unknown Type';
+
+        const pointsDisplay = CoreUtils.dom.getElement('unit-display-points');
+        if (pointsDisplay) pointsDisplay.textContent = `${this.unitData.points || 0} pts`;
+
+        // Populate all detail fields
+        this.setDisplayValue('unit-display-data-sheet', this.unitData.data_sheet);
+        this.setDisplayValue('unit-display-unit-type', this.unitData.unit_type);
+        this.setDisplayValue('unit-display-mfm-version', this.unitData.mfm_version);
+        this.setDisplayValue('unit-display-points-value', this.unitData.points);
+        this.setDisplayValue('unit-display-crusade-points', this.unitData.crusade_points);
+        this.setDisplayValue('unit-display-wargear', this.unitData.wargear);
+        this.setDisplayValue('unit-display-enhancements', this.unitData.enhancements);
+        this.setDisplayValue('unit-display-relics', this.unitData.relics);
+        this.setDisplayValue('unit-display-battle-traits', this.unitData.battle_traits);
+        this.setDisplayValue('unit-display-battle-scars', this.unitData.battle_scars);
+        this.setDisplayValue('unit-display-battle-count', this.unitData.battle_count);
+        this.setDisplayValue('unit-display-xp', this.unitData.xp);
+        this.setDisplayValue('unit-display-rank', this.unitData.rank);
+        this.setDisplayValue('unit-display-kill-count', this.unitData.kill_count);
+        this.setDisplayValue('unit-display-times-killed', this.unitData.times_killed);
+        this.setDisplayValue('unit-display-description', this.unitData.description);
+        this.setDisplayValue('unit-display-notable-history', this.unitData.notable_history);
+        this.setDisplayValue('unit-display-notes', this.unitData.notes);
+        
+        // Format timestamp
+        const timestampDisplay = CoreUtils.dom.getElement('unit-display-timestamp');
+        if (timestampDisplay && this.unitData.timestamp) {
+            const date = new Date(this.unitData.timestamp);
+            timestampDisplay.textContent = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+    }
+
+    setDisplayValue(elementId, value) {
+        const element = CoreUtils.dom.getElement(elementId);
+        if (element) {
+            element.textContent = value || 'Not specified';
+        }
+    }
+
+    updatePermissionMessage(canEdit, currentUser) {
+        const unitActions = CoreUtils.dom.getElement('unit-actions');
+        if (!unitActions) return;
+
+        // Remove any existing permission message
+        const existingMessage = unitActions.querySelector('.permission-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+
+        if (!canEdit && currentUser) {
+            // Add permission message
+            const message = document.createElement('div');
+            message.className = 'permission-message';
+            message.style.cssText = `
+                text-align: center;
+                padding: var(--spacing-sm);
+                background: var(--color-warning-light, #fff3cd);
+                border: 1px solid var(--color-warning, #ffc107);
+                border-radius: var(--border-radius);
+                color: var(--color-warning-dark, #856404);
+                font-size: var(--font-sm);
+                margin-bottom: var(--spacing-sm);
+            `;
+            message.textContent = `This unit belongs to ${this.forceContext.userName}. You can view but not edit it.`;
+            unitActions.insertBefore(message, unitActions.firstChild);
+        }
+    }
+
+    async setupActionButtonsWithDelay() {
+        // Wait for UserManager to be fully initialized
+        let attempts = 0;
+        const maxAttempts = 50; // 5 seconds max wait
+        
+        while (attempts < maxAttempts) {
+            if (window.UserManager && UserManager.getCurrentUser) {
+                const currentUser = UserManager.getCurrentUser();
+                if (currentUser) {
+                    console.log('UserManager ready, setting up action buttons');
+                    this.setupActionButtons();
+                    return;
+                }
+            }
+            
+            // Wait 100ms before trying again
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        console.log('UserManager not ready after 5 seconds, setting up buttons anyway');
+        this.setupActionButtons();
+    }
+
+    setupActionButtons() {
+        const editBtn = CoreUtils.dom.getElement('edit-unit-btn');
+        const deleteBtn = CoreUtils.dom.getElement('delete-unit-btn');
+        const cancelBtn = CoreUtils.dom.getElement('cancel-edit-btn');
+
+        // Check if current user can edit/delete this unit
+        const currentUser = UserManager.getCurrentUser();
+        const canEdit = currentUser && currentUser.key === this.forceContext.userKey;
+
+        // Debug logging
+        console.log('Permission check:', {
+            currentUser: currentUser,
+            currentUserKey: currentUser?.key,
+            unitUserKey: this.forceContext.userKey,
+            canEdit: canEdit
+        });
+
+        // Show/hide permission message
+        this.updatePermissionMessage(canEdit, currentUser);
+
+        if (editBtn) {
+            console.log('Edit button found, canEdit:', canEdit);
+            if (canEdit) {
+                editBtn.addEventListener('click', () => {
+                    this.showEditForm();
+                });
+                console.log('Edit button event listener added');
+            } else {
+                // Hide edit button if user doesn't have permission
+                CoreUtils.dom.hide(editBtn);
+                console.log('Edit button hidden');
+            }
+        } else {
+            console.log('Edit button not found');
+        }
+
+        if (deleteBtn) {
+            console.log('Delete button found, canEdit:', canEdit);
+            if (canEdit) {
+                deleteBtn.addEventListener('click', () => {
+                    this.confirmDelete();
+                });
+                console.log('Delete button event listener added');
+            } else {
+                // Hide delete button if user doesn't have permission
+                CoreUtils.dom.hide(deleteBtn);
+                console.log('Delete button hidden');
+            }
+        } else {
+            console.log('Delete button not found');
+        }
+
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                this.showDisplay();
+            });
+        }
+    }
+
+    showEditForm() {
+        // Check permissions before showing edit form
+        const currentUser = UserManager.getCurrentUser();
+        const canEdit = currentUser && currentUser.key === this.forceContext.userKey;
+
+        if (!canEdit) {
+            FormUtilities.showError('You do not have permission to edit this unit.');
+            return;
+        }
+
+        const displayContainer = CoreUtils.dom.getElement('unit-info-display');
+        const editForm = CoreUtils.dom.getElement('edit-unit-form');
+
+        if (displayContainer && editForm) {
+            CoreUtils.dom.hide(displayContainer);
+            CoreUtils.dom.show(editForm);
+            this.populateForm();
+        }
+    }
+
+    showDisplay() {
+        const displayContainer = CoreUtils.dom.getElement('unit-info-display');
+        const editForm = CoreUtils.dom.getElement('edit-unit-form');
+
+        if (displayContainer && editForm) {
+            CoreUtils.dom.show(displayContainer);
+            CoreUtils.dom.hide(editForm);
+        }
+    }
+
+    confirmDelete() {
+        // Check permissions before allowing delete
+        const currentUser = UserManager.getCurrentUser();
+        const canEdit = currentUser && currentUser.key === this.forceContext.userKey;
+
+        if (!canEdit) {
+            FormUtilities.showError('You do not have permission to delete this unit.');
+            return;
+        }
+
+        if (confirm(`Are you sure you want to delete "${this.unitData.unit_name}"? This action cannot be undone.`)) {
+            this.deleteUnit();
+        }
+    }
+
+    async deleteUnit() {
+        try {
+            const response = await fetch(TableDefs.units?.url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    action: 'delete',
+                    unit_key: this.unitKey,
+                    user_key: this.forceContext.userKey
+                }).toString()
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to delete unit');
+            }
+
+            // Clear cache and redirect
+            await UnifiedCache.clearCache('units');
+            FormUtilities.showSuccess('Unit deleted successfully!');
+            
+            setTimeout(() => {
+                window.location.href = `../forces/force-details.html?key=${encodeURIComponent(this.forceContext.forceKey)}`;
+            }, 1500);
+
+        } catch (error) {
+            console.error('Error deleting unit:', error);
+            FormUtilities.showError('Failed to delete unit. Please try again.');
+        }
+    }
+
     populateForm() {
         if (!this.unitData) return;
 
@@ -544,6 +790,47 @@ class UnitEditForm extends BaseForm {
             wargear: formData.wargear || '',
             notes: formData.notes || ''
         };
+    }
+
+    async handleSubmit(event) {
+        event.preventDefault();
+
+        if (this.isSubmitting) {
+            console.log('Already submitting, please wait');
+            return;
+        }
+
+        this.setLoadingState(true);
+
+        try {
+            // Validate form
+            if (this.config.validateOnSubmit && !this.validateForm()) {
+                throw new Error('Please fix the form errors and try again.');
+            }
+
+            // Gather form data
+            const formData = this.gatherFormData();
+
+            // Submit to Google Sheets
+            await this.submitToGoogleSheets(formData);
+
+            // Clear specified caches
+            this.clearCachesOnSuccess();
+
+            // Show success
+            this.showSuccess();
+
+            // Reload unit data and show display view
+            await this.loadUnitData();
+            this.populateDisplay();
+            this.showDisplay();
+
+        } catch (error) {
+            console.error('Form submission error:', error);
+            this.showError(error.message);
+        } finally {
+            this.setLoadingState(false);
+        }
     }
 }
 
