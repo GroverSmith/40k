@@ -5,9 +5,11 @@
 class MFMParserUIStandalone {
     constructor() {
         this.units = [];
+        this.enhancements = [];
         this.currentFaction = null;
         this.currentDetachment = null;
         this.isForgeWorld = false;
+        this.isEnhancementSection = false;
     }
 
     /**
@@ -18,9 +20,11 @@ class MFMParserUIStandalone {
     parse(content) {
         const lines = content.split('\n');
         this.units = [];
+        this.enhancements = [];
         this.currentFaction = null;
         this.currentDetachment = null;
         this.isForgeWorld = false;
+        this.isEnhancementSection = false;
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
@@ -29,11 +33,18 @@ class MFMParserUIStandalone {
                 this.currentFaction = this.extractFactionName(line);
                 this.currentDetachment = null;
                 this.isForgeWorld = false;
+                this.isEnhancementSection = false;
                 continue;
             }
 
             if (this.isForgeWorldSection(line)) {
                 this.isForgeWorld = true;
+                this.isEnhancementSection = false;
+                continue;
+            }
+
+            if (this.isEnhancementSectionHeader(line)) {
+                this.isEnhancementSection = true;
                 continue;
             }
 
@@ -42,7 +53,12 @@ class MFMParserUIStandalone {
                 continue;
             }
 
-            if (this.isUnitEntry(line)) {
+            if (this.isEnhancementEntry(line)) {
+                const enhancement = this.parseEnhancementEntry(line, i, lines);
+                if (enhancement) {
+                    this.enhancements.push(enhancement);
+                }
+            } else if (this.isUnitEntry(line)) {
                 const unit = this.parseUnitEntry(line, i, lines);
                 if (unit) {
                     this.units.push(unit);
@@ -50,7 +66,10 @@ class MFMParserUIStandalone {
             }
         }
 
-        return this.units;
+        return {
+            units: this.units,
+            enhancements: this.enhancements
+        };
     }
 
     /**
@@ -75,12 +94,19 @@ class MFMParserUIStandalone {
     }
 
     /**
+     * Check if line is a DETACHMENT ENHANCEMENTS header
+     */
+    isEnhancementSectionHeader(line) {
+        return line.includes('DETACHMENT ENHANCEMENTS');
+    }
+
+    /**
      * Check if line is a detachment header
      */
     isDetachmentHeader(line) {
-        return line.includes('DETACHMENT ENHANCEMENTS') || 
-               (line.length > 0 && !line.includes('pts') && !line.includes('models') && 
+        return (line.length > 0 && !line.includes('pts') && !line.includes('models') && 
                 !this.isFactionHeader(line) && !this.isForgeWorldSection(line) &&
+                !this.isEnhancementSectionHeader(line) &&
                 !line.match(/^\d+$/)); // Not just a page number
     }
 
@@ -187,6 +213,42 @@ class MFMParserUIStandalone {
     }
 
     /**
+     * Check if line contains an enhancement entry with points
+     */
+    isEnhancementEntry(line) {
+        // Check if we're in an enhancement section and the line has points
+        if (!this.isEnhancementSection) {
+            return false;
+        }
+        
+        // Check for enhancement name with points (dots pattern)
+        const enhancementMatch = line.match(/^(.+?)[\.\s]+\s*(\d+)\s+pts$/);
+        return enhancementMatch !== null;
+    }
+
+    /**
+     * Parse an enhancement entry line and extract enhancement information
+     */
+    parseEnhancementEntry(line, lineIndex, allLines) {
+        const enhancementMatch = line.match(/^(.+?)[\.\s]+\s*(\d+)\s+pts$/);
+        if (!enhancementMatch) {
+            return null;
+        }
+
+        const enhancementName = enhancementMatch[1].trim();
+        const points = parseInt(enhancementMatch[2]);
+
+        return {
+            faction: this.currentFaction,
+            detachment: this.currentDetachment,
+            enhancementName: enhancementName,
+            points: points,
+            isForgeWorld: this.isForgeWorld,
+            lineNumber: lineIndex + 1
+        };
+    }
+
+    /**
      * Parse MFM content and return UI-optimized structure
      * @param {string} content - The raw text content of the MFM file
      * @param {string} version - MFM version (e.g., "3.2")
@@ -195,23 +257,25 @@ class MFMParserUIStandalone {
      */
     parseForUI(content, version = "3.2", date = "AUG25") {
         // First parse using the base parser
-        const units = this.parse(content);
+        const parsedData = this.parse(content);
         
         // Transform into UI-optimized structure
-        return this.transformToUIStructure(units, version, date);
+        return this.transformToUIStructure(parsedData.units, parsedData.enhancements, version, date);
     }
 
     /**
      * Transform flat unit array into hierarchical UI structure
      */
-    transformToUIStructure(units, version, date) {
+    transformToUIStructure(units, enhancements, version, date) {
         const result = {
             metadata: {
                 version: version,
                 date: date,
                 totalUnits: units.length,
+                totalEnhancements: enhancements.length,
                 totalPoints: 0,
                 forgeWorldUnits: 0,
+                forgeWorldEnhancements: 0,
                 factionCount: 0
             },
             factions: {}
@@ -248,7 +312,8 @@ class MFMParserUIStandalone {
                 unitCount: factionStats.unitCount,
                 totalPoints: factionStats.totalPoints,
                 forgeWorldUnits: factionStats.forgeWorldUnits,
-                units: {}
+                units: {},
+                detachments: []
             };
 
             // Process each unit (with variants)
@@ -269,6 +334,83 @@ class MFMParserUIStandalone {
             // Update global stats
             result.metadata.totalPoints += factionStats.totalPoints;
             result.metadata.forgeWorldUnits += factionStats.forgeWorldUnits;
+        });
+
+        // Process enhancements
+        const enhancementGroups = {};
+        enhancements.forEach(enhancement => {
+            if (!enhancementGroups[enhancement.faction]) {
+                enhancementGroups[enhancement.faction] = [];
+            }
+            enhancementGroups[enhancement.faction].push(enhancement);
+        });
+
+        // Add enhancements to factions
+        Object.keys(enhancementGroups).forEach(factionKey => {
+            const factionEnhancements = enhancementGroups[factionKey];
+            
+            if (!result.factions[factionKey]) {
+                result.factions[factionKey] = {
+                    name: this.formatFactionName(factionKey),
+                    unitCount: 0,
+                    totalPoints: 0,
+                    forgeWorldUnits: 0,
+                    units: {},
+                    detachments: [],
+                    enhancements: {}
+                };
+            } else {
+                if (!result.factions[factionKey].enhancements) {
+                    result.factions[factionKey].enhancements = {};
+                }
+                if (!result.factions[factionKey].detachments) {
+                    result.factions[factionKey].detachments = [];
+                }
+            }
+
+            // Group enhancements by detachment
+            const detachmentGroups = {};
+            factionEnhancements.forEach(enhancement => {
+                if (!detachmentGroups[enhancement.detachment]) {
+                    detachmentGroups[enhancement.detachment] = [];
+                }
+                detachmentGroups[enhancement.detachment].push(enhancement);
+            });
+
+            // Add enhancements to faction
+            Object.keys(detachmentGroups).forEach(detachmentKey => {
+                const detachmentEnhancements = detachmentGroups[detachmentKey];
+                
+                result.factions[factionKey].enhancements[detachmentKey] = {
+                    name: detachmentKey,
+                    enhancements: detachmentEnhancements.map(enhancement => ({
+                        name: enhancement.enhancementName,
+                        points: enhancement.points,
+                        isForgeWorld: enhancement.isForgeWorld,
+                        lineNumber: enhancement.lineNumber
+                    })).sort((a, b) => a.points - b.points) // Sort by points
+                };
+
+                // Add detachment to detachments array
+                result.factions[factionKey].detachments.push({
+                    name: detachmentKey,
+                    enhancementCount: detachmentEnhancements.length,
+                    enhancements: detachmentEnhancements.map(enhancement => ({
+                        name: enhancement.enhancementName,
+                        points: enhancement.points,
+                        isForgeWorld: enhancement.isForgeWorld,
+                        lineNumber: enhancement.lineNumber
+                    })).sort((a, b) => a.points - b.points) // Sort by points
+                });
+            });
+
+            // Update global enhancement stats
+            factionEnhancements.forEach(enhancement => {
+                result.metadata.totalPoints += enhancement.points;
+                if (enhancement.isForgeWorld) {
+                    result.metadata.forgeWorldEnhancements++;
+                }
+            });
         });
 
         result.metadata.factionCount = Object.keys(result.factions).length;

@@ -5,9 +5,11 @@
 class MFMParser {
     constructor() {
         this.units = [];
+        this.enhancements = [];
         this.currentFaction = null;
         this.currentDetachment = null;
         this.isForgeWorld = false;
+        this.isEnhancementSection = false;
     }
 
     /**
@@ -18,9 +20,11 @@ class MFMParser {
     parse(content) {
         const lines = content.split('\n');
         this.units = [];
+        this.enhancements = [];
         this.currentFaction = null;
         this.currentDetachment = null;
         this.isForgeWorld = false;
+        this.isEnhancementSection = false;
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
@@ -29,11 +33,18 @@ class MFMParser {
                 this.currentFaction = this.extractFactionName(line);
                 this.currentDetachment = null;
                 this.isForgeWorld = false;
+                this.isEnhancementSection = false;
                 continue;
             }
 
             if (this.isForgeWorldSection(line)) {
                 this.isForgeWorld = true;
+                this.isEnhancementSection = false;
+                continue;
+            }
+
+            if (this.isEnhancementSectionHeader(line)) {
+                this.isEnhancementSection = true;
                 continue;
             }
 
@@ -42,7 +53,12 @@ class MFMParser {
                 continue;
             }
 
-            if (this.isUnitEntry(line)) {
+            if (this.isEnhancementEntry(line)) {
+                const enhancement = this.parseEnhancementEntry(line, i, lines);
+                if (enhancement) {
+                    this.enhancements.push(enhancement);
+                }
+            } else if (this.isUnitEntry(line)) {
                 const unit = this.parseUnitEntry(line, i, lines);
                 if (unit) {
                     this.units.push(unit);
@@ -50,7 +66,10 @@ class MFMParser {
             }
         }
 
-        return this.units;
+        return {
+            units: this.units,
+            enhancements: this.enhancements
+        };
     }
 
     /**
@@ -75,12 +94,19 @@ class MFMParser {
     }
 
     /**
+     * Check if line is a DETACHMENT ENHANCEMENTS header
+     */
+    isEnhancementSectionHeader(line) {
+        return line.includes('DETACHMENT ENHANCEMENTS');
+    }
+
+    /**
      * Check if line is a detachment header
      */
     isDetachmentHeader(line) {
-        return line.includes('DETACHMENT ENHANCEMENTS') || 
-               (line.length > 0 && !line.includes('pts') && !line.includes('models') && 
+        return (line.length > 0 && !line.includes('pts') && !line.includes('models') && 
                 !this.isFactionHeader(line) && !this.isForgeWorldSection(line) &&
+                !this.isEnhancementSectionHeader(line) &&
                 !line.match(/^\d+$/)); // Not just a page number
     }
 
@@ -187,21 +213,62 @@ class MFMParser {
     }
 
     /**
+     * Check if line contains an enhancement entry with points
+     */
+    isEnhancementEntry(line) {
+        // Check if we're in an enhancement section and the line has points
+        if (!this.isEnhancementSection) {
+            return false;
+        }
+        
+        // Check for enhancement name with points (dots pattern)
+        const enhancementMatch = line.match(/^(.+?)[\.\s]+\s*(\d+)\s+pts$/);
+        return enhancementMatch !== null;
+    }
+
+    /**
+     * Parse an enhancement entry line and extract enhancement information
+     */
+    parseEnhancementEntry(line, lineIndex, allLines) {
+        const enhancementMatch = line.match(/^(.+?)[\.\s]+\s*(\d+)\s+pts$/);
+        if (!enhancementMatch) {
+            return null;
+        }
+
+        const enhancementName = enhancementMatch[1].trim();
+        const points = parseInt(enhancementMatch[2]);
+
+        return {
+            faction: this.currentFaction,
+            detachment: this.currentDetachment,
+            enhancementName: enhancementName,
+            points: points,
+            isForgeWorld: this.isForgeWorld,
+            lineNumber: lineIndex + 1
+        };
+    }
+
+    /**
      * Export parsed data to JSON
      */
     exportToJSON() {
-        return JSON.stringify(this.units, null, 2);
+        return JSON.stringify({
+            units: this.units,
+            enhancements: this.enhancements
+        }, null, 2);
     }
 
     /**
      * Export parsed data to CSV format
      */
     exportToCSV() {
-        const headers = ['Faction', 'Detachment', 'Unit Name', 'Model Count', 'Points', 'Forge World', 'Line Number'];
+        const headers = ['Type', 'Faction', 'Detachment', 'Name', 'Model Count', 'Points', 'Forge World', 'Line Number'];
         const csvRows = [headers.join(',')];
 
+        // Add units
         this.units.forEach(unit => {
             const row = [
+                'Unit',
                 `"${unit.faction || ''}"`,
                 `"${unit.detachment || ''}"`,
                 `"${unit.unitName}"`,
@@ -209,6 +276,21 @@ class MFMParser {
                 unit.points,
                 unit.isForgeWorld ? 'Yes' : 'No',
                 unit.lineNumber
+            ];
+            csvRows.push(row.join(','));
+        });
+
+        // Add enhancements
+        this.enhancements.forEach(enhancement => {
+            const row = [
+                'Enhancement',
+                `"${enhancement.faction || ''}"`,
+                `"${enhancement.detachment || ''}"`,
+                `"${enhancement.enhancementName}"`,
+                '', // No model count for enhancements
+                enhancement.points,
+                enhancement.isForgeWorld ? 'Yes' : 'No',
+                enhancement.lineNumber
             ];
             csvRows.push(row.join(','));
         });
@@ -222,17 +304,19 @@ class MFMParser {
     getStats() {
         const stats = {
             totalUnits: this.units.length,
+            totalEnhancements: this.enhancements.length,
             factions: {},
             totalPoints: 0,
-            forgeWorldUnits: 0
+            forgeWorldUnits: 0,
+            forgeWorldEnhancements: 0
         };
 
         this.units.forEach(unit => {
             // Count by faction
             if (!stats.factions[unit.faction]) {
-                stats.factions[unit.faction] = 0;
+                stats.factions[unit.faction] = { units: 0, enhancements: 0 };
             }
-            stats.factions[unit.faction]++;
+            stats.factions[unit.faction].units++;
 
             // Sum total points
             stats.totalPoints += unit.points;
@@ -240,6 +324,22 @@ class MFMParser {
             // Count Forge World units
             if (unit.isForgeWorld) {
                 stats.forgeWorldUnits++;
+            }
+        });
+
+        this.enhancements.forEach(enhancement => {
+            // Count by faction
+            if (!stats.factions[enhancement.faction]) {
+                stats.factions[enhancement.faction] = { units: 0, enhancements: 0 };
+            }
+            stats.factions[enhancement.faction].enhancements++;
+
+            // Sum total points
+            stats.totalPoints += enhancement.points;
+
+            // Count Forge World enhancements
+            if (enhancement.isForgeWorld) {
+                stats.forgeWorldEnhancements++;
             }
         });
 

@@ -207,7 +207,7 @@ function doPost(e) {
     
     // Default operation is create
     // Validate required fields (check for empty strings too)
-    const required = ['forceKey', 'name', 'dataSheet', 'type'];
+    const required = ['forceKey', 'name', 'dataSheet'];
     const missing = required.filter(field => !data[field] || data[field].trim() === '');
     if (missing.length > 0) {
       throw new Error('Missing required fields: ' + missing.join(', '));
@@ -305,10 +305,6 @@ function doPost(e) {
     const unitKey = generateUnitKey(data.forceKey, data.name);
     console.log('Generated unit key:', unitKey);
     
-    // Create Name Xref Key for easier lookups (userKey_unitName without timestamp)
-    // This uses userKey instead of forceKey to be consistent across different forces
-    const nameXrefKey = `${userKey}_${clean(data.name, 30)}`;
-    console.log('Generated name xref key:', nameXrefKey);
     
     // Determine rank based on XP if not provided
     let rank = data.rank || '';
@@ -323,30 +319,30 @@ function doPost(e) {
     
     // Prepare row data
     const rowData = [
-      unitKey,                        // Key
-      userKey || '',                  // User Key (using the generated or provided userKey)
-      data.forceKey || '',            // Force Key
-      nameXrefKey,                    // Name Xref Key
-      data.dataSheet || '',           // Data Sheet
-      data.name || '',                // Name
-      data.type || '',                // Type (Character, Squad, Vehicle, etc.)
-      data.mfmVersion || '',          // MFM Version
-      data.points || 0,               // Points
-      data.crusadePoints || 0,        // Crusade Points
-      data.wargear || '',             // Wargear (comma-separated)
-      data.enhancements || '',        // Enhancements (comma-separated)
-      data.relics || '',              // Relics (comma-separated)
-      data.battleTraits || '',        // Battle Traits (comma-separated)
-      data.battleScars || '',         // Battle Scars (comma-separated)
-      data.battleCount || 0,          // Battle Count
-      data.xp || 0,                   // XP
-      rank,                           // Rank
-      data.killCount || 0,            // Kill Count
-      data.timesKilled || 0,          // Times Killed
-      data.description || '',         // Description
-      data.notableHistory || '',      // Notable History
-      data.notes || '',               // Notes
-      ''                              // Deleted Timestamp (empty for new records)
+      unitKey,                        // unit_key
+      userKey || '',                  // user_key
+      data.forceKey || '',            // force_key
+      data.dataSheet || '',           // data_sheet
+      data.name || '',                // unit_name
+      data.type || '',                // unit_type
+      data.mfmVersion || '',          // mfm_version
+      data.points || 0,               // points
+      data.crusadePoints || 0,        // crusade_points
+      data.wargear || '',             // wargear
+      data.enhancements || '',        // enhancements
+      data.relics || '',              // relics
+      data.battleTraits || '',        // battle_traits
+      data.battleScars || '',         // battle_scars
+      data.battleCount || 0,          // battle_count
+      data.xp || 0,                   // xp
+      rank,                           // rank
+      data.killCount || 0,            // kill_count
+      data.timesKilled || 0,          // times_killed
+      data.description || '',         // description
+      data.notableHistory || '',      // notable_history
+      data.notes || '',               // notes
+      new Date(),                     // timestamp
+      ''                              // deleted_timestamp (empty for new records)
     ];
     
     const lastRow = sheet.getLastRow();
@@ -372,8 +368,7 @@ function doPost(e) {
       .createTextOutput(JSON.stringify({
         success: true,
         message: 'Unit submitted successfully',
-        key: unitKey,
-        nameXrefKey: nameXrefKey
+        key: unitKey
       }))
       .setMimeType(ContentService.MimeType.JSON);
       

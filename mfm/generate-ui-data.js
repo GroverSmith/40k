@@ -107,8 +107,10 @@ function main() {
         console.log(`\nData Summary:`);
         console.log(`- Version: ${uiData.metadata.version}`);
         console.log(`- Total Units: ${uiData.metadata.totalUnits}`);
+        console.log(`- Total Enhancements: ${uiData.metadata.totalEnhancements}`);
         console.log(`- Factions: ${uiData.metadata.factionCount}`);
         console.log(`- Forge World Units: ${uiData.metadata.forgeWorldUnits}`);
+        console.log(`- Forge World Enhancements: ${uiData.metadata.forgeWorldEnhancements}`);
         console.log(`- Total Points: ${uiData.metadata.totalPoints.toLocaleString()}`);
         
         // Show faction breakdown
