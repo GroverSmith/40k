@@ -122,7 +122,14 @@ class UnitEditForm extends BaseForm {
         // Populate read-only data sheet field
         const dataSheetValue = CoreUtils.dom.getElement('data-sheet-value');
         if (dataSheetValue) {
-            dataSheetValue.textContent = this.unitData.data_sheet || 'Not specified';
+            const dataSheetName = this.unitData.data_sheet || 'Not specified';
+            const points = this.unitData.points;
+            
+            if (points && points !== '' && dataSheetName !== 'Not specified') {
+                dataSheetValue.textContent = `${dataSheetName} (${points} pts)`;
+            } else {
+                dataSheetValue.textContent = dataSheetName;
+            }
         }
 
         const typeField = CoreUtils.dom.getElement('unit-type');
@@ -192,10 +199,13 @@ class UnitEditForm extends BaseForm {
         // Add unit key for update operation
         formData.unitKey = this.unitKey;
 
-        // Get data sheet from read-only field
+        // Get data sheet from read-only field (extract name without points cost)
         const dataSheetValue = CoreUtils.dom.getElement('data-sheet-value');
         if (dataSheetValue) {
-            formData.dataSheet = dataSheetValue.textContent;
+            const displayText = dataSheetValue.textContent;
+            // Extract just the data sheet name (remove points cost if present)
+            const match = displayText.match(/^(.+?)\s*\(\d+\s*pts\)$/);
+            formData.dataSheet = match ? match[1].trim() : displayText;
         }
 
         // Handle MFM version - use existing value from unit data

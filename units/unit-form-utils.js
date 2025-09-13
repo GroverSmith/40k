@@ -11,8 +11,20 @@ class UnitFormUtilities {
         const presetContainer = CoreUtils.dom.getElement('mfm-preset-container');
         const customContainer = CoreUtils.dom.getElement('mfm-custom-container');
 
-        // Setup version selector if available
+        // Setup version selector if available (with retry mechanism)
         this.setupVersionSelector();
+        
+        // Retry setup if bundle wasn't ready initially
+        if (typeof window.MFM_UNITS_BUNDLE === 'undefined') {
+            setTimeout(() => {
+                this.setupVersionSelector();
+            }, 100);
+            
+            // Additional retry after a longer delay
+            setTimeout(() => {
+                this.setupVersionSelector();
+            }, 500);
+        }
 
         if (presetRadio && customRadio && presetContainer && customContainer) {
             presetRadio.addEventListener('change', () => {
@@ -53,15 +65,24 @@ class UnitFormUtilities {
      */
     static setupVersionSelector() {
         const versionSelect = CoreUtils.dom.getElement('mfm-version-preset');
-        if (!versionSelect || typeof window.MFM_UNITS_BUNDLE === 'undefined') {
+        if (!versionSelect) {
+            console.warn('Version selector element not found');
+            return;
+        }
+        
+        if (typeof window.MFM_UNITS_BUNDLE === 'undefined') {
+            console.warn('MFM_UNITS_BUNDLE not available, keeping static options');
             return;
         }
 
+        console.log('Setting up dynamic version selector');
+        
         // Clear existing options
         versionSelect.innerHTML = '';
 
         // Populate with available versions
         const versions = window.MFM_UNITS_BUNDLE.getAvailableVersions();
+        console.log('Available versions from bundle:', versions);
         
         versions.forEach(version => {
             const option = document.createElement('option');
@@ -69,6 +90,9 @@ class UnitFormUtilities {
             option.textContent = version.displayName;
             versionSelect.appendChild(option);
         });
+        
+        // Set default selection to 3.2
+        versionSelect.value = '3.2';
 
         // Add change listener
         versionSelect.addEventListener('change', () => {
@@ -204,6 +228,77 @@ class UnitFormUtilities {
         // Add change listener to handle data sheet selection
         dataSheetField.addEventListener('change', (e) => {
             this.handleDataSheetSelection(e.target.value, faction);
+        });
+
+        // Setup searchable dropdown functionality
+        this.setupSearchableDropdown(dataSheetField, units);
+    }
+
+    /**
+     * Setup searchable dropdown functionality
+     */
+    static setupSearchableDropdown(selectElement, allOptions) {
+        const container = selectElement.closest('.searchable-dropdown-container');
+        const searchInput = CoreUtils.dom.getElement('data-sheet-search');
+        
+        if (!container || !searchInput || !allOptions || allOptions.length < 10) {
+            // Don't show search for small lists
+            return;
+        }
+
+        // Show search input for large lists
+        container.classList.add('show-search');
+        
+        // Store original options data (not elements)
+        const originalOptions = Array.from(selectElement.options).slice(1).map(option => ({
+            value: option.value,
+            text: option.textContent
+        }));
+
+        // Add search input event listeners
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            // Clear current options except the first one
+            selectElement.innerHTML = '<option value="">-- Select Data Sheet --</option>';
+            
+            if (searchTerm === '') {
+                // Show all options
+                originalOptions.forEach(option => {
+                    const newOption = document.createElement('option');
+                    newOption.value = option.value;
+                    newOption.textContent = option.text;
+                    selectElement.appendChild(newOption);
+                });
+            } else {
+                // Filter options based on search term
+                const filteredOptions = originalOptions.filter(option => 
+                    option.text.toLowerCase().includes(searchTerm)
+                );
+                
+                filteredOptions.forEach(option => {
+                    const newOption = document.createElement('option');
+                    newOption.value = option.value;
+                    newOption.textContent = option.text;
+                    selectElement.appendChild(newOption);
+                });
+                
+                // If no matches, show a message
+                if (filteredOptions.length === 0) {
+                    const noResultsOption = document.createElement('option');
+                    noResultsOption.value = '';
+                    noResultsOption.textContent = '-- No units found --';
+                    noResultsOption.disabled = true;
+                    selectElement.appendChild(noResultsOption);
+                }
+            }
+        });
+
+        // Focus search input when container is clicked
+        container.addEventListener('click', (e) => {
+            if (e.target === selectElement || e.target === container) {
+                searchInput.focus();
+            }
         });
     }
 

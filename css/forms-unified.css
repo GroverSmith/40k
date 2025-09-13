@@ -577,3 +577,43 @@ input[type="file"]:hover {
   transform: translateY(-10px);
   pointer-events: none;
 }
+
+/* ===============================
+   SEARCHABLE DROPDOWN
+   =============================== */
+
+.searchable-dropdown-container {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  background-color: var(--color-bg-input);
+  color: var(--color-text);
+  margin-bottom: 8px;
+  transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Show search input when dropdown has many options */
+.searchable-dropdown-container.show-search .search-input {
+  display: block;
+}
+
+/* Hide search input by default */
+.searchable-dropdown-container .search-input {
+  display: none;
+}

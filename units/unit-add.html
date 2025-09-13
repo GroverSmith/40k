@@ -47,7 +47,7 @@
                                 <div class="mfm-toggle-option">
                                     <input type="radio" id="mfm-preset" name="mfmMode" value="preset" checked>
                                     <label for="mfm-preset">
-                                        <span class="toggle-label">MFM 3.2 (Aug 2025)</span>
+                                        <span class="toggle-label">MFM</span>
                                         <span class="toggle-description">Use official points data</span>
                                     </label>
                                 </div>
@@ -75,9 +75,13 @@
                     
                     <div class="form-group">
                         <label for="data-sheet">Data Sheet <span class="required">*</span></label>
-                        <select id="data-sheet" name="dataSheet" required>
-                            <option value="">-- Select Data Sheet --</option>
-                        </select>
+                        <div class="searchable-dropdown-container">
+                            <input type="text" id="data-sheet-search" placeholder="Type to search units..." 
+                                   class="search-input" style="display: none;">
+                            <select id="data-sheet" name="dataSheet" required>
+                                <option value="">-- Select Data Sheet --</option>
+                            </select>
+                        </div>
                         <small class="help-text">Select from available units in your faction</small>
                     </div>
                     

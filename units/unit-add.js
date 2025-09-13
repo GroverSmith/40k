@@ -32,6 +32,9 @@ class UnitForm extends BaseForm {
         // Setup MFM integration
         await UnitFormUtilities.setupMFMIntegration(this.form, this.forceContext.faction);
         
+        // Ensure version selector is set up (additional safety check)
+        UnitFormUtilities.setupVersionSelector();
+        
         // Listen for MFM version changes
         document.addEventListener('mfmVersionChanged', (event) => {
             this.handleMFMVersionChange(event.detail.version);
