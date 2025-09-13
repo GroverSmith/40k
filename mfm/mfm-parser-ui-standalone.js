@@ -120,7 +120,7 @@ class MFMParserUIStandalone {
         }
         
         // Check for unit name with points on the same line (with or without point adjustments)
-        const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(?:\(-\d+\)\s+)?(\d+)\s+pts$/);
+        const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(?:\([+-]\d+\)\s+)?(\d+)\s+pts$/);
         if (sameLineMatch) {
             return true;
         }
@@ -135,7 +135,7 @@ class MFMParserUIStandalone {
         let modelCount, points, unitName;
 
         // Check if unit name and points are on the same line (with or without leading spaces and point adjustments)
-        const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(?:\(-\d+\)\s+)?(\d+)\s+pts$/);
+        const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(?:\([+-]\d+\)\s+)?(\d+)\s+pts$/);
         if (sameLineMatch) {
             unitName = sameLineMatch[1].trim();
             modelCount = parseInt(sameLineMatch[2]);
@@ -143,7 +143,7 @@ class MFMParserUIStandalone {
         } else {
             // Extract model count and points from points-only line (with or without leading spaces and point adjustments)
             // The dots can vary in number, so we'll match any number of dots or spaces
-            const modelMatch = line.match(/^\s*(\d+)\s+models?\s+[\.\s]+\s*(?:\(-\d+\)\s+)?(\d+)\s+pts/);
+            const modelMatch = line.match(/^\s*(\d+)\s+models?\s+[\.\s]+\s*(?:\([+-]\d+\)\s+)?(\d+)\s+pts/);
             if (!modelMatch) {
                 return null;
             }
@@ -191,7 +191,7 @@ class MFMParserUIStandalone {
             }
 
             // Check if this line contains a unit name with points on the same line (with or without point adjustments)
-            const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(?:\(-\d+\)\s+)?(\d+)\s+pts$/);
+            const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(?:\([+-]\d+\)\s+)?(\d+)\s+pts$/);
             if (sameLineMatch) {
                 return sameLineMatch[1].trim();
             }

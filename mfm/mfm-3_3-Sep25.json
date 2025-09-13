@@ -2,9 +2,9 @@
   "metadata": {
     "version": "3.3",
     "date": "Sep25",
-    "totalUnits": 1067,
+    "totalUnits": 1175,
     "totalEnhancements": 733,
-    "totalPoints": 182260,
+    "totalPoints": 203395,
     "forgeWorldUnits": 47,
     "forgeWorldEnhancements": 306,
     "factionCount": 27
@@ -12,10 +12,19 @@
   "factions": {
     "ADEPTA SORORITAS": {
       "name": "Adepta Sororitas",
-      "unitCount": 34,
-      "totalPoints": 3655,
+      "unitCount": 38,
+      "totalPoints": 4045,
       "forgeWorldUnits": 0,
       "units": {
+        "Aestred Thurga and Agathae Dolan": {
+          "name": "Aestred Thurga and Agathae Dolan",
+          "variants": [
+            {
+              "modelCount": 2,
+              "points": 70
+            }
+          ]
+        },
         "Arco-flagellants": {
           "name": "Arco-flagellants",
           "variants": [
@@ -132,6 +141,15 @@
             }
           ]
         },
+        "Imagifier": {
+          "name": "Imagifier",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 65
+            }
+          ]
+        },
         "Immolator": {
           "name": "Immolator",
           "variants": [
@@ -222,6 +240,24 @@
             {
               "modelCount": 10,
               "points": 160
+            }
+          ]
+        },
+        "Retributor Squad": {
+          "name": "Retributor Squad",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 105
+            }
+          ]
+        },
+        "Saint Celestine": {
+          "name": "Saint Celestine",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 150
             }
           ]
         },
@@ -510,8 +546,8 @@
     },
     "ADEPTUS CUSTODES": {
       "name": "Adeptus Custodes",
-      "unitCount": 41,
-      "totalPoints": 7945,
+      "unitCount": 49,
+      "totalPoints": 9015,
       "forgeWorldUnits": 16,
       "units": {
         "Aleya": {
@@ -562,6 +598,19 @@
             }
           ]
         },
+        "Custodian Guard": {
+          "name": "Custodian Guard",
+          "variants": [
+            {
+              "modelCount": 4,
+              "points": 160
+            },
+            {
+              "modelCount": 5,
+              "points": 200
+            }
+          ]
+        },
         "Custodian Wardens": {
           "name": "Custodian Wardens",
           "variants": [
@@ -594,6 +643,23 @@
             {
               "modelCount": 5,
               "points": 50
+            },
+            {
+              "modelCount": 9,
+              "points": 75
+            },
+            {
+              "modelCount": 10,
+              "points": 85
+            }
+          ]
+        },
+        "Shield-Captain": {
+          "name": "Shield-Captain",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 120
             }
           ]
         },
@@ -642,6 +708,15 @@
             }
           ]
         },
+        "Venerable Land Raider": {
+          "name": "Venerable Land Raider",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 220
+            }
+          ]
+        },
         "Vertus Praetors": {
           "name": "Vertus Praetors",
           "variants": [
@@ -665,6 +740,14 @@
             {
               "modelCount": 5,
               "points": 65
+            },
+            {
+              "modelCount": 9,
+              "points": 100
+            },
+            {
+              "modelCount": 10,
+              "points": 110
             }
           ]
         },
@@ -1779,10 +1862,19 @@
     },
     "AELDARI": {
       "name": "Aeldari",
-      "unitCount": 83,
-      "totalPoints": 13110,
+      "unitCount": 89,
+      "totalPoints": 14010,
       "forgeWorldUnits": 2,
       "units": {
+        "Asurmen": {
+          "name": "Asurmen",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 125
+            }
+          ]
+        },
         "Autarch": {
           "name": "Autarch",
           "variants": [
@@ -1801,12 +1893,30 @@
             }
           ]
         },
+        "Avatar of Khaine": {
+          "name": "Avatar of Khaine",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 280
+            }
+          ]
+        },
         "Baharroth": {
           "name": "Baharroth",
           "variants": [
             {
               "modelCount": 1,
               "points": 115
+            }
+          ]
+        },
+        "Corsair Voidreavers": {
+          "name": "Corsair Voidreavers",
+          "variants": [
+            {
+              "modelCount": 10,
+              "points": 110
             }
           ]
         },
@@ -1860,6 +1970,19 @@
             {
               "modelCount": 1,
               "points": 90
+            }
+          ]
+        },
+        "Dire Avengers": {
+          "name": "Dire Avengers",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 75
+            },
+            {
+              "modelCount": 10,
+              "points": 150
             }
           ]
         },
@@ -2265,6 +2388,15 @@
             },
             {
               "modelCount": 6,
+              "points": 160
+            }
+          ]
+        },
+        "Wraithblades": {
+          "name": "Wraithblades",
+          "variants": [
+            {
+              "modelCount": 5,
               "points": 160
             }
           ]
@@ -2899,8 +3031,8 @@
     },
     "ASTRA MILITARUM": {
       "name": "Astra Militarum",
-      "unitCount": 65,
-      "totalPoints": 6665,
+      "unitCount": 76,
+      "totalPoints": 10415,
       "forgeWorldUnits": 2,
       "units": {
         "Aegis Defence Line": {
@@ -2944,6 +3076,33 @@
             {
               "modelCount": 10,
               "points": 120
+            }
+          ]
+        },
+        "Baneblade": {
+          "name": "Baneblade",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 450
+            }
+          ]
+        },
+        "Banehammer": {
+          "name": "Banehammer",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 420
+            }
+          ]
+        },
+        "Banesword": {
+          "name": "Banesword",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 450
             }
           ]
         },
@@ -3093,12 +3252,39 @@
             }
           ]
         },
+        "Doomhammer": {
+          "name": "Doomhammer",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 415
+            }
+          ]
+        },
         "Field Ordnance Battery": {
           "name": "Field Ordnance Battery",
           "variants": [
             {
               "modelCount": 2,
               "points": 110
+            }
+          ]
+        },
+        "Gaunt’s Ghosts": {
+          "name": "Gaunt’s Ghosts",
+          "variants": [
+            {
+              "modelCount": 6,
+              "points": 100
+            }
+          ]
+        },
+        "Hellhammer": {
+          "name": "Hellhammer",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 420
             }
           ]
         },
@@ -3132,6 +3318,10 @@
         "Krieg Combat Engineers": {
           "name": "Krieg Combat Engineers",
           "variants": [
+            {
+              "modelCount": 5,
+              "points": 60
+            },
             {
               "modelCount": 10,
               "points": 95
@@ -3237,6 +3427,15 @@
             }
           ]
         },
+        "Lord Solar Leontus": {
+          "name": "Lord Solar Leontus",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 130
+            }
+          ]
+        },
         "Manticore": {
           "name": "Manticore",
           "variants": [
@@ -3330,12 +3529,39 @@
             }
           ]
         },
+        "Shadowsword": {
+          "name": "Shadowsword",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 410
+            }
+          ]
+        },
         "Sly Marbo": {
           "name": "Sly Marbo",
           "variants": [
             {
               "modelCount": 1,
               "points": 55
+            }
+          ]
+        },
+        "Stormlord": {
+          "name": "Stormlord",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 430
+            }
+          ]
+        },
+        "Stormsword": {
+          "name": "Stormsword",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 465
             }
           ]
         },
@@ -4595,8 +4821,8 @@
     },
     "CHAOS DAEMONS": {
       "name": "Chaos Daemons",
-      "unitCount": 60,
-      "totalPoints": 7930,
+      "unitCount": 63,
+      "totalPoints": 8485,
       "forgeWorldUnits": 0,
       "units": {
         "Beasts of Nurgle": {
@@ -4760,6 +4986,19 @@
             }
           ]
         },
+        "Fiends": {
+          "name": "Fiends",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 95
+            },
+            {
+              "modelCount": 6,
+              "points": 190
+            }
+          ]
+        },
         "Flamers": {
           "name": "Flamers",
           "variants": [
@@ -4850,6 +5089,15 @@
             {
               "modelCount": 1,
               "points": 75
+            }
+          ]
+        },
+        "Keeper of Secrets": {
+          "name": "Keeper of Secrets",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 270
             }
           ]
         },
@@ -5836,10 +6084,19 @@
     },
     "CHAOS SPACE MARINES": {
       "name": "Chaos Space Marines",
-      "unitCount": 55,
-      "totalPoints": 7370,
+      "unitCount": 58,
+      "totalPoints": 7970,
       "forgeWorldUnits": 0,
       "units": {
+        "Abaddon the Despoiler": {
+          "name": "Abaddon the Despoiler",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 270
+            }
+          ]
+        },
         "Accursed Cultists": {
           "name": "Accursed Cultists",
           "variants": [
@@ -5863,6 +6120,15 @@
             {
               "modelCount": 6,
               "points": 130
+            }
+          ]
+        },
+        "Chaos Land Raider": {
+          "name": "Chaos Land Raider",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 220
             }
           ]
         },
@@ -6260,6 +6526,15 @@
             {
               "modelCount": 1,
               "points": 175
+            }
+          ]
+        },
+        "Venomcrawler": {
+          "name": "Venomcrawler",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 110
             }
           ]
         },
@@ -7943,8 +8218,8 @@
     },
     "DEATHWATCH": {
       "name": "Deathwatch",
-      "unitCount": 5,
-      "totalPoints": 885,
+      "unitCount": 11,
+      "totalPoints": 2055,
       "forgeWorldUnits": 0,
       "units": {
         "Corvus Blackstar": {
@@ -7975,6 +8250,46 @@
             {
               "modelCount": 5,
               "points": 100
+            },
+            {
+              "modelCount": 10,
+              "points": 190
+            }
+          ]
+        },
+        "Fortis Kill Team": {
+          "name": "Fortis Kill Team",
+          "variants": [
+            {
+              "modelCount": 10,
+              "points": 180
+            }
+          ]
+        },
+        "Indomitor Kill Team": {
+          "name": "Indomitor Kill Team",
+          "variants": [
+            {
+              "modelCount": 10,
+              "points": 250
+            }
+          ]
+        },
+        "Spectrus Kill Team": {
+          "name": "Spectrus Kill Team",
+          "variants": [
+            {
+              "modelCount": 10,
+              "points": 180
+            }
+          ]
+        },
+        "Talonstrike Kill Team": {
+          "name": "Talonstrike Kill Team",
+          "variants": [
+            {
+              "modelCount": 10,
+              "points": 275
             }
           ]
         },
@@ -7984,6 +8299,15 @@
             {
               "modelCount": 1,
               "points": 65
+            }
+          ]
+        },
+        "Watch Master": {
+          "name": "Watch Master",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 95
             }
           ]
         }
@@ -8038,8 +8362,8 @@
     },
     "DRUKHARI": {
       "name": "Drukhari",
-      "unitCount": 32,
-      "totalPoints": 3355,
+      "unitCount": 33,
+      "totalPoints": 3440,
       "forgeWorldUnits": 0,
       "units": {
         "Archon": {
@@ -8075,6 +8399,10 @@
             {
               "modelCount": 1,
               "points": 50
+            },
+            {
+              "modelCount": 2,
+              "points": 85
             }
           ]
         },
@@ -8427,10 +8755,19 @@
     },
     "EMPEROR’S CHILDREN": {
       "name": "Emperor’s Children",
-      "unitCount": 21,
-      "totalPoints": 3070,
+      "unitCount": 26,
+      "totalPoints": 4140,
       "forgeWorldUnits": 0,
       "units": {
+        "Chaos Land Raider": {
+          "name": "Chaos Land Raider",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 220
+            }
+          ]
+        },
         "Chaos Rhino": {
           "name": "Chaos Rhino",
           "variants": [
@@ -8486,6 +8823,15 @@
             {
               "modelCount": 6,
               "points": 220
+            }
+          ]
+        },
+        "Fulgrim": {
+          "name": "Fulgrim",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 340
             }
           ]
         },
@@ -8588,6 +8934,28 @@
             {
               "modelCount": 6,
               "points": 190
+            }
+          ]
+        },
+        "Keeper of Secrets": {
+          "name": "Keeper of Secrets",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 270
+            }
+          ]
+        },
+        "Seekers": {
+          "name": "Seekers",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 80
+            },
+            {
+              "modelCount": 10,
+              "points": 160
             }
           ]
         },
@@ -8866,8 +9234,8 @@
     },
     "GENESTEALER CULTS": {
       "name": "Genestealer Cults",
-      "unitCount": 25,
-      "totalPoints": 2330,
+      "unitCount": 30,
+      "totalPoints": 2835,
       "forgeWorldUnits": 0,
       "units": {
         "Aberrants": {
@@ -8880,6 +9248,15 @@
             {
               "modelCount": 10,
               "points": 300
+            }
+          ]
+        },
+        "Abominant": {
+          "name": "Abominant",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 85
             }
           ]
         },
@@ -8981,6 +9358,19 @@
             }
           ]
         },
+        "Hybrid Metamorphs": {
+          "name": "Hybrid Metamorphs",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 70
+            },
+            {
+              "modelCount": 10,
+              "points": 140
+            }
+          ]
+        },
         "Jackal Alphus": {
           "name": "Jackal Alphus",
           "variants": [
@@ -9048,12 +9438,25 @@
             }
           ]
         },
+        "Primus": {
+          "name": "Primus",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 70
+            }
+          ]
+        },
         "Purestrain Genestealers": {
           "name": "Purestrain Genestealers",
           "variants": [
             {
               "modelCount": 5,
               "points": 75
+            },
+            {
+              "modelCount": 10,
+              "points": 140
             }
           ]
         },
@@ -9341,8 +9744,8 @@
     },
     "GREY KNIGHTS": {
       "name": "Grey Knights",
-      "unitCount": 34,
-      "totalPoints": 6840,
+      "unitCount": 36,
+      "totalPoints": 7330,
       "forgeWorldUnits": 1,
       "units": {
         "Brother-Captain": {
@@ -9460,12 +9863,30 @@
             }
           ]
         },
+        "Land Raider": {
+          "name": "Land Raider",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 220
+            }
+          ]
+        },
         "Land Raider Crusader": {
           "name": "Land Raider Crusader",
           "variants": [
             {
               "modelCount": 1,
               "points": 220
+            }
+          ]
+        },
+        "Land Raider Redeemer": {
+          "name": "Land Raider Redeemer",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 270
             }
           ]
         },
@@ -9916,8 +10337,8 @@
     },
     "IMPERIAL AGENTS": {
       "name": "Imperial Agents",
-      "unitCount": 27,
-      "totalPoints": 2380,
+      "unitCount": 29,
+      "totalPoints": 2665,
       "forgeWorldUnits": 0,
       "units": {
         "Callidus Assassin": {
@@ -9953,6 +10374,10 @@
             {
               "modelCount": 5,
               "points": 100
+            },
+            {
+              "modelCount": 10,
+              "points": 190
             }
           ]
         },
@@ -10155,6 +10580,15 @@
             {
               "modelCount": 1,
               "points": 65
+            }
+          ]
+        },
+        "Watch Master": {
+          "name": "Watch Master",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 95
             }
           ]
         }
@@ -10888,10 +11322,28 @@
     },
     "IMPERIAL KNIGHTS": {
       "name": "Imperial Knights",
-      "unitCount": 5,
-      "totalPoints": 2405,
+      "unitCount": 14,
+      "totalPoints": 5430,
       "forgeWorldUnits": 3,
       "units": {
+        "Armiger Helverin": {
+          "name": "Armiger Helverin",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 140
+            }
+          ]
+        },
+        "Armiger Warglaive": {
+          "name": "Armiger Warglaive",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 140
+            }
+          ]
+        },
         "Canis Rex": {
           "name": "Canis Rex",
           "variants": [
@@ -10901,12 +11353,75 @@
             }
           ]
         },
+        "Knight Castellan": {
+          "name": "Knight Castellan",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 410
+            }
+          ]
+        },
+        "Knight Defender": {
+          "name": "Knight Defender",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 425
+            }
+          ]
+        },
+        "Knight Errant": {
+          "name": "Knight Errant",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 375
+            }
+          ]
+        },
+        "Knight Gallant": {
+          "name": "Knight Gallant",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 375
+            }
+          ]
+        },
         "Knight Paladin": {
           "name": "Knight Paladin",
           "variants": [
             {
               "modelCount": 1,
               "points": 375
+            }
+          ]
+        },
+        "Knight Preceptor": {
+          "name": "Knight Preceptor",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 365
+            }
+          ]
+        },
+        "Knight Valiant": {
+          "name": "Knight Valiant",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 410
+            }
+          ]
+        },
+        "Knight Warden": {
+          "name": "Knight Warden",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 385
             }
           ]
         },
@@ -11690,8 +12205,8 @@
     },
     "NECRONS": {
       "name": "Necrons",
-      "unitCount": 64,
-      "totalPoints": 8865,
+      "unitCount": 67,
+      "totalPoints": 9535,
       "forgeWorldUnits": 1,
       "units": {
         "Annihilation Barge": {
@@ -12131,6 +12646,15 @@
             }
           ]
         },
+        "The Silent King": {
+          "name": "The Silent King",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 400
+            }
+          ]
+        },
         "Tomb Blades": {
           "name": "Tomb Blades",
           "variants": [
@@ -12159,6 +12683,19 @@
             {
               "modelCount": 1,
               "points": 75
+            }
+          ]
+        },
+        "Triarch Praetorians": {
+          "name": "Triarch Praetorians",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 90
+            },
+            {
+              "modelCount": 10,
+              "points": 180
             }
           ]
         },
@@ -12495,8 +13032,8 @@
     },
     "ORKS": {
       "name": "Orks",
-      "unitCount": 54,
-      "totalPoints": 7540,
+      "unitCount": 66,
+      "totalPoints": 8895,
       "forgeWorldUnits": 1,
       "units": {
         "Battlewagon": {
@@ -12530,6 +13067,15 @@
             }
           ]
         },
+        "Beastboss on Squigosaur": {
+          "name": "Beastboss on Squigosaur",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 110
+            }
+          ]
+        },
         "Big Mek": {
           "name": "Big Mek",
           "variants": [
@@ -12545,6 +13091,15 @@
             {
               "modelCount": 1,
               "points": 90
+            }
+          ]
+        },
+        "Big Mek with Shokk Attack Gun": {
+          "name": "Big Mek with Shokk Attack Gun",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 80
             }
           ]
         },
@@ -12572,6 +13127,15 @@
             {
               "modelCount": 1,
               "points": 70
+            }
+          ]
+        },
+        "Boss Snikrot": {
+          "name": "Boss Snikrot",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 75
             }
           ]
         },
@@ -12652,6 +13216,10 @@
             {
               "modelCount": 5,
               "points": 80
+            },
+            {
+              "modelCount": 10,
+              "points": 160
             }
           ]
         },
@@ -12735,6 +13303,27 @@
             }
           ]
         },
+        "Meganobz": {
+          "name": "Meganobz",
+          "variants": [
+            {
+              "modelCount": 2,
+              "points": 65
+            },
+            {
+              "modelCount": 3,
+              "points": 95
+            },
+            {
+              "modelCount": 5,
+              "points": 160
+            },
+            {
+              "modelCount": 6,
+              "points": 190
+            }
+          ]
+        },
         "Megatrakk Scrapjet": {
           "name": "Megatrakk Scrapjet",
           "variants": [
@@ -12776,6 +13365,15 @@
             {
               "modelCount": 1,
               "points": 280
+            }
+          ]
+        },
+        "Mozrog Skragbad": {
+          "name": "Mozrog Skragbad",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 145
             }
           ]
         },
@@ -12881,12 +13479,34 @@
             }
           ]
         },
+        "Warbikers": {
+          "name": "Warbikers",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 65
+            },
+            {
+              "modelCount": 6,
+              "points": 130
+            }
+          ]
+        },
         "Warboss": {
           "name": "Warboss",
           "variants": [
             {
               "modelCount": 1,
               "points": 75
+            }
+          ]
+        },
+        "Warboss in Mega Armour": {
+          "name": "Warboss in Mega Armour",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 80
             }
           ]
         },
@@ -13352,8 +13972,8 @@
     },
     "SPACE MARINES": {
       "name": "Space Marines",
-      "unitCount": 111,
-      "totalPoints": 15070,
+      "unitCount": 116,
+      "totalPoints": 16105,
       "forgeWorldUnits": 2,
       "units": {
         "Adrax Agatone": {
@@ -13380,6 +14000,10 @@
             {
               "modelCount": 3,
               "points": 100
+            },
+            {
+              "modelCount": 6,
+              "points": 200
             }
           ]
         },
@@ -13704,6 +14328,15 @@
             }
           ]
         },
+        "Gladiator Valiant": {
+          "name": "Gladiator Valiant",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 150
+            }
+          ]
+        },
         "Hammerfall Bunker": {
           "name": "Hammerfall Bunker",
           "variants": [
@@ -13867,12 +14500,30 @@
             }
           ]
         },
+        "Land Raider": {
+          "name": "Land Raider",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 220
+            }
+          ]
+        },
         "Land Raider Crusader": {
           "name": "Land Raider Crusader",
           "variants": [
             {
               "modelCount": 1,
               "points": 220
+            }
+          ]
+        },
+        "Land Raider Redeemer": {
+          "name": "Land Raider Redeemer",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 270
             }
           ]
         },
@@ -14003,6 +14654,15 @@
             {
               "modelCount": 1,
               "points": 95
+            }
+          ]
+        },
+        "Redemptor Dreadnought": {
+          "name": "Redemptor Dreadnought",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 195
             }
           ]
         },
@@ -15170,8 +15830,8 @@
     },
     "T’AU EMPIRE": {
       "name": "T’au Empire",
-      "unitCount": 46,
-      "totalPoints": 7890,
+      "unitCount": 53,
+      "totalPoints": 8815,
       "forgeWorldUnits": 4,
       "units": {
         "Breacher Team": {
@@ -15183,12 +15843,38 @@
             }
           ]
         },
+        "Broadside Battlesuits": {
+          "name": "Broadside Battlesuits",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 80
+            },
+            {
+              "modelCount": 2,
+              "points": 170
+            },
+            {
+              "modelCount": 3,
+              "points": 270
+            }
+          ]
+        },
         "Cadre Fireblade": {
           "name": "Cadre Fireblade",
           "variants": [
             {
               "modelCount": 1,
               "points": 50
+            }
+          ]
+        },
+        "Commander Farsight": {
+          "name": "Commander Farsight",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 85
             }
           ]
         },
@@ -15219,12 +15905,30 @@
             }
           ]
         },
+        "Crisis Fireknife Battlesuits": {
+          "name": "Crisis Fireknife Battlesuits",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 120
+            }
+          ]
+        },
         "Crisis Starscythe Battlesuits": {
           "name": "Crisis Starscythe Battlesuits",
           "variants": [
             {
               "modelCount": 3,
               "points": 110
+            }
+          ]
+        },
+        "Crisis Sunforge Battlesuits": {
+          "name": "Crisis Sunforge Battlesuits",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 140
             }
           ]
         },
@@ -15252,6 +15956,15 @@
             {
               "modelCount": 1,
               "points": 50
+            }
+          ]
+        },
+        "Firesight Team": {
+          "name": "Firesight Team",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 60
             }
           ]
         },
@@ -15856,8 +16569,8 @@
     },
     "THOUSAND SONS": {
       "name": "Thousand Sons",
-      "unitCount": 28,
-      "totalPoints": 3835,
+      "unitCount": 32,
+      "totalPoints": 4655,
       "forgeWorldUnits": 0,
       "units": {
         "Ahriman": {
@@ -15866,6 +16579,15 @@
             {
               "modelCount": 1,
               "points": 100
+            }
+          ]
+        },
+        "Chaos Land Raider": {
+          "name": "Chaos Land Raider",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 220
             }
           ]
         },
@@ -16010,6 +16732,23 @@
             {
               "modelCount": 5,
               "points": 180
+            },
+            {
+              "modelCount": 10,
+              "points": 360
+            }
+          ]
+        },
+        "Sekhetar Robots": {
+          "name": "Sekhetar Robots",
+          "variants": [
+            {
+              "modelCount": 2,
+              "points": 80
+            },
+            {
+              "modelCount": 4,
+              "points": 160
             }
           ]
         },
@@ -16363,8 +17102,8 @@
     },
     "TYRANIDS": {
       "name": "Tyranids",
-      "unitCount": 68,
-      "totalPoints": 9105,
+      "unitCount": 72,
+      "totalPoints": 9610,
       "forgeWorldUnits": 2,
       "units": {
         "Barbgaunts": {
@@ -16456,6 +17195,10 @@
             {
               "modelCount": 5,
               "points": 75
+            },
+            {
+              "modelCount": 10,
+              "points": 140
             }
           ]
         },
@@ -16539,6 +17282,15 @@
             }
           ]
         },
+        "Mawloc": {
+          "name": "Mawloc",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 135
+            }
+          ]
+        },
         "Mucolid Spores": {
           "name": "Mucolid Spores",
           "variants": [
@@ -16562,6 +17314,15 @@
             {
               "modelCount": 22,
               "points": 90
+            }
+          ]
+        },
+        "Neurolictor": {
+          "name": "Neurolictor",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 70
             }
           ]
         },
@@ -16707,6 +17468,15 @@
             {
               "modelCount": 20,
               "points": 120
+            }
+          ]
+        },
+        "Tervigon": {
+          "name": "Tervigon",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 160
             }
           ]
         },
@@ -17287,10 +18057,28 @@
     },
     "WORLD EATERS": {
       "name": "World Eaters",
-      "unitCount": 26,
-      "totalPoints": 4340,
+      "unitCount": 34,
+      "totalPoints": 6270,
       "forgeWorldUnits": 0,
       "units": {
+        "Angron": {
+          "name": "Angron",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 360
+            }
+          ]
+        },
+        "Chaos Land Raider": {
+          "name": "Chaos Land Raider",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 220
+            }
+          ]
+        },
         "Chaos Predator Annihilator": {
           "name": "Chaos Predator Annihilator",
           "variants": [
@@ -17318,6 +18106,19 @@
             }
           ]
         },
+        "Chaos Terminators": {
+          "name": "Chaos Terminators",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 175
+            },
+            {
+              "modelCount": 10,
+              "points": 350
+            }
+          ]
+        },
         "Daemon Prince of Khorne": {
           "name": "Daemon Prince of Khorne",
           "variants": [
@@ -17342,6 +18143,32 @@
             {
               "modelCount": 1,
               "points": 180
+            }
+          ]
+        },
+        "Eightbound": {
+          "name": "Eightbound",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 135
+            },
+            {
+              "modelCount": 6,
+              "points": 270
+            }
+          ]
+        },
+        "Exalted Eightbound": {
+          "name": "Exalted Eightbound",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 140
+            },
+            {
+              "modelCount": 6,
+              "points": 280
             }
           ]
         },
