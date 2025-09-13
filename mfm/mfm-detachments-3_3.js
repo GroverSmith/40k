@@ -1,5 +1,5 @@
-// MFM 3.3 Detachments Data - Generated with corrected structure
-// Generated on 2025-09-13T18:07:23.132Z
+// MFM 3.3 Detachments Data - Generated from UI Parser
+// Generated on 2025-09-13T18:20:16.478Z
 
 window.MFM_DETACHMENTS_3_3 = {
   "metadata": {

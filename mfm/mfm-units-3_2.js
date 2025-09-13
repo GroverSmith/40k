@@ -1,5 +1,5 @@
-// MFM 3.2 Units Data - Generated with corrected structure
-// Generated on 2025-09-13T18:07:23.127Z
+// MFM 3.2 Units Data - Generated from UI Parser
+// Generated on 2025-09-13T18:13:42.466Z
 
 window.MFM_UNITS_3_2 = {
   "metadata": {
