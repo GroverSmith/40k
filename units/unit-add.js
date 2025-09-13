@@ -31,6 +31,11 @@ class UnitForm extends BaseForm {
 
         // Setup MFM integration
         await UnitFormUtilities.setupMFMIntegration(this.form, this.forceContext.faction);
+        
+        // Listen for MFM version changes
+        document.addEventListener('mfmVersionChanged', (event) => {
+            this.handleMFMVersionChange(event.detail.version);
+        });
     }
 
     async loadForceContext() {
@@ -101,6 +106,11 @@ class UnitForm extends BaseForm {
             const element = CoreUtils.dom.getElement(id);
             if (element) element.href = forceUrl;
         });
+    }
+
+    async handleMFMVersionChange(version) {
+        // Reload MFM data with the new version
+        await UnitFormUtilities.loadMFMData(this.forceContext.faction, version);
     }
 
 

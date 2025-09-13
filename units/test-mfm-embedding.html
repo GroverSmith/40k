@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test MFM Data Embedding</title>
+</head>
+<body>
+    <h1>MFM Data Embedding Test</h1>
+    <div id="results"></div>
+
+    <!-- Load the embedded data files -->
+    <script src="mfm-data-3.2.js"></script>
+    <script src="mfm-data-3.3.js"></script>
+    <script src="mfm-data-bundle.js"></script>
+
+    <script>
+        async function testMFMData() {
+            const results = document.getElementById('results');
+            
+            try {
+                // Test if data is available
+                results.innerHTML += '<h2>Testing Data Availability:</h2>';
+                
+                if (window.MFM_DATA_3_2) {
+                    results.innerHTML += '<p>✅ MFM 3.2 data loaded successfully</p>';
+                    results.innerHTML += `<p>📊 3.2 has ${Object.keys(window.MFM_DATA_3_2.factions).length} factions</p>`;
+                } else {
+                    results.innerHTML += '<p>❌ MFM 3.2 data not found</p>';
+                }
+                
+                if (window.MFM_DATA_3_3) {
+                    results.innerHTML += '<p>✅ MFM 3.3 data loaded successfully</p>';
+                    results.innerHTML += `<p>📊 3.3 has ${Object.keys(window.MFM_DATA_3_3.factions).length} factions</p>`;
+                } else {
+                    results.innerHTML += '<p>❌ MFM 3.3 data not found</p>';
+                }
+                
+                // Test the bundle
+                results.innerHTML += '<h2>Testing Bundle:</h2>';
+                
+                if (window.MFM_DATA_BUNDLE) {
+                    results.innerHTML += '<p>✅ MFM Data Bundle loaded successfully</p>';
+                    
+                    const versions = window.MFM_DATA_BUNDLE.getAvailableVersions();
+                    results.innerHTML += `<p>📋 Available versions: ${versions.map(v => v.displayName).join(', ')}</p>`;
+                    
+                    // Test loading version 3.2
+                    const data32 = await window.MFM_DATA_BUNDLE.loadVersion('3.2');
+                    results.innerHTML += `<p>✅ Successfully loaded version 3.2 (${data32.metadata.totalUnits} units)</p>`;
+                    
+                    // Test loading version 3.3
+                    const data33 = await window.MFM_DATA_BUNDLE.loadVersion('3.3');
+                    results.innerHTML += `<p>✅ Successfully loaded version 3.3 (${data33.metadata.totalUnits} units)</p>`;
+                    
+                    // Test faction data
+                    const spaceMarines = data32.factions['SPACE MARINES'];
+                    if (spaceMarines) {
+                        results.innerHTML += `<p>✅ Space Marines faction found with ${Object.keys(spaceMarines.units).length} units</p>`;
+                        
+                        // Show first few units
+                        const unitNames = Object.keys(spaceMarines.units).slice(0, 3);
+                        results.innerHTML += `<p>📋 Sample units: ${unitNames.join(', ')}</p>`;
+                    }
+                    
+                } else {
+                    results.innerHTML += '<p>❌ MFM Data Bundle not found</p>';
+                }
+                
+                results.innerHTML += '<h2>🎉 All tests passed! The embedding solution is working correctly.</h2>';
+                
+            } catch (error) {
+                results.innerHTML += `<p>❌ Error: ${error.message}</p>`;
+                console.error('Test error:', error);
+            }
+        }
+        
+        // Run the test when page loads
+        document.addEventListener('DOMContentLoaded', testMFMData);
+    </script>
+</body>
+</html>

@@ -11,6 +11,9 @@ class UnitFormUtilities {
         const presetContainer = CoreUtils.dom.getElement('mfm-preset-container');
         const customContainer = CoreUtils.dom.getElement('mfm-custom-container');
 
+        // Setup version selector if available
+        this.setupVersionSelector();
+
         if (presetRadio && customRadio && presetContainer && customContainer) {
             presetRadio.addEventListener('change', () => {
                 if (presetRadio.checked) {
@@ -19,7 +22,7 @@ class UnitFormUtilities {
                     this.switchToDropdownMode();
                     this.hideUnitTypeField();
                     this.hidePointsField();
-                    this.loadMFMData(faction);
+                    this.loadMFMData(faction, this.getSelectedVersion());
                 }
             });
 
@@ -38,7 +41,7 @@ class UnitFormUtilities {
         if (presetRadio && presetRadio.checked) {
             this.hideUnitTypeField();
             this.hidePointsField();
-            this.loadMFMData(faction);
+            this.loadMFMData(faction, this.getSelectedVersion());
         } else {
             this.showUnitTypeField();
             this.showPointsField();
@@ -46,9 +49,67 @@ class UnitFormUtilities {
     }
 
     /**
+     * Setup version selector dropdown
+     */
+    static setupVersionSelector() {
+        const versionSelect = CoreUtils.dom.getElement('mfm-version-preset');
+        if (!versionSelect || typeof window.MFM_UNITS_BUNDLE === 'undefined') {
+            return;
+        }
+
+        // Clear existing options
+        versionSelect.innerHTML = '';
+
+        // Populate with available versions
+        const versions = window.MFM_UNITS_BUNDLE.getAvailableVersions();
+        versions.forEach(version => {
+            const option = document.createElement('option');
+            option.value = version.value;
+            option.textContent = version.displayName;
+            versionSelect.appendChild(option);
+        });
+
+        // Add change listener
+        versionSelect.addEventListener('change', () => {
+            const presetRadio = CoreUtils.dom.getElement('mfm-preset');
+            if (presetRadio && presetRadio.checked) {
+                // Reload data with new version - faction will be passed from the calling context
+                // We'll trigger a custom event that the calling code can listen to
+                const event = new CustomEvent('mfmVersionChanged', {
+                    detail: { version: this.getSelectedVersion() }
+                });
+                document.dispatchEvent(event);
+            }
+        });
+    }
+
+    /**
+     * Get currently selected version
+     */
+    static getSelectedVersion() {
+        const versionSelect = CoreUtils.dom.getElement('mfm-version-preset');
+        return versionSelect ? versionSelect.value : '3.2';
+    }
+
+    /**
+     * Get current faction (helper method)
+     */
+    static getCurrentFaction() {
+        // This would need to be passed from the calling context
+        // For now, we'll try to get it from the form context
+        const forceKeyField = CoreUtils.dom.getElement('force-key');
+        if (forceKeyField && forceKeyField.value) {
+            // We'd need to look up the faction from the force data
+            // This is a simplified approach - in practice, you'd want to pass faction explicitly
+            return null; // Will be handled by the calling code
+        }
+        return null;
+    }
+
+    /**
      * Load MFM data and populate data sheet options
      */
-    static async loadMFMData(faction) {
+    static async loadMFMData(faction, version = '3.2') {
         const dataSheetField = CoreUtils.dom.getElement('data-sheet');
         if (dataSheetField && dataSheetField.tagName === 'SELECT') {
             dataSheetField.innerHTML = '<option value="">-- Loading MFM data... --</option>';
@@ -56,15 +117,17 @@ class UnitFormUtilities {
         }
 
         try {
-            // Check if embedded data is available
-            if (typeof window.EMBEDDED_MFM_DATA !== 'undefined') {
-                this.mfmData = window.EMBEDDED_MFM_DATA;
+            // Use the MFM units bundle to load the specified version
+            if (typeof window.MFM_UNITS_BUNDLE !== 'undefined') {
+                this.mfmData = await window.MFM_UNITS_BUNDLE.loadVersion(version);
+                // Set for backward compatibility
+                window.EMBEDDED_MFM_DATA = this.mfmData;
                 this.populateDataSheetOptions(faction);
             } else {
-                // Fallback to fetch if embedded data is not available
-                const response = await fetch('../mfm/mfm-3_2.json');
+                // Fallback to direct fetch if bundle is not available
+                const response = await fetch(`../mfm/mfm-units-${version.replace('.', '_')}.json`);
                 if (!response.ok) {
-                    throw new Error(`Failed to load MFM data: ${response.status}`);
+                    throw new Error(`Failed to load MFM units data: ${response.status}`);
                 }
                 
                 this.mfmData = await response.json();

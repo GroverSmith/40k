@@ -224,7 +224,7 @@
 <body>
     <div class="container">
         <h1>Warhammer 40k MFM Parser - UI Optimized</h1>
-        <p>This tool parses the Munitorum Field Manual (MFM) to extract unit points costs and details using the improved UI-optimized parser.</p>
+        <p>This tool parses the Munitorum Field Manual (MFM) to extract unit points costs and details. Now with direct export to separated JavaScript files for GitHub Pages!</p>
         
         <div class="instructions">
             <h3>📁 How to Use:</h3>
@@ -232,6 +232,14 @@
                 <li>Click "Choose File" below and select the <code>RAW_MFM_3_2_AUG25.txt</code> file</li>
                 <li>Or drag and drop the file onto the upload area</li>
                 <li>The parser will automatically process the file and display results</li>
+                <li>Use the export buttons to save data in different formats:
+                    <ul>
+                        <li><strong>Export UI-Optimized JSON</strong> - Complete data structure</li>
+                        <li><strong>Export CSV</strong> - Units data in spreadsheet format</li>
+                        <li><strong>Export Units JS</strong> - Units data as JavaScript file for GitHub Pages</li>
+                        <li><strong>Export Detachments JS</strong> - Detachments data as JavaScript file for GitHub Pages</li>
+                    </ul>
+                </li>
             </ol>
         </div>
 
@@ -244,6 +252,8 @@
         <div class="controls">
             <button onclick="exportToJSON()" id="exportJsonBtn" disabled>Export UI-Optimized JSON</button>
             <button onclick="exportToCSV()" id="exportCsvBtn" disabled>Export CSV</button>
+            <button onclick="exportUnitsJS()" id="exportUnitsBtn" disabled>Export Units JS</button>
+            <button onclick="exportDetachmentsJS()" id="exportDetachmentsBtn" disabled>Export Detachments JS</button>
         </div>
 
         <div id="loading" class="loading" style="display: none;">
@@ -339,6 +349,8 @@
             const results = document.getElementById('results');
             const exportJsonBtn = document.getElementById('exportJsonBtn');
             const exportCsvBtn = document.getElementById('exportCsvBtn');
+            const exportUnitsBtn = document.getElementById('exportUnitsBtn');
+            const exportDetachmentsBtn = document.getElementById('exportDetachmentsBtn');
 
             // Show loading
             loading.style.display = 'block';
@@ -414,6 +426,8 @@
                     // Enable export buttons
                     exportJsonBtn.disabled = false;
                     exportCsvBtn.disabled = false;
+                    exportUnitsBtn.disabled = false;
+                    exportDetachmentsBtn.disabled = false;
 
                 } catch (err) {
                     error.textContent = `Error parsing file: ${err.message}`;
@@ -607,6 +621,129 @@
             const version = metadata.version.replace('.', '_');
             const date = metadata.date;
             const filename = `mfm-${version}-${date}-units.csv`;
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        function exportUnitsJS() {
+            if (!parsedData) return;
+
+            // Create units data structure
+            const unitsData = {
+                metadata: {
+                    version: parsedData.uiData.metadata.version,
+                    date: parsedData.uiData.metadata.date,
+                    totalUnits: parsedData.uiData.metadata.totalUnits,
+                    factionCount: parsedData.uiData.metadata.factionCount,
+                    type: "units"
+                },
+                factions: {}
+            };
+
+            // Process each faction
+            Object.keys(parsedData.uiData.factions).forEach(factionKey => {
+                const faction = parsedData.uiData.factions[factionKey];
+                
+                unitsData.factions[factionKey] = {
+                    name: faction.name,
+                    unitCount: faction.unitCount,
+                    totalPoints: faction.totalPoints,
+                    forgeWorldUnits: faction.forgeWorldUnits,
+                    units: faction.units
+                };
+            });
+
+            // Create JavaScript content
+            const versionKey = unitsData.metadata.version.replace('.', '_');
+            const jsContent = `// MFM ${unitsData.metadata.version} Units Data - Generated from UI Parser
+// Generated on ${new Date().toISOString()}
+
+window.MFM_UNITS_${versionKey} = ${JSON.stringify(unitsData, null, 2)};
+
+// Export for module systems
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = window.MFM_UNITS_${versionKey};
+}`;
+
+            const dataBlob = new Blob([jsContent], {type: 'application/javascript'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const filename = `mfm-units-${versionKey}.js`;
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        function exportDetachmentsJS() {
+            if (!parsedData) return;
+
+            // Create detachments data structure with corrected naming
+            const detachmentsData = {
+                metadata: {
+                    version: parsedData.uiData.metadata.version,
+                    date: parsedData.uiData.metadata.date,
+                    totalEnhancements: parsedData.uiData.metadata.totalEnhancements,
+                    factionCount: parsedData.uiData.metadata.factionCount,
+                    type: "detachments"
+                },
+                factions: {}
+            };
+
+            // Process each faction
+            Object.keys(parsedData.uiData.factions).forEach(factionKey => {
+                const faction = parsedData.uiData.factions[factionKey];
+                
+                detachmentsData.factions[factionKey] = {
+                    name: faction.name,
+                    detachmentCount: 0,
+                    detachments: {}
+                };
+
+                // Process detachments and group them by detachment name
+                if (faction.detachments) {
+                    const detachmentGroups = {};
+                    
+                    faction.detachments.forEach(detachment => {
+                        if (!detachmentGroups[detachment.name]) {
+                            detachmentGroups[detachment.name] = {
+                                name: detachment.name,
+                                enhancements: []
+                            };
+                        }
+                        
+                        detachmentGroups[detachment.name].enhancements = detachment.enhancements;
+                    });
+                    
+                    detachmentsData.factions[factionKey].detachments = detachmentGroups;
+                    detachmentsData.factions[factionKey].detachmentCount = Object.keys(detachmentGroups).length;
+                }
+            });
+
+            // Create JavaScript content
+            const versionKey = detachmentsData.metadata.version.replace('.', '_');
+            const jsContent = `// MFM ${detachmentsData.metadata.version} Detachments Data - Generated from UI Parser
+// Generated on ${new Date().toISOString()}
+
+window.MFM_DETACHMENTS_${versionKey} = ${JSON.stringify(detachmentsData, null, 2)};
+
+// Export for module systems
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = window.MFM_DETACHMENTS_${versionKey};
+}`;
+
+            const dataBlob = new Blob([jsContent], {type: 'application/javascript'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const filename = `mfm-detachments-${versionKey}.js`;
             
             const link = document.createElement('a');
             link.href = url;
