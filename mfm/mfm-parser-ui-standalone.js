@@ -10,6 +10,8 @@ class MFMParserUIStandalone {
         this.currentDetachment = null;
         this.isForgeWorld = false;
         this.isEnhancementSection = false;
+        this.isImperialAgents = false;
+        this.imperialAgentsSubsection = null; // 'AGENTS_OF_THE_IMPERIUM' or 'EVERY_MODEL_HAS_IMPERIUM'
     }
 
     /**
@@ -25,16 +27,51 @@ class MFMParserUIStandalone {
         this.currentDetachment = null;
         this.isForgeWorld = false;
         this.isEnhancementSection = false;
+        this.isImperialAgents = false;
+        this.imperialAgentsSubsection = null;
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
             
             if (this.isFactionHeader(line)) {
-                this.currentFaction = this.extractFactionName(line);
+                if (this.isImperialAgentsSection(line)) {
+                    this.isImperialAgents = true;
+                    this.imperialAgentsSubsection = null;
+                    this.currentFaction = null; // Will be set when we hit a subsection
+                    this.currentDetachment = null;
+                    this.isForgeWorld = false;
+                    this.isEnhancementSection = false;
+                } else {
+                    this.isImperialAgents = false;
+                    this.imperialAgentsSubsection = null;
+                    this.currentFaction = this.extractFactionName(line);
+                    this.currentDetachment = null;
+                    this.isForgeWorld = false;
+                    this.isEnhancementSection = false;
+                }
+                continue;
+            }
+
+            if (this.isImperialAgents && this.isAgentsOfTheImperiumSubsection(line)) {
+                this.imperialAgentsSubsection = 'AGENTS_OF_THE_IMPERIUM';
+                this.currentFaction = 'IMPERIAL AGENTS';
                 this.currentDetachment = null;
                 this.isForgeWorld = false;
                 this.isEnhancementSection = false;
                 continue;
+            }
+
+            if (this.isImperialAgents && this.isEveryModelHasImperiumSubsection(line)) {
+                // Check if the next line completes the subsection
+                if (i + 1 < lines.length && this.isImperiumKeywordLine(lines[i + 1].trim())) {
+                    this.imperialAgentsSubsection = 'EVERY_MODEL_HAS_IMPERIUM';
+                    this.currentFaction = 'IMPERIAL AGENTS (ALLIES)';
+                    this.currentDetachment = null;
+                    this.isForgeWorld = false;
+                    this.isEnhancementSection = false;
+                    i++; // Skip the next line since we've processed it
+                    continue;
+                }
             }
 
             if (this.isForgeWorldSection(line)) {
@@ -77,6 +114,34 @@ class MFMParserUIStandalone {
      */
     isFactionHeader(line) {
         return line.startsWith('CODEX:') || line.startsWith('INDEX:');
+    }
+
+    /**
+     * Check if line indicates the start of Imperial Agents section
+     */
+    isImperialAgentsSection(line) {
+        return line.includes('CODEX: IMPERIAL AGENTS');
+    }
+
+    /**
+     * Check if line indicates the "AGENTS OF THE IMPERIUM" subsection
+     */
+    isAgentsOfTheImperiumSubsection(line) {
+        return line.includes('AGENTS OF THE IMPERIUM');
+    }
+
+    /**
+     * Check if line indicates the "EVERY MODEL HAS IMPERIUM KEYWORD" subsection
+     */
+    isEveryModelHasImperiumSubsection(line) {
+        return line.includes('EVERY MODEL HAS');
+    }
+
+    /**
+     * Check if the next line completes the "EVERY MODEL HAS IMPERIUM KEYWORD" subsection
+     */
+    isImperiumKeywordLine(line) {
+        return line.includes('IMPERIUM KEYWORD');
     }
 
     /**
@@ -248,7 +313,6 @@ class MFMParserUIStandalone {
             detachment: this.currentDetachment,
             enhancementName: enhancementName,
             points: points,
-            isForgeWorld: this.isForgeWorld,
             lineNumber: lineIndex + 1
         };
     }
@@ -280,7 +344,6 @@ class MFMParserUIStandalone {
                 totalEnhancements: enhancements.length,
                 totalPoints: 0,
                 forgeWorldUnits: 0,
-                forgeWorldEnhancements: 0,
                 factionCount: 0
             },
             factions: {}
@@ -393,43 +456,26 @@ class MFMParserUIStandalone {
                 
                 result.factions[factionKey].enhancements[detachmentKey] = {
                     name: detachmentKey,
-                    enhancements: detachmentEnhancements.map(enhancement => {
-                        const enhancementData = {
-                            name: enhancement.enhancementName,
-                            points: enhancement.points
-                        };
-                        // Only include isForgeWorld if it's true
-                        if (enhancement.isForgeWorld) {
-                            enhancementData.isForgeWorld = true;
-                        }
-                        return enhancementData;
-                    }).sort((a, b) => a.points - b.points) // Sort by points
+                    enhancements: detachmentEnhancements.map(enhancement => ({
+                        name: enhancement.enhancementName,
+                        points: enhancement.points
+                    })).sort((a, b) => a.points - b.points) // Sort by points
                 };
 
                 // Add detachment to detachments array
                 result.factions[factionKey].detachments.push({
                     name: detachmentKey,
                     enhancementCount: detachmentEnhancements.length,
-                    enhancements: detachmentEnhancements.map(enhancement => {
-                        const enhancementData = {
-                            name: enhancement.enhancementName,
-                            points: enhancement.points
-                        };
-                        // Only include isForgeWorld if it's true
-                        if (enhancement.isForgeWorld) {
-                            enhancementData.isForgeWorld = true;
-                        }
-                        return enhancementData;
-                    }).sort((a, b) => a.points - b.points) // Sort by points
+                    enhancements: detachmentEnhancements.map(enhancement => ({
+                        name: enhancement.enhancementName,
+                        points: enhancement.points
+                    })).sort((a, b) => a.points - b.points) // Sort by points
                 });
             });
 
             // Update global enhancement stats
             factionEnhancements.forEach(enhancement => {
                 result.metadata.totalPoints += enhancement.points;
-                if (enhancement.isForgeWorld) {
-                    result.metadata.forgeWorldEnhancements++;
-                }
             });
         });
 
@@ -462,6 +508,14 @@ class MFMParserUIStandalone {
      * Format faction name for display
      */
     formatFactionName(factionKey) {
+        // Handle special cases first
+        if (factionKey === 'IMPERIAL AGENTS') {
+            return 'Imperial Agents';
+        }
+        if (factionKey === 'IMPERIAL AGENTS (ALLIES)') {
+            return 'Imperial Agents (Allies)';
+        }
+        
         // Convert "SPACE MARINES" to "Space Marines"
         return factionKey
             .split(' ')

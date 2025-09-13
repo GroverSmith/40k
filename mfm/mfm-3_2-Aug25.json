@@ -1,13 +1,12 @@
 {
   "metadata": {
     "version": "3.2",
-    "date": "AUG25",
-    "totalUnits": 1214,
-    "totalEnhancements": 713,
+    "date": "Aug25",
+    "totalUnits": 1259,
+    "totalEnhancements": 668,
     "totalPoints": 211460,
     "forgeWorldUnits": 53,
-    "forgeWorldEnhancements": 286,
-    "factionCount": 27
+    "factionCount": 28
   },
   "factions": {
     "ADEPTA SORORITAS": {
@@ -925,23 +924,19 @@
           "enhancements": [
             {
               "name": "Inspirational Exemplar",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Blade Imperator",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Veiled Blade",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Martial Philosopher",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -951,23 +946,19 @@
           "enhancements": [
             {
               "name": "Admonimortis",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Fierce Conqueror",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Praesidius",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Superior Creation",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -977,23 +968,19 @@
           "enhancements": [
             {
               "name": "Raptor Blade",
-              "points": 5,
-              "isForgeWorld": true
+              "points": 5
             },
             {
               "name": "Enhanced Voidsheen Cloak",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Huntress’ Eye",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Oblivion Knight",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -1003,23 +990,19 @@
           "enhancements": [
             {
               "name": "Panoptispex",
-              "points": 5,
-              "isForgeWorld": true
+              "points": 5
             },
             {
               "name": "Auric Mantle",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Castellan’s Mark",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "From the Hall of Armouries",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -1029,23 +1012,19 @@
           "enhancements": [
             {
               "name": "Veteran of the Kataphraktoi",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Honoured Fallen",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Adamantine Talisman",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Augury Uplink",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -1055,23 +1034,19 @@
           "enhancements": [
             {
               "name": "Gift of Terran Artifice",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Aegis Projector",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Champion of the Imperium",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Radiant Mantle",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         }
@@ -1082,23 +1057,19 @@
           "enhancements": [
             {
               "name": "Inspirational Exemplar",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Blade Imperator",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Veiled Blade",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Martial Philosopher",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -1107,23 +1078,19 @@
           "enhancements": [
             {
               "name": "Admonimortis",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Fierce Conqueror",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Praesidius",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Superior Creation",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -1132,23 +1099,19 @@
           "enhancements": [
             {
               "name": "Raptor Blade",
-              "points": 5,
-              "isForgeWorld": true
+              "points": 5
             },
             {
               "name": "Enhanced Voidsheen Cloak",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Huntress’ Eye",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Oblivion Knight",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -1157,23 +1120,19 @@
           "enhancements": [
             {
               "name": "Panoptispex",
-              "points": 5,
-              "isForgeWorld": true
+              "points": 5
             },
             {
               "name": "Auric Mantle",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Castellan’s Mark",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "From the Hall of Armouries",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -1182,23 +1141,19 @@
           "enhancements": [
             {
               "name": "Veteran of the Kataphraktoi",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Honoured Fallen",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Adamantine Talisman",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Augury Uplink",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -1207,23 +1162,19 @@
           "enhancements": [
             {
               "name": "Gift of Terran Artifice",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Aegis Projector",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Champion of the Imperium",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Radiant Mantle",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         }
@@ -2606,23 +2557,19 @@
           "enhancements": [
             {
               "name": "Guileful Strategist",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Spirit Stone of Raelyth",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Guiding Presence",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Harmonisation Matrix",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -2632,23 +2579,19 @@
           "enhancements": [
             {
               "name": "Shimmerstone",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Strategic Savant",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Aspect of Murder",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Mantle of Wisdom",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -2658,23 +2601,19 @@
           "enhancements": [
             {
               "name": "Borrowed Vigour",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Storm of Whispers",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Gaze of Ynnead",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Morbid Might",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             }
           ]
         },
@@ -2684,23 +2623,19 @@
           "enhancements": [
             {
               "name": "Mask of Secrets",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Mistweave",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Murder’s Jest",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Cegorach’s Coil",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -2710,23 +2645,19 @@
           "enhancements": [
             {
               "name": "Breath of Vaul",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Protector of the Paths",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Craftworld’s Champion",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Ethereal Pathway",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -2736,23 +2667,19 @@
           "enhancements": [
             {
               "name": "Stone of Eldritch Fury",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Torc of Morai-Heg",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Runes of Warding",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Lucid Eye",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -2762,23 +2689,19 @@
           "enhancements": [
             {
               "name": "Rune of Mists",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Stave of Kurnous",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Higher Duty",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Light of Clarity",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -2788,23 +2711,19 @@
           "enhancements": [
             {
               "name": "Gift of Foresight",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Timeless Strategist",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Psychic Destroyer",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Phoenix Gem",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -2814,23 +2733,19 @@
           "enhancements": [
             {
               "name": "Firstdrawn Blade",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Seersight Strike",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Echoes of Ulthanesh",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Mirage Field",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         }
@@ -2841,23 +2756,19 @@
           "enhancements": [
             {
               "name": "Guileful Strategist",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Spirit Stone of Raelyth",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Guiding Presence",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Harmonisation Matrix",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -2866,23 +2777,19 @@
           "enhancements": [
             {
               "name": "Shimmerstone",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Strategic Savant",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Aspect of Murder",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Mantle of Wisdom",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -2891,23 +2798,19 @@
           "enhancements": [
             {
               "name": "Borrowed Vigour",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Storm of Whispers",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Gaze of Ynnead",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Morbid Might",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             }
           ]
         },
@@ -2916,23 +2819,19 @@
           "enhancements": [
             {
               "name": "Mask of Secrets",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Mistweave",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Murder’s Jest",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Cegorach’s Coil",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -2941,23 +2840,19 @@
           "enhancements": [
             {
               "name": "Breath of Vaul",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Protector of the Paths",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Craftworld’s Champion",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Ethereal Pathway",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -2966,23 +2861,19 @@
           "enhancements": [
             {
               "name": "Stone of Eldritch Fury",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Torc of Morai-Heg",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Runes of Warding",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Lucid Eye",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -2991,23 +2882,19 @@
           "enhancements": [
             {
               "name": "Rune of Mists",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Stave of Kurnous",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Higher Duty",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Light of Clarity",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -3016,23 +2903,19 @@
           "enhancements": [
             {
               "name": "Gift of Foresight",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Timeless Strategist",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Psychic Destroyer",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Phoenix Gem",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -3041,23 +2924,19 @@
           "enhancements": [
             {
               "name": "Firstdrawn Blade",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Seersight Strike",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Echoes of Ulthanesh",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Mirage Field",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         }
@@ -3721,23 +3600,19 @@
           "enhancements": [
             {
               "name": "Advance Augury",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Shroud Projector",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Priority-drop Beacon",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Bombast-class Vox-array",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -3747,23 +3622,19 @@
           "enhancements": [
             {
               "name": "Death Mask of Ollanius",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Grand Strategist",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Reactive Command",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Drill Commander",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -3773,23 +3644,19 @@
           "enhancements": [
             {
               "name": "Calm Under Fire",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Indomitable Steed",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Regimental Banner",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Veteran Crew",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -3799,23 +3666,19 @@
           "enhancements": [
             {
               "name": "Sacred Unguents",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Smoke Grenades",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Vanguard Honours",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Bold Leadership",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -3825,23 +3688,19 @@
           "enhancements": [
             {
               "name": "Scare Gas Grenades",
-              "points": 5,
-              "isForgeWorld": true
+              "points": 5
             },
             {
               "name": "Survival Gear",
-              "points": 5,
-              "isForgeWorld": true
+              "points": 5
             },
             {
               "name": "Tripwires",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Guerrilla Honours",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -3851,23 +3710,19 @@
           "enhancements": [
             {
               "name": "Legacy Sidearm",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Stalwart’s Honours",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Eager Advance",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Flash Grenades",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         }
@@ -3878,23 +3733,19 @@
           "enhancements": [
             {
               "name": "Advance Augury",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Shroud Projector",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Priority-drop Beacon",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Bombast-class Vox-array",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -3903,23 +3754,19 @@
           "enhancements": [
             {
               "name": "Death Mask of Ollanius",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Grand Strategist",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Reactive Command",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Drill Commander",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -3928,23 +3775,19 @@
           "enhancements": [
             {
               "name": "Calm Under Fire",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Indomitable Steed",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Regimental Banner",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Veteran Crew",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -3953,23 +3796,19 @@
           "enhancements": [
             {
               "name": "Sacred Unguents",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Smoke Grenades",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Vanguard Honours",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Bold Leadership",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -3978,23 +3817,19 @@
           "enhancements": [
             {
               "name": "Scare Gas Grenades",
-              "points": 5,
-              "isForgeWorld": true
+              "points": 5
             },
             {
               "name": "Survival Gear",
-              "points": 5,
-              "isForgeWorld": true
+              "points": 5
             },
             {
               "name": "Tripwires",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Guerrilla Honours",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -4003,23 +3838,19 @@
           "enhancements": [
             {
               "name": "Legacy Sidearm",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Stalwart’s Honours",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Eager Advance",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Flash Grenades",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         }
@@ -4027,8 +3858,8 @@
     },
     "BLACK TEMPLARS": {
       "name": "Black Templars",
-      "unitCount": 22,
-      "totalPoints": 3270,
+      "unitCount": 30,
+      "totalPoints": 4460,
       "forgeWorldUnits": 0,
       "units": {
         "Castellan": {
@@ -4203,6 +4034,58 @@
               "points": 220
             }
           ]
+        },
+        "Death Company Marines": {
+          "name": "Death Company Marines",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 85
+            },
+            {
+              "modelCount": 10,
+              "points": 160
+            }
+          ]
+        },
+        "Death Company Marines with Bolt Rifles": {
+          "name": "Death Company Marines with Bolt Rifles",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 85
+            },
+            {
+              "modelCount": 10,
+              "points": 160
+            }
+          ]
+        },
+        "Death Company Marines with Jump Packs": {
+          "name": "Death Company Marines with Jump Packs",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 120
+            },
+            {
+              "modelCount": 10,
+              "points": 230
+            }
+          ]
+        },
+        "Sanguinary Guard": {
+          "name": "Sanguinary Guard",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 110
+            },
+            {
+              "modelCount": 6,
+              "points": 240
+            }
+          ]
         }
       },
       "detachments": [
@@ -4375,68 +4258,12 @@
           ]
         },
         {
-          "name": "Death Company Marines",
-          "enhancementCount": 2,
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 85
-            },
-            {
-              "name": "10 models",
-              "points": 160
-            }
-          ]
-        },
-        {
-          "name": "Death Company Marines with Bolt Rifles",
-          "enhancementCount": 2,
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 85
-            },
-            {
-              "name": "10 models",
-              "points": 160
-            }
-          ]
-        },
-        {
-          "name": "Death Company Marines with Jump Packs",
-          "enhancementCount": 2,
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 120
-            },
-            {
-              "name": "10 models",
-              "points": 230
-            }
-          ]
-        },
-        {
           "name": "Lemartes",
           "enhancementCount": 1,
           "enhancements": [
             {
               "name": "1 model",
               "points": 100
-            }
-          ]
-        },
-        {
-          "name": "Sanguinary Guard",
-          "enhancementCount": 2,
-          "enhancements": [
-            {
-              "name": "3 models",
-              "points": 110
-            },
-            {
-              "name": "6 models",
-              "points": 240
             }
           ]
         },
@@ -4706,64 +4533,12 @@
             }
           ]
         },
-        "Death Company Marines": {
-          "name": "Death Company Marines",
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 85
-            },
-            {
-              "name": "10 models",
-              "points": 160
-            }
-          ]
-        },
-        "Death Company Marines with Bolt Rifles": {
-          "name": "Death Company Marines with Bolt Rifles",
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 85
-            },
-            {
-              "name": "10 models",
-              "points": 160
-            }
-          ]
-        },
-        "Death Company Marines with Jump Packs": {
-          "name": "Death Company Marines with Jump Packs",
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 120
-            },
-            {
-              "name": "10 models",
-              "points": 230
-            }
-          ]
-        },
         "Lemartes": {
           "name": "Lemartes",
           "enhancements": [
             {
               "name": "1 model",
               "points": 100
-            }
-          ]
-        },
-        "Sanguinary Guard": {
-          "name": "Sanguinary Guard",
-          "enhancements": [
-            {
-              "name": "3 models",
-              "points": 110
-            },
-            {
-              "name": "6 models",
-              "points": 240
             }
           ]
         },
@@ -5861,23 +5636,19 @@
           "enhancements": [
             {
               "name": "Loping Predator",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Panoply of the Cursed Knight",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Preyslayer’s Mantle",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Final Howl",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -5887,23 +5658,19 @@
           "enhancements": [
             {
               "name": "Bestial Aspect",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Knight Diabolus",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Blasphemous Engine",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             },
             {
               "name": "Fleshmetal Fusion",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -5913,23 +5680,19 @@
           "enhancements": [
             {
               "name": "Tyrant’s Banner",
-              "points": 5,
-              "isForgeWorld": true
+              "points": 5
             },
             {
               "name": "Pave the Way",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Profane Altar",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Diabolical Resilience",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -5939,33 +5702,27 @@
           "enhancements": [
             {
               "name": "Blessing of the Dark Master",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Throne Mechanicum of Skulls",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
-              "name": "Warp-borne Stalker .............................(+15)",
-              "points": 25,
-              "isForgeWorld": true
+              "name": "Warp-borne Stalker",
+              "points": 25
             },
             {
               "name": "Mirror of Fates",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Putrid Carapace",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Blade of Celerity",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -5975,23 +5732,19 @@
           "enhancements": [
             {
               "name": "Nightmare’s Master",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Tyrant’s Shadow",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Malevolent Heraldry",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Veil of Medrengard",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         }
@@ -6002,23 +5755,19 @@
           "enhancements": [
             {
               "name": "Loping Predator",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Panoply of the Cursed Knight",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Preyslayer’s Mantle",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Final Howl",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -6027,23 +5776,19 @@
           "enhancements": [
             {
               "name": "Bestial Aspect",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Knight Diabolus",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Blasphemous Engine",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             },
             {
               "name": "Fleshmetal Fusion",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -6052,23 +5797,19 @@
           "enhancements": [
             {
               "name": "Tyrant’s Banner",
-              "points": 5,
-              "isForgeWorld": true
+              "points": 5
             },
             {
               "name": "Pave the Way",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Profane Altar",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Diabolical Resilience",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -6077,33 +5818,27 @@
           "enhancements": [
             {
               "name": "Blessing of the Dark Master",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Throne Mechanicum of Skulls",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
-              "name": "Warp-borne Stalker .............................(+15)",
-              "points": 25,
-              "isForgeWorld": true
+              "name": "Warp-borne Stalker",
+              "points": 25
             },
             {
               "name": "Mirror of Fates",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Putrid Carapace",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Blade of Celerity",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -6112,23 +5847,19 @@
           "enhancements": [
             {
               "name": "Nightmare’s Master",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Tyrant’s Shadow",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Malevolent Heraldry",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Veil of Medrengard",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         }
@@ -6136,8 +5867,8 @@
     },
     "CHAOS SPACE MARINES": {
       "name": "Chaos Space Marines",
-      "unitCount": 59,
-      "totalPoints": 8090,
+      "unitCount": 67,
+      "totalPoints": 9540,
       "forgeWorldUnits": 0,
       "units": {
         "Abaddon the Despoiler": {
@@ -6620,6 +6351,63 @@
               "points": 70
             }
           ]
+        },
+        "Deathwing Knights": {
+          "name": "Deathwing Knights",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 250
+            }
+          ]
+        },
+        "Deathwing Terminator Squad": {
+          "name": "Deathwing Terminator Squad",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 180
+            },
+            {
+              "modelCount": 10,
+              "points": 360
+            }
+          ]
+        },
+        "Inner Circle Companions": {
+          "name": "Inner Circle Companions",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 90
+            },
+            {
+              "modelCount": 6,
+              "points": 180
+            }
+          ]
+        },
+        "Ravenwing Black Knights": {
+          "name": "Ravenwing Black Knights",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 90
+            },
+            {
+              "modelCount": 6,
+              "points": 180
+            }
+          ]
+        },
+        "Ravenwing Command Squad": {
+          "name": "Ravenwing Command Squad",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 120
+            }
+          ]
         }
       },
       "detachments": [
@@ -6874,50 +6662,12 @@
           ]
         },
         {
-          "name": "Deathwing Knights",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 250
-            }
-          ]
-        },
-        {
-          "name": "Deathwing Terminator Squad",
-          "enhancementCount": 2,
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 180
-            },
-            {
-              "name": "10 models",
-              "points": 360
-            }
-          ]
-        },
-        {
           "name": "Ezekiel",
           "enhancementCount": 1,
           "enhancements": [
             {
               "name": "1 model",
               "points": 75
-            }
-          ]
-        },
-        {
-          "name": "Inner Circle Companions",
-          "enhancementCount": 2,
-          "enhancements": [
-            {
-              "name": "3 models",
-              "points": 90
-            },
-            {
-              "name": "6 models",
-              "points": 180
             }
           ]
         },
@@ -6958,30 +6708,6 @@
             {
               "name": "1 model",
               "points": 195
-            }
-          ]
-        },
-        {
-          "name": "Ravenwing Black Knights",
-          "enhancementCount": 2,
-          "enhancements": [
-            {
-              "name": "3 models",
-              "points": 90
-            },
-            {
-              "name": "6 models",
-              "points": 180
-            }
-          ]
-        },
-        {
-          "name": "Ravenwing Command Squad",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "3 models",
-              "points": 120
             }
           ]
         },
@@ -7364,47 +7090,12 @@
             }
           ]
         },
-        "Deathwing Knights": {
-          "name": "Deathwing Knights",
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 250
-            }
-          ]
-        },
-        "Deathwing Terminator Squad": {
-          "name": "Deathwing Terminator Squad",
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 180
-            },
-            {
-              "name": "10 models",
-              "points": 360
-            }
-          ]
-        },
         "Ezekiel": {
           "name": "Ezekiel",
           "enhancements": [
             {
               "name": "1 model",
               "points": 75
-            }
-          ]
-        },
-        "Inner Circle Companions": {
-          "name": "Inner Circle Companions",
-          "enhancements": [
-            {
-              "name": "3 models",
-              "points": 90
-            },
-            {
-              "name": "6 models",
-              "points": 180
             }
           ]
         },
@@ -7441,28 +7132,6 @@
             {
               "name": "1 model",
               "points": 195
-            }
-          ]
-        },
-        "Ravenwing Black Knights": {
-          "name": "Ravenwing Black Knights",
-          "enhancements": [
-            {
-              "name": "3 models",
-              "points": 90
-            },
-            {
-              "name": "6 models",
-              "points": 180
-            }
-          ]
-        },
-        "Ravenwing Command Squad": {
-          "name": "Ravenwing Command Squad",
-          "enhancements": [
-            {
-              "name": "3 models",
-              "points": 120
             }
           ]
         },
@@ -8055,7 +7724,7 @@
               "points": 20
             },
             {
-              "name": "Tendrilous Emissions .........................(+10)",
+              "name": "Tendrilous Emissions",
               "points": 30
             }
           ]
@@ -8207,7 +7876,7 @@
               "points": 20
             },
             {
-              "name": "Tendrilous Emissions .........................(+10)",
+              "name": "Tendrilous Emissions",
               "points": 30
             }
           ]
@@ -10109,23 +9778,19 @@
           "enhancements": [
             {
               "name": "Grimoire of Conjunctions",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "A Foot in the Future",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Shield of Prophecy",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Doomseer’s Amulet",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -10135,23 +9800,19 @@
           "enhancements": [
             {
               "name": "Sigil of the Hunt",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "The Ephemeral Tome",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Pyresoul",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "The Sixty-sixth Seal",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -10161,23 +9822,19 @@
           "enhancements": [
             {
               "name": "Blinding Aura",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Purity of Purpose",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Banishing Wave",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Tome of Forbidden Ways",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -10187,23 +9844,19 @@
           "enhancements": [
             {
               "name": "Nemesis Rounds",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Sanctic Reaper",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Inescapable Judgement",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Eye of the Augurium",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -10213,23 +9866,19 @@
           "enhancements": [
             {
               "name": "Driven by Duty",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Quickening Foci",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Spiritus Machina",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Sigil of Exigence",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -10239,23 +9888,19 @@
           "enhancements": [
             {
               "name": "Paragon of Sanctity",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Radiant Champion",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Mandulian Reliquary",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Phial of the Abyss",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         }
@@ -10266,23 +9911,19 @@
           "enhancements": [
             {
               "name": "Grimoire of Conjunctions",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "A Foot in the Future",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Shield of Prophecy",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Doomseer’s Amulet",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -10291,23 +9932,19 @@
           "enhancements": [
             {
               "name": "Sigil of the Hunt",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "The Ephemeral Tome",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Pyresoul",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "The Sixty-sixth Seal",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -10316,23 +9953,19 @@
           "enhancements": [
             {
               "name": "Blinding Aura",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Purity of Purpose",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Banishing Wave",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Tome of Forbidden Ways",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -10341,23 +9974,19 @@
           "enhancements": [
             {
               "name": "Nemesis Rounds",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Sanctic Reaper",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Inescapable Judgement",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Eye of the Augurium",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -10366,23 +9995,19 @@
           "enhancements": [
             {
               "name": "Driven by Duty",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Quickening Foci",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Spiritus Machina",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Sigil of Exigence",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -10391,23 +10016,19 @@
           "enhancements": [
             {
               "name": "Paragon of Sanctity",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Radiant Champion",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Mandulian Reliquary",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Phial of the Abyss",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         }
@@ -10781,272 +10402,6 @@
               "points": 45
             }
           ]
-        },
-        {
-          "name": "Callidus Assassin",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 100
-            }
-          ]
-        },
-        {
-          "name": "Corvus Blackstar",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 180
-            }
-          ]
-        },
-        {
-          "name": "Culexus Assassin",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 85
-            }
-          ]
-        },
-        {
-          "name": "Deathwatch Kill Team",
-          "enhancementCount": 2,
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 100
-            },
-            {
-              "name": "10 models",
-              "points": 200
-            }
-          ]
-        },
-        {
-          "name": "Eversor Assassin",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 120
-            }
-          ]
-        },
-        {
-          "name": "Exaction Squad",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "11 models",
-              "points": 90
-            }
-          ]
-        },
-        {
-          "name": "Grey Knights Terminator Squad",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "5 models",
-              "points": 210
-            }
-          ]
-        },
-        {
-          "name": "Imperial Rhino",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 75
-            }
-          ]
-        },
-        {
-          "name": "Inquisitor",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 55
-            }
-          ]
-        },
-        {
-          "name": "Inquisitor Coteaz",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 95
-            }
-          ]
-        },
-        {
-          "name": "Inquisitor Draxus",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 95
-            }
-          ]
-        },
-        {
-          "name": "Inquisitor Greyfax",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 65
-            }
-          ]
-        },
-        {
-          "name": "Rogue Trader Entourage",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "4 models",
-              "points": 105
-            }
-          ]
-        },
-        {
-          "name": "Sanctifiers",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "9 models",
-              "points": 100
-            }
-          ]
-        },
-        {
-          "name": "Sisters of Battle Immolator",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 115
-            }
-          ]
-        },
-        {
-          "name": "Sisters of Battle Squad",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 115
-            }
-          ]
-        },
-        {
-          "name": "Subductor Squad",
-          "enhancementCount": 3,
-          "enhancements": [
-            {
-              "name": "6 models",
-              "points": 60
-            },
-            {
-              "name": "11 models",
-              "points": 100
-            },
-            {
-              "name": "12 models",
-              "points": 120
-            }
-          ]
-        },
-        {
-          "name": "Inquisitorial Chimera",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 70
-            }
-          ]
-        },
-        {
-          "name": "Ministorum Priest",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 40
-            }
-          ]
-        },
-        {
-          "name": "Navigator",
-          "enhancementCount": 2,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 75
-            },
-            {
-              "name": "10 models",
-              "points": 90
-            }
-          ]
-        },
-        {
-          "name": "Vigilant Squad",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "11 models",
-              "points": 85
-            }
-          ]
-        },
-        {
-          "name": "Vindicare Assassin",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 125
-            }
-          ]
-        },
-        {
-          "name": "Voidsmen-at-Arms",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "6 models",
-              "points": 70
-            }
-          ]
-        },
-        {
-          "name": "Watch Captain Artemis",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 65
-            }
-          ]
-        },
-        {
-          "name": "Watch Master",
-          "enhancementCount": 1,
-          "enhancements": [
-            {
-              "name": "1 model",
-              "points": 105
-            }
-          ]
         }
       ],
       "enhancements": {
@@ -11154,249 +10509,258 @@
               "points": 45
             }
           ]
-        },
+        }
+      }
+    },
+    "IMPERIAL AGENTS (ALLIES)": {
+      "name": "Imperial Agents (Allies)",
+      "unitCount": 29,
+      "totalPoints": 2910,
+      "forgeWorldUnits": 0,
+      "units": {
         "Callidus Assassin": {
           "name": "Callidus Assassin",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 100
             }
           ]
         },
         "Corvus Blackstar": {
           "name": "Corvus Blackstar",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 180
             }
           ]
         },
         "Culexus Assassin": {
           "name": "Culexus Assassin",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 85
             }
           ]
         },
         "Deathwatch Kill Team": {
           "name": "Deathwatch Kill Team",
-          "enhancements": [
+          "variants": [
             {
-              "name": "5 models",
+              "modelCount": 5,
               "points": 100
             },
             {
-              "name": "10 models",
+              "modelCount": 10,
               "points": 200
             }
           ]
         },
         "Eversor Assassin": {
           "name": "Eversor Assassin",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 120
             }
           ]
         },
         "Exaction Squad": {
           "name": "Exaction Squad",
-          "enhancements": [
+          "variants": [
             {
-              "name": "11 models",
+              "modelCount": 11,
               "points": 90
             }
           ]
         },
         "Grey Knights Terminator Squad": {
           "name": "Grey Knights Terminator Squad",
-          "enhancements": [
+          "variants": [
             {
-              "name": "5 models",
+              "modelCount": 5,
               "points": 210
             }
           ]
         },
         "Imperial Rhino": {
           "name": "Imperial Rhino",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 75
             }
           ]
         },
         "Inquisitor": {
           "name": "Inquisitor",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 55
             }
           ]
         },
         "Inquisitor Coteaz": {
           "name": "Inquisitor Coteaz",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 95
             }
           ]
         },
         "Inquisitor Draxus": {
           "name": "Inquisitor Draxus",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 95
             }
           ]
         },
         "Inquisitor Greyfax": {
           "name": "Inquisitor Greyfax",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 65
             }
           ]
         },
         "Rogue Trader Entourage": {
           "name": "Rogue Trader Entourage",
-          "enhancements": [
+          "variants": [
             {
-              "name": "4 models",
+              "modelCount": 4,
               "points": 105
             }
           ]
         },
         "Sanctifiers": {
           "name": "Sanctifiers",
-          "enhancements": [
+          "variants": [
             {
-              "name": "9 models",
+              "modelCount": 9,
               "points": 100
             }
           ]
         },
         "Sisters of Battle Immolator": {
           "name": "Sisters of Battle Immolator",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 115
             }
           ]
         },
         "Sisters of Battle Squad": {
           "name": "Sisters of Battle Squad",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 115
             }
           ]
         },
         "Subductor Squad": {
           "name": "Subductor Squad",
-          "enhancements": [
+          "variants": [
             {
-              "name": "6 models",
+              "modelCount": 6,
               "points": 60
             },
             {
-              "name": "11 models",
+              "modelCount": 11,
               "points": 100
             },
             {
-              "name": "12 models",
+              "modelCount": 12,
               "points": 120
             }
           ]
         },
         "Inquisitorial Chimera": {
           "name": "Inquisitorial Chimera",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 70
             }
           ]
         },
         "Ministorum Priest": {
           "name": "Ministorum Priest",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 40
             }
           ]
         },
         "Navigator": {
           "name": "Navigator",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 75
             },
             {
-              "name": "10 models",
+              "modelCount": 10,
               "points": 90
             }
           ]
         },
         "Vigilant Squad": {
           "name": "Vigilant Squad",
-          "enhancements": [
+          "variants": [
             {
-              "name": "11 models",
+              "modelCount": 11,
               "points": 85
             }
           ]
         },
         "Vindicare Assassin": {
           "name": "Vindicare Assassin",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 125
             }
           ]
         },
         "Voidsmen-at-Arms": {
           "name": "Voidsmen-at-Arms",
-          "enhancements": [
+          "variants": [
             {
-              "name": "6 models",
+              "modelCount": 6,
               "points": 70
             }
           ]
         },
         "Watch Captain Artemis": {
           "name": "Watch Captain Artemis",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 65
             }
           ]
         },
         "Watch Master": {
           "name": "Watch Master",
-          "enhancements": [
+          "variants": [
             {
-              "name": "1 model",
+              "modelCount": 1,
               "points": 105
             }
           ]
         }
-      }
+      },
+      "detachments": []
     },
     "IMPERIAL KNIGHTS": {
       "name": "Imperial Knights",
@@ -11601,23 +10965,19 @@
           "enhancements": [
             {
               "name": "Revered Knight",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Mysterious Guardian",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Mythic Hero",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Banner of Macharius Triumphant",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -11627,23 +10987,19 @@
           "enhancements": [
             {
               "name": "Vocifer Magnificat",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Knight of the Opus Machina",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Omnissian Champion",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Magos Questoris",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         }
@@ -11654,23 +11010,19 @@
           "enhancements": [
             {
               "name": "Revered Knight",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Mysterious Guardian",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Mythic Hero",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Banner of Macharius Triumphant",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -11679,23 +11031,19 @@
           "enhancements": [
             {
               "name": "Vocifer Magnificat",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Knight of the Opus Machina",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Omnissian Champion",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Magos Questoris",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         }
@@ -12711,23 +12059,19 @@
           "enhancements": [
             {
               "name": "Ingrained Superiority",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Eldritch Nightmare",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Soulless Reaper",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Eternal Madness",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -12737,23 +12081,19 @@
           "enhancements": [
             {
               "name": "Nether-realm Casket",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Veil of Darkness",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Enaegic Dermal Bond",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Phasal Subjugator",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -12763,23 +12103,19 @@
           "enhancements": [
             {
               "name": "Metalodermal Tesla Weave",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Autodivinator",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Hyperphasic Fulcrum",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Dimensional Sanctum",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -12789,23 +12125,19 @@
           "enhancements": [
             {
               "name": "Hyperspatial Transfer Node",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Osteoclave Fulcrum",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Arisen Tyrant",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Dimensional Overseer",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -12815,23 +12147,19 @@
           "enhancements": [
             {
               "name": "Honourable Combatant",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Warrior Noble",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Unflinching Will",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Eternal Conqueror",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -12841,23 +12169,19 @@
           "enhancements": [
             {
               "name": "Demanding Leader",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Miniaturised Nebuloscope",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Chrono-impedance Fields",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Dread Majesty",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         }
@@ -12868,23 +12192,19 @@
           "enhancements": [
             {
               "name": "Ingrained Superiority",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Eldritch Nightmare",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Soulless Reaper",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Eternal Madness",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -12893,23 +12213,19 @@
           "enhancements": [
             {
               "name": "Nether-realm Casket",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Veil of Darkness",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Enaegic Dermal Bond",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Phasal Subjugator",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -12918,23 +12234,19 @@
           "enhancements": [
             {
               "name": "Metalodermal Tesla Weave",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Autodivinator",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Hyperphasic Fulcrum",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Dimensional Sanctum",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -12943,23 +12255,19 @@
           "enhancements": [
             {
               "name": "Hyperspatial Transfer Node",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Osteoclave Fulcrum",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Arisen Tyrant",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Dimensional Overseer",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -12968,23 +12276,19 @@
           "enhancements": [
             {
               "name": "Honourable Combatant",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Warrior Noble",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Unflinching Will",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Eternal Conqueror",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -12993,23 +12297,19 @@
           "enhancements": [
             {
               "name": "Demanding Leader",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Miniaturised Nebuloscope",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Chrono-impedance Fields",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Dread Majesty",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         }
@@ -13549,23 +12849,19 @@
           "enhancements": [
             {
               "name": "’Eadstompa",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Da Biggest Boss",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Big Gob",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Tellyporta",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -13575,23 +12871,19 @@
           "enhancements": [
             {
               "name": "Proper Killy",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Surly as a Squiggoth",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Skrag Every Stash!",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Glory Hog",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -13601,23 +12893,19 @@
           "enhancements": [
             {
               "name": "Gitfinder Googlez",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Smoky Gubbinz",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Supa-glowy Fing",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Press It Fasta!",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -13627,23 +12915,19 @@
           "enhancements": [
             {
               "name": "Ferocious Show Off",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Bloodthirsty Belligerence",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Raucous Warcaller",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Brutal But Kunnin’",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -13653,23 +12937,19 @@
           "enhancements": [
             {
               "name": "Wazblasta",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Squig-hide Tyres",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Speed Makes Right",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Fasta Than Yooz",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -13679,23 +12959,19 @@
           "enhancements": [
             {
               "name": "Zog Off and Eat Dakka!",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Da Gobshot Thunderbuss",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Targetin’ Squigs",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Dead Shiny Shootas",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -13705,23 +12981,19 @@
           "enhancements": [
             {
               "name": "Gob Boomer",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Mork’s Kunnin’",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Skwad Leader",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Mek Kaptin",
-              "points": 45,
-              "isForgeWorld": true
+              "points": 45
             }
           ]
         },
@@ -13731,23 +13003,19 @@
           "enhancements": [
             {
               "name": "Kunnin’ But Brutal",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Supa-Cybork Body",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Headwoppa’s Killchoppa",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Follow Me Ladz",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         }
@@ -13758,23 +13026,19 @@
           "enhancements": [
             {
               "name": "’Eadstompa",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Da Biggest Boss",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Big Gob",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Tellyporta",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -13783,23 +13047,19 @@
           "enhancements": [
             {
               "name": "Proper Killy",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Surly as a Squiggoth",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Skrag Every Stash!",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Glory Hog",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -13808,23 +13068,19 @@
           "enhancements": [
             {
               "name": "Gitfinder Googlez",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Smoky Gubbinz",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Supa-glowy Fing",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Press It Fasta!",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -13833,23 +13089,19 @@
           "enhancements": [
             {
               "name": "Ferocious Show Off",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Bloodthirsty Belligerence",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Raucous Warcaller",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Brutal But Kunnin’",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -13858,23 +13110,19 @@
           "enhancements": [
             {
               "name": "Wazblasta",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Squig-hide Tyres",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Speed Makes Right",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Fasta Than Yooz",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -13883,23 +13131,19 @@
           "enhancements": [
             {
               "name": "Zog Off and Eat Dakka!",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Da Gobshot Thunderbuss",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Targetin’ Squigs",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Dead Shiny Shootas",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -13908,23 +13152,19 @@
           "enhancements": [
             {
               "name": "Gob Boomer",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Mork’s Kunnin’",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Skwad Leader",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Mek Kaptin",
-              "points": 45,
-              "isForgeWorld": true
+              "points": 45
             }
           ]
         },
@@ -13933,23 +13173,19 @@
           "enhancements": [
             {
               "name": "Kunnin’ But Brutal",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Supa-Cybork Body",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Headwoppa’s Killchoppa",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Follow Me Ladz",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         }
@@ -14927,23 +14163,19 @@
           "enhancements": [
             {
               "name": "Rites of War",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Iron Resolve",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "The Imperium’s Sword",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Fear Made Manifest",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -14953,23 +14185,19 @@
           "enhancements": [
             {
               "name": "Fleet Commander",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Stoic Defender",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Indomitable Fury",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Architect of War",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -14979,23 +14207,19 @@
           "enhancements": [
             {
               "name": "Champion of Humanity",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Forged in Battle",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Adamantine Mantle",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "War-tempered Artifice",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -15005,23 +14229,19 @@
           "enhancements": [
             {
               "name": "Immolator",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Forged in Battle",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Adamantine Mantle",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "War-tempered Artifice",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -15031,23 +14251,19 @@
           "enhancements": [
             {
               "name": "Artificer Armour",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "The Honour Vehement",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Adept of the Codex",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Fire Discipline",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -15057,23 +14273,19 @@
           "enhancements": [
             {
               "name": "The Flesh is Weak",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Master of Machine War",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Target Augury Web",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Adept of the Omnissiah",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -15083,23 +14295,19 @@
           "enhancements": [
             {
               "name": "Obfuscation",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Prescience",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Celerity",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Fusillade",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -15109,23 +14317,19 @@
           "enhancements": [
             {
               "name": "Feinting Withdrawal",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Portents of Wisdom",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Fury of the Storm",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Hunter’s Instincts",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -15135,23 +14339,19 @@
           "enhancements": [
             {
               "name": "Ghostweave Cloak",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Execute and Redeploy",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "The Blade Driven Deep",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Shadow War Veteran",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         }
@@ -15162,23 +14362,19 @@
           "enhancements": [
             {
               "name": "Rites of War",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Iron Resolve",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "The Imperium’s Sword",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Fear Made Manifest",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -15187,23 +14383,19 @@
           "enhancements": [
             {
               "name": "Fleet Commander",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Stoic Defender",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Indomitable Fury",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Architect of War",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -15212,23 +14404,19 @@
           "enhancements": [
             {
               "name": "Champion of Humanity",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Forged in Battle",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Adamantine Mantle",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "War-tempered Artifice",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -15237,23 +14425,19 @@
           "enhancements": [
             {
               "name": "Immolator",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Forged in Battle",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Adamantine Mantle",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "War-tempered Artifice",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -15262,23 +14446,19 @@
           "enhancements": [
             {
               "name": "Artificer Armour",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "The Honour Vehement",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Adept of the Codex",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Fire Discipline",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -15287,23 +14467,19 @@
           "enhancements": [
             {
               "name": "The Flesh is Weak",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Master of Machine War",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Target Augury Web",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Adept of the Omnissiah",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -15312,23 +14488,19 @@
           "enhancements": [
             {
               "name": "Obfuscation",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Prescience",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Celerity",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Fusillade",
-              "points": 35,
-              "isForgeWorld": true
+              "points": 35
             }
           ]
         },
@@ -15337,23 +14509,19 @@
           "enhancements": [
             {
               "name": "Feinting Withdrawal",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Portents of Wisdom",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Fury of the Storm",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Hunter’s Instincts",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -15362,23 +14530,19 @@
           "enhancements": [
             {
               "name": "Ghostweave Cloak",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Execute and Redeploy",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "The Blade Driven Deep",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Shadow War Veteran",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         }
@@ -16198,23 +15362,19 @@
           "enhancements": [
             {
               "name": "Fanatical Convert",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Student of Kauyon",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Admired Leader",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Transponder Lock Module",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -16224,23 +15384,19 @@
           "enhancements": [
             {
               "name": "Plasma Accelerator Rifle",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Supernova Launcher",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Thermoneutronic Projector",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Fusion Blades",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -16250,23 +15406,19 @@
           "enhancements": [
             {
               "name": "Precision of the Patient Hunter",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Exemplar of the Kauyon",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Solid-image Projection Unit",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Through Unity, Devastation",
-              "points": 40,
-              "isForgeWorld": true
+              "points": 40
             }
           ]
         },
@@ -16276,23 +15428,19 @@
           "enhancements": [
             {
               "name": "Kroothawk Flock",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Root-carved Weapons",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Borthrod Gland",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Nomadic Hunter",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -16302,23 +15450,19 @@
           "enhancements": [
             {
               "name": "Exemplar of the Mont’ka",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Strategic Conqueror",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Strike Swiftly",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Coordinated Exploitation",
-              "points": 40,
-              "isForgeWorld": true
+              "points": 40
             }
           ]
         },
@@ -16328,23 +15472,19 @@
           "enhancements": [
             {
               "name": "Prototype Weapon System",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Internal Grenade Racks",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Starflare Ignition System",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Puretide Engram Neurochip",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         }
@@ -16355,23 +15495,19 @@
           "enhancements": [
             {
               "name": "Fanatical Convert",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Student of Kauyon",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Admired Leader",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Transponder Lock Module",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -16380,23 +15516,19 @@
           "enhancements": [
             {
               "name": "Plasma Accelerator Rifle",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Supernova Launcher",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Thermoneutronic Projector",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Fusion Blades",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -16405,23 +15537,19 @@
           "enhancements": [
             {
               "name": "Precision of the Patient Hunter",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Exemplar of the Kauyon",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Solid-image Projection Unit",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             },
             {
               "name": "Through Unity, Devastation",
-              "points": 40,
-              "isForgeWorld": true
+              "points": 40
             }
           ]
         },
@@ -16430,23 +15558,19 @@
           "enhancements": [
             {
               "name": "Kroothawk Flock",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Root-carved Weapons",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Borthrod Gland",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Nomadic Hunter",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -16455,23 +15579,19 @@
           "enhancements": [
             {
               "name": "Exemplar of the Mont’ka",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Strategic Conqueror",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Strike Swiftly",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Coordinated Exploitation",
-              "points": 40,
-              "isForgeWorld": true
+              "points": 40
             }
           ]
         },
@@ -16480,23 +15600,19 @@
           "enhancements": [
             {
               "name": "Prototype Weapon System",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Internal Grenade Racks",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Starflare Ignition System",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Puretide Engram Neurochip",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         }
@@ -17659,23 +16775,19 @@
           "enhancements": [
             {
               "name": "Biophagic Flow",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Instinctive Defence",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Regenerating Monstrosity",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Parasitic Biomorphology",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -17685,23 +16797,19 @@
           "enhancements": [
             {
               "name": "Null Nodules",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Ominous Presence",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Enraged Reserves",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Monstrous Nemesis",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -17711,23 +16819,19 @@
           "enhancements": [
             {
               "name": "Perfectly Adapted",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Synaptic Linchpin",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Adaptive Biology",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Alien Cunning",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -17737,23 +16841,19 @@
           "enhancements": [
             {
               "name": "Synaptic Strategy",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Vanguard Intellect",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Tremor Senses",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Trygon Prime",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -17763,23 +16863,19 @@
           "enhancements": [
             {
               "name": "Power of the Hive Mind",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "The Dirgeheart of Kharis",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Synaptic Control",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Psychostatic Disruption",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -17789,23 +16885,19 @@
           "enhancements": [
             {
               "name": "Adrenalised Onslaught",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Relentless Hunger",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Piercing Talons",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Naturalised Camouflage",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -17815,23 +16907,19 @@
           "enhancements": [
             {
               "name": "Stalker",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Chameleonic",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Hunting Grounds",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Neuronode",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -17841,23 +16929,19 @@
           "enhancements": [
             {
               "name": "Synaptic Tyrant",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Ocular Adaptation",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Sensory Assimilation",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Elevated Might",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         }
@@ -17868,23 +16952,19 @@
           "enhancements": [
             {
               "name": "Biophagic Flow",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Instinctive Defence",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Regenerating Monstrosity",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Parasitic Biomorphology",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -17893,23 +16973,19 @@
           "enhancements": [
             {
               "name": "Null Nodules",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Ominous Presence",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Enraged Reserves",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Monstrous Nemesis",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             }
           ]
         },
@@ -17918,23 +16994,19 @@
           "enhancements": [
             {
               "name": "Perfectly Adapted",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Synaptic Linchpin",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Adaptive Biology",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Alien Cunning",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -17943,23 +17015,19 @@
           "enhancements": [
             {
               "name": "Synaptic Strategy",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Vanguard Intellect",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Tremor Senses",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Trygon Prime",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -17968,23 +17036,19 @@
           "enhancements": [
             {
               "name": "Power of the Hive Mind",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "The Dirgeheart of Kharis",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Synaptic Control",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Psychostatic Disruption",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -17993,23 +17057,19 @@
           "enhancements": [
             {
               "name": "Adrenalised Onslaught",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Relentless Hunger",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Piercing Talons",
-              "points": 25,
-              "isForgeWorld": true
+              "points": 25
             },
             {
               "name": "Naturalised Camouflage",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         },
@@ -18018,23 +17078,19 @@
           "enhancements": [
             {
               "name": "Stalker",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Chameleonic",
-              "points": 15,
-              "isForgeWorld": true
+              "points": 15
             },
             {
               "name": "Hunting Grounds",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Neuronode",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             }
           ]
         },
@@ -18043,23 +17099,19 @@
           "enhancements": [
             {
               "name": "Synaptic Tyrant",
-              "points": 10,
-              "isForgeWorld": true
+              "points": 10
             },
             {
               "name": "Ocular Adaptation",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Sensory Assimilation",
-              "points": 20,
-              "isForgeWorld": true
+              "points": 20
             },
             {
               "name": "Elevated Might",
-              "points": 30,
-              "isForgeWorld": true
+              "points": 30
             }
           ]
         }
