@@ -119,8 +119,8 @@ class MFMParserUIStandalone {
             return true;
         }
         
-        // Check for unit name with points on the same line
-        const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(\d+)\s+pts$/);
+        // Check for unit name with points on the same line (with or without point adjustments)
+        const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(?:\(-\d+\)\s+)?(\d+)\s+pts$/);
         if (sameLineMatch) {
             return true;
         }
@@ -134,16 +134,16 @@ class MFMParserUIStandalone {
     parseUnitEntry(line, lineIndex, allLines) {
         let modelCount, points, unitName;
 
-        // Check if unit name and points are on the same line (with or without leading spaces)
-        const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(\d+)\s+pts$/);
+        // Check if unit name and points are on the same line (with or without leading spaces and point adjustments)
+        const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(?:\(-\d+\)\s+)?(\d+)\s+pts$/);
         if (sameLineMatch) {
             unitName = sameLineMatch[1].trim();
             modelCount = parseInt(sameLineMatch[2]);
             points = parseInt(sameLineMatch[3]);
         } else {
-            // Extract model count and points from points-only line (with or without leading spaces)
+            // Extract model count and points from points-only line (with or without leading spaces and point adjustments)
             // The dots can vary in number, so we'll match any number of dots or spaces
-            const modelMatch = line.match(/^\s*(\d+)\s+models?\s+[\.\s]+\s*(\d+)\s+pts/);
+            const modelMatch = line.match(/^\s*(\d+)\s+models?\s+[\.\s]+\s*(?:\(-\d+\)\s+)?(\d+)\s+pts/);
             if (!modelMatch) {
                 return null;
             }
@@ -190,8 +190,8 @@ class MFMParserUIStandalone {
                 continue;
             }
 
-            // Check if this line contains a unit name with points on the same line
-            const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(\d+)\s+pts$/);
+            // Check if this line contains a unit name with points on the same line (with or without point adjustments)
+            const sameLineMatch = line.match(/^\s*(.+?)\s+(\d+)\s+models?\s+[\.\s]+\s*(?:\(-\d+\)\s+)?(\d+)\s+pts$/);
             if (sameLineMatch) {
                 return sameLineMatch[1].trim();
             }
@@ -322,12 +322,17 @@ class MFMParserUIStandalone {
                 
                 result.factions[factionKey].units[unitName] = {
                     name: unitName,
-                    variants: unitVariants.map(unit => ({
-                        modelCount: unit.modelCount,
-                        points: unit.points,
-                        isForgeWorld: unit.isForgeWorld,
-                        lineNumber: unit.lineNumber
-                    })).sort((a, b) => a.modelCount - b.modelCount) // Sort by model count
+                    variants: unitVariants.map(unit => {
+                        const variant = {
+                            modelCount: unit.modelCount,
+                            points: unit.points
+                        };
+                        // Only include isForgeWorld if it's true
+                        if (unit.isForgeWorld) {
+                            variant.isForgeWorld = true;
+                        }
+                        return variant;
+                    }).sort((a, b) => a.modelCount - b.modelCount) // Sort by model count
                 };
             });
 
@@ -383,24 +388,34 @@ class MFMParserUIStandalone {
                 
                 result.factions[factionKey].enhancements[detachmentKey] = {
                     name: detachmentKey,
-                    enhancements: detachmentEnhancements.map(enhancement => ({
-                        name: enhancement.enhancementName,
-                        points: enhancement.points,
-                        isForgeWorld: enhancement.isForgeWorld,
-                        lineNumber: enhancement.lineNumber
-                    })).sort((a, b) => a.points - b.points) // Sort by points
+                    enhancements: detachmentEnhancements.map(enhancement => {
+                        const enhancementData = {
+                            name: enhancement.enhancementName,
+                            points: enhancement.points
+                        };
+                        // Only include isForgeWorld if it's true
+                        if (enhancement.isForgeWorld) {
+                            enhancementData.isForgeWorld = true;
+                        }
+                        return enhancementData;
+                    }).sort((a, b) => a.points - b.points) // Sort by points
                 };
 
                 // Add detachment to detachments array
                 result.factions[factionKey].detachments.push({
                     name: detachmentKey,
                     enhancementCount: detachmentEnhancements.length,
-                    enhancements: detachmentEnhancements.map(enhancement => ({
-                        name: enhancement.enhancementName,
-                        points: enhancement.points,
-                        isForgeWorld: enhancement.isForgeWorld,
-                        lineNumber: enhancement.lineNumber
-                    })).sort((a, b) => a.points - b.points) // Sort by points
+                    enhancements: detachmentEnhancements.map(enhancement => {
+                        const enhancementData = {
+                            name: enhancement.enhancementName,
+                            points: enhancement.points
+                        };
+                        // Only include isForgeWorld if it's true
+                        if (enhancement.isForgeWorld) {
+                            enhancementData.isForgeWorld = true;
+                        }
+                        return enhancementData;
+                    }).sort((a, b) => a.points - b.points) // Sort by points
                 });
             });
 

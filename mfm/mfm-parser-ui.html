@@ -135,6 +135,90 @@
             margin: 20px 0;
             border-left: 4px solid #2196f3;
         }
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin: 20px 0;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            cursor: pointer;
+            margin-right: 2px;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background: white;
+            border-bottom: 2px solid #007bff;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .detachment-card {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 15px 0;
+            padding: 15px;
+        }
+        .detachment-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .enhancement-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .enhancement-name {
+            font-weight: 500;
+            color: #333;
+        }
+        .enhancement-points {
+            background: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .detachment-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .detachment-stat {
+            background: #e3f2fd;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .detachment-stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .detachment-stat-label {
+            font-size: 12px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -186,8 +270,29 @@
         </div>
 
         <div class="container">
-            <h2>Results</h2>
-            <div id="results" class="results"></div>
+            <h2>Data View</h2>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('units')">Units</div>
+                <div class="tab" onclick="switchTab('detachments')">Detachments & Enhancements</div>
+            </div>
+            
+            <div id="unitsTab" class="tab-content active">
+                <h3>Units</h3>
+                <div id="results" class="results"></div>
+            </div>
+            
+            <div id="detachmentsTab" class="tab-content">
+                <h3>Detachments and Enhancements</h3>
+                <div class="controls">
+                    <div class="faction-filter">
+                        <label for="detachmentFactionFilter">Filter by Faction:</label>
+                        <select id="detachmentFactionFilter" onchange="filterDetachmentsByFaction()">
+                            <option value="">All Factions</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="detachmentsResults" class="results"></div>
+            </div>
         </div>
     </div>
 
@@ -266,8 +371,7 @@
                                 unitName: unitName,
                                 modelCount: variant.modelCount,
                                 points: variant.points,
-                                isForgeWorld: variant.isForgeWorld,
-                                lineNumber: variant.lineNumber
+                                isForgeWorld: variant.isForgeWorld || false
                             }));
                         });
                     });
@@ -284,7 +388,11 @@
                                 return acc;
                             }, {}),
                             totalPoints: uiData.metadata.totalPoints,
-                            forgeWorldUnits: uiData.metadata.forgeWorldUnits
+                            forgeWorldUnits: uiData.metadata.forgeWorldUnits,
+                            totalDetachments: Object.keys(uiData.factions).reduce((total, key) => {
+                                return total + (uiData.factions[key].detachments ? uiData.factions[key].detachments.length : 0);
+                            }, 0),
+                            totalEnhancements: uiData.metadata.totalEnhancements || 0
                         }
                     };
                     currentUnits = parsedData.units;
@@ -296,11 +404,13 @@
                     // Display statistics
                     displayStats(parsedData.stats);
 
-                    // Populate faction filter
+                    // Populate faction filters
                     populateFactionFilter(parsedData.stats.factions);
+                    populateDetachmentFactionFilter(parsedData.stats.factions);
 
                     // Display initial results
                     displayUnits(currentUnits);
+                    displayDetachments(parsedData.uiData);
 
                     // Enable export buttons
                     exportJsonBtn.disabled = false;
@@ -342,6 +452,14 @@
                 <div class="stat-card">
                     <div class="stat-value">${stats.totalPoints.toLocaleString()}</div>
                     <div class="stat-label">Total Points</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.totalDetachments || 0}</div>
+                    <div class="stat-label">Total Detachments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.totalEnhancements || 0}</div>
+                    <div class="stat-label">Total Enhancements</div>
                 </div>
             `;
             
@@ -439,7 +557,7 @@
         }
 
         function generateCSV(units) {
-            const headers = ['Faction', 'Unit Name', 'Model Count', 'Points', 'Forge World', 'Line Number'];
+            const headers = ['Faction', 'Unit Name', 'Model Count', 'Points', 'Forge World'];
             const csvRows = [headers.join(',')];
 
             units.forEach(unit => {
@@ -448,8 +566,7 @@
                     `"${unit.unitName}"`,
                     unit.modelCount,
                     unit.points,
-                    unit.isForgeWorld ? 'Yes' : 'No',
-                    unit.lineNumber
+                    unit.isForgeWorld ? 'Yes' : 'No'
                 ];
                 csvRows.push(row.join(','));
             });
@@ -464,9 +581,15 @@
             const dataBlob = new Blob([dataStr], {type: 'application/json'});
             const url = URL.createObjectURL(dataBlob);
             
+            // Generate filename from metadata
+            const metadata = parsedData.uiData.metadata;
+            const version = metadata.version.replace('.', '_');
+            const date = metadata.date;
+            const filename = `mfm-${version}-${date}.json`;
+            
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'mfm-ui-optimized.json';
+            link.download = filename;
             link.click();
             
             URL.revokeObjectURL(url);
@@ -480,12 +603,128 @@
             const dataBlob = new Blob([csvData], {type: 'text/csv'});
             const url = URL.createObjectURL(dataBlob);
             
+            // Generate filename from metadata
+            const metadata = parsedData.uiData.metadata;
+            const version = metadata.version.replace('.', '_');
+            const date = metadata.date;
+            const filename = `mfm-${version}-${date}-units.csv`;
+            
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'mfm-units.csv';
+            link.download = filename;
             link.click();
             
             URL.revokeObjectURL(url);
+        }
+
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Remove active class from all tabs and content
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        // Populate detachment faction filter
+        function populateDetachmentFactionFilter(factions) {
+            const select = document.getElementById('detachmentFactionFilter');
+            select.innerHTML = '<option value="">All Factions</option>';
+            
+            Object.keys(factions).sort().forEach(faction => {
+                const option = document.createElement('option');
+                option.value = faction;
+                option.textContent = `${faction} (${factions[faction]} units)`;
+                select.appendChild(option);
+            });
+        }
+
+        // Display detachments and enhancements
+        function displayDetachments(uiData, selectedFaction = '') {
+            const results = document.getElementById('detachmentsResults');
+            
+            if (!uiData || !uiData.factions) {
+                results.innerHTML = '<p>No detachment data available.</p>';
+                return;
+            }
+
+            let html = '';
+            let hasDetachments = false;
+
+            Object.keys(uiData.factions).forEach(factionKey => {
+                const faction = uiData.factions[factionKey];
+                
+                // Skip if filtering by faction and this isn't the selected one
+                if (selectedFaction && factionKey !== selectedFaction) {
+                    return;
+                }
+
+                // Skip if no detachments
+                if (!faction.detachments || faction.detachments.length === 0) {
+                    return;
+                }
+
+                hasDetachments = true;
+                
+                html += `
+                    <div class="detachment-card">
+                        <div class="detachment-header">${faction.name}</div>
+                        <div class="detachment-stats">
+                            <div class="detachment-stat">
+                                <div class="detachment-stat-value">${faction.detachments.length}</div>
+                                <div class="detachment-stat-label">Detachments</div>
+                            </div>
+                            <div class="detachment-stat">
+                                <div class="detachment-stat-value">${faction.detachments.reduce((total, det) => total + det.enhancementCount, 0)}</div>
+                                <div class="detachment-stat-label">Total Enhancements</div>
+                            </div>
+                        </div>
+                `;
+
+                faction.detachments.forEach(detachment => {
+                    html += `
+                        <div style="margin: 15px 0; padding: 10px; background: white; border-radius: 5px; border-left: 4px solid #28a745;">
+                            <h4 style="margin: 0 0 10px 0; color: #333;">${detachment.name}</h4>
+                            <div style="font-size: 14px; color: #666; margin-bottom: 10px;">
+                                ${detachment.enhancementCount} enhancements
+                            </div>
+                    `;
+
+                    if (detachment.enhancements && detachment.enhancements.length > 0) {
+                        detachment.enhancements.forEach(enhancement => {
+                            html += `
+                                <div class="enhancement-item">
+                                    <span class="enhancement-name">${enhancement.name}</span>
+                                    <span class="enhancement-points">${enhancement.points} pts</span>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        html += '<p style="color: #666; font-style: italic;">No enhancements available</p>';
+                    }
+
+                    html += '</div>';
+                });
+
+                html += '</div>';
+            });
+
+            if (!hasDetachments) {
+                html = '<p>No detachments found for the selected faction.</p>';
+            }
+
+            results.innerHTML = html;
+        }
+
+        // Filter detachments by faction
+        function filterDetachmentsByFaction() {
+            const selectedFaction = document.getElementById('detachmentFactionFilter').value;
+            
+            if (!parsedData) return;
+
+            displayDetachments(parsedData.uiData, selectedFaction);
         }
     </script>
 </body>
