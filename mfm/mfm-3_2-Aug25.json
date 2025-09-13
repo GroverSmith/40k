@@ -2,10 +2,10 @@
   "metadata": {
     "version": "3.2",
     "date": "AUG25",
-    "totalUnits": 1161,
+    "totalUnits": 1214,
     "totalEnhancements": 713,
-    "totalPoints": 197680,
-    "forgeWorldUnits": 41,
+    "totalPoints": 211460,
+    "forgeWorldUnits": 53,
     "forgeWorldEnhancements": 286,
     "factionCount": 27
   },
@@ -5660,10 +5660,64 @@
     },
     "CHAOS KNIGHTS": {
       "name": "Chaos Knights",
-      "unitCount": 7,
-      "totalPoints": 2165,
-      "forgeWorldUnits": 3,
+      "unitCount": 20,
+      "totalPoints": 6860,
+      "forgeWorldUnits": 9,
       "units": {
+        "Knight Abominant": {
+          "name": "Knight Abominant",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 355
+            }
+          ]
+        },
+        "Knight Desecrator": {
+          "name": "Knight Desecrator",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 365
+            }
+          ]
+        },
+        "Knight Despoiler": {
+          "name": "Knight Despoiler",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 375
+            }
+          ]
+        },
+        "Knight Rampager": {
+          "name": "Knight Rampager",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 365
+            }
+          ]
+        },
+        "Knight Ruinator": {
+          "name": "Knight Ruinator",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 375
+            }
+          ]
+        },
+        "Knight Tyrant": {
+          "name": "Knight Tyrant",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 410
+            }
+          ]
+        },
         "War Dog Brigand": {
           "name": "War Dog Brigand",
           "variants": [
@@ -5688,6 +5742,15 @@
             {
               "modelCount": 1,
               "points": 140
+            }
+          ]
+        },
+        "War Dog Karnivore": {
+          "name": "War Dog Karnivore",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 150
             }
           ]
         },
@@ -5716,6 +5779,66 @@
             {
               "modelCount": 1,
               "points": 700,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Chaos Cerastus Knight Acheron": {
+          "name": "Chaos Cerastus Knight Acheron",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 385,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Chaos Cerastus Knight Atrapos": {
+          "name": "Chaos Cerastus Knight Atrapos",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 395,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Chaos Cerastus Knight Castigator": {
+          "name": "Chaos Cerastus Knight Castigator",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 385,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Chaos Cerastus Knight Lancer": {
+          "name": "Chaos Cerastus Knight Lancer",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 385,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Chaos Questoris Knight Magaera": {
+          "name": "Chaos Questoris Knight Magaera",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 375,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Chaos Questoris Knight Styrix": {
+          "name": "Chaos Questoris Knight Styrix",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 375,
               "isForgeWorld": true
             }
           ]
@@ -7479,10 +7602,19 @@
     },
     "DEATH GUARD": {
       "name": "Death Guard",
-      "unitCount": 32,
-      "totalPoints": 4595,
+      "unitCount": 46,
+      "totalPoints": 6375,
       "forgeWorldUnits": 0,
       "units": {
+        "Biologus Putrifier": {
+          "name": "Biologus Putrifier",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 60
+            }
+          ]
+        },
         "Blightlord Terminators": {
           "name": "Blightlord Terminators",
           "variants": [
@@ -7563,12 +7695,52 @@
             }
           ]
         },
+        "Deathshroud Terminators": {
+          "name": "Deathshroud Terminators",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 160
+            },
+            {
+              "modelCount": 6,
+              "points": 320
+            }
+          ]
+        },
         "Defiler": {
           "name": "Defiler",
           "variants": [
             {
               "modelCount": 1,
               "points": 165
+            }
+          ]
+        },
+        "Foetid Bloat-drone": {
+          "name": "Foetid Bloat-drone",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 100
+            }
+          ]
+        },
+        "Heavy Blight Launcher": {
+          "name": "Heavy Blight Launcher",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 120
+            }
+          ]
+        },
+        "Foul Blightspawn": {
+          "name": "Foul Blightspawn",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 75
             }
           ]
         },
@@ -7590,12 +7762,30 @@
             }
           ]
         },
+        "Lord of Contagion": {
+          "name": "Lord of Contagion",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 120
+            }
+          ]
+        },
         "Lord of Poxes": {
           "name": "Lord of Poxes",
           "variants": [
             {
               "modelCount": 1,
               "points": 75
+            }
+          ]
+        },
+        "Lord of Virulence": {
+          "name": "Lord of Virulence",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 100
             }
           ]
         },
@@ -7623,6 +7813,19 @@
             {
               "modelCount": 1,
               "points": 380
+            }
+          ]
+        },
+        "Myphitic Blight-haulers": {
+          "name": "Myphitic Blight-haulers",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 100
+            },
+            {
+              "modelCount": 2,
+              "points": 200
             }
           ]
         },
@@ -7661,12 +7864,43 @@
             }
           ]
         },
+        "Plagueburst Crawler": {
+          "name": "Plagueburst Crawler",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 210
+            }
+          ]
+        },
         "Poxwalkers": {
           "name": "Poxwalkers",
           "variants": [
             {
+              "modelCount": 10,
+              "points": 65
+            },
+            {
               "modelCount": 20,
               "points": 130
+            }
+          ]
+        },
+        "Tallyman": {
+          "name": "Tallyman",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 50
+            }
+          ]
+        },
+        "Typhus": {
+          "name": "Typhus",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 100
             }
           ]
         },
@@ -11166,16 +11400,106 @@
     },
     "IMPERIAL KNIGHTS": {
       "name": "Imperial Knights",
-      "unitCount": 4,
-      "totalPoints": 1755,
-      "forgeWorldUnits": 3,
+      "unitCount": 20,
+      "totalPoints": 7760,
+      "forgeWorldUnits": 9,
       "units": {
+        "Armiger Helverin": {
+          "name": "Armiger Helverin",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 140
+            }
+          ]
+        },
         "Armiger Warglaive": {
           "name": "Armiger Warglaive",
           "variants": [
             {
               "modelCount": 1,
               "points": 140
+            }
+          ]
+        },
+        "Canis Rex": {
+          "name": "Canis Rex",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 415
+            }
+          ]
+        },
+        "Knight Castellan": {
+          "name": "Knight Castellan",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 410
+            }
+          ]
+        },
+        "Knight Crusader": {
+          "name": "Knight Crusader",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 395
+            }
+          ]
+        },
+        "Knight Errant": {
+          "name": "Knight Errant",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 375
+            }
+          ]
+        },
+        "Knight Gallant": {
+          "name": "Knight Gallant",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 375
+            }
+          ]
+        },
+        "Knight Paladin": {
+          "name": "Knight Paladin",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 375
+            }
+          ]
+        },
+        "Knight Preceptor": {
+          "name": "Knight Preceptor",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 365
+            }
+          ]
+        },
+        "Knight Valiant": {
+          "name": "Knight Valiant",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 410
+            }
+          ]
+        },
+        "Knight Warden": {
+          "name": "Knight Warden",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 385
             }
           ]
         },
@@ -11205,6 +11529,66 @@
             {
               "modelCount": 1,
               "points": 150,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Cerastus Knight Acheron": {
+          "name": "Cerastus Knight Acheron",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 395,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Cerastus Knight Atrapos": {
+          "name": "Cerastus Knight Atrapos",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 405,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Cerastus Knight Castigator": {
+          "name": "Cerastus Knight Castigator",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 395,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Cerastus Knight Lancer": {
+          "name": "Cerastus Knight Lancer",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 395,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Questoris Knight Magaera": {
+          "name": "Questoris Knight Magaera",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 385,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Questoris Knight Styrix": {
+          "name": "Questoris Knight Styrix",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 385,
               "isForgeWorld": true
             }
           ]
@@ -11319,16 +11703,38 @@
     },
     "LEAGUES OF VOTANN": {
       "name": "Leagues Of Votann",
-      "unitCount": 18,
-      "totalPoints": 1950,
+      "unitCount": 28,
+      "totalPoints": 3250,
       "forgeWorldUnits": 0,
       "units": {
+        "Arkanyst Evaluator": {
+          "name": "Arkanyst Evaluator",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 75
+            }
+          ]
+        },
         "Brôkhyr Iron-master": {
           "name": "Brôkhyr Iron-master",
           "variants": [
             {
               "modelCount": 5,
               "points": 75
+            }
+          ]
+        },
+        "Brôkhyr Thunderkyn": {
+          "name": "Brôkhyr Thunderkyn",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 80
+            },
+            {
+              "modelCount": 6,
+              "points": 160
             }
           ]
         },
@@ -11351,6 +11757,15 @@
             {
               "modelCount": 10,
               "points": 200
+            }
+          ]
+        },
+        "Cthonian Earthshakers": {
+          "name": "Cthonian Earthshakers",
+          "variants": [
+            {
+              "modelCount": 2,
+              "points": 110
             }
           ]
         },
@@ -11394,6 +11809,15 @@
             }
           ]
         },
+        "Hekaton Land Fortress": {
+          "name": "Hekaton Land Fortress",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 240
+            }
+          ]
+        },
         "Hernkyn Pioneers": {
           "name": "Hernkyn Pioneers",
           "variants": [
@@ -11413,6 +11837,32 @@
             {
               "modelCount": 10,
               "points": 90
+            }
+          ]
+        },
+        "Heavy Volkanite Disintegrators": {
+          "name": "Heavy Volkanite Disintegrators",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 90
+            },
+            {
+              "modelCount": 6,
+              "points": 180
+            }
+          ]
+        },
+        "Ironkin Steeljacks with Melee Weapons": {
+          "name": "Ironkin Steeljacks with Melee Weapons",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 90
+            },
+            {
+              "modelCount": 6,
+              "points": 180
             }
           ]
         },
@@ -11458,6 +11908,15 @@
         },
         "Sagitaur": {
           "name": "Sagitaur",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 95
+            }
+          ]
+        },
+        "Ûthar the Destined": {
+          "name": "Ûthar the Destined",
           "variants": [
             {
               "modelCount": 1,

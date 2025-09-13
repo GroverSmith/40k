@@ -2,10 +2,10 @@
   "metadata": {
     "version": "3.3",
     "date": "Sep25",
-    "totalUnits": 1175,
+    "totalUnits": 1216,
     "totalEnhancements": 733,
-    "totalPoints": 203395,
-    "forgeWorldUnits": 47,
+    "totalPoints": 211190,
+    "forgeWorldUnits": 53,
     "forgeWorldEnhancements": 306,
     "factionCount": 27
   },
@@ -1231,8 +1231,8 @@
     },
     "ADEPTUS MECHANICUS": {
       "name": "Adeptus Mechanicus",
-      "unitCount": 43,
-      "totalPoints": 5090,
+      "unitCount": 47,
+      "totalPoints": 5715,
       "forgeWorldUnits": 0,
       "units": {
         "Archaeopter Fusilave": {
@@ -1259,6 +1259,15 @@
             {
               "modelCount": 1,
               "points": 150
+            }
+          ]
+        },
+        "Belisarius Cawl": {
+          "name": "Belisarius Cawl",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 175
             }
           ]
         },
@@ -1294,6 +1303,23 @@
             {
               "modelCount": 10,
               "points": 140
+            }
+          ]
+        },
+        "Ironstrider Ballistarii": {
+          "name": "Ironstrider Ballistarii",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 75
+            },
+            {
+              "modelCount": 2,
+              "points": 150
+            },
+            {
+              "modelCount": 3,
+              "points": 225
             }
           ]
         },
@@ -1862,8 +1888,8 @@
     },
     "AELDARI": {
       "name": "Aeldari",
-      "unitCount": 89,
-      "totalPoints": 14010,
+      "unitCount": 91,
+      "totalPoints": 14265,
       "forgeWorldUnits": 2,
       "units": {
         "Asurmen": {
@@ -1914,6 +1940,10 @@
         "Corsair Voidreavers": {
           "name": "Corsair Voidreavers",
           "variants": [
+            {
+              "modelCount": 5,
+              "points": 65
+            },
             {
               "modelCount": 10,
               "points": 110
@@ -2245,6 +2275,10 @@
             {
               "modelCount": 5,
               "points": 85
+            },
+            {
+              "modelCount": 10,
+              "points": 190
             }
           ]
         },
@@ -3031,8 +3065,8 @@
     },
     "ASTRA MILITARUM": {
       "name": "Astra Militarum",
-      "unitCount": 76,
-      "totalPoints": 10415,
+      "unitCount": 78,
+      "totalPoints": 10940,
       "forgeWorldUnits": 2,
       "units": {
         "Aegis Defence Line": {
@@ -3513,6 +3547,24 @@
             {
               "modelCount": 10,
               "points": 100
+            }
+          ]
+        },
+        "Rogal Dorn Battle Tank": {
+          "name": "Rogal Dorn Battle Tank",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 250
+            }
+          ]
+        },
+        "Rogal Dorn Commander": {
+          "name": "Rogal Dorn Commander",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 275
             }
           ]
         },
@@ -6084,8 +6136,8 @@
     },
     "CHAOS SPACE MARINES": {
       "name": "Chaos Space Marines",
-      "unitCount": 58,
-      "totalPoints": 7970,
+      "unitCount": 59,
+      "totalPoints": 8060,
       "forgeWorldUnits": 0,
       "units": {
         "Abaddon the Despoiler": {
@@ -6267,6 +6319,15 @@
             {
               "modelCount": 3,
               "points": 65
+            }
+          ]
+        },
+        "Dark Commune": {
+          "name": "Dark Commune",
+          "variants": [
+            {
+              "modelCount": 5,
+              "points": 90
             }
           ]
         },
@@ -8755,8 +8816,8 @@
     },
     "EMPEROR’S CHILDREN": {
       "name": "Emperor’s Children",
-      "unitCount": 26,
-      "totalPoints": 4140,
+      "unitCount": 27,
+      "totalPoints": 4210,
       "forgeWorldUnits": 0,
       "units": {
         "Chaos Land Raider": {
@@ -8863,6 +8924,15 @@
             {
               "modelCount": 1,
               "points": 80
+            }
+          ]
+        },
+        "Lord Kakophonist": {
+          "name": "Lord Kakophonist",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 70
             }
           ]
         },
@@ -9234,8 +9304,8 @@
     },
     "GENESTEALER CULTS": {
       "name": "Genestealer Cults",
-      "unitCount": 30,
-      "totalPoints": 2835,
+      "unitCount": 32,
+      "totalPoints": 3015,
       "forgeWorldUnits": 0,
       "units": {
         "Aberrants": {
@@ -9263,6 +9333,10 @@
         "Achilles Ridgerunners": {
           "name": "Achilles Ridgerunners",
           "variants": [
+            {
+              "modelCount": 1,
+              "points": 95
+            },
             {
               "modelCount": 2,
               "points": 170
@@ -9307,6 +9381,10 @@
         "Atalan Jackals": {
           "name": "Atalan Jackals",
           "variants": [
+            {
+              "modelCount": 5,
+              "points": 85
+            },
             {
               "modelCount": 10,
               "points": 150
@@ -11322,9 +11400,9 @@
     },
     "IMPERIAL KNIGHTS": {
       "name": "Imperial Knights",
-      "unitCount": 14,
-      "totalPoints": 5430,
-      "forgeWorldUnits": 3,
+      "unitCount": 21,
+      "totalPoints": 8185,
+      "forgeWorldUnits": 9,
       "units": {
         "Armiger Helverin": {
           "name": "Armiger Helverin",
@@ -11359,6 +11437,15 @@
             {
               "modelCount": 1,
               "points": 410
+            }
+          ]
+        },
+        "Knight Crusader": {
+          "name": "Knight Crusader",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 395
             }
           ]
         },
@@ -11451,6 +11538,66 @@
             {
               "modelCount": 1,
               "points": 150,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Cerastus Knight Acheron": {
+          "name": "Cerastus Knight Acheron",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 395,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Cerastus Knight Atrapos": {
+          "name": "Cerastus Knight Atrapos",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 405,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Cerastus Knight Castigator": {
+          "name": "Cerastus Knight Castigator",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 395,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Cerastus Knight Lancer": {
+          "name": "Cerastus Knight Lancer",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 395,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Questoris Knight Magaera": {
+          "name": "Questoris Knight Magaera",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 385,
+              "isForgeWorld": true
+            }
+          ]
+        },
+        "Questoris Knight Styrix": {
+          "name": "Questoris Knight Styrix",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 385,
               "isForgeWorld": true
             }
           ]
@@ -13972,8 +14119,8 @@
     },
     "SPACE MARINES": {
       "name": "Space Marines",
-      "unitCount": 116,
-      "totalPoints": 16105,
+      "unitCount": 120,
+      "totalPoints": 16935,
       "forgeWorldUnits": 2,
       "units": {
         "Adrax Agatone": {
@@ -14062,6 +14209,19 @@
             {
               "modelCount": 5,
               "points": 90
+            },
+            {
+              "modelCount": 10,
+              "points": 170
+            }
+          ]
+        },
+        "Ballistus Dreadnought": {
+          "name": "Ballistus Dreadnought",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 150
             }
           ]
         },
@@ -14080,6 +14240,10 @@
             {
               "modelCount": 3,
               "points": 80
+            },
+            {
+              "modelCount": 6,
+              "points": 170
             }
           ]
         },
@@ -14703,6 +14867,15 @@
             {
               "modelCount": 1,
               "points": 75
+            }
+          ]
+        },
+        "Roboute Guilliman": {
+          "name": "Roboute Guilliman",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 340
             }
           ]
         },
@@ -15486,10 +15659,19 @@
     },
     "SPACE WOLVES": {
       "name": "Space Wolves",
-      "unitCount": 20,
-      "totalPoints": 2575,
+      "unitCount": 25,
+      "totalPoints": 3410,
       "forgeWorldUnits": 0,
       "units": {
+        "Arjac Rockfist": {
+          "name": "Arjac Rockfist",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 105
+            }
+          ]
+        },
         "Bjorn the Fell-Handed": {
           "name": "Bjorn the Fell-Handed",
           "variants": [
@@ -15505,6 +15687,10 @@
             {
               "modelCount": 10,
               "points": 135
+            },
+            {
+              "modelCount": 20,
+              "points": 285
             }
           ]
         },
@@ -15563,6 +15749,28 @@
             {
               "modelCount": 1,
               "points": 85
+            }
+          ]
+        },
+        "Ragnar Blackmane": {
+          "name": "Ragnar Blackmane",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 100
+            }
+          ]
+        },
+        "Thunderwolf Cavalry": {
+          "name": "Thunderwolf Cavalry",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 115
+            },
+            {
+              "modelCount": 6,
+              "points": 230
             }
           ]
         },
@@ -16569,8 +16777,8 @@
     },
     "THOUSAND SONS": {
       "name": "Thousand Sons",
-      "unitCount": 32,
-      "totalPoints": 4655,
+      "unitCount": 42,
+      "totalPoints": 5925,
       "forgeWorldUnits": 0,
       "units": {
         "Ahriman": {
@@ -16708,6 +16916,24 @@
             }
           ]
         },
+        "Infernal Master": {
+          "name": "Infernal Master",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 95
+            }
+          ]
+        },
+        "Magnus the Red": {
+          "name": "Magnus the Red",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 435
+            }
+          ]
+        },
         "Maulerfiend": {
           "name": "Maulerfiend",
           "variants": [
@@ -16717,9 +16943,22 @@
             }
           ]
         },
+        "Mutalith Vortex Beast": {
+          "name": "Mutalith Vortex Beast",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 175
+            }
+          ]
+        },
         "Rubric Marines": {
           "name": "Rubric Marines",
           "variants": [
+            {
+              "modelCount": 5,
+              "points": 105
+            },
             {
               "modelCount": 10,
               "points": 190
@@ -16752,12 +16991,56 @@
             }
           ]
         },
+        "Sorcerer": {
+          "name": "Sorcerer",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 85
+            }
+          ]
+        },
         "Sorcerer in Terminator Armour": {
           "name": "Sorcerer in Terminator Armour",
           "variants": [
             {
               "modelCount": 1,
               "points": 85
+            }
+          ]
+        },
+        "Tzaangor Enlightened": {
+          "name": "Tzaangor Enlightened",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 55
+            },
+            {
+              "modelCount": 6,
+              "points": 90
+            }
+          ]
+        },
+        "Fatecaster Greatbows": {
+          "name": "Fatecaster Greatbows",
+          "variants": [
+            {
+              "modelCount": 3,
+              "points": 60
+            },
+            {
+              "modelCount": 6,
+              "points": 110
+            }
+          ]
+        },
+        "Tzaangor Shaman": {
+          "name": "Tzaangor Shaman",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 60
             }
           ]
         },
@@ -18057,8 +18340,8 @@
     },
     "WORLD EATERS": {
       "name": "World Eaters",
-      "unitCount": 34,
-      "totalPoints": 6270,
+      "unitCount": 37,
+      "totalPoints": 6630,
       "forgeWorldUnits": 0,
       "units": {
         "Angron": {
@@ -18103,6 +18386,15 @@
             {
               "modelCount": 1,
               "points": 85
+            }
+          ]
+        },
+        "Chaos Spawn": {
+          "name": "Chaos Spawn",
+          "variants": [
+            {
+              "modelCount": 2,
+              "points": 90
             }
           ]
         },
@@ -18172,6 +18464,15 @@
             }
           ]
         },
+        "Forgefiend": {
+          "name": "Forgefiend",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 170
+            }
+          ]
+        },
         "Goremongers": {
           "name": "Goremongers",
           "variants": [
@@ -18209,6 +18510,15 @@
             {
               "modelCount": 20,
               "points": 140
+            }
+          ]
+        },
+        "Khârn the Betrayer": {
+          "name": "Khârn the Betrayer",
+          "variants": [
+            {
+              "modelCount": 1,
+              "points": 100
             }
           ]
         },

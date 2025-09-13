@@ -221,8 +221,13 @@ class MFMParserUIStandalone {
             return false;
         }
         
-        // Check for enhancement name with points (dots pattern)
-        const enhancementMatch = line.match(/^(.+?)[\.\s]+\s*(\d+)\s+pts$/);
+        // Don't match unit entries (which contain "models")
+        if (line.includes('models')) {
+            return false;
+        }
+        
+        // Check for enhancement name with points (dots pattern, with or without point adjustments)
+        const enhancementMatch = line.match(/^(.+?)[\.\s]+\s*(?:\([+-]\d+\)\s+)?(\d+)\s+pts$/);
         return enhancementMatch !== null;
     }
 
@@ -230,7 +235,7 @@ class MFMParserUIStandalone {
      * Parse an enhancement entry line and extract enhancement information
      */
     parseEnhancementEntry(line, lineIndex, allLines) {
-        const enhancementMatch = line.match(/^(.+?)[\.\s]+\s*(\d+)\s+pts$/);
+        const enhancementMatch = line.match(/^(.+?)[\.\s]+\s*(?:\([+-]\d+\)\s+)?(\d+)\s+pts$/);
         if (!enhancementMatch) {
             return null;
         }
