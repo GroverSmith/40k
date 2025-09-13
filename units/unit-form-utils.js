@@ -53,15 +53,25 @@ class UnitFormUtilities {
      */
     static setupVersionSelector() {
         const versionSelect = CoreUtils.dom.getElement('mfm-version-preset');
-        if (!versionSelect || typeof window.MFM_UNITS_BUNDLE === 'undefined') {
+        if (!versionSelect) {
+            console.log('Version selector element not found');
+            return;
+        }
+        
+        if (typeof window.MFM_UNITS_BUNDLE === 'undefined') {
+            console.log('MFM_UNITS_BUNDLE not available, keeping static options');
             return;
         }
 
+        console.log('Setting up dynamic version selector');
+        
         // Clear existing options
         versionSelect.innerHTML = '';
 
         // Populate with available versions
         const versions = window.MFM_UNITS_BUNDLE.getAvailableVersions();
+        console.log('Available versions from bundle:', versions);
+        
         versions.forEach(version => {
             const option = document.createElement('option');
             option.value = version.value;
@@ -125,12 +135,23 @@ class UnitFormUtilities {
                 this.populateDataSheetOptions(faction);
             } else {
                 // Fallback to direct fetch if bundle is not available
-                const response = await fetch(`../mfm/mfm-units-${version.replace('.', '_')}.json`);
+                const response = await fetch(`../mfm/mfm-units-${version.replace('.', '_')}.js`);
                 if (!response.ok) {
                     throw new Error(`Failed to load MFM units data: ${response.status}`);
                 }
                 
-                this.mfmData = await response.json();
+                // Execute the JavaScript to load the data
+                const jsContent = await response.text();
+                eval(jsContent);
+                
+                // Get the data from the global variable
+                const dataKey = `MFM_UNITS_${version.replace('.', '_')}`;
+                this.mfmData = window[dataKey];
+                
+                if (!this.mfmData) {
+                    throw new Error(`MFM units data not found after loading script`);
+                }
+                
                 this.populateDataSheetOptions(faction);
             }
         } catch (error) {

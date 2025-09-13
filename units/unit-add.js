@@ -36,6 +36,12 @@ class UnitForm extends BaseForm {
         document.addEventListener('mfmVersionChanged', (event) => {
             this.handleMFMVersionChange(event.detail.version);
         });
+        
+        // Log available versions for debugging
+        if (typeof window.MFM_UNITS_BUNDLE !== 'undefined') {
+            const versions = window.MFM_UNITS_BUNDLE.getAvailableVersions();
+            console.log('Available MFM versions:', versions);
+        }
     }
 
     async loadForceContext() {
@@ -109,8 +115,10 @@ class UnitForm extends BaseForm {
     }
 
     async handleMFMVersionChange(version) {
+        console.log(`Switching to MFM version: ${version}`);
         // Reload MFM data with the new version
         await UnitFormUtilities.loadMFMData(this.forceContext.faction, version);
+        console.log(`MFM version ${version} loaded successfully`);
     }
 
 
