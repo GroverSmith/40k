@@ -39,10 +39,11 @@ class UnitEditForm extends BaseForm {
         // Setup battlefield role specific fields
         UnitFormUtilities.setupBattlefieldRoleFields();
 
-        // Data sheet is read-only, no MFM integration needed
-
         // Populate form with existing data
         await this.populateForm();
+
+        // Setup MFM integration for points updating (after form is populated)
+        await this.setupMFMIntegration();
 
         // Setup action buttons
         this.setupActionButtons();
@@ -59,14 +60,20 @@ class UnitEditForm extends BaseForm {
                 return;
             }
 
-            // Load force context from unit data
+            // Load force data to get faction information
+            const forceData = await UnifiedCache.getRowByKey('forces', this.unitData.force_key);
+            console.log('Force data loaded:', forceData);
+            
+            // Load force context from unit data and force data
             this.forceContext = {
                 forceKey: this.unitData.force_key,
                 forceName: this.unitData.force_name,
                 userName: this.unitData.user_name,
                 userKey: this.unitData.user_key,
-                faction: this.unitData.faction
+                faction: forceData?.faction || null
             };
+            
+            console.log('Force context created:', this.forceContext);
 
             this.config.redirectUrl = `../forces/force-details.html?key=${encodeURIComponent(this.forceContext.forceKey)}`;
             this.populateForceContext();
@@ -97,10 +104,201 @@ class UnitEditForm extends BaseForm {
         if (userKeyField) {
             userKeyField.value = this.forceContext.userKey || '';
         }
+    }
 
-        const unitKeyField = CoreUtils.dom.getElement('unit-key');
-        if (unitKeyField) {
-            unitKeyField.value = this.unitKey || '';
+    async setupMFMIntegration() {
+        const presetRadio = CoreUtils.dom.getElement('mfm-preset');
+        const customRadio = CoreUtils.dom.getElement('mfm-custom');
+        const presetContainer = CoreUtils.dom.getElement('mfm-preset-container');
+        const customContainer = CoreUtils.dom.getElement('mfm-custom-container');
+        const pointsField = CoreUtils.dom.getElement('points');
+
+        // Setup version selector
+        UnitFormUtilities.setupVersionSelector();
+        
+        // Retry setup if bundle wasn't ready initially
+        if (typeof window.MFM_UNITS_BUNDLE === 'undefined') {
+            setTimeout(() => {
+                UnitFormUtilities.setupVersionSelector();
+            }, 100);
+            
+            setTimeout(() => {
+                UnitFormUtilities.setupVersionSelector();
+            }, 500);
+        }
+
+        if (presetRadio && customRadio && presetContainer && customContainer && pointsField) {
+            presetRadio.addEventListener('change', () => {
+                console.log('MFM preset radio changed, checked:', presetRadio.checked);
+                if (presetRadio.checked) {
+                    CoreUtils.dom.show(presetContainer);
+                    CoreUtils.dom.hide(customContainer);
+                    pointsField.readOnly = true;
+                    pointsField.classList.add('readonly');
+                    // Update points immediately when switching to MFM preset
+                    console.log('Calling updatePointsFromMFM from radio change');
+                    this.updatePointsFromMFM();
+                }
+            });
+
+            customRadio.addEventListener('change', () => {
+                if (customRadio.checked) {
+                    CoreUtils.dom.hide(presetContainer);
+                    CoreUtils.dom.show(customContainer);
+                    pointsField.readOnly = false;
+                    pointsField.classList.remove('readonly');
+                }
+            });
+
+            // Listen for MFM version changes
+            document.addEventListener('mfmVersionChanged', (event) => {
+                // Only update points if MFM preset is selected
+                if (presetRadio.checked) {
+                    this.handleMFMVersionChange(event.detail.version);
+                }
+            });
+
+            // Also add direct listener to version selector
+            const versionSelect = CoreUtils.dom.getElement('mfm-version-preset');
+            if (versionSelect) {
+                versionSelect.addEventListener('change', () => {
+                    console.log('Version selector changed to:', versionSelect.value, 'preset checked:', presetRadio.checked);
+                    if (presetRadio.checked) {
+                        console.log('Calling handleMFMVersionChange');
+                        this.handleMFMVersionChange(versionSelect.value);
+                    }
+                });
+            }
+
+            // Update points on initial load if MFM preset is already selected
+            if (presetRadio.checked) {
+                console.log('MFM preset is checked on initial load, calling updatePointsFromMFM');
+                this.updatePointsFromMFM();
+            } else {
+                console.log('MFM preset is not checked on initial load');
+            }
+        }
+    }
+
+    async handleMFMVersionChange(version) {
+        console.log('handleMFMVersionChange called with version:', version);
+        // Reload MFM data with the new version and update points
+        await this.updatePointsFromMFM(version);
+    }
+
+    async updatePointsFromMFM(version = null) {
+        console.log('updatePointsFromMFM called with version:', version);
+        
+        if (!this.unitData || !this.unitData.data_sheet || !this.forceContext.faction) {
+            console.log('Missing required data for MFM points update:', {
+                hasUnitData: !!this.unitData,
+                dataSheet: this.unitData?.data_sheet,
+                faction: this.forceContext?.faction
+            });
+            return;
+        }
+
+        try {
+            const mfmVersion = version || UnitFormUtilities.getSelectedVersion();
+            console.log('Updating points from MFM:', {
+                version: mfmVersion,
+                faction: this.forceContext.faction,
+                dataSheet: this.unitData.data_sheet
+            });
+            
+            // Test if we can access the points field
+            const pointsField = CoreUtils.dom.getElement('points');
+            console.log('Points field found:', !!pointsField);
+            if (pointsField) {
+                console.log('Current points field value:', pointsField.value);
+            }
+            
+            // Load MFM data directly without trying to populate dropdown
+            let mfmData = null;
+            if (typeof window.MFM_UNITS_BUNDLE !== 'undefined') {
+                mfmData = await window.MFM_UNITS_BUNDLE.loadVersion(mfmVersion);
+                console.log('MFM data loaded from bundle:', !!mfmData);
+            } else {
+                console.log('MFM_UNITS_BUNDLE not available');
+            }
+            
+            if (mfmData && this.unitData.data_sheet) {
+                const factionKey = this.forceContext.faction.toUpperCase();
+                const factionData = mfmData.factions[factionKey];
+                console.log('Faction data found:', !!factionData, 'for faction:', factionKey);
+                
+                // Try exact match first
+                let unit = factionData?.units[this.unitData.data_sheet];
+                let matchedUnitName = this.unitData.data_sheet;
+                
+                // If not found, try case-insensitive match
+                if (!unit && factionData) {
+                    const availableUnits = Object.keys(factionData.units);
+                    const lowerDataSheet = this.unitData.data_sheet.toLowerCase();
+                    
+                    for (const unitName of availableUnits) {
+                        if (unitName.toLowerCase() === lowerDataSheet) {
+                            unit = factionData.units[unitName];
+                            matchedUnitName = unitName;
+                            console.log('Found case-insensitive match:', unitName);
+                            break;
+                        }
+                    }
+                }
+                
+                // If still not found, try fuzzy matching for common variations
+                if (!unit && factionData) {
+                    const availableUnits = Object.keys(factionData.units);
+                    const dataSheet = this.unitData.data_sheet;
+                    
+                    // Common variations to check
+                    const variations = [
+                        dataSheet.replace(/Defkilla/g, 'Deffkilla'), // Fix missing 'f'
+                        dataSheet.replace(/Deffkilla/g, 'Defkilla'), // Fix extra 'f'
+                        dataSheet.replace(/Space Marine/g, 'Space Marines'), // Fix plural
+                        dataSheet.replace(/Space Marines/g, 'Space Marine'), // Fix singular
+                    ];
+                    
+                    for (const variation of variations) {
+                        if (factionData.units[variation]) {
+                            unit = factionData.units[variation];
+                            matchedUnitName = variation;
+                            console.log('Found fuzzy match:', variation);
+                            break;
+                        }
+                    }
+                }
+                
+                if (unit) {
+                    console.log('Unit found:', matchedUnitName, 'with variants:', unit.variants?.length || 0);
+                    
+                    if (unit.variants && unit.variants.length > 0) {
+                        // Use the first variant's points as default
+                        const points = unit.variants[0].points;
+                        console.log('Setting points to:', points);
+                        
+                        if (pointsField) {
+                            pointsField.value = points;
+                            console.log('Points field updated. New value:', pointsField.value);
+                            
+                            // Trigger change event to ensure any listeners are notified
+                            pointsField.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    } else {
+                        console.log('No variants found for unit:', matchedUnitName);
+                    }
+                } else {
+                    console.log('Unit not found in MFM data:', {
+                        factionKey,
+                        dataSheet: this.unitData.data_sheet,
+                        availableUnits: factionData ? Object.keys(factionData.units) : 'No faction data'
+                    });
+                }
+            } else {
+                console.log('MFM data not available or no data sheet');
+            }
+        } catch (error) {
+            console.error('Error updating points from MFM:', error);
         }
     }
 

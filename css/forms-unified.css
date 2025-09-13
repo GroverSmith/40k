@@ -617,3 +617,20 @@ input[type="file"]:hover {
 .searchable-dropdown-container .search-input {
   display: none;
 }
+
+/* ===============================
+   READONLY INPUT STYLES
+   =============================== */
+
+input.readonly {
+  background-color: var(--color-bg-disabled);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  border-color: var(--color-border-disabled);
+}
+
+input.readonly:focus {
+  outline: none;
+  border-color: var(--color-border-disabled);
+  box-shadow: none;
+}
