@@ -96,7 +96,6 @@ class UnitDetailsView {
         if (!this.unitData) return;
 
         // Debug: Log the unit data to see what fields are available
-        console.log('Unit data:', this.unitData);
 
         // Populate header
         const nameDisplay = CoreUtils.dom.getElement('unit-display-name');
@@ -188,7 +187,6 @@ class UnitDetailsView {
             if (window.UserManager && UserManager.getCurrentUser) {
                 const currentUser = UserManager.getCurrentUser();
                 if (currentUser) {
-                    console.log('UserManager ready, setting up action buttons');
                     this.setupActionButtons();
             return;
         }
@@ -199,7 +197,6 @@ class UnitDetailsView {
             attempts++;
         }
         
-        console.log('UserManager not ready after 5 seconds, setting up buttons anyway');
         this.setupActionButtons();
     }
 
@@ -212,47 +209,29 @@ class UnitDetailsView {
         const currentUser = UserManager.getCurrentUser();
         const canEdit = currentUser && currentUser.key === this.forceContext.userKey;
 
-        // Debug logging
-        console.log('Permission check:', {
-            currentUser: currentUser,
-            currentUserKey: currentUser?.key,
-            unitUserKey: this.forceContext.userKey,
-            canEdit: canEdit
-        });
-
         // Show/hide permission message
         this.updatePermissionMessage(canEdit, currentUser);
 
         if (editBtn) {
-            console.log('Edit button found, canEdit:', canEdit);
             if (canEdit) {
                 editBtn.addEventListener('click', () => {
                     window.location.href = `../units/unit-edit.html?unit_key=${encodeURIComponent(this.unitKey)}`;
                 });
-                console.log('Edit button event listener added');
             } else {
                 // Hide edit button if user doesn't have permission
                 CoreUtils.dom.hide(editBtn);
-                console.log('Edit button hidden');
             }
-        } else {
-            console.log('Edit button not found');
         }
 
         if (deleteBtn) {
-            console.log('Delete button found, canEdit:', canEdit);
             if (canEdit) {
                 deleteBtn.addEventListener('click', () => {
                     this.confirmDelete();
                 });
-                console.log('Delete button event listener added');
             } else {
                 // Hide delete button if user doesn't have permission
                 CoreUtils.dom.hide(deleteBtn);
-                console.log('Delete button hidden');
             }
-        } else {
-            console.log('Delete button not found');
         }
 
     }

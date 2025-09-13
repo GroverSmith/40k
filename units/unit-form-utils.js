@@ -53,24 +53,15 @@ class UnitFormUtilities {
      */
     static setupVersionSelector() {
         const versionSelect = CoreUtils.dom.getElement('mfm-version-preset');
-        if (!versionSelect) {
-            console.log('Version selector element not found');
-            return;
-        }
-        
-        if (typeof window.MFM_UNITS_BUNDLE === 'undefined') {
-            console.log('MFM_UNITS_BUNDLE not available, keeping static options');
+        if (!versionSelect || typeof window.MFM_UNITS_BUNDLE === 'undefined') {
             return;
         }
 
-        console.log('Setting up dynamic version selector');
-        
         // Clear existing options
         versionSelect.innerHTML = '';
 
         // Populate with available versions
         const versions = window.MFM_UNITS_BUNDLE.getAvailableVersions();
-        console.log('Available versions from bundle:', versions);
         
         versions.forEach(version => {
             const option = document.createElement('option');

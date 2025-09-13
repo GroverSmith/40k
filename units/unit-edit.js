@@ -238,7 +238,6 @@ class UnitEditForm extends BaseForm {
         event.preventDefault();
 
         if (this.isSubmitting) {
-            console.log('Already submitting, please wait');
             return;
         }
 
@@ -246,20 +245,13 @@ class UnitEditForm extends BaseForm {
         const btnText = CoreUtils.dom.getElement('.btn-text');
         const btnLoading = CoreUtils.dom.getElement('.btn-loading');
 
-        console.log('Submit button found:', !!submitBtn);
-        console.log('Button text element found:', !!btnText);
-        console.log('Button loading element found:', !!btnLoading);
-
         try {
             // Show loading state
             if (submitBtn && btnText && btnLoading) {
-                console.log('Showing loading state...');
                 submitBtn.disabled = true;
                 btnText.style.display = 'none';
                 btnLoading.style.display = 'inline-block';
-                console.log('Loading state applied');
             } else {
-                console.log('Missing elements for loading state, using fallback');
                 // Fallback: replace button content directly
                 if (submitBtn) {
                     submitBtn.disabled = true;
