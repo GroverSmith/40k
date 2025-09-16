@@ -29,13 +29,7 @@
         </header>
         
         <form id="add-force-form" class="army-form">
-            <!-- User Name (Auto-populated) -->
-            <div class="form-group">
-                <label for="user-name">Player Name <span class="required">*</span></label>
-                <input type="text" id="user-name" name="userName" required 
-                       placeholder="Enter your name or select a user from top right">
-                <small class="help-text">Your name as the force commander.</small>
-            </div>
+            
             
             <!-- Force Name -->
             <div class="form-group">
@@ -50,31 +44,7 @@
                 <label for="faction">Faction <span class="required">*</span></label>
                 <select id="faction" name="faction" required>
                     <option value="">Select faction...</option>
-                    <option value="Adepta Sororitas">Adepta Sororitas</option>
-                    <option value="Adeptus Custodes">Adeptus Custodes</option>
-                    <option value="Adeptus Mechanicus">Adeptus Mechanicus</option>
-                    <option value="Aeldari">Aeldari</option>
-                    <option value="Agents of the Imperium">Agents of the Imperium</option>
-                    <option value="Astra Militarum">Astra Militarum</option>
-                    <option value="Blood Angels">Blood Angels</option>
-                    <option value="Chaos Daemons">Chaos Daemons</option>
-                    <option value="Chaos Knights">Chaos Knights</option>
-                    <option value="Chaos Space Marines">Chaos Space Marines</option>
-                    <option value="Dark Angels">Dark Angels</option>
-                    <option value="Death Guard">Death Guard</option>
-                    <option value="Drukhari">Drukhari</option>
-                    <option value="Genestealer Cults">Genestealer Cults</option>
-                    <option value="Grey Knights">Grey Knights</option>
-                    <option value="Imperial Knights">Imperial Knights</option>
-                    <option value="Leagues of Votann">Leagues of Votann</option>
-                    <option value="Necrons">Necrons</option>
-                    <option value="Orks">Orks</option>
-                    <option value="Space Marines">Space Marines</option>
-                    <option value="Space Wolves">Space Wolves</option>
-                    <option value="T'au Empire">T'au Empire</option>
-                    <option value="Thousand Sons">Thousand Sons</option>
-                    <option value="Tyranids">Tyranids</option>
-                    <option value="World Eaters">World Eaters</option>
+                    <!-- Factions will be populated dynamically from MFM data -->
                 </select>
                 <small class="help-text">The primary faction for this force.</small>
             </div>
@@ -82,9 +52,19 @@
             <!-- Detachment -->
             <div class="form-group">
                 <label for="detachment">Detachment</label>
-                <input type="text" id="detachment" name="detachment" 
-                       placeholder="e.g., Gladius Task Force, Anvil Siege Force, etc.">
+                <select id="detachment" name="detachment">
+                    <option value="">Select detachment...</option>
+                    <!-- Detachments will be populated dynamically based on selected faction -->
+                </select>
                 <small class="help-text">The detachment type for this force (optional)</small>
+            </div>
+            
+            <!-- Custom Detachment Input (hidden by default) -->
+            <div class="form-group" id="custom-detachment-group" style="display: none;">
+                <label for="custom-detachment">Custom Detachment Name</label>
+                <input type="text" id="custom-detachment" name="customDetachment" 
+                       placeholder="Enter custom detachment name...">
+                <small class="help-text">Enter a custom detachment name if not found in the list above.</small>
             </div>
             
             <!-- Notes -->
@@ -148,7 +128,8 @@
     <script src="../js/users/user-modal.js"></script>
     <script src="../js/users/user-manager.js"></script>
 
-    <!-- Other dependencies -->
+    <!-- MFM Data -->
+    <script src="../mfm/mfm-detachments.js"></script>
 
     <!-- Form modules -->
     <script src="../js/core/form-base.js"></script>

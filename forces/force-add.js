@@ -21,11 +21,8 @@ class ForceForm extends BaseForm {
         // Initialize base functionality
         this.initBase();
 
-        // Setup subfaction handling
-        this.setupSubfactionHandling();
-
-        // Pre-select current user if available
-        this.preselectCurrentUser();
+        // Setup MFM data handling
+        this.setupMFMDataHandling();
 
         // Override loading state for force-specific messaging
         this.setupForceLoadingState();
@@ -75,123 +72,135 @@ class ForceForm extends BaseForm {
         }
     }
 
-    setupSubfactionHandling() {
+    setupMFMDataHandling() {
         const factionSelect = document.getElementById('faction');
-        const subfactionGroup = document.getElementById('subfaction-group');
-        const subfactionSelect = document.getElementById('subfaction');
+        const detachmentSelect = document.getElementById('detachment');
+        const customDetachmentGroup = document.getElementById('custom-detachment-group');
+        const customDetachmentInput = document.getElementById('custom-detachment');
 
-        if (!factionSelect || !subfactionGroup || !subfactionSelect) return;
+        if (!factionSelect || !detachmentSelect || !customDetachmentGroup || !customDetachmentInput) return;
 
-        // Subfaction data
-        const subfactions = {
-            'Space Marines': [
-                'Ultramarines', 'Imperial Fists', 'Blood Angels', 'Dark Angels',
-                'Space Wolves', 'Iron Hands', 'Salamanders', 'Raven Guard',
-                'White Scars', 'Black Templars', 'Crimson Fists', 'Deathwatch',
-                'Other Chapter'
-            ],
-            'Chaos Space Marines': [
-                'Black Legion', 'Word Bearers', 'Night Lords', 'Iron Warriors',
-                'Alpha Legion', 'World Eaters', 'Emperor\'s Children', 'Death Guard',
-                'Thousand Sons', 'Red Corsairs', 'Other Warband'
-            ],
-            'Aeldari': [
-                'Ulthwé', 'Biel-Tan', 'Iyanden', 'Saim-Hann', 'Alaitoc',
-                'Ynnari', 'Harlequins', 'Other Craftworld'
-            ],
-            'Drukhari': [
-                'Kabal of the Black Heart', 'Kabal of the Flayed Skull',
-                'Kabal of the Poisoned Tongue', 'Cult of Strife',
-                'Cult of the Red Grief', 'Other Kabal/Cult'
-            ],
-            'Orks': [
-                'Goffs', 'Bad Moons', 'Evil Sunz', 'Deathskulls', 'Blood Axes',
-                'Snakebites', 'Freebooterz', 'Other Clan'
-            ],
-            'Necrons': [
-                'Sautekh', 'Mephrit', 'Nephrekh', 'Nihilakh', 'Novokh',
-                'Thokt', 'Other Dynasty'
-            ],
-            'T\'au Empire': [
-                'T\'au Sept', 'Vior\'la', 'Dal\'yth', 'Sa\'cea', 'Bork\'an',
-                'Farsight Enclaves', 'Other Sept'
-            ],
-            'Tyranids': [
-                'Behemoth', 'Kraken', 'Leviathan', 'Jormungandr', 'Hydra',
-                'Kronos', 'Other Hive Fleet'
-            ],
-            'Genestealer Cults': [
-                'Cult of the Four-Armed Emperor', 'The Hivecult', 'The Pauper Princes',
-                'The Rusted Claw', 'Other Cult'
-            ],
-            'Adeptus Mechanicus': [
-                'Mars', 'Graia', 'Metalica', 'Lucius', 'Agripinaa', 'Stygies VIII',
-                'Ryza', 'Other Forge World'
-            ],
-            'Imperial Knights': [
-                'House Terryn', 'House Cadmus', 'House Griffith', 'House Hawkshroud',
-                'House Mortan', 'House Raven', 'House Taranis', 'House Krast',
-                'House Vulker', 'Other House'
-            ],
-            'Chaos Knights': [
-                'House Lucaris', 'House Herpetrax', 'House Khymere', 'House Vextrix',
-                'Other House'
-            ],
-            'Astra Militarum': [
-                'Cadian', 'Catachan', 'Mordian', 'Tallarn', 'Valhallan', 'Vostroyan',
-                'Armageddon', 'Death Korps of Krieg', 'Other Regiment'
-            ],
-            'Adepta Sororitas': [
-                'Order of Our Martyred Lady', 'Order of the Valorous Heart',
-                'Order of the Bloody Rose', 'Order of the Ebon Chalice',
-                'Order of the Argent Shroud', 'Order of the Sacred Rose',
-                'Other Order'
-            ],
-            'Custodes': [
-                'Shadowkeepers', 'Dread Host', 'Aquilan Shield', 'Solar Watch',
-                'Emissaries Imperatus', 'Other Shield Host'
-            ],
-            'Grey Knights': [
-                'Swordbearers', 'Blades of Victory', 'Wardmakers', 'Prescient Brethren',
-                'Preservers', 'Rapiers', 'Exactors', 'Silver Blades', 'Other Brotherhood'
-            ]
-        };
+        // Check if MFM data is available
+        if (typeof window.MFM_DETACHMENTS_UPDATED === 'undefined') {
+            console.warn('MFM detachments data not available. Using fallback faction list.');
+            this.populateFallbackFactions();
+            return;
+        }
 
+        // Populate factions from MFM data
+        this.populateFactionsFromMFM();
+
+        // Handle faction selection
         factionSelect.addEventListener('change', (e) => {
-            const faction = e.target.value;
+            const selectedFaction = e.target.value;
+            this.populateDetachmentsForFaction(selectedFaction);
+        });
 
-            if (subfactions[faction]) {
-                // Show subfaction field
-                CoreUtils.dom.show(subfactionGroup);
-
-                // Clear and populate options
-                subfactionSelect.innerHTML = '<option value="">Select subfaction...</option>';
-
-                subfactions[faction].forEach(subfaction => {
-                    const option = document.createElement('option');
-                    option.value = subfaction;
-                    option.textContent = subfaction;
-                    subfactionSelect.appendChild(option);
-                });
+        // Handle detachment selection
+        detachmentSelect.addEventListener('change', (e) => {
+            const selectedDetachment = e.target.value;
+            if (selectedDetachment === 'custom') {
+                // Show custom detachment input
+                customDetachmentGroup.style.display = 'block';
+                customDetachmentInput.required = true;
             } else {
-                // Hide subfaction field
-                CoreUtils.dom.hide(subfactionGroup);
-                subfactionSelect.value = '';
+                // Hide custom detachment input
+                customDetachmentGroup.style.display = 'none';
+                customDetachmentInput.required = false;
+                customDetachmentInput.value = '';
             }
         });
     }
 
-    preselectCurrentUser() {
-        const userField = document.getElementById('user-name');
-        if (!userField) return;
+    populateFactionsFromMFM() {
+        const factionSelect = document.getElementById('faction');
+        if (!factionSelect) return;
 
-        const currentUser = UserManager.getCurrentUser();
-        if (currentUser && currentUser.name) {
-            userField.value = currentUser.name;
-            userField.readOnly = true;
-            userField.classList.add('user-field-locked');
-        }
+        const mfmData = window.MFM_DETACHMENTS_UPDATED;
+        if (!mfmData || !mfmData.factions) return;
+
+        // Clear existing options except the first one
+        factionSelect.innerHTML = '<option value="">Select faction...</option>';
+
+        // Sort factions alphabetically by name
+        const sortedFactions = Object.entries(mfmData.factions)
+            .sort(([,a], [,b]) => a.name.localeCompare(b.name));
+
+        sortedFactions.forEach(([factionKey, factionData]) => {
+            const option = document.createElement('option');
+            option.value = factionData.name;
+            option.textContent = factionData.name;
+            factionSelect.appendChild(option);
+        });
     }
+
+    populateDetachmentsForFaction(factionName) {
+        const detachmentSelect = document.getElementById('detachment');
+        const customDetachmentGroup = document.getElementById('custom-detachment-group');
+        const customDetachmentInput = document.getElementById('custom-detachment');
+
+        if (!detachmentSelect) return;
+
+        // Clear existing options
+        detachmentSelect.innerHTML = '<option value="">Select detachment...</option>';
+
+        // Hide custom detachment input
+        customDetachmentGroup.style.display = 'none';
+        customDetachmentInput.required = false;
+        customDetachmentInput.value = '';
+
+        if (!factionName) return;
+
+        const mfmData = window.MFM_DETACHMENTS_UPDATED;
+        if (!mfmData || !mfmData.factions) return;
+
+        // Find the faction by name
+        const factionEntry = Object.entries(mfmData.factions)
+            .find(([, factionData]) => factionData.name === factionName);
+
+        if (!factionEntry) return;
+
+        const [, factionData] = factionEntry;
+
+        // Add detachments for this faction
+        if (factionData.detachments) {
+            Object.values(factionData.detachments).forEach(detachment => {
+                const option = document.createElement('option');
+                option.value = detachment.name;
+                option.textContent = detachment.name;
+                detachmentSelect.appendChild(option);
+            });
+        }
+
+        // Add custom detachment option
+        const customOption = document.createElement('option');
+        customOption.value = 'custom';
+        customOption.textContent = 'Custom Detachment';
+        detachmentSelect.appendChild(customOption);
+    }
+
+    populateFallbackFactions() {
+        const factionSelect = document.getElementById('faction');
+        if (!factionSelect) return;
+
+        // Fallback faction list if MFM data is not available
+        const fallbackFactions = [
+            'Adepta Sororitas', 'Adeptus Custodes', 'Adeptus Mechanicus', 'Aeldari',
+            'Agents of the Imperium', 'Astra Militarum', 'Blood Angels', 'Chaos Daemons',
+            'Chaos Knights', 'Chaos Space Marines', 'Dark Angels', 'Death Guard',
+            'Drukhari', 'Genestealer Cults', 'Grey Knights', 'Imperial Knights',
+            'Leagues of Votann', 'Necrons', 'Orks', 'Space Marines', 'Space Wolves',
+            'T\'au Empire', 'Thousand Sons', 'Tyranids', 'World Eaters'
+        ];
+
+        fallbackFactions.forEach(faction => {
+            const option = document.createElement('option');
+            option.value = faction;
+            option.textContent = faction;
+            factionSelect.appendChild(option);
+        });
+    }
+
 
     validateSpecificField(field, value) {
         // Force name validation
@@ -227,26 +236,37 @@ class ForceForm extends BaseForm {
     gatherFormData() {
         const formData = super.gatherFormData();
 
-        // Get current user for user_key
+        // Get current user for user_key and user_name
         const currentUser = UserManager.getCurrentUser();
         if (!currentUser || !currentUser.key) {
             throw new Error('No user selected. Please select a user from the dropdown above.');
         }
 
-        // Generate force key
+        // Generate force key using current user name
         const forceKey = KeyUtils.generateForceKey(
             formData.forceName,
-            formData.userName
+            currentUser.name
         );
+
+        // Handle custom detachment
+        let detachmentValue = formData.detachment || '';
+        if (detachmentValue === 'custom') {
+            const customDetachmentInput = document.getElementById('custom-detachment');
+            if (customDetachmentInput && customDetachmentInput.value.trim()) {
+                detachmentValue = customDetachmentInput.value.trim();
+            } else {
+                detachmentValue = '';
+            }
+        }
 
         // Map form field names to expected API field names
         return {
             key: forceKey,
             user_key: currentUser.key,           // Required by Google Apps Script
-            user_name: formData.userName,        // Map userName to user_name
+            user_name: currentUser.name,         // Get user name from current user
             force_name: formData.forceName,      // Map forceName to force_name
             faction: formData.faction,
-            detachment: formData.detachment || '',
+            detachment: detachmentValue,
             notes: formData.notes || '',
             timestamp: formData.timestamp
         };
