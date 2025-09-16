@@ -238,12 +238,15 @@ class MFMParserUIStandalone {
             }
         }
 
+        // Create version-specific field name
+        const pointsFieldName = `mfm_${this.currentVersion.replace('.', '_')}_points`;
+        
         return {
             faction: this.currentFaction,
             detachment: this.currentDetachment,
             unitName: unitName,
             modelCount: modelCount,
-            points: points,
+            [pointsFieldName]: points,
             isForgeWorld: this.isForgeWorld,
             lineNumber: lineIndex + 1
         };
@@ -411,10 +414,13 @@ class MFMParserUIStandalone {
                 result.factions[factionKey].units[unitName] = {
                     name: unitName,
                     variants: unitVariants.map(unit => {
-                        const variant = {
-                            modelCount: unit.modelCount,
-                            points: unit.points
-                        };
+                        const variant = { modelCount: unit.modelCount };
+                        // Copy all version-specific points fields
+                        Object.keys(unit).forEach(key => {
+                            if (key.includes('points')) {
+                                variant[key] = unit[key];
+                            }
+                        });
                         // Only include isForgeWorld if it's true
                         if (unit.isForgeWorld) {
                             variant.isForgeWorld = true;
@@ -541,7 +547,11 @@ class MFMParserUIStandalone {
         };
 
         units.forEach(unit => {
-            stats.totalPoints += unit.points;
+            // Add the first points field found (should be the version-specific one)
+            const points = Object.values(unit).find(val => typeof val === 'number' && val > 0);
+            if (points) {
+                stats.totalPoints += points;
+            }
             if (unit.isForgeWorld) {
                 stats.forgeWorldUnits++;
             }

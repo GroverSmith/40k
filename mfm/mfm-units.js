@@ -1,19 +1,19 @@
-// MFM 3.3 Units Data - Generated from UI Parser
-// Generated on 2025-09-13T18:20:01.513Z
+// Updated MFM Units Data - Generated from UI Parser
+// Generated on 2025-09-16T01:23:05.590Z
 
-window.MFM_UNITS_3_3 = {
+window.MFM_UNITS_UPDATED = {
   "metadata": {
-    "version": "3.3",
-    "date": "Sep25",
-    "totalUnits": 1261,
-    "factionCount": 28,
+    "version": "3.2",
+    "date": "Aug25",
+    "totalUnits": 1281,
+    "factionCount": 30,
     "type": "units"
   },
   "factions": {
     "ADEPTA SORORITAS": {
       "name": "Adepta Sororitas",
       "unitCount": 38,
-      "totalPoints": 4045,
+      "totalPoints": 148,
       "forgeWorldUnits": 0,
       "units": {
         "Aestred Thurga and Agathae Dolan": {
@@ -21,7 +21,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 70
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -30,11 +31,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             },
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -43,7 +46,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -52,7 +56,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -61,7 +66,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -70,7 +76,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -79,11 +86,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 10,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -92,7 +101,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -101,7 +111,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             }
           ]
         },
@@ -110,7 +121,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -119,7 +131,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -128,7 +141,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 210
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 210
             }
           ]
         },
@@ -137,7 +151,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -146,7 +161,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -155,7 +171,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -164,7 +181,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -173,7 +191,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -182,11 +201,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 2,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -195,7 +216,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -204,7 +226,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -213,7 +236,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 210
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 210
             }
           ]
         },
@@ -222,11 +246,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 2,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -235,11 +261,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -248,7 +276,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 105
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -257,7 +286,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 150
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -266,7 +296,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 9,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -275,11 +306,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -288,7 +321,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -297,7 +331,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -306,7 +341,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 235
+              "mfm_3_2_points": 235,
+              "mfm_3_3_points": 235
             }
           ]
         },
@@ -315,11 +351,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         }
@@ -328,7 +366,7 @@ window.MFM_UNITS_3_3 = {
     "ADEPTUS CUSTODES": {
       "name": "Adeptus Custodes",
       "unitCount": 49,
-      "totalPoints": 9015,
+      "totalPoints": 179,
       "forgeWorldUnits": 16,
       "units": {
         "Aleya": {
@@ -336,7 +374,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -345,19 +384,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             },
             {
               "modelCount": 3,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             },
             {
               "modelCount": 5,
-              "points": 300
+              "mfm_3_2_points": 300,
+              "mfm_3_3_points": 300
             },
             {
               "modelCount": 6,
-              "points": 360
+              "mfm_3_2_points": 360,
+              "mfm_3_3_points": 360
             }
           ]
         },
@@ -366,7 +409,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -375,7 +419,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -384,11 +429,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 160
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 160
             },
             {
               "modelCount": 5,
-              "points": 200
+              "mfm_3_2_points": 215,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -397,11 +444,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 210
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 210
             },
             {
               "modelCount": 5,
-              "points": 260
+              "mfm_3_2_points": 260,
+              "mfm_3_3_points": 260
             }
           ]
         },
@@ -410,7 +459,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -419,19 +469,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             },
             {
               "modelCount": 5,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             },
             {
               "modelCount": 9,
-              "points": 75
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 10,
-              "points": 85
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -440,7 +494,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -449,7 +504,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -458,7 +514,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -467,7 +524,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -476,7 +534,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -485,7 +544,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -494,7 +554,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -503,11 +564,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             },
             {
               "modelCount": 3,
-              "points": 225
+              "mfm_3_2_points": 225,
+              "mfm_3_3_points": 225
             }
           ]
         },
@@ -516,19 +579,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             },
             {
               "modelCount": 5,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 9,
-              "points": 100
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 10,
-              "points": 110
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -537,19 +604,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             },
             {
               "modelCount": 5,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 9,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             },
             {
               "modelCount": 10,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -558,13 +629,15 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 225,
-              "isForgeWorld": true
+              "mfm_3_2_points": 225,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 225
             },
             {
               "modelCount": 6,
-              "points": 450,
-              "isForgeWorld": true
+              "mfm_3_2_points": 450,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 450
             }
           ]
         },
@@ -573,13 +646,15 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 195,
-              "isForgeWorld": true
+              "mfm_3_2_points": 195,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 195
             },
             {
               "modelCount": 6,
-              "points": 390,
-              "isForgeWorld": true
+              "mfm_3_2_points": 390,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 390
             }
           ]
         },
@@ -588,8 +663,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 580,
-              "isForgeWorld": true
+              "mfm_3_2_points": 580,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 580
             }
           ]
         },
@@ -598,8 +674,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 215,
-              "isForgeWorld": true
+              "mfm_3_2_points": 215,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 215
             }
           ]
         },
@@ -608,8 +685,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 155,
-              "isForgeWorld": true
+              "mfm_3_2_points": 155,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 155
             }
           ]
         },
@@ -618,8 +696,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 165,
-              "isForgeWorld": true
+              "mfm_3_2_points": 165,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 165
             }
           ]
         },
@@ -628,8 +707,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 200,
-              "isForgeWorld": true
+              "mfm_3_2_points": 200,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -638,8 +718,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 250,
-              "isForgeWorld": true
+              "mfm_3_2_points": 250,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -648,8 +729,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 690,
-              "isForgeWorld": true
+              "mfm_3_2_points": 690,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 690
             }
           ]
         },
@@ -658,8 +740,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 105,
-              "isForgeWorld": true
+              "mfm_3_2_points": 105,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -668,8 +751,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 225,
-              "isForgeWorld": true
+              "mfm_3_2_points": 225,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 225
             }
           ]
         },
@@ -678,8 +762,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 225,
-              "isForgeWorld": true
+              "mfm_3_2_points": 225,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 225
             }
           ]
         },
@@ -688,13 +773,15 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 165,
-              "isForgeWorld": true
+              "mfm_3_2_points": 165,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 165
             },
             {
               "modelCount": 6,
-              "points": 330,
-              "isForgeWorld": true
+              "mfm_3_2_points": 330,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 330
             }
           ]
         }
@@ -703,7 +790,7 @@ window.MFM_UNITS_3_3 = {
     "ADEPTUS MECHANICUS": {
       "name": "Adeptus Mechanicus",
       "unitCount": 47,
-      "totalPoints": 5715,
+      "totalPoints": 184,
       "forgeWorldUnits": 0,
       "units": {
         "Archaeopter Fusilave": {
@@ -711,7 +798,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -720,7 +808,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 185
+              "mfm_3_2_points": 185,
+              "mfm_3_3_points": 185
             }
           ]
         },
@@ -729,7 +818,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -738,7 +828,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 175
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 175
             }
           ]
         },
@@ -747,11 +838,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 10,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -760,7 +853,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 35
+              "mfm_3_2_points": 35,
+              "mfm_3_3_points": 35
             }
           ]
         },
@@ -769,11 +863,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -782,15 +878,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 2,
-              "points": 150
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 150
             },
             {
               "modelCount": 3,
-              "points": 225
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 225
             }
           ]
         },
@@ -799,11 +898,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             },
             {
               "modelCount": 4,
-              "points": 360
+              "mfm_3_2_points": 360,
+              "mfm_3_3_points": 360
             }
           ]
         },
@@ -812,11 +913,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             },
             {
               "modelCount": 6,
-              "points": 320
+              "mfm_3_2_points": 320,
+              "mfm_3_3_points": 320
             }
           ]
         },
@@ -825,11 +928,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             },
             {
               "modelCount": 6,
-              "points": 210
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 210
             }
           ]
         },
@@ -838,7 +943,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 155
+              "mfm_3_2_points": 155,
+              "mfm_3_3_points": 155
             }
           ]
         },
@@ -847,11 +953,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -860,11 +968,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -873,11 +983,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 6,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -886,11 +998,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             },
             {
               "modelCount": 6,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -899,11 +1013,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -912,11 +1028,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 10,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -925,7 +1043,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 35
+              "mfm_3_2_points": 35,
+              "mfm_3_3_points": 35
             }
           ]
         },
@@ -934,7 +1053,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -943,7 +1063,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -952,7 +1073,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 165
+              "mfm_3_2_points": 165,
+              "mfm_3_3_points": 165
             }
           ]
         },
@@ -961,7 +1083,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -970,15 +1093,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             },
             {
               "modelCount": 2,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 3,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -987,15 +1113,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 2,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             },
             {
               "modelCount": 3,
-              "points": 195
+              "mfm_3_2_points": 195,
+              "mfm_3_3_points": 195
             }
           ]
         },
@@ -1004,7 +1133,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -1013,7 +1143,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -1022,7 +1153,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -1031,7 +1163,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -1040,7 +1173,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         }
@@ -1049,7 +1183,7 @@ window.MFM_UNITS_3_3 = {
     "ADEPTUS TITANICUS": {
       "name": "Adeptus Titanicus",
       "unitCount": 4,
-      "totalPoints": 9400,
+      "totalPoints": 4,
       "forgeWorldUnits": 4,
       "units": {
         "Reaver Titan": {
@@ -1057,8 +1191,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 2200,
-              "isForgeWorld": true
+              "mfm_3_2_points": 2200,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 2200
             }
           ]
         },
@@ -1067,8 +1202,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 2600,
-              "isForgeWorld": true
+              "mfm_3_2_points": 2600,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 2600
             }
           ]
         },
@@ -1077,8 +1213,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 1100,
-              "isForgeWorld": true
+              "mfm_3_2_points": 1100,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 1100
             }
           ]
         },
@@ -1087,8 +1224,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 3500,
-              "isForgeWorld": true
+              "mfm_3_2_points": 3500,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 3500
             }
           ]
         }
@@ -1097,7 +1235,7 @@ window.MFM_UNITS_3_3 = {
     "AELDARI": {
       "name": "Aeldari",
       "unitCount": 91,
-      "totalPoints": 14265,
+      "totalPoints": 346,
       "forgeWorldUnits": 2,
       "units": {
         "Asurmen": {
@@ -1105,7 +1243,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 125
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -1114,7 +1253,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -1123,7 +1263,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -1132,7 +1273,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 280
+              "mfm_3_2_points": 300,
+              "mfm_3_3_points": 280
             }
           ]
         },
@@ -1141,7 +1283,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -1150,11 +1293,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 65
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 10,
-              "points": 110
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -1163,11 +1308,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -1176,7 +1323,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -1185,7 +1333,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -1194,11 +1343,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 10,
-              "points": 195
+              "mfm_3_2_points": 195,
+              "mfm_3_3_points": 195
             }
           ]
         },
@@ -1207,7 +1358,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -1216,11 +1368,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 75
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 10,
-              "points": 150
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -1229,7 +1383,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -1238,7 +1393,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -1247,7 +1403,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -1256,7 +1413,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -1265,11 +1423,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             },
             {
               "modelCount": 10,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -1278,7 +1438,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -1287,7 +1448,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -1296,7 +1458,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 11,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -1305,7 +1468,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 155
+              "mfm_3_2_points": 155,
+              "mfm_3_3_points": 155
             }
           ]
         },
@@ -1314,11 +1478,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             },
             {
               "modelCount": 10,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -1327,7 +1493,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -1336,7 +1503,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -1345,7 +1513,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -1354,7 +1523,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -1363,11 +1533,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             },
             {
               "modelCount": 10,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -1376,7 +1548,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -1385,7 +1558,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -1394,11 +1568,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             },
             {
               "modelCount": 6,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -1407,11 +1583,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -1420,11 +1598,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             },
             {
               "modelCount": 4,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -1433,7 +1613,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -1442,7 +1623,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -1451,7 +1633,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -1460,7 +1643,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 11,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -1469,11 +1653,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -1482,11 +1668,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 190
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -1495,19 +1683,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 6,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 11,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             },
             {
               "modelCount": 12,
-              "points": 205
+              "mfm_3_2_points": 205,
+              "mfm_3_3_points": 205
             }
           ]
         },
@@ -1516,7 +1708,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -1525,7 +1718,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -1534,7 +1728,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -1543,11 +1738,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 2,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -1556,11 +1753,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 2,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -1569,7 +1768,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -1578,11 +1778,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             },
             {
               "modelCount": 4,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -1591,11 +1793,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             },
             {
               "modelCount": 2,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -1604,11 +1808,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             },
             {
               "modelCount": 10,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -1617,7 +1823,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -1626,11 +1833,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -1639,7 +1848,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 160
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -1648,7 +1858,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -1657,7 +1868,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 435
+              "mfm_3_2_points": 435,
+              "mfm_3_3_points": 435
             }
           ]
         },
@@ -1666,7 +1878,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 420
+              "mfm_3_2_points": 420,
+              "mfm_3_3_points": 420
             }
           ]
         },
@@ -1675,7 +1888,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -1684,7 +1898,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -1693,7 +1908,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 260
+              "mfm_3_2_points": 260,
+              "mfm_3_3_points": 260
             }
           ]
         },
@@ -1702,7 +1918,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -1711,11 +1928,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -1724,7 +1943,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -1733,7 +1953,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -1742,11 +1963,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 3,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -1755,7 +1978,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -1764,7 +1988,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -1773,7 +1998,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -1782,7 +2008,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -1791,8 +2018,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 2100,
-              "isForgeWorld": true
+              "mfm_3_2_points": 2100,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 2100
             }
           ]
         },
@@ -1801,8 +2029,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 1100,
-              "isForgeWorld": true
+              "mfm_3_2_points": 1100,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 1100
             }
           ]
         }
@@ -1811,7 +2040,7 @@ window.MFM_UNITS_3_3 = {
     "ASTRA MILITARUM": {
       "name": "Astra Militarum",
       "unitCount": 78,
-      "totalPoints": 10940,
+      "totalPoints": 291,
       "forgeWorldUnits": 2,
       "units": {
         "Aegis Defence Line": {
@@ -1819,7 +2048,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -1828,11 +2058,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 2,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -1841,7 +2073,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -1850,11 +2083,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 10,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -1863,7 +2098,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 450
+              "mfm_3_2_points": 480,
+              "mfm_3_3_points": 450
             }
           ]
         },
@@ -1872,7 +2108,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 420
+              "mfm_3_2_points": 450,
+              "mfm_3_3_points": 420
             }
           ]
         },
@@ -1881,7 +2118,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 450
+              "mfm_3_2_points": 480,
+              "mfm_3_3_points": 450
             }
           ]
         },
@@ -1890,7 +2128,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -1899,11 +2138,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 6,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -1912,7 +2153,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -1921,7 +2163,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -1930,7 +2173,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -1939,11 +2183,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 20,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -1952,7 +2198,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -1961,7 +2208,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -1970,11 +2218,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 20,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -1983,7 +2233,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -1992,7 +2243,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 30
+              "mfm_3_2_points": 30,
+              "mfm_3_3_points": 30
             }
           ]
         },
@@ -2001,11 +2253,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 20,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -2014,11 +2268,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 10,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -2027,7 +2283,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -2036,7 +2293,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 415
+              "mfm_3_2_points": 445,
+              "mfm_3_3_points": 415
             }
           ]
         },
@@ -2045,7 +2303,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -2054,7 +2313,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 6,
-              "points": 100
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -2063,7 +2323,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 420
+              "mfm_3_2_points": 450,
+              "mfm_3_3_points": 420
             }
           ]
         },
@@ -2072,7 +2333,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -2081,7 +2343,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -2090,7 +2353,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -2099,11 +2363,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 60
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 10,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -2112,7 +2378,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 6,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -2121,7 +2388,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -2130,7 +2398,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 185
+              "mfm_3_2_points": 185,
+              "mfm_3_3_points": 185
             }
           ]
         },
@@ -2139,7 +2408,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 235
+              "mfm_3_2_points": 235,
+              "mfm_3_3_points": 235
             }
           ]
         },
@@ -2148,7 +2418,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -2157,7 +2428,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -2166,7 +2438,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -2175,7 +2448,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -2184,7 +2458,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -2193,7 +2468,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -2202,7 +2478,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -2211,7 +2488,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 130
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -2220,7 +2498,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 165
+              "mfm_3_2_points": 165,
+              "mfm_3_3_points": 165
             }
           ]
         },
@@ -2229,7 +2508,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -2238,7 +2518,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 35
+              "mfm_3_2_points": 35,
+              "mfm_3_3_points": 35
             }
           ]
         },
@@ -2247,7 +2528,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -2256,7 +2538,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             }
           ]
         },
@@ -2265,11 +2548,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 6,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -2278,7 +2563,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -2287,11 +2573,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 10,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -2300,7 +2588,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 250
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -2309,7 +2598,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 275
+              "mfm_3_2_points": 265,
+              "mfm_3_3_points": 275
             }
           ]
         },
@@ -2318,11 +2608,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             },
             {
               "modelCount": 2,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -2331,7 +2623,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 410
+              "mfm_3_2_points": 440,
+              "mfm_3_3_points": 410
             }
           ]
         },
@@ -2340,7 +2633,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -2349,7 +2643,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 430
+              "mfm_3_2_points": 460,
+              "mfm_3_3_points": 430
             }
           ]
         },
@@ -2358,7 +2653,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 465
+              "mfm_3_2_points": 495,
+              "mfm_3_3_points": 465
             }
           ]
         },
@@ -2367,7 +2663,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -2376,7 +2673,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -2385,7 +2683,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -2394,7 +2693,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -2403,11 +2703,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -2416,7 +2718,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -2425,7 +2728,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -2434,7 +2738,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -2443,8 +2748,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 130,
-              "isForgeWorld": true
+              "mfm_3_2_points": 130,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -2453,8 +2759,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 25,
-              "isForgeWorld": true
+              "mfm_3_2_points": 25,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 25
             }
           ]
         }
@@ -2462,8 +2769,8 @@ window.MFM_UNITS_3_3 = {
     },
     "BLACK TEMPLARS": {
       "name": "Black Templars",
-      "unitCount": 30,
-      "totalPoints": 4495,
+      "unitCount": 22,
+      "totalPoints": 75,
       "forgeWorldUnits": 0,
       "units": {
         "Castellan": {
@@ -2471,7 +2778,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -2480,7 +2788,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -2489,7 +2798,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -2498,7 +2808,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -2507,7 +2818,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -2516,7 +2828,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -2525,7 +2838,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -2534,7 +2848,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -2543,7 +2858,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -2552,7 +2868,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -2561,7 +2878,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -2570,7 +2888,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -2579,11 +2898,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -2592,19 +2913,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             },
             {
               "modelCount": 5,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             },
             {
               "modelCount": 9,
-              "points": 235
+              "mfm_3_2_points": 235,
+              "mfm_3_3_points": 235
             },
             {
               "modelCount": 10,
-              "points": 260
+              "mfm_3_2_points": 260,
+              "mfm_3_3_points": 260
             }
           ]
         },
@@ -2613,11 +2938,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 175
+              "mfm_3_2_points": 175,
+              "mfm_3_3_points": 175
             },
             {
               "modelCount": 10,
-              "points": 330
+              "mfm_3_2_points": 330,
+              "mfm_3_3_points": 330
             }
           ]
         },
@@ -2626,7 +2953,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -2635,7 +2963,96 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
+            }
+          ]
+        }
+      }
+    },
+    "BLOOD ANGELS": {
+      "name": "Blood Angels",
+      "unitCount": 19,
+      "totalPoints": 65,
+      "forgeWorldUnits": 0,
+      "units": {
+        "Astorath": {
+          "name": "Astorath",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
+            }
+          ]
+        },
+        "Baal Predator": {
+          "name": "Baal Predator",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
+            }
+          ]
+        },
+        "Blood Angels Captain": {
+          "name": "Blood Angels Captain",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
+            }
+          ]
+        },
+        "Chief Librarian Mephiston": {
+          "name": "Chief Librarian Mephiston",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
+            }
+          ]
+        },
+        "Commander Dante": {
+          "name": "Commander Dante",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
+            }
+          ]
+        },
+        "Death Company Captain": {
+          "name": "Death Company Captain",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
+            }
+          ]
+        },
+        "Death Company Captain with Jump Pack": {
+          "name": "Death Company Captain with Jump Pack",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
+            }
+          ]
+        },
+        "Death Company Dreadnought": {
+          "name": "Death Company Dreadnought",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -2644,11 +3061,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -2657,11 +3076,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -2670,11 +3091,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             },
             {
               "modelCount": 10,
-              "points": 230
+              "mfm_3_2_points": 230,
+              "mfm_3_3_points": 230
+            }
+          ]
+        },
+        "Lemartes": {
+          "name": "Lemartes",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -2683,11 +3116,33 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 125
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 125
             },
             {
               "modelCount": 6,
-              "points": 260
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 260
+            }
+          ]
+        },
+        "Sanguinary Priest": {
+          "name": "Sanguinary Priest",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
+            }
+          ]
+        },
+        "The Sanguinor": {
+          "name": "The Sanguinor",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         }
@@ -2696,7 +3151,7 @@ window.MFM_UNITS_3_3 = {
     "CHAOS DAEMONS": {
       "name": "Chaos Daemons",
       "unitCount": 63,
-      "totalPoints": 8485,
+      "totalPoints": 178,
       "forgeWorldUnits": 0,
       "units": {
         "Beasts of Nurgle": {
@@ -2704,11 +3159,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 2,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -2717,7 +3174,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 375
+              "mfm_3_2_points": 375,
+              "mfm_3_3_points": 375
             }
           ]
         },
@@ -2726,11 +3184,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             },
             {
               "modelCount": 6,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -2739,7 +3199,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -2748,7 +3209,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -2757,7 +3219,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 305
+              "mfm_3_2_points": 305,
+              "mfm_3_3_points": 305
             }
           ]
         },
@@ -2766,7 +3229,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -2775,7 +3239,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -2784,7 +3249,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -2793,7 +3259,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -2802,7 +3269,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -2811,7 +3279,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -2820,7 +3289,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -2829,7 +3299,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -2838,7 +3309,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -2847,7 +3319,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -2856,7 +3329,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -2865,11 +3339,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 95
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 95
             },
             {
               "modelCount": 6,
-              "points": 190
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -2878,11 +3354,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 6,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -2891,11 +3369,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 10,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -2904,7 +3384,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -2913,7 +3394,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 250
+              "mfm_3_2_points": 250,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -2922,11 +3404,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 2,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -2935,7 +3419,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -2944,7 +3429,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -2953,7 +3439,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 270
+              "mfm_3_2_points": 270,
+              "mfm_3_3_points": 270
             }
           ]
         },
@@ -2962,7 +3449,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -2971,7 +3459,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 270
+              "mfm_3_2_points": 290,
+              "mfm_3_3_points": 270
             }
           ]
         },
@@ -2980,7 +3469,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 260
+              "mfm_3_2_points": 260,
+              "mfm_3_3_points": 260
             }
           ]
         },
@@ -2989,11 +3479,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             },
             {
               "modelCount": 6,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -3002,7 +3494,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -3011,11 +3504,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             },
             {
               "modelCount": 6,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -3024,7 +3519,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -3033,7 +3529,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -3042,7 +3539,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 165
+              "mfm_3_2_points": 165,
+              "mfm_3_3_points": 165
             }
           ]
         },
@@ -3051,7 +3549,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 250
+              "mfm_3_2_points": 250,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -3060,11 +3559,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -3073,11 +3574,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -3086,7 +3589,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 380
+              "mfm_3_2_points": 380,
+              "mfm_3_3_points": 380
             }
           ]
         },
@@ -3095,7 +3599,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 305
+              "mfm_3_2_points": 305,
+              "mfm_3_3_points": 305
             }
           ]
         },
@@ -3104,7 +3609,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -3113,7 +3619,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -3122,7 +3629,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -3131,7 +3639,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -3140,7 +3649,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -3149,7 +3659,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -3158,7 +3669,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -3167,7 +3679,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -3176,7 +3689,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -3185,7 +3699,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -3194,7 +3709,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -3203,7 +3719,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -3212,7 +3729,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         }
@@ -3221,7 +3739,7 @@ window.MFM_UNITS_3_3 = {
     "CHAOS KNIGHTS": {
       "name": "Chaos Knights",
       "unitCount": 20,
-      "totalPoints": 6860,
+      "totalPoints": 20,
       "forgeWorldUnits": 9,
       "units": {
         "Knight Abominant": {
@@ -3229,7 +3747,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 355
+              "mfm_3_2_points": 355,
+              "mfm_3_3_points": 355
             }
           ]
         },
@@ -3238,7 +3757,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 365
+              "mfm_3_2_points": 365,
+              "mfm_3_3_points": 365
             }
           ]
         },
@@ -3247,7 +3767,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 375
+              "mfm_3_2_points": 375,
+              "mfm_3_3_points": 375
             }
           ]
         },
@@ -3256,7 +3777,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 365
+              "mfm_3_2_points": 365,
+              "mfm_3_3_points": 365
             }
           ]
         },
@@ -3265,7 +3787,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 375
+              "mfm_3_2_points": 375,
+              "mfm_3_3_points": 375
             }
           ]
         },
@@ -3274,7 +3797,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 410
+              "mfm_3_2_points": 410,
+              "mfm_3_3_points": 410
             }
           ]
         },
@@ -3283,7 +3807,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -3292,7 +3817,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -3301,7 +3827,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -3310,7 +3837,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -3319,7 +3847,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -3328,8 +3857,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 765,
-              "isForgeWorld": true
+              "mfm_3_2_points": 765,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 765
             }
           ]
         },
@@ -3338,8 +3868,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 700,
-              "isForgeWorld": true
+              "mfm_3_2_points": 700,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 700
             }
           ]
         },
@@ -3348,8 +3879,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 385,
-              "isForgeWorld": true
+              "mfm_3_2_points": 385,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 385
             }
           ]
         },
@@ -3358,8 +3890,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 395,
-              "isForgeWorld": true
+              "mfm_3_2_points": 395,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 395
             }
           ]
         },
@@ -3368,8 +3901,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 385,
-              "isForgeWorld": true
+              "mfm_3_2_points": 385,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 385
             }
           ]
         },
@@ -3378,8 +3912,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 385,
-              "isForgeWorld": true
+              "mfm_3_2_points": 385,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 385
             }
           ]
         },
@@ -3388,8 +3923,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 375,
-              "isForgeWorld": true
+              "mfm_3_2_points": 375,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 375
             }
           ]
         },
@@ -3398,8 +3934,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 375,
-              "isForgeWorld": true
+              "mfm_3_2_points": 375,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 375
             }
           ]
         },
@@ -3408,8 +3945,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150,
-              "isForgeWorld": true
+              "mfm_3_2_points": 150,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 150
             }
           ]
         }
@@ -3417,8 +3955,8 @@ window.MFM_UNITS_3_3 = {
     },
     "CHAOS SPACE MARINES": {
       "name": "Chaos Space Marines",
-      "unitCount": 67,
-      "totalPoints": 9510,
+      "unitCount": 59,
+      "totalPoints": 239,
       "forgeWorldUnits": 0,
       "units": {
         "Abaddon the Despoiler": {
@@ -3426,7 +3964,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 270
+              "mfm_3_2_points": 280,
+              "mfm_3_3_points": 270
             }
           ]
         },
@@ -3435,11 +3974,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 8,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 16,
-              "points": 195
+              "mfm_3_2_points": 195,
+              "mfm_3_3_points": 195
             }
           ]
         },
@@ -3448,11 +3989,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 6,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -3461,7 +4004,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -3470,7 +4014,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -3479,7 +4024,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -3488,7 +4034,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -3497,7 +4044,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 135
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 135
             }
           ]
         },
@@ -3506,7 +4054,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -3515,7 +4064,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -3524,7 +4074,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -3533,11 +4084,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             },
             {
               "modelCount": 10,
-              "points": 360
+              "mfm_3_2_points": 360,
+              "mfm_3_3_points": 360
             }
           ]
         },
@@ -3546,7 +4099,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 185
+              "mfm_3_2_points": 185,
+              "mfm_3_3_points": 185
             }
           ]
         },
@@ -3555,11 +4109,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             },
             {
               "modelCount": 10,
-              "points": 250
+              "mfm_3_2_points": 250,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -3568,7 +4124,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -3577,11 +4134,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             },
             {
               "modelCount": 20,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -3590,7 +4149,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -3599,7 +4159,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -3608,7 +4169,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 90
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -3617,7 +4179,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -3626,7 +4189,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -3635,7 +4199,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -3644,7 +4209,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -3653,7 +4219,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -3662,7 +4229,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -3671,7 +4239,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -3680,7 +4249,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 205
+              "mfm_3_2_points": 205,
+              "mfm_3_3_points": 205
             }
           ]
         },
@@ -3689,7 +4259,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 165
+              "mfm_3_2_points": 165,
+              "mfm_3_3_points": 165
             }
           ]
         },
@@ -3698,7 +4269,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -3707,7 +4279,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -3716,7 +4289,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 450
+              "mfm_3_2_points": 450,
+              "mfm_3_3_points": 450
             }
           ]
         },
@@ -3725,11 +4299,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 10,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -3738,7 +4314,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -3747,7 +4324,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -3756,7 +4334,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -3765,7 +4344,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -3774,11 +4354,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             },
             {
               "modelCount": 10,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -3787,7 +4369,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -3796,7 +4379,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -3805,11 +4389,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             },
             {
               "modelCount": 10,
-              "points": 240
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 240
             }
           ]
         },
@@ -3818,11 +4404,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 10,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -3831,7 +4419,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -3840,7 +4429,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -3849,7 +4439,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -3858,7 +4449,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -3867,7 +4459,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 175
+              "mfm_3_2_points": 175,
+              "mfm_3_3_points": 175
             }
           ]
         },
@@ -3876,7 +4469,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -3885,11 +4479,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             },
             {
               "modelCount": 10,
-              "points": 270
+              "mfm_3_2_points": 270,
+              "mfm_3_3_points": 270
             }
           ]
         },
@@ -3898,7 +4494,46 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
+            }
+          ]
+        }
+      }
+    },
+    "DARK ANGELS": {
+      "name": "Dark Angels",
+      "unitCount": 19,
+      "totalPoints": 52,
+      "forgeWorldUnits": 0,
+      "units": {
+        "Asmodai": {
+          "name": "Asmodai",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
+            }
+          ]
+        },
+        "Azrael": {
+          "name": "Azrael",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
+            }
+          ]
+        },
+        "Belial": {
+          "name": "Belial",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -3907,7 +4542,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 250
+              "mfm_3_2_points": 250,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -3916,11 +4552,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             },
             {
               "modelCount": 10,
-              "points": 360
+              "mfm_3_2_points": 360,
+              "mfm_3_3_points": 360
+            }
+          ]
+        },
+        "Ezekiel": {
+          "name": "Ezekiel",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -3929,11 +4577,53 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 6,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
+            }
+          ]
+        },
+        "Land Speeder Vengeance": {
+          "name": "Land Speeder Vengeance",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
+            }
+          ]
+        },
+        "Lazarus": {
+          "name": "Lazarus",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
+            }
+          ]
+        },
+        "Lion El’Jonson": {
+          "name": "Lion El’Jonson",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 315,
+              "mfm_3_3_points": 315
+            }
+          ]
+        },
+        "Nephilim Jetfighter": {
+          "name": "Nephilim Jetfighter",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 195,
+              "mfm_3_3_points": 195
             }
           ]
         },
@@ -3942,11 +4632,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 6,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -3955,7 +4647,38 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
+            }
+          ]
+        },
+        "Ravenwing Dark Talon": {
+          "name": "Ravenwing Dark Talon",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 210
+            }
+          ]
+        },
+        "Ravenwing Darkshroud": {
+          "name": "Ravenwing Darkshroud",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 100
+            }
+          ]
+        },
+        "Sammael": {
+          "name": "Sammael",
+          "variants": [
+            {
+              "modelCount": 1,
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         }
@@ -3964,7 +4687,7 @@ window.MFM_UNITS_3_3 = {
     "DEATH GUARD": {
       "name": "Death Guard",
       "unitCount": 46,
-      "totalPoints": 6375,
+      "totalPoints": 141,
       "forgeWorldUnits": 0,
       "units": {
         "Biologus Putrifier": {
@@ -3972,7 +4695,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -3981,15 +4705,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             },
             {
               "modelCount": 5,
-              "points": 185
+              "mfm_3_2_points": 185,
+              "mfm_3_3_points": 185
             },
             {
               "modelCount": 10,
-              "points": 370
+              "mfm_3_2_points": 370,
+              "mfm_3_3_points": 370
             }
           ]
         },
@@ -3998,7 +4725,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 240
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 240
             }
           ]
         },
@@ -4007,7 +4735,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 135
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 135
             }
           ]
         },
@@ -4016,7 +4745,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -4025,7 +4755,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -4034,7 +4765,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -4043,7 +4775,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 195
+              "mfm_3_2_points": 195,
+              "mfm_3_3_points": 195
             }
           ]
         },
@@ -4052,7 +4785,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 195
+              "mfm_3_2_points": 195,
+              "mfm_3_3_points": 195
             }
           ]
         },
@@ -4061,11 +4795,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             },
             {
               "modelCount": 6,
-              "points": 320
+              "mfm_3_2_points": 320,
+              "mfm_3_3_points": 320
             }
           ]
         },
@@ -4074,7 +4810,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 165
+              "mfm_3_2_points": 165,
+              "mfm_3_3_points": 165
             }
           ]
         },
@@ -4083,7 +4820,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -4092,7 +4830,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -4101,7 +4840,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -4110,7 +4850,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -4119,7 +4860,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -4128,7 +4870,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -4137,7 +4880,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -4146,7 +4890,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -4155,7 +4900,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -4164,7 +4910,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -4173,7 +4920,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 380
+              "mfm_3_2_points": 380,
+              "mfm_3_3_points": 380
             }
           ]
         },
@@ -4182,11 +4930,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 2,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -4195,7 +4945,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -4204,15 +4955,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             },
             {
               "modelCount": 7,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             },
             {
               "modelCount": 10,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -4221,7 +4975,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -4230,7 +4985,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 210
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 210
             }
           ]
         },
@@ -4239,11 +4995,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 20,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -4252,7 +5010,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -4261,7 +5020,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -4270,11 +5030,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 2,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -4283,7 +5045,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 250
+              "mfm_3_2_points": 250,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -4292,11 +5055,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             },
             {
               "modelCount": 6,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -4305,11 +5070,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             },
             {
               "modelCount": 6,
-              "points": 230
+              "mfm_3_2_points": 230,
+              "mfm_3_3_points": 230
             }
           ]
         },
@@ -4318,7 +5085,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -4327,7 +5095,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 250
+              "mfm_3_2_points": 250,
+              "mfm_3_3_points": 250
             }
           ]
         }
@@ -4336,7 +5105,7 @@ window.MFM_UNITS_3_3 = {
     "DEATHWATCH": {
       "name": "Deathwatch",
       "unitCount": 11,
-      "totalPoints": 2055,
+      "totalPoints": 73,
       "forgeWorldUnits": 0,
       "units": {
         "Corvus Blackstar": {
@@ -4344,7 +5113,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -4353,11 +5123,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             },
             {
               "modelCount": 10,
-              "points": 350
+              "mfm_3_2_points": 350,
+              "mfm_3_3_points": 350
             }
           ]
         },
@@ -4366,11 +5138,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 10,
-              "points": 190
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -4379,7 +5153,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 180
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -4388,7 +5163,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 250
+              "mfm_3_2_points": 270,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -4397,7 +5173,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 180
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -4406,7 +5183,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 275
+              "mfm_3_2_points": 290,
+              "mfm_3_3_points": 275
             }
           ]
         },
@@ -4415,7 +5193,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -4424,7 +5203,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 95
             }
           ]
         }
@@ -4433,7 +5213,7 @@ window.MFM_UNITS_3_3 = {
     "DRUKHARI": {
       "name": "Drukhari",
       "unitCount": 33,
-      "totalPoints": 3440,
+      "totalPoints": 141,
       "forgeWorldUnits": 0,
       "units": {
         "Archon": {
@@ -4441,7 +5221,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -4450,7 +5231,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 7,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -4459,7 +5241,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -4468,11 +5251,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             },
             {
               "modelCount": 2,
-              "points": 85
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -4481,7 +5266,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -4490,11 +5276,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -4503,7 +5291,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -4512,11 +5301,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 10,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -4525,11 +5316,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -4538,7 +5331,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -4547,7 +5341,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -4556,11 +5351,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 10,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -4569,7 +5366,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -4578,7 +5376,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -4587,7 +5386,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -4596,11 +5396,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 6,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -4609,11 +5411,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             },
             {
               "modelCount": 10,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -4622,7 +5426,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -4631,11 +5436,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 2,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -4644,7 +5451,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -4653,7 +5461,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -4662,7 +5471,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 235
+              "mfm_3_2_points": 235,
+              "mfm_3_3_points": 235
             }
           ]
         },
@@ -4671,11 +5481,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             },
             {
               "modelCount": 10,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -4684,7 +5496,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         }
@@ -4693,7 +5506,7 @@ window.MFM_UNITS_3_3 = {
     "EMPEROR’S CHILDREN": {
       "name": "Emperor’s Children",
       "unitCount": 27,
-      "totalPoints": 4210,
+      "totalPoints": 99,
       "forgeWorldUnits": 0,
       "units": {
         "Chaos Land Raider": {
@@ -4701,7 +5514,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -4710,7 +5524,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -4719,7 +5534,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -4728,7 +5544,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -4737,7 +5554,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 195
+              "mfm_3_2_points": 195,
+              "mfm_3_3_points": 195
             }
           ]
         },
@@ -4746,7 +5564,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -4755,11 +5574,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             },
             {
               "modelCount": 6,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -4768,7 +5589,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 340
+              "mfm_3_2_points": 365,
+              "mfm_3_3_points": 340
             }
           ]
         },
@@ -4777,7 +5599,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 195
+              "mfm_3_2_points": 195,
+              "mfm_3_3_points": 195
             }
           ]
         },
@@ -4786,11 +5609,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -4799,7 +5624,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -4808,7 +5634,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -4817,7 +5644,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -4826,7 +5654,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -4835,7 +5664,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 6,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -4844,7 +5674,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -4853,11 +5684,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -4866,7 +5699,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -4875,11 +5709,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             },
             {
               "modelCount": 6,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -4888,7 +5724,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 270
+              "mfm_3_2_points": 280,
+              "mfm_3_3_points": 270
             }
           ]
         },
@@ -4897,11 +5734,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 80
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -4910,7 +5749,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 380
+              "mfm_3_2_points": 380,
+              "mfm_3_3_points": 380
             }
           ]
         }
@@ -4919,7 +5759,7 @@ window.MFM_UNITS_3_3 = {
     "GENESTEALER CULTS": {
       "name": "Genestealer Cults",
       "unitCount": 32,
-      "totalPoints": 3015,
+      "totalPoints": 139,
       "forgeWorldUnits": 0,
       "units": {
         "Aberrants": {
@@ -4927,11 +5767,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 135
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 135
             },
             {
               "modelCount": 10,
-              "points": 300
+              "mfm_3_2_points": 300,
+              "mfm_3_3_points": 300
             }
           ]
         },
@@ -4940,7 +5782,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -4949,11 +5792,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 95
             },
             {
               "modelCount": 2,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -4962,11 +5807,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 10,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -4975,11 +5822,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -4988,7 +5837,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -4997,11 +5847,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -5010,7 +5862,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -5019,7 +5872,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -5028,7 +5882,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -5037,7 +5892,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -5046,7 +5902,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -5055,11 +5912,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 70
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -5068,7 +5927,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -5077,7 +5937,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -5086,7 +5947,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -5095,7 +5957,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -5104,11 +5967,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 20,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -5117,7 +5982,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -5126,7 +5992,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -5135,7 +6002,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -5144,11 +6012,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -5157,7 +6027,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -5166,7 +6037,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         }
@@ -5175,7 +6047,7 @@ window.MFM_UNITS_3_3 = {
     "GREY KNIGHTS": {
       "name": "Grey Knights",
       "unitCount": 36,
-      "totalPoints": 7330,
+      "totalPoints": 134,
       "forgeWorldUnits": 1,
       "units": {
         "Brother-Captain": {
@@ -5183,7 +6055,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -5192,7 +6065,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -5201,7 +6075,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -5210,7 +6085,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -5219,7 +6095,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -5228,19 +6105,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             },
             {
               "modelCount": 5,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             },
             {
               "modelCount": 8,
-              "points": 320
+              "mfm_3_2_points": 320,
+              "mfm_3_3_points": 320
             },
             {
               "modelCount": 10,
-              "points": 400
+              "mfm_3_2_points": 400,
+              "mfm_3_3_points": 400
             }
           ]
         },
@@ -5249,7 +6130,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -5258,7 +6140,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -5267,7 +6150,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 225
+              "mfm_3_2_points": 225,
+              "mfm_3_3_points": 225
             }
           ]
         },
@@ -5276,7 +6160,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -5285,11 +6170,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             },
             {
               "modelCount": 10,
-              "points": 260
+              "mfm_3_2_points": 260,
+              "mfm_3_3_points": 260
             }
           ]
         },
@@ -5298,7 +6185,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -5307,7 +6195,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -5316,7 +6205,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 270
+              "mfm_3_2_points": 285,
+              "mfm_3_3_points": 270
             }
           ]
         },
@@ -5325,7 +6215,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 210
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 210
             }
           ]
         },
@@ -5334,19 +6225,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             },
             {
               "modelCount": 5,
-              "points": 225
+              "mfm_3_2_points": 225,
+              "mfm_3_3_points": 225
             },
             {
               "modelCount": 8,
-              "points": 360
+              "mfm_3_2_points": 360,
+              "mfm_3_3_points": 360
             },
             {
               "modelCount": 10,
-              "points": 450
+              "mfm_3_2_points": 450,
+              "mfm_3_3_points": 450
             }
           ]
         },
@@ -5355,11 +6250,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             },
             {
               "modelCount": 10,
-              "points": 250
+              "mfm_3_2_points": 250,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -5368,11 +6265,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             },
             {
               "modelCount": 10,
-              "points": 250
+              "mfm_3_2_points": 250,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -5381,7 +6280,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -5390,7 +6290,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -5399,7 +6300,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -5408,7 +6310,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 280
+              "mfm_3_2_points": 280,
+              "mfm_3_3_points": 280
             }
           ]
         },
@@ -5417,7 +6320,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -5426,11 +6330,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             },
             {
               "modelCount": 10,
-              "points": 240
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 240
             }
           ]
         },
@@ -5439,7 +6345,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -5448,8 +6355,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 805,
-              "isForgeWorld": true
+              "mfm_3_2_points": 805,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 805
             }
           ]
         }
@@ -5458,7 +6366,7 @@ window.MFM_UNITS_3_3 = {
     "IMPERIAL AGENTS": {
       "name": "Imperial Agents",
       "unitCount": 29,
-      "totalPoints": 2665,
+      "totalPoints": 126,
       "forgeWorldUnits": 0,
       "units": {
         "Callidus Assassin": {
@@ -5466,7 +6374,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -5475,7 +6384,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -5484,7 +6394,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -5493,11 +6404,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 10,
-              "points": 190
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -5506,7 +6419,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -5515,7 +6429,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 11,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -5524,7 +6439,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -5533,7 +6449,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -5542,7 +6459,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -5551,7 +6469,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -5560,7 +6479,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -5569,7 +6489,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -5578,7 +6499,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -5587,11 +6509,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 6,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             },
             {
               "modelCount": 12,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -5600,7 +6524,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -5609,7 +6534,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             }
           ]
         },
@@ -5618,7 +6544,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -5627,7 +6554,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -5636,7 +6564,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 9,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -5645,7 +6574,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -5654,7 +6584,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -5663,7 +6594,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 11,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -5672,7 +6604,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 11,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -5681,7 +6614,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -5690,7 +6624,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 6,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -5699,7 +6634,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -5708,7 +6644,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 95
             }
           ]
         }
@@ -5717,7 +6654,7 @@ window.MFM_UNITS_3_3 = {
     "IMPERIAL AGENTS (ALLIES)": {
       "name": "Imperial Agents (Allies)",
       "unitCount": 29,
-      "totalPoints": 2910,
+      "totalPoints": 117,
       "forgeWorldUnits": 0,
       "units": {
         "Callidus Assassin": {
@@ -5725,7 +6662,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -5734,7 +6672,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -5743,7 +6682,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -5752,11 +6692,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 10,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -5765,7 +6707,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -5774,7 +6717,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 11,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -5783,7 +6727,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 210
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 210
             }
           ]
         },
@@ -5792,7 +6737,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -5801,7 +6747,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -5810,7 +6757,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -5819,7 +6767,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -5828,7 +6777,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -5837,7 +6787,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -5846,7 +6797,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 9,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -5855,7 +6807,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -5864,7 +6817,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -5873,15 +6827,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 6,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 11,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 12,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -5890,7 +6847,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -5899,7 +6857,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             }
           ]
         },
@@ -5908,11 +6867,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 10,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -5921,7 +6882,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 11,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -5930,7 +6892,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -5939,7 +6902,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 6,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -5948,7 +6912,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -5957,7 +6922,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             }
           ]
         }
@@ -5965,8 +6931,8 @@ window.MFM_UNITS_3_3 = {
     },
     "IMPERIAL KNIGHTS": {
       "name": "Imperial Knights",
-      "unitCount": 21,
-      "totalPoints": 8185,
+      "unitCount": 20,
+      "totalPoints": 20,
       "forgeWorldUnits": 9,
       "units": {
         "Armiger Helverin": {
@@ -5974,7 +6940,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -5983,7 +6950,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -5992,7 +6960,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 415
+              "mfm_3_2_points": 415,
+              "mfm_3_3_points": 415
             }
           ]
         },
@@ -6001,7 +6970,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 410
+              "mfm_3_2_points": 410,
+              "mfm_3_3_points": 410
             }
           ]
         },
@@ -6010,16 +6980,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 395
-            }
-          ]
-        },
-        "Knight Defender": {
-          "name": "Knight Defender",
-          "variants": [
-            {
-              "modelCount": 1,
-              "points": 425
+              "mfm_3_2_points": 395,
+              "mfm_3_3_points": 395
             }
           ]
         },
@@ -6028,7 +6990,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 375
+              "mfm_3_2_points": 375,
+              "mfm_3_3_points": 375
             }
           ]
         },
@@ -6037,7 +7000,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 375
+              "mfm_3_2_points": 375,
+              "mfm_3_3_points": 375
             }
           ]
         },
@@ -6046,7 +7010,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 375
+              "mfm_3_2_points": 375,
+              "mfm_3_3_points": 375
             }
           ]
         },
@@ -6055,7 +7020,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 365
+              "mfm_3_2_points": 365,
+              "mfm_3_3_points": 365
             }
           ]
         },
@@ -6064,7 +7030,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 410
+              "mfm_3_2_points": 410,
+              "mfm_3_3_points": 410
             }
           ]
         },
@@ -6073,7 +7040,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 385
+              "mfm_3_2_points": 385,
+              "mfm_3_3_points": 385
             }
           ]
         },
@@ -6082,8 +7050,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 765,
-              "isForgeWorld": true
+              "mfm_3_2_points": 765,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 765
             }
           ]
         },
@@ -6092,8 +7061,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 700,
-              "isForgeWorld": true
+              "mfm_3_2_points": 700,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 700
             }
           ]
         },
@@ -6102,8 +7072,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150,
-              "isForgeWorld": true
+              "mfm_3_2_points": 150,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -6112,8 +7083,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 395,
-              "isForgeWorld": true
+              "mfm_3_2_points": 395,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 395
             }
           ]
         },
@@ -6122,8 +7094,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 405,
-              "isForgeWorld": true
+              "mfm_3_2_points": 405,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 405
             }
           ]
         },
@@ -6132,8 +7105,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 395,
-              "isForgeWorld": true
+              "mfm_3_2_points": 395,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 395
             }
           ]
         },
@@ -6142,8 +7116,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 395,
-              "isForgeWorld": true
+              "mfm_3_2_points": 395,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 395
             }
           ]
         },
@@ -6152,8 +7127,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 385,
-              "isForgeWorld": true
+              "mfm_3_2_points": 385,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 385
             }
           ]
         },
@@ -6162,8 +7138,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 385,
-              "isForgeWorld": true
+              "mfm_3_2_points": 385,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 385
             }
           ]
         }
@@ -6172,7 +7149,7 @@ window.MFM_UNITS_3_3 = {
     "LEAGUES OF VOTANN": {
       "name": "Leagues Of Votann",
       "unitCount": 28,
-      "totalPoints": 3250,
+      "totalPoints": 108,
       "forgeWorldUnits": 0,
       "units": {
         "Arkanyst Evaluator": {
@@ -6180,7 +7157,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -6189,7 +7167,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -6198,11 +7177,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -6211,7 +7192,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -6220,11 +7202,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 10,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -6233,7 +7217,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -6242,7 +7227,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -6251,11 +7237,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 135
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 135
             },
             {
               "modelCount": 10,
-              "points": 270
+              "mfm_3_2_points": 270,
+              "mfm_3_3_points": 270
             }
           ]
         },
@@ -6264,7 +7252,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -6273,7 +7262,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -6282,7 +7272,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 240
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 240
             }
           ]
         },
@@ -6291,11 +7282,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -6304,7 +7297,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -6313,11 +7307,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 6,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -6326,11 +7322,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 6,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -6339,7 +7337,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -6348,7 +7347,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -6357,11 +7357,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 2,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -6370,7 +7372,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -6379,7 +7382,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -6388,7 +7392,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         }
@@ -6397,7 +7402,7 @@ window.MFM_UNITS_3_3 = {
     "NECRONS": {
       "name": "Necrons",
       "unitCount": 67,
-      "totalPoints": 9535,
+      "totalPoints": 213,
       "forgeWorldUnits": 1,
       "units": {
         "Annihilation Barge": {
@@ -6405,7 +7410,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -6414,7 +7420,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 265
+              "mfm_3_2_points": 265,
+              "mfm_3_3_points": 265
             }
           ]
         },
@@ -6423,7 +7430,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 305
+              "mfm_3_2_points": 305,
+              "mfm_3_3_points": 305
             }
           ]
         },
@@ -6432,7 +7440,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 300
+              "mfm_3_2_points": 300,
+              "mfm_3_3_points": 300
             }
           ]
         },
@@ -6441,7 +7450,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -6450,7 +7460,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -6459,11 +7470,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             },
             {
               "modelCount": 6,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -6472,11 +7485,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 2,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -6485,11 +7500,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             },
             {
               "modelCount": 6,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -6498,7 +7515,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -6507,7 +7525,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -6516,15 +7535,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 2,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             },
             {
               "modelCount": 3,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -6533,7 +7555,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -6542,11 +7565,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 10,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -6555,7 +7580,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 230
+              "mfm_3_2_points": 230,
+              "mfm_3_3_points": 230
             }
           ]
         },
@@ -6564,7 +7590,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -6573,11 +7600,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 10,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -6586,7 +7615,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -6595,7 +7625,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -6604,7 +7635,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 165
+              "mfm_3_2_points": 165,
+              "mfm_3_3_points": 165
             }
           ]
         },
@@ -6613,11 +7645,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 10,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -6626,7 +7660,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -6635,19 +7670,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             },
             {
               "modelCount": 2,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 3,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 6,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -6656,15 +7695,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             },
             {
               "modelCount": 2,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             },
             {
               "modelCount": 3,
-              "points": 165
+              "mfm_3_2_points": 165,
+              "mfm_3_3_points": 165
             }
           ]
         },
@@ -6673,7 +7715,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -6682,11 +7725,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -6695,7 +7740,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 400
+              "mfm_3_2_points": 400,
+              "mfm_3_3_points": 400
             }
           ]
         },
@@ -6704,11 +7750,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 20,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -6717,7 +7765,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -6726,7 +7775,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 300
+              "mfm_3_2_points": 300,
+              "mfm_3_3_points": 300
             }
           ]
         },
@@ -6735,11 +7785,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -6748,7 +7800,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -6757,7 +7810,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -6766,7 +7820,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -6775,7 +7830,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -6784,7 +7840,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -6793,7 +7850,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -6802,11 +7860,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 6,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -6815,7 +7875,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -6824,7 +7885,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -6833,7 +7895,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 425
+              "mfm_3_2_points": 425,
+              "mfm_3_3_points": 425
             }
           ]
         },
@@ -6842,7 +7905,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 400
+              "mfm_3_2_points": 420,
+              "mfm_3_3_points": 400
             }
           ]
         },
@@ -6851,11 +7915,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 6,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -6864,7 +7930,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 295
+              "mfm_3_2_points": 295,
+              "mfm_3_3_points": 295
             }
           ]
         },
@@ -6873,7 +7940,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -6882,11 +7950,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 90
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 10,
-              "points": 180
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -6895,7 +7965,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -6904,8 +7975,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 540,
-              "isForgeWorld": true
+              "mfm_3_2_points": 540,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 540
             }
           ]
         }
@@ -6914,7 +7986,7 @@ window.MFM_UNITS_3_3 = {
     "ORKS": {
       "name": "Orks",
       "unitCount": 66,
-      "totalPoints": 8895,
+      "totalPoints": 258,
       "forgeWorldUnits": 1,
       "units": {
         "Battlewagon": {
@@ -6922,7 +7994,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -6931,11 +8004,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             },
             {
               "modelCount": 20,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -6944,7 +8019,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -6953,7 +8029,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -6962,7 +8039,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -6971,7 +8049,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -6980,7 +8059,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -6989,7 +8069,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 135
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 135
             }
           ]
         },
@@ -6998,7 +8079,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -7007,7 +8089,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -7016,7 +8099,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -7025,11 +8109,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 20,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -7038,7 +8124,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 6,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -7047,7 +8134,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -7056,7 +8144,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 135
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 135
             }
           ]
         },
@@ -7065,7 +8154,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -7074,7 +8164,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -7083,11 +8174,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -7096,11 +8189,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -7109,7 +8204,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 235
+              "mfm_3_2_points": 235,
+              "mfm_3_3_points": 235
             }
           ]
         },
@@ -7118,7 +8214,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 265
+              "mfm_3_2_points": 265,
+              "mfm_3_3_points": 265
             }
           ]
         },
@@ -7127,11 +8224,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 11,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             },
             {
               "modelCount": 22,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -7140,7 +8239,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 135
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 135
             }
           ]
         },
@@ -7149,7 +8249,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 155
+              "mfm_3_2_points": 155,
+              "mfm_3_3_points": 155
             }
           ]
         },
@@ -7158,11 +8259,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             },
             {
               "modelCount": 6,
-              "points": 250
+              "mfm_3_2_points": 250,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -7171,7 +8274,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -7180,7 +8284,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -7189,19 +8294,23 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 65
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 3,
-              "points": 95
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 95
             },
             {
               "modelCount": 5,
-              "points": 160
+              "mfm_3_2_points": 175,
+              "mfm_3_3_points": 160
             },
             {
               "modelCount": 6,
-              "points": 190
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -7210,7 +8319,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -7219,7 +8329,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -7228,15 +8339,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             },
             {
               "modelCount": 2,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 3,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -7245,7 +8359,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 280
+              "mfm_3_2_points": 280,
+              "mfm_3_3_points": 280
             }
           ]
         },
@@ -7254,7 +8369,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 145
+              "mfm_3_2_points": 165,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -7263,11 +8379,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             },
             {
               "modelCount": 10,
-              "points": 210
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 210
             }
           ]
         },
@@ -7276,7 +8394,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -7285,7 +8404,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -7294,7 +8414,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -7303,7 +8424,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -7312,11 +8434,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             },
             {
               "modelCount": 8,
-              "points": 300
+              "mfm_3_2_points": 300,
+              "mfm_3_3_points": 300
             }
           ]
         },
@@ -7325,7 +8449,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 800
+              "mfm_3_2_points": 800,
+              "mfm_3_3_points": 800
             }
           ]
         },
@@ -7334,11 +8459,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 10,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -7347,7 +8474,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 6,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -7356,7 +8484,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -7365,11 +8494,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 65
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 6,
-              "points": 130
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -7378,7 +8509,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -7387,7 +8519,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -7396,7 +8529,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 175
+              "mfm_3_2_points": 175,
+              "mfm_3_3_points": 175
             }
           ]
         },
@@ -7405,7 +8539,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -7414,7 +8549,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -7423,7 +8559,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -7432,8 +8569,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 440,
-              "isForgeWorld": true
+              "mfm_3_2_points": 440,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 440
             }
           ]
         }
@@ -7441,8 +8579,8 @@ window.MFM_UNITS_3_3 = {
     },
     "SPACE MARINES": {
       "name": "Space Marines",
-      "unitCount": 120,
-      "totalPoints": 16935,
+      "unitCount": 119,
+      "totalPoints": 386,
       "forgeWorldUnits": 2,
       "units": {
         "Adrax Agatone": {
@@ -7450,16 +8588,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
-            }
-          ]
-        },
-        "Aethon Shaan": {
-          "name": "Aethon Shaan",
-          "variants": [
-            {
-              "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -7468,11 +8598,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 6,
-              "points": 200
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -7481,7 +8613,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -7490,7 +8623,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -7499,7 +8633,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -7508,7 +8643,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -7517,11 +8653,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 10,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -7530,11 +8668,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 10,
-              "points": 170
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -7543,7 +8683,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -7552,7 +8693,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -7561,11 +8703,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 170
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -7574,7 +8718,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -7583,7 +8728,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -7592,7 +8738,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -7601,7 +8748,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -7610,7 +8758,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -7619,7 +8768,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -7628,7 +8778,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -7637,11 +8788,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             },
             {
               "modelCount": 6,
-              "points": 300
+              "mfm_3_2_points": 300,
+              "mfm_3_3_points": 300
             }
           ]
         },
@@ -7650,11 +8803,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 165
+              "mfm_3_2_points": 165,
+              "mfm_3_3_points": 165
             },
             {
               "modelCount": 6,
-              "points": 330
+              "mfm_3_2_points": 330,
+              "mfm_3_3_points": 330
             }
           ]
         },
@@ -7663,7 +8818,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -7672,7 +8828,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -7681,7 +8838,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -7690,7 +8848,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -7699,7 +8858,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -7708,7 +8868,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 4,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -7717,7 +8878,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -7726,7 +8888,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -7735,11 +8898,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             },
             {
               "modelCount": 10,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -7748,7 +8913,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 135
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 135
             }
           ]
         },
@@ -7757,7 +8923,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -7766,7 +8933,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -7775,11 +8943,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 6,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -7788,11 +8958,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 2,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -7801,7 +8973,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -7810,7 +8983,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -7819,7 +8993,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -7828,7 +9003,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 175
+              "mfm_3_2_points": 175,
+              "mfm_3_3_points": 175
             }
           ]
         },
@@ -7837,11 +9013,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 10,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -7850,11 +9028,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             },
             {
               "modelCount": 10,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -7863,7 +9043,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -7872,11 +9053,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             },
             {
               "modelCount": 6,
-              "points": 240
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 240
             }
           ]
         },
@@ -7885,11 +9068,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -7898,11 +9083,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 10,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -7911,11 +9098,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 10,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -7924,11 +9113,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -7937,7 +9128,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -7946,7 +9138,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -7955,7 +9148,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -7964,7 +9158,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -7973,7 +9168,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -7982,7 +9178,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -7991,7 +9188,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -8000,7 +9198,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -8009,7 +9208,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 270
+              "mfm_3_2_points": 285,
+              "mfm_3_3_points": 270
             }
           ]
         },
@@ -8018,7 +9218,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -8027,7 +9228,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -8036,7 +9238,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -8045,7 +9248,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -8054,7 +9258,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -8063,7 +9268,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -8072,7 +9278,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -8081,7 +9288,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -8090,7 +9298,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -8099,11 +9308,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -8112,7 +9323,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -8121,7 +9333,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 135
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 135
             }
           ]
         },
@@ -8130,7 +9343,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -8139,7 +9353,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -8148,7 +9363,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 195
+              "mfm_3_2_points": 210,
+              "mfm_3_3_points": 195
             }
           ]
         },
@@ -8157,11 +9373,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 10,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -8170,7 +9388,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -8179,7 +9398,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -8188,7 +9408,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -8197,7 +9418,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 340
+              "mfm_3_2_points": 320,
+              "mfm_3_3_points": 340
             }
           ]
         },
@@ -8206,11 +9428,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -8219,11 +9443,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 10,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -8232,7 +9458,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -8241,7 +9468,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -8250,7 +9478,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -8259,7 +9488,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 155
+              "mfm_3_2_points": 155,
+              "mfm_3_3_points": 155
             }
           ]
         },
@@ -8268,7 +9498,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 280
+              "mfm_3_2_points": 280,
+              "mfm_3_3_points": 280
             }
           ]
         },
@@ -8277,7 +9508,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 165
+              "mfm_3_2_points": 165,
+              "mfm_3_3_points": 165
             }
           ]
         },
@@ -8286,7 +9518,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -8295,7 +9528,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -8304,7 +9538,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -8313,11 +9548,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             },
             {
               "modelCount": 10,
-              "points": 360
+              "mfm_3_2_points": 360,
+              "mfm_3_3_points": 360
             }
           ]
         },
@@ -8326,11 +9563,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             },
             {
               "modelCount": 10,
-              "points": 340
+              "mfm_3_2_points": 340,
+              "mfm_3_3_points": 340
             }
           ]
         },
@@ -8339,7 +9578,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -8348,7 +9588,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -8357,11 +9598,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             },
             {
               "modelCount": 10,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -8370,7 +9613,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 185
+              "mfm_3_2_points": 185,
+              "mfm_3_3_points": 185
             }
           ]
         },
@@ -8379,7 +9623,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -8388,7 +9633,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -8397,8 +9643,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 525,
-              "isForgeWorld": true
+              "mfm_3_2_points": 525,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 525
             }
           ]
         },
@@ -8407,8 +9654,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 840,
-              "isForgeWorld": true
+              "mfm_3_2_points": 840,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 840
             }
           ]
         }
@@ -8417,7 +9665,7 @@ window.MFM_UNITS_3_3 = {
     "SPACE WOLVES": {
       "name": "Space Wolves",
       "unitCount": 25,
-      "totalPoints": 3410,
+      "totalPoints": 121,
       "forgeWorldUnits": 0,
       "units": {
         "Arjac Rockfist": {
@@ -8425,7 +9673,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 105
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -8434,7 +9683,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -8443,11 +9693,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 135
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 135
             },
             {
               "modelCount": 20,
-              "points": 285
+              "mfm_3_2_points": 270,
+              "mfm_3_3_points": 285
             }
           ]
         },
@@ -8456,11 +9708,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             },
             {
               "modelCount": 10,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -8469,7 +9723,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -8478,7 +9733,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -8487,7 +9743,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -8496,7 +9753,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -8505,7 +9763,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -8514,7 +9773,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -8523,11 +9783,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 115
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 115
             },
             {
               "modelCount": 6,
-              "points": 230
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 230
             }
           ]
         },
@@ -8536,7 +9798,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -8545,7 +9808,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -8554,7 +9818,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -8563,11 +9828,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             },
             {
               "modelCount": 10,
-              "points": 340
+              "mfm_3_2_points": 340,
+              "mfm_3_3_points": 340
             }
           ]
         },
@@ -8576,7 +9843,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -8585,11 +9853,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 10,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -8598,7 +9868,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -8607,11 +9878,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 10,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         }
@@ -8620,7 +9893,7 @@ window.MFM_UNITS_3_3 = {
     "T’AU EMPIRE": {
       "name": "T’au Empire",
       "unitCount": 53,
-      "totalPoints": 8815,
+      "totalPoints": 174,
       "forgeWorldUnits": 4,
       "units": {
         "Breacher Team": {
@@ -8628,7 +9901,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -8637,15 +9911,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 2,
-              "points": 170
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 170
             },
             {
               "modelCount": 3,
-              "points": 270
+              "mfm_3_2_points": 300,
+              "mfm_3_3_points": 270
             }
           ]
         },
@@ -8654,7 +9931,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -8663,7 +9941,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -8672,7 +9951,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 95,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -8681,7 +9961,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -8690,7 +9971,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -8699,7 +9981,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 120
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -8708,7 +9991,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -8717,7 +10001,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 140
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -8726,7 +10011,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -8735,7 +10021,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -8744,7 +10031,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -8753,7 +10041,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -8762,7 +10051,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -8771,7 +10061,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -8780,11 +10071,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 20,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -8793,7 +10086,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 12,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -8802,7 +10096,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             }
           ]
         },
@@ -8811,11 +10106,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             },
             {
               "modelCount": 10,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -8824,7 +10121,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -8833,7 +10131,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             }
           ]
         },
@@ -8842,7 +10141,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -8851,11 +10151,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 6,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -8864,15 +10166,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             },
             {
               "modelCount": 2,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 3,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -8881,7 +10186,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -8890,15 +10196,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 2,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             },
             {
               "modelCount": 3,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -8907,7 +10216,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -8916,7 +10226,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -8925,7 +10236,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -8934,11 +10246,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -8947,7 +10261,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 400
+              "mfm_3_2_points": 400,
+              "mfm_3_3_points": 400
             }
           ]
         },
@@ -8956,7 +10271,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             }
           ]
         },
@@ -8965,7 +10281,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -8974,7 +10291,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -8983,7 +10301,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -8992,7 +10311,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -9001,16 +10321,19 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 315,
-              "isForgeWorld": true
+              "mfm_3_2_points": 315,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 315
             },
             {
               "modelCount": 5,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 10,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -9019,8 +10342,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 2100,
-              "isForgeWorld": true
+              "mfm_3_2_points": 2100,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 2100
             }
           ]
         },
@@ -9029,8 +10353,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 790,
-              "isForgeWorld": true
+              "mfm_3_2_points": 790,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 790
             }
           ]
         },
@@ -9039,8 +10364,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 325,
-              "isForgeWorld": true
+              "mfm_3_2_points": 325,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 325
             }
           ]
         }
@@ -9049,7 +10375,7 @@ window.MFM_UNITS_3_3 = {
     "THOUSAND SONS": {
       "name": "Thousand Sons",
       "unitCount": 42,
-      "totalPoints": 5925,
+      "totalPoints": 147,
       "forgeWorldUnits": 0,
       "units": {
         "Ahriman": {
@@ -9057,7 +10383,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -9066,7 +10393,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -9075,7 +10403,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -9084,7 +10413,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -9093,7 +10423,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -9102,7 +10433,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -9111,7 +10443,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 185
+              "mfm_3_2_points": 185,
+              "mfm_3_3_points": 185
             }
           ]
         },
@@ -9120,7 +10453,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -9129,7 +10463,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -9138,7 +10473,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 165
+              "mfm_3_2_points": 165,
+              "mfm_3_3_points": 165
             }
           ]
         },
@@ -9147,7 +10483,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -9156,7 +10493,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -9165,7 +10503,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -9174,7 +10513,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 215
+              "mfm_3_2_points": 215,
+              "mfm_3_3_points": 215
             }
           ]
         },
@@ -9183,7 +10523,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -9192,7 +10533,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 95
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 95
             }
           ]
         },
@@ -9201,7 +10543,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 435
+              "mfm_3_2_points": 420,
+              "mfm_3_3_points": 435
             }
           ]
         },
@@ -9210,7 +10553,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -9219,7 +10563,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 175
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 175
             }
           ]
         },
@@ -9228,11 +10573,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 105
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 105
             },
             {
               "modelCount": 10,
-              "points": 190
+              "mfm_3_2_points": 190,
+              "mfm_3_3_points": 190
             }
           ]
         },
@@ -9241,11 +10588,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             },
             {
               "modelCount": 10,
-              "points": 360
+              "mfm_3_2_points": 375,
+              "mfm_3_3_points": 360
             }
           ]
         },
@@ -9254,11 +10603,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 80
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 4,
-              "points": 160
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -9267,7 +10618,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -9276,7 +10628,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -9285,11 +10638,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 55
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 55
             },
             {
               "modelCount": 6,
-              "points": 90
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -9298,11 +10653,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 60
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 6,
-              "points": 110
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -9311,7 +10668,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -9320,11 +10678,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 20,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -9333,7 +10693,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -9342,11 +10703,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 6,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -9355,7 +10718,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 260
+              "mfm_3_2_points": 260,
+              "mfm_3_3_points": 260
             }
           ]
         },
@@ -9364,7 +10728,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 250
+              "mfm_3_2_points": 250,
+              "mfm_3_3_points": 250
             }
           ]
         },
@@ -9373,7 +10738,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             }
           ]
         },
@@ -9382,11 +10748,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         }
@@ -9395,7 +10763,7 @@ window.MFM_UNITS_3_3 = {
     "TYRANIDS": {
       "name": "Tyranids",
       "unitCount": 72,
-      "totalPoints": 9610,
+      "totalPoints": 287,
       "forgeWorldUnits": 2,
       "units": {
         "Barbgaunts": {
@@ -9403,11 +10771,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             },
             {
               "modelCount": 10,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -9416,15 +10786,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             },
             {
               "modelCount": 2,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 3,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -9433,7 +10806,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -9442,11 +10816,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 115
+              "mfm_3_2_points": 115,
+              "mfm_3_3_points": 115
             },
             {
               "modelCount": 2,
-              "points": 230
+              "mfm_3_2_points": 230,
+              "mfm_3_3_points": 230
             }
           ]
         },
@@ -9455,7 +10831,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -9464,7 +10841,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -9473,11 +10851,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             },
             {
               "modelCount": 20,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -9486,11 +10866,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 10,
-              "points": 140
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -9499,7 +10881,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 215
+              "mfm_3_2_points": 215,
+              "mfm_3_3_points": 215
             }
           ]
         },
@@ -9508,7 +10891,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 125
+              "mfm_3_2_points": 125,
+              "mfm_3_3_points": 125
             }
           ]
         },
@@ -9517,7 +10901,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -9526,11 +10911,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             },
             {
               "modelCount": 6,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -9539,7 +10926,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 195
+              "mfm_3_2_points": 195,
+              "mfm_3_3_points": 195
             }
           ]
         },
@@ -9548,11 +10936,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 20,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -9561,7 +10951,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -9570,7 +10961,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -9579,7 +10971,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 135
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 135
             }
           ]
         },
@@ -9588,11 +10981,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 30
+              "mfm_3_2_points": 30,
+              "mfm_3_3_points": 30
             },
             {
               "modelCount": 2,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -9601,11 +10996,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 11,
-              "points": 45
+              "mfm_3_2_points": 45,
+              "mfm_3_3_points": 45
             },
             {
               "modelCount": 22,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -9614,7 +11011,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 70
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 70
             }
           ]
         },
@@ -9623,7 +11021,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -9632,7 +11031,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 275
+              "mfm_3_2_points": 275,
+              "mfm_3_3_points": 275
             }
           ]
         },
@@ -9641,7 +11041,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 260
+              "mfm_3_2_points": 260,
+              "mfm_3_3_points": 260
             }
           ]
         },
@@ -9650,7 +11051,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -9659,7 +11061,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             }
           ]
         },
@@ -9668,7 +11071,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -9677,15 +11081,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             },
             {
               "modelCount": 2,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 3,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -9694,11 +11101,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 6,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -9707,15 +11116,18 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 25
+              "mfm_3_2_points": 25,
+              "mfm_3_3_points": 25
             },
             {
               "modelCount": 2,
-              "points": 40
+              "mfm_3_2_points": 40,
+              "mfm_3_3_points": 40
             },
             {
               "modelCount": 3,
-              "points": 50
+              "mfm_3_2_points": 50,
+              "mfm_3_3_points": 50
             }
           ]
         },
@@ -9724,7 +11136,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 135
+              "mfm_3_2_points": 135,
+              "mfm_3_3_points": 135
             }
           ]
         },
@@ -9733,11 +11146,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 55
+              "mfm_3_2_points": 55,
+              "mfm_3_3_points": 55
             },
             {
               "modelCount": 6,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -9746,7 +11161,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -9755,11 +11171,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             },
             {
               "modelCount": 20,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -9768,7 +11186,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 160
+              "mfm_3_2_points": 175,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -9777,7 +11196,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -9786,7 +11206,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -9795,7 +11216,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -9804,11 +11226,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 6,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -9817,11 +11241,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 6,
-              "points": 130
+              "mfm_3_2_points": 130,
+              "mfm_3_3_points": 130
             }
           ]
         },
@@ -9830,7 +11256,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 105
+              "mfm_3_2_points": 105,
+              "mfm_3_3_points": 105
             }
           ]
         },
@@ -9839,7 +11266,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -9848,11 +11276,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 80
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 80
             },
             {
               "modelCount": 6,
-              "points": 160
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 160
             }
           ]
         },
@@ -9861,11 +11291,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 6,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -9874,11 +11306,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 70
+              "mfm_3_2_points": 70,
+              "mfm_3_3_points": 70
             },
             {
               "modelCount": 6,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -9887,7 +11321,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 170,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -9896,7 +11331,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             }
           ]
         },
@@ -9905,11 +11341,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 100
+              "mfm_3_2_points": 100,
+              "mfm_3_3_points": 100
             },
             {
               "modelCount": 6,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -9918,8 +11356,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 610,
-              "isForgeWorld": true
+              "mfm_3_2_points": 610,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 610
             }
           ]
         },
@@ -9928,8 +11367,9 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 810,
-              "isForgeWorld": true
+              "mfm_3_2_points": 810,
+              "isForgeWorld": true,
+              "mfm_3_3_points": 810
             }
           ]
         }
@@ -9938,7 +11378,7 @@ window.MFM_UNITS_3_3 = {
     "WORLD EATERS": {
       "name": "World Eaters",
       "unitCount": 37,
-      "totalPoints": 6630,
+      "totalPoints": 157,
       "forgeWorldUnits": 0,
       "units": {
         "Angron": {
@@ -9946,7 +11386,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 360
+              "mfm_3_2_points": 385,
+              "mfm_3_3_points": 360
             }
           ]
         },
@@ -9955,7 +11396,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 220
+              "mfm_3_2_points": 240,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -9964,7 +11406,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -9973,7 +11416,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 145
+              "mfm_3_2_points": 145,
+              "mfm_3_3_points": 145
             }
           ]
         },
@@ -9982,7 +11426,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -9991,7 +11436,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 2,
-              "points": 90
+              "mfm_3_2_points": 80,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -10000,11 +11446,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 175
+              "mfm_3_2_points": 185,
+              "mfm_3_3_points": 175
             },
             {
               "modelCount": 10,
-              "points": 350
+              "mfm_3_2_points": 370,
+              "mfm_3_3_points": 350
             }
           ]
         },
@@ -10013,7 +11461,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -10022,7 +11471,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -10031,7 +11481,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             }
           ]
         },
@@ -10040,11 +11491,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 135
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 135
             },
             {
               "modelCount": 6,
-              "points": 270
+              "mfm_3_2_points": 300,
+              "mfm_3_3_points": 270
             }
           ]
         },
@@ -10053,11 +11506,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 140
+              "mfm_3_2_points": 160,
+              "mfm_3_3_points": 140
             },
             {
               "modelCount": 6,
-              "points": 280
+              "mfm_3_2_points": 320,
+              "mfm_3_3_points": 280
             }
           ]
         },
@@ -10066,7 +11521,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 170
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 170
             }
           ]
         },
@@ -10075,7 +11531,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 8,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -10084,7 +11541,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 120
+              "mfm_3_2_points": 120,
+              "mfm_3_3_points": 120
             }
           ]
         },
@@ -10093,7 +11551,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 200
+              "mfm_3_2_points": 200,
+              "mfm_3_3_points": 200
             }
           ]
         },
@@ -10102,11 +11561,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 65
+              "mfm_3_2_points": 65,
+              "mfm_3_3_points": 65
             },
             {
               "modelCount": 20,
-              "points": 140
+              "mfm_3_2_points": 140,
+              "mfm_3_3_points": 140
             }
           ]
         },
@@ -10115,7 +11576,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 100
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 100
             }
           ]
         },
@@ -10124,11 +11586,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 180
+              "mfm_3_2_points": 180,
+              "mfm_3_3_points": 180
             },
             {
               "modelCount": 20,
-              "points": 360
+              "mfm_3_2_points": 360,
+              "mfm_3_3_points": 360
             }
           ]
         },
@@ -10137,7 +11601,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 505
+              "mfm_3_2_points": 505,
+              "mfm_3_3_points": 505
             }
           ]
         },
@@ -10146,7 +11611,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             }
           ]
         },
@@ -10155,7 +11621,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -10164,7 +11631,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 60
+              "mfm_3_2_points": 60,
+              "mfm_3_3_points": 60
             }
           ]
         },
@@ -10173,7 +11641,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -10182,7 +11651,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 85
+              "mfm_3_2_points": 85,
+              "mfm_3_3_points": 85
             }
           ]
         },
@@ -10191,11 +11661,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 3,
-              "points": 110
+              "mfm_3_2_points": 110,
+              "mfm_3_3_points": 110
             },
             {
               "modelCount": 6,
-              "points": 220
+              "mfm_3_2_points": 220,
+              "mfm_3_3_points": 220
             }
           ]
         },
@@ -10204,7 +11676,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 10,
-              "points": 90
+              "mfm_3_2_points": 90,
+              "mfm_3_3_points": 90
             }
           ]
         },
@@ -10213,7 +11686,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 305
+              "mfm_3_2_points": 305,
+              "mfm_3_3_points": 305
             }
           ]
         },
@@ -10222,11 +11696,13 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 5,
-              "points": 75
+              "mfm_3_2_points": 75,
+              "mfm_3_3_points": 75
             },
             {
               "modelCount": 10,
-              "points": 150
+              "mfm_3_2_points": 150,
+              "mfm_3_3_points": 150
             }
           ]
         },
@@ -10235,7 +11711,8 @@ window.MFM_UNITS_3_3 = {
           "variants": [
             {
               "modelCount": 1,
-              "points": 305
+              "mfm_3_2_points": 305,
+              "mfm_3_3_points": 305
             }
           ]
         }
@@ -10243,8 +11720,3 @@ window.MFM_UNITS_3_3 = {
     }
   }
 };
-
-// Export for module systems
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = window.MFM_UNITS_3_3;
-}
