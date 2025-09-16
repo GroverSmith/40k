@@ -454,13 +454,6 @@
             document.getElementById('updateFilesBtn').disabled = !allFilesReady;
         }
 
-        // Legacy file input handling (for backward compatibility)
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                parseFile(file);
-            }
-        }
 
         // Drag and drop handling for parse mode
         const parseDropZone = document.getElementById('parseFileDropZone');
@@ -524,28 +517,6 @@
             }
         });
 
-        // Legacy drag and drop handling (for backward compatibility)
-        const legacyDropZone = document.getElementById('fileDropZone');
-        if (legacyDropZone) {
-            legacyDropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                legacyDropZone.classList.add('dragover');
-            });
-
-            legacyDropZone.addEventListener('dragleave', () => {
-                legacyDropZone.classList.remove('dragover');
-            });
-
-            legacyDropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                legacyDropZone.classList.remove('dragover');
-                
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    parseFile(files[0]);
-                }
-            });
-        }
 
         // Update existing files with new points data
         async function updateExistingFiles() {
@@ -568,20 +539,16 @@
                 const parser = new MFMParserUIStandalone();
                 const newData = parser.parseForUI(rawContent, '3.3', 'SEP25'); // Assuming 3.3 for updates
 
-                console.log('Parsed new data:', newData);
 
                 // Load existing files
                 const existingUnitsContent = await readFileAsText(updateModeFiles.units);
                 const existingDetachmentsContent = await readFileAsText(updateModeFiles.detachments);
 
-                console.log('Loaded existing files, extracting data...');
 
                 // Extract existing data (assuming they're in window objects)
                 const existingUnits = extractJSData(existingUnitsContent);
                 const existingDetachments = extractJSData(existingDetachmentsContent);
 
-                console.log('Extracted existing units:', existingUnits);
-                console.log('Extracted existing detachments:', existingDetachments);
 
                 if (!existingUnits || !existingDetachments) {
                     throw new Error('Failed to extract data from existing JS files. Please ensure the files contain valid MFM data.');
@@ -590,7 +557,6 @@
                 // Merge new points data with existing structure
                 updatedData = mergePointsData(existingUnits, existingDetachments, newData);
 
-                console.log('Merged data:', updatedData);
 
                 // Enable export buttons
                 document.getElementById('exportUpdatedUnitsBtn').disabled = false;
@@ -683,47 +649,28 @@
 
             // Update detachments with new points
             if (newData.factions) {
-                console.log('Updating detachments with new points...');
                 Object.keys(newData.factions).forEach(factionKey => {
                     const faction = newData.factions[factionKey];
-                    console.log(`Processing faction: ${factionKey}, has detachments:`, !!faction.detachments);
                     
                     if (faction.detachments && result.detachments.factions && result.detachments.factions[factionKey]) {
                         faction.detachments.forEach(detachment => {
-                            console.log(`Processing detachment: ${detachment.name}`);
-                            
                             if (result.detachments.factions[factionKey].detachments[detachment.name]) {
-                                console.log(`Existing enhancements in ${detachment.name}:`, 
-                                    result.detachments.factions[factionKey].detachments[detachment.name].enhancements.map(e => e.name));
-                                
                                 detachment.enhancements.forEach(enhancement => {
-                                    console.log(`New enhancement properties:`, Object.keys(enhancement));
-                                    console.log(`New enhancement name:`, enhancement.enhancementName || enhancement.name);
-                                    
                                     const existingEnhancement = result.detachments.factions[factionKey]
                                         .detachments[detachment.name].enhancements
                                         .find(e => e.name === enhancement.enhancementName || e.name === enhancement.name);
                                     
                                     if (existingEnhancement) {
-                                        console.log(`Found existing enhancement:`, existingEnhancement);
-                                        console.log(`Updating enhancement: ${enhancement.enhancementName || enhancement.name}`, enhancement);
                                         // Copy all version-specific points fields from the new enhancement
                                         Object.keys(enhancement).forEach(key => {
                                             if (key.includes('points')) {
                                                 existingEnhancement[key] = enhancement[key];
-                                                console.log(`Added ${key}: ${enhancement[key]}`);
                                             }
                                         });
-                                    } else {
-                                        console.log(`Enhancement not found: ${enhancement.enhancementName}`);
                                     }
                                 });
-                            } else {
-                                console.log(`Detachment not found in existing data: ${detachment.name}`);
                             }
                         });
-                    } else {
-                        console.log(`Skipping faction ${factionKey} - no detachments or missing in result`);
                     }
                 });
             }
@@ -742,7 +689,6 @@
                 });
             });
             
-            console.log(`✅ Detachments merge completed: ${totalEnhancementsUpdated} enhancements updated with mfm_3_3_points`);
             
             return result;
         }
@@ -851,7 +797,6 @@ window.MFM_DETACHMENTS_UPDATED = ${JSON.stringify(updatedData.detachments, null,
                     parsedData = {
                         units: units,
                         uiData: uiData,
-                        json: JSON.stringify(uiData, null, 2), // Export UI-optimized structure
                         csv: generateCSV(units),
                         stats: {
                             totalUnits: uiData.metadata.totalUnits,
@@ -885,7 +830,6 @@ window.MFM_DETACHMENTS_UPDATED = ${JSON.stringify(updatedData.detachments, null,
                     displayDetachments(parsedData.uiData);
 
                     // Enable export buttons
-                    exportJsonBtn.disabled = false;
                     exportCsvBtn.disabled = false;
                     exportUnitsBtn.disabled = false;
                     exportDetachmentsBtn.disabled = false;
@@ -1048,26 +992,6 @@ window.MFM_DETACHMENTS_UPDATED = ${JSON.stringify(updatedData.detachments, null,
             return csvRows.join('\n');
         }
 
-        function exportToJSON() {
-            if (!parsedData) return;
-
-            const dataStr = parsedData.json;
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            
-            // Generate filename from metadata
-            const metadata = parsedData.uiData.metadata;
-            const version = metadata.version.replace('.', '_');
-            const date = metadata.date;
-            const filename = `mfm-${version}-${date}.json`;
-            
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            link.click();
-            
-            URL.revokeObjectURL(url);
-        }
 
         function exportToCSV() {
             if (!parsedData) return;

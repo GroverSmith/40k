@@ -6,7 +6,7 @@ window.MFM_BASE = {
         },
         "3.3": {
             "version": "3.3",
-            "date": "Sep 15"            
+            "date": "Sep 25"            
         }      
     },
     factions: {
