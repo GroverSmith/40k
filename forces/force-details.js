@@ -44,6 +44,13 @@ class ForceDetails {
            // Load force data with caching
            this.forceData = await this.loadForceDataByKey(this.forceKey);
            
+           // Ensure UserManager is initialized before checking permissions
+           if (typeof UserManager === 'undefined' || !UserManager.getCurrentUser) {
+               console.warn('UserManager not available, retrying in 100ms...');
+               setTimeout(() => this.loadForceData(), 100);
+               return;
+           }
+           
            // Update the display
            this.updateHeader(this.forceData);
            
@@ -56,7 +63,7 @@ class ForceDetails {
            // Show sections
            CoreUtils.dom.show('overview-section');
            
-           
+            
        } catch (error) {
            console.error('Error loading force data:', error);
            throw error;
@@ -277,15 +284,321 @@ class ForceDetails {
        const header = document.getElementById('force-header');
        const launchDate = UIHelpers.formatDate(forceData.timestamp);
 
+       // Check if current user can edit notes
+       const currentUser = UserManager.getCurrentUser();
+       
+       // Try multiple possible field names for user key
+       const currentUserKey = currentUser ? (currentUser.user_key || currentUser.key || currentUser.id) : null;
+       const canEditNotes = currentUser && currentUserKey === forceData.user_key;
+       
+       // Debug logging
+       console.log('Force details - User permission check:', {
+           currentUser: currentUser,
+           currentUserKey: currentUserKey,
+           forceUserKey: forceData.user_key,
+           canEditNotes: canEditNotes,
+           userKeyMatch: currentUserKey === forceData.user_key
+       });
+
        header.innerHTML = `
            <h1>${forceData.force_name}</h1>
            <div class="force-subtitle">
                ${forceData.faction}${forceData.detachment ? ` - ${forceData.detachment}` : ''} • Commanded by ${forceData.user_name}
            </div>
            ${launchDate ? `<div class="force-launch-date">Crusade Force Launched on ${launchDate}</div>` : ''}
+           ${this.renderNotesSection(forceData, canEditNotes)}
        `;
 
        document.title = `${forceData.force_name} - Crusade Force`;
+
+       // Set up edit notes button event listener if applicable
+       if (canEditNotes) {
+           this.setupEditNotesButton();
+       } else {
+           // If we can't edit notes but UserManager might not be ready, try again in a moment
+           setTimeout(() => {
+               const retryCurrentUser = UserManager.getCurrentUser();
+               const retryCurrentUserKey = retryCurrentUser ? (retryCurrentUser.user_key || retryCurrentUser.key || retryCurrentUser.id) : null;
+               const retryCanEditNotes = retryCurrentUser && retryCurrentUserKey === forceData.user_key;
+               if (retryCanEditNotes && !document.getElementById('edit-notes-btn')) {
+                   console.log('Retrying header update with UserManager data');
+                   this.updateHeader(forceData);
+               }
+           }, 500);
+       }
+   }
+
+   /**
+    * Render the notes section for the force header
+    */
+   renderNotesSection(forceData, canEditNotes) {
+       const hasNotes = forceData.notes && forceData.notes.trim() !== '';
+       
+       if (!hasNotes && !canEditNotes) {
+           return '';
+       }
+       
+       if (!hasNotes && canEditNotes) {
+           return `
+               <div class="force-notes-section">
+                   <div class="force-notes-header">
+                       <button class="edit-notes-btn" id="edit-notes-btn">Edit Notes</button>
+                   </div>
+                   <div class="force-notes-content empty">
+                       <p>No notes added yet. Click "Edit Notes" to add some.</p>
+                   </div>
+               </div>
+           `;
+       }
+
+       return `
+           <div class="force-notes-section">
+               <div class="force-notes-header">
+                   ${canEditNotes ? '<button class="edit-notes-btn" id="edit-notes-btn">Edit Notes</button>' : ''}
+               </div>
+               <div class="force-notes-content">
+                   <div class="force-notes-text">${this.formatNotesText(forceData.notes)}</div>
+               </div>
+           </div>
+       `;
+   }
+
+   /**
+    * Format notes text for display
+    */
+   formatNotesText(notes) {
+       if (!notes) return '';
+       
+       // Convert line breaks to HTML and escape HTML characters
+       return notes
+           .replace(/&/g, '&amp;')
+           .replace(/</g, '&lt;')
+           .replace(/>/g, '&gt;')
+           .replace(/\n/g, '<br>');
+   }
+
+   /**
+    * Set up the edit notes button event listener
+    */
+   setupEditNotesButton() {
+       const editBtn = document.getElementById('edit-notes-btn');
+       if (editBtn) {
+           editBtn.addEventListener('click', () => {
+               this.showEditNotesModal();
+           });
+       }
+   }
+
+   /**
+    * Show the edit notes modal
+    */
+   showEditNotesModal() {
+       const modalHtml = `
+           <div class="modal-overlay" id="edit-notes-modal">
+               <div class="modal-container">
+                   <div class="modal-header">
+                       <h2>Edit Force Notes</h2>
+                       <button class="modal-close-btn" id="close-edit-notes-modal">×</button>
+                   </div>
+                   <div class="modal-body">
+                       <form class="modal-form" id="edit-notes-form">
+                           <div class="form-group">
+                               <label for="notes-textarea">Notes</label>
+                               <textarea 
+                                   id="notes-textarea" 
+                                   name="notes" 
+                                   rows="8" 
+                                   placeholder="Enter your force notes here..."
+                               >${this.forceData.notes || ''}</textarea>
+                               <div class="help-text">Add any notes, strategies, or background information about your force.</div>
+                           </div>
+                           <div class="modal-actions">
+                               <button type="button" class="btn btn-secondary" id="cancel-edit-notes">Cancel</button>
+                               <button type="submit" class="btn btn-primary" id="save-edit-notes">
+                                   <span class="btn-text">Save Notes</span>
+                                   <span class="btn-loading">Saving...</span>
+                               </button>
+                           </div>
+                       </form>
+                   </div>
+               </div>
+           </div>
+       `;
+
+       // Add modal to page
+       document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+       // Set up event listeners
+       this.setupEditNotesModalEvents();
+   }
+
+   /**
+    * Set up event listeners for the edit notes modal
+    */
+   setupEditNotesModalEvents() {
+       const modal = document.getElementById('edit-notes-modal');
+       const closeBtn = document.getElementById('close-edit-notes-modal');
+       const cancelBtn = document.getElementById('cancel-edit-notes');
+       const form = document.getElementById('edit-notes-form');
+       const saveBtn = document.getElementById('save-edit-notes');
+
+       // Close modal functions
+       const closeModal = () => {
+           modal.remove();
+       };
+
+       // Event listeners
+       closeBtn.addEventListener('click', closeModal);
+       cancelBtn.addEventListener('click', closeModal);
+       
+       // Close on overlay click
+       modal.addEventListener('click', (e) => {
+           if (e.target === modal) {
+               closeModal();
+           }
+       });
+
+       // Handle form submission
+       form.addEventListener('submit', async (e) => {
+           e.preventDefault();
+           await this.saveNotes();
+       });
+   }
+
+   /**
+    * Save the updated notes
+    */
+   async saveNotes() {
+       const textarea = document.getElementById('notes-textarea');
+       const saveBtn = document.getElementById('save-edit-notes');
+       const btnText = saveBtn.querySelector('.btn-text');
+       const btnLoading = saveBtn.querySelector('.btn-loading');
+
+       if (!textarea || !saveBtn) return;
+
+       const newNotes = textarea.value.trim();
+
+       try {
+           // Show loading state
+           saveBtn.disabled = true;
+           btnText.classList.add('hidden');
+           btnLoading.classList.add('active');
+
+           // Prepare update data
+           const updateData = {
+               operation: 'edit',
+               force_key: this.forceData.force_key,
+               user_key: this.forceData.user_key,
+               user_name: this.forceData.user_name,
+               force_name: this.forceData.force_name,
+               faction: this.forceData.faction,
+               detachment: this.forceData.detachment || '',
+               notes: newNotes
+           };
+
+           // Make API call
+           const response = await fetch(CrusadeConfig.getSheetUrl('forces'), {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/x-www-form-urlencoded',
+               },
+               body: new URLSearchParams(updateData)
+           });
+
+           const result = await response.json();
+
+           if (result.success) {
+               // Update local data
+               this.forceData.notes = newNotes;
+               
+               // Update display
+               this.updateHeader(this.forceData);
+               
+               // Close modal
+               document.getElementById('edit-notes-modal').remove();
+               
+               // Show success message
+               this.showSuccessMessage('Notes updated successfully!');
+               
+               // Clear cache to ensure fresh data on next load
+               if (typeof UnifiedCache !== 'undefined') {
+                   await UnifiedCache.clearCache('forces');
+               }
+           } else {
+               throw new Error(result.error || 'Failed to update notes');
+           }
+
+       } catch (error) {
+           console.error('Error saving notes:', error);
+           this.showErrorMessage('Failed to save notes: ' + error.message);
+       } finally {
+           // Reset button state
+           saveBtn.disabled = false;
+           btnText.classList.remove('hidden');
+           btnLoading.classList.remove('active');
+       }
+   }
+
+   /**
+    * Show success message
+    */
+   showSuccessMessage(message) {
+       // Create temporary success message
+       const successDiv = document.createElement('div');
+       successDiv.className = 'success-message';
+       successDiv.style.cssText = `
+           position: fixed;
+           top: 20px;
+           right: 20px;
+           background-color: #2d5a2d;
+           border: 1px solid #4a8a4a;
+           color: #90ee90;
+           padding: 15px 20px;
+           border-radius: 5px;
+           z-index: 10000;
+           box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+       `;
+       successDiv.textContent = message;
+       
+       document.body.appendChild(successDiv);
+       
+       // Remove after 3 seconds
+       setTimeout(() => {
+           if (successDiv.parentNode) {
+               successDiv.parentNode.removeChild(successDiv);
+           }
+       }, 3000);
+   }
+
+   /**
+    * Show error message
+    */
+   showErrorMessage(message) {
+       // Create temporary error message
+       const errorDiv = document.createElement('div');
+       errorDiv.className = 'error-message-temp';
+       errorDiv.style.cssText = `
+           position: fixed;
+           top: 20px;
+           right: 20px;
+           background-color: #5a2d2d;
+           border: 1px solid #8a4a4a;
+           color: #ff9999;
+           padding: 15px 20px;
+           border-radius: 5px;
+           z-index: 10000;
+           box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+       `;
+       errorDiv.textContent = message;
+       
+       document.body.appendChild(errorDiv);
+       
+       // Remove after 5 seconds
+       setTimeout(() => {
+           if (errorDiv.parentNode) {
+               errorDiv.parentNode.removeChild(errorDiv);
+           }
+       }, 5000);
    }
 
    /**
