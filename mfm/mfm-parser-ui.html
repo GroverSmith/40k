@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MFM Parser Test - UI Optimized</title>
+    <title>MFM Parser - Enhanced</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -108,6 +108,41 @@
             padding: 5px;
             border: 1px solid #ddd;
             border-radius: 4px;
+        }
+        .mode-selection {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .mode-option {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .mode-option input[type="radio"] {
+            margin-right: 8px;
+        }
+        .mode-option label {
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .file-inputs {
+            margin: 20px 0;
+        }
+        .file-input-group {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .file-input-group h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .hidden {
+            display: none;
         }
         .loading {
             text-align: center;
@@ -223,8 +258,21 @@
 </head>
 <body>
     <div class="container">
-        <h1>Warhammer 40k MFM Parser - UI Optimized</h1>
-        <p>This tool parses the Munitorum Field Manual (MFM) to extract unit points costs and details. Now with direct export to separated JavaScript files for GitHub Pages!</p>
+        <h1>Warhammer 40k MFM Parser - Enhanced</h1>
+        <p>Parse raw MFM text files or update existing parsed files with new points data.</p>
+        
+        <!-- Mode Selection -->
+        <div class="mode-selection">
+            <h3>Select Mode:</h3>
+            <div class="mode-option">
+                <input type="radio" id="parseMode" name="mode" value="parse" checked onchange="switchMode()">
+                <label for="parseMode">Parse Raw MFM File</label>
+            </div>
+            <div class="mode-option">
+                <input type="radio" id="updateMode" name="mode" value="update" onchange="switchMode()">
+                <label for="updateMode">Update Existing Files</label>
+            </div>
+        </div>
         
         <div class="instructions">
             <h3>📁 How to Use:</h3>

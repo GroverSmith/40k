@@ -44,7 +44,21 @@ class MFMParserUIStandalone {
                 } else {
                     this.isImperialAgents = false;
                     this.imperialAgentsSubsection = null;
-                    this.currentFaction = this.extractFactionName(line);
+                    
+                    // Check if this is a CODEX SUPPLEMENT: with faction name on next line
+                    if (line === 'CODEX SUPPLEMENT:' && i + 1 < lines.length) {
+                        const nextLine = lines[i + 1].trim();
+                        if (nextLine && !nextLine.includes(':') && !nextLine.includes('pts')) {
+                            // Next line contains the faction name
+                            this.currentFaction = nextLine;
+                            i++; // Skip the next line since we've processed it
+                        } else {
+                            this.currentFaction = this.extractFactionName(line);
+                        }
+                    } else {
+                        this.currentFaction = this.extractFactionName(line);
+                    }
+                    
                     this.currentDetachment = null;
                     this.isForgeWorld = false;
                     this.isEnhancementSection = false;
@@ -113,7 +127,7 @@ class MFMParserUIStandalone {
      * Check if a line is a faction header (e.g., "CODEX: ADEPTA SORORITAS")
      */
     isFactionHeader(line) {
-        return line.startsWith('CODEX:') || line.startsWith('INDEX:');
+        return line.startsWith('CODEX:') || line.startsWith('INDEX:') || line.startsWith('CODEX SUPPLEMENT:');
     }
 
     /**
@@ -148,7 +162,7 @@ class MFMParserUIStandalone {
      * Extract faction name from header line
      */
     extractFactionName(line) {
-        return line.replace(/^(CODEX:|INDEX:)\s*/, '').trim();
+        return line.replace(/^(CODEX:|INDEX:|CODEX SUPPLEMENT:)\s*/, '').trim();
     }
 
     /**
@@ -308,11 +322,14 @@ class MFMParserUIStandalone {
         const enhancementName = enhancementMatch[1].trim();
         const points = parseInt(enhancementMatch[2]);
 
+        // Create version-specific field name
+        const pointsFieldName = `mfm_${this.currentVersion.replace('.', '_')}_points`;
+        
         return {
             faction: this.currentFaction,
             detachment: this.currentDetachment,
             enhancementName: enhancementName,
-            points: points,
+            [pointsFieldName]: points,
             lineNumber: lineIndex + 1
         };
     }
@@ -325,6 +342,9 @@ class MFMParserUIStandalone {
      * @returns {Object} UI-optimized data structure
      */
     parseForUI(content, version = "3.2", date = "AUG25") {
+        // Store version for use in enhancement parsing
+        this.currentVersion = version;
+        
         // First parse using the base parser
         const parsedData = this.parse(content);
         
@@ -456,26 +476,52 @@ class MFMParserUIStandalone {
                 
                 result.factions[factionKey].enhancements[detachmentKey] = {
                     name: detachmentKey,
-                    enhancements: detachmentEnhancements.map(enhancement => ({
-                        name: enhancement.enhancementName,
-                        points: enhancement.points
-                    })).sort((a, b) => a.points - b.points) // Sort by points
+                    enhancements: detachmentEnhancements.map(enhancement => {
+                        const enhancementObj = { name: enhancement.enhancementName };
+                        // Copy all version-specific points fields
+                        Object.keys(enhancement).forEach(key => {
+                            if (key.includes('points')) {
+                                enhancementObj[key] = enhancement[key];
+                            }
+                        });
+                        return enhancementObj;
+                    }).sort((a, b) => {
+                        // Sort by the first points field found
+                        const aPoints = Object.values(a).find(val => typeof val === 'number');
+                        const bPoints = Object.values(b).find(val => typeof val === 'number');
+                        return (aPoints || 0) - (bPoints || 0);
+                    })
                 };
 
                 // Add detachment to detachments array
                 result.factions[factionKey].detachments.push({
                     name: detachmentKey,
                     enhancementCount: detachmentEnhancements.length,
-                    enhancements: detachmentEnhancements.map(enhancement => ({
-                        name: enhancement.enhancementName,
-                        points: enhancement.points
-                    })).sort((a, b) => a.points - b.points) // Sort by points
+                    enhancements: detachmentEnhancements.map(enhancement => {
+                        const enhancementObj = { name: enhancement.enhancementName };
+                        // Copy all version-specific points fields
+                        Object.keys(enhancement).forEach(key => {
+                            if (key.includes('points')) {
+                                enhancementObj[key] = enhancement[key];
+                            }
+                        });
+                        return enhancementObj;
+                    }).sort((a, b) => {
+                        // Sort by the first points field found
+                        const aPoints = Object.values(a).find(val => typeof val === 'number');
+                        const bPoints = Object.values(b).find(val => typeof val === 'number');
+                        return (aPoints || 0) - (bPoints || 0);
+                    })
                 });
             });
 
             // Update global enhancement stats
             factionEnhancements.forEach(enhancement => {
-                result.metadata.totalPoints += enhancement.points;
+                // Add the first points field found (should be the version-specific one)
+                const points = Object.values(enhancement).find(val => typeof val === 'number' && val > 0);
+                if (points) {
+                    result.metadata.totalPoints += points;
+                }
             });
         });
 
