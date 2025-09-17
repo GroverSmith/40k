@@ -39,6 +39,9 @@ class UnitEditForm extends BaseForm {
         // Setup battlefield role specific fields
         UnitFormUtilities.setupBattlefieldRoleFields();
 
+        // Load shared components
+        UnitFormUtilities.createUnitTypeGroupComponent('unit-type-container');
+
         // Populate form with existing data
         await this.populateForm();
 

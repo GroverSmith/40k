@@ -18,6 +18,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Aestred Thurga and Agathae Dolan": {
           "name": "Aestred Thurga and Agathae Dolan",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 2,
@@ -28,6 +29,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Arco-flagellants": {
           "name": "Arco-flagellants",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -43,6 +45,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Battle Sisters Squad": {
           "name": "Battle Sisters Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -53,6 +56,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Canoness": {
           "name": "Canoness",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -73,6 +77,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Castigator": {
           "name": "Castigator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
