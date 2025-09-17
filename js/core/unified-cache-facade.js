@@ -166,6 +166,48 @@ class UnifiedCacheFacade {
                 const ttl = this.cacheTTL[sheetName] || 60 * 60 * 1000; // Default 1 hour
                 const isValid = (now - metadata.lastUpdated) < ttl;
                 
+                // If cache is valid and it's marked as an empty result, 
+                // we should still consider it valid to prevent unnecessary API calls
+                if (isValid && metadata.isEmptyResult) {
+                    console.log(`UnifiedCacheFacade: Cache valid for ${sheetName} (empty result cached)`);
+                }
+                
+                resolve(isValid);
+            };
+            
+            request.onerror = () => resolve(false);
+        });
+    }
+
+    /**
+     * Check if empty result cache is still valid (longer TTL for empty results)
+     */
+    async isEmptyResultCacheValid(sheetName) {
+        await this.ensureDatabaseReady();
+        
+        const transaction = this.db.transaction(['metadata'], 'readonly');
+        const store = transaction.objectStore('metadata');
+        const request = store.get(sheetName);
+        
+        return new Promise((resolve) => {
+            request.onsuccess = () => {
+                const metadata = request.result;
+                if (!metadata || !metadata.isEmptyResult) {
+                    resolve(false);
+                    return;
+                }
+                
+                const now = Date.now();
+                // Empty results get a longer TTL - 4 hours instead of the normal TTL
+                const emptyResultTTL = 4 * 60 * 60 * 1000; // 4 hours
+                const isValid = (now - metadata.lastUpdated) < emptyResultTTL;
+                
+                if (isValid) {
+                    console.log(`UnifiedCacheFacade: Empty result cache still valid for ${sheetName} (${Math.round((emptyResultTTL - (now - metadata.lastUpdated)) / 1000 / 60)} minutes remaining)`);
+                } else {
+                    console.log(`UnifiedCacheFacade: Empty result cache expired for ${sheetName}`);
+                }
+                
                 resolve(isValid);
             };
             
@@ -191,7 +233,8 @@ class UnifiedCacheFacade {
         const metadata = {
             sheetName: sheetName,
             lastUpdated: Date.now(),
-            recordCount: actualRecordCount
+            recordCount: actualRecordCount,
+            isEmptyResult: actualRecordCount === 0
         };
         
         store.put(metadata);
@@ -329,7 +372,14 @@ class UnifiedCacheFacade {
      */
     async storeRows(sheetName, rows) {
         await this.ensureDatabaseReady();
-        if (!Array.isArray(rows) || rows.length === 0) return;
+        if (!Array.isArray(rows)) return;
+        
+        // Handle empty arrays - we still need to update metadata
+        if (rows.length === 0) {
+            console.log(`UnifiedCacheFacade: Storing empty result for ${sheetName}`);
+            await this.updateCacheMetadata(sheetName, 0);
+            return;
+        }
         
         // Prepare data for storage
         const storedIds = new Set();
@@ -405,13 +455,29 @@ class UnifiedCacheFacade {
         // Check if we need to refresh the cache
         const cacheValid = await this.isCacheValid(sheetName);
         console.log(`UnifiedCacheFacade: Cache validation for ${sheetName}: valid=${cacheValid}, forceRefresh=${forceRefresh}`);
-        if (!cacheValid || forceRefresh) {
-            console.log(`UnifiedCacheFacade: Cache invalid or refresh requested for ${sheetName}, fetching from script...`);
+        
+        // Check if we have a valid empty result cache (with longer TTL)
+        const isEmptyResultCacheValid = await this.isEmptyResultCacheValid(sheetName);
+        
+        // Only make API call if:
+        // 1. Cache is invalid/expired AND we don't have a valid empty result cache, OR
+        // 2. Force refresh is explicitly requested
+        const shouldFetchFromAPI = (!cacheValid && !isEmptyResultCacheValid) || forceRefresh;
+        
+        if (shouldFetchFromAPI) {
+            console.log(`UnifiedCacheFacade: Fetching from script for ${sheetName}...`);
             
             try {
                 const response = await this.fetchFromScript(sheetName, 'list');
                 console.log(`UnifiedCacheFacade: Fetched data for ${sheetName}:`, response);
+                
+                // Store the rows (even if empty) and update metadata
                 await this.storeRows(sheetName, response.data);
+                
+                // Log if this was an empty result
+                if (!response.data || response.data.length === 0) {
+                    console.log(`UnifiedCacheFacade: API returned empty result for ${sheetName}, caching empty result marker`);
+                }
             } catch (error) {
                 console.error(`UnifiedCacheFacade: Failed to fetch ${sheetName}:`, error);
                 if (error) {
@@ -425,16 +491,20 @@ class UnifiedCacheFacade {
                 }
                 // Fall back to cached data if available
             }
+        } else if (isEmptyResultCacheValid) {
+            console.log(`UnifiedCacheFacade: Using cached empty result for ${sheetName}, no API call needed`);
+        } else {
+            console.log(`UnifiedCacheFacade: Using valid cache for ${sheetName}, no API call needed`);
         }
         
         // Retrieve from cache
-        const transaction = this.db.transaction([sheetName], 'readonly');
-        const store = transaction.objectStore(sheetName);
-        const request = store.getAll();
+        const cacheTransaction = this.db.transaction([sheetName], 'readonly');
+        const cacheStore = cacheTransaction.objectStore(sheetName);
+        const cacheRequest = cacheStore.getAll();
         
         return new Promise((resolve, reject) => {
-            request.onsuccess = () => {
-                const allRows = request.result;
+            cacheRequest.onsuccess = () => {
+                const allRows = cacheRequest.result;
                 console.log(`UnifiedCacheFacade: Retrieved ${allRows.length} total rows from cache for ${sheetName}`);
                 
                 const rows = allRows
@@ -445,9 +515,9 @@ class UnifiedCacheFacade {
                 resolve(rows);
             };
             
-            request.onerror = () => {
-                console.error(`UnifiedCacheFacade: Failed to retrieve rows for ${sheetName}:`, request.error);
-                reject(request.error);
+            cacheRequest.onerror = () => {
+                console.error(`UnifiedCacheFacade: Failed to retrieve rows for ${sheetName}:`, cacheRequest.error);
+                reject(cacheRequest.error);
             };
         });
     }
@@ -595,9 +665,32 @@ class UnifiedCacheFacade {
                 const recordCount = await this.getRecordCount(sheetName);
                 const cacheValid = await this.isCacheValid(sheetName);
                 
+                // Get metadata to check for empty result marker
+                let isEmptyResult = false;
+                let isEmptyResultCacheValid = false;
+                try {
+                    const transaction = this.db.transaction(['metadata'], 'readonly');
+                    const store = transaction.objectStore('metadata');
+                    const request = store.get(sheetName);
+                    
+                    const metadata = await new Promise((resolve) => {
+                        request.onsuccess = () => resolve(request.result);
+                        request.onerror = () => resolve(null);
+                    });
+                    
+                    isEmptyResult = metadata && metadata.isEmptyResult;
+                    if (isEmptyResult) {
+                        isEmptyResultCacheValid = await this.isEmptyResultCacheValid(sheetName);
+                    }
+                } catch (error) {
+                    // Ignore metadata errors
+                }
+                
                 stats[sheetName] = {
                     recordCount,
                     cacheValid,
+                    isEmptyResult,
+                    isEmptyResultCacheValid,
                     ttl: this.cacheTTL[sheetName]
                 };
             } catch (error) {
@@ -605,6 +698,8 @@ class UnifiedCacheFacade {
                 stats[sheetName] = {
                     recordCount: 0,
                     cacheValid: false,
+                    isEmptyResult: false,
+                    isEmptyResultCacheValid: false,
                     ttl: this.cacheTTL[sheetName],
                     error: error.message
                 };
