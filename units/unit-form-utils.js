@@ -14,8 +14,8 @@ class UnitFormUtilities {
         // Setup version selector if available (with retry mechanism)
         this.setupVersionSelector();
         
-        // Retry setup if bundle wasn't ready initially
-        if (typeof window.MFM_UNITS_BUNDLE === 'undefined') {
+        // Retry setup if MFM data wasn't ready initially
+        if (typeof window.MFM_BASE === 'undefined' || typeof window.MFM_UNITS_UPDATED === 'undefined') {
             setTimeout(() => {
                 this.setupVersionSelector();
             }, 100);
@@ -70,8 +70,8 @@ class UnitFormUtilities {
             return;
         }
         
-        if (typeof window.MFM_UNITS_BUNDLE === 'undefined') {
-            console.warn('MFM_UNITS_BUNDLE not available, keeping static options');
+        if (typeof window.MFM_BASE === 'undefined' || typeof window.MFM_UNITS_UPDATED === 'undefined') {
+            console.warn('MFM_BASE or MFM_UNITS_UPDATED not available, keeping static options');
             return;
         }
 
@@ -80,9 +80,17 @@ class UnitFormUtilities {
         // Clear existing options
         versionSelect.innerHTML = '';
 
-        // Populate with available versions
-        const versions = window.MFM_UNITS_BUNDLE.getAvailableVersions();
-        console.log('Available versions from bundle:', versions);
+        // Populate with available versions from MFM_BASE
+        const mfmVersions = window.MFM_BASE['mfm-versions'];
+        const versions = Object.keys(mfmVersions).map(versionKey => {
+            const versionData = mfmVersions[versionKey];
+            return {
+                value: versionKey,
+                displayName: `MFM ${versionKey} (${versionData.date})`
+            };
+        }).sort((a, b) => a.value.localeCompare(b.value, undefined, { numeric: true }));
+        
+        console.log('Available versions from MFM_BASE:', versions);
         
         versions.forEach(version => {
             const option = document.createElement('option');
@@ -91,8 +99,10 @@ class UnitFormUtilities {
             versionSelect.appendChild(option);
         });
         
-        // Set default selection to 3.2
-        versionSelect.value = '3.2';
+        // Set default selection to the first available version
+        if (versions.length > 0) {
+            versionSelect.value = versions[0].value;
+        }
 
         // Add change listener
         versionSelect.addEventListener('change', () => {
@@ -142,32 +152,14 @@ class UnitFormUtilities {
         }
 
         try {
-            // Use the MFM units bundle to load the specified version
-            if (typeof window.MFM_UNITS_BUNDLE !== 'undefined') {
-                this.mfmData = await window.MFM_UNITS_BUNDLE.loadVersion(version);
+            // Use the new MFM units data structure
+            if (typeof window.MFM_UNITS_UPDATED !== 'undefined') {
+                this.mfmData = window.MFM_UNITS_UPDATED;
                 // Set for backward compatibility
                 window.EMBEDDED_MFM_DATA = this.mfmData;
-                this.populateDataSheetOptions(faction);
+                this.populateDataSheetOptions(faction, version);
             } else {
-                // Fallback to direct fetch if bundle is not available
-                const response = await fetch(`../mfm/mfm-units-${version.replace('.', '_')}.js`);
-                if (!response.ok) {
-                    throw new Error(`Failed to load MFM units data: ${response.status}`);
-                }
-                
-                // Execute the JavaScript to load the data
-                const jsContent = await response.text();
-                eval(jsContent);
-                
-                // Get the data from the global variable
-                const dataKey = `MFM_UNITS_${version.replace('.', '_')}`;
-                this.mfmData = window[dataKey];
-                
-                if (!this.mfmData) {
-                    throw new Error(`MFM units data not found after loading script`);
-                }
-                
-                this.populateDataSheetOptions(faction);
+                throw new Error('MFM units data not available');
             }
         } catch (error) {
             console.error('Error loading MFM data:', error);
@@ -182,7 +174,7 @@ class UnitFormUtilities {
     /**
      * Populate data sheet options from MFM data
      */
-    static populateDataSheetOptions(faction) {
+    static populateDataSheetOptions(faction, version = '3.2') {
         if (!this.mfmData || !faction) {
             return;
         }
@@ -213,12 +205,15 @@ class UnitFormUtilities {
             const option = document.createElement('option');
             option.value = unitName;
             
-            // Create point cost display
+            // Create point cost display using version-specific points
             let pointCosts = '';
             if (unit.variants && unit.variants.length > 0) {
-                // Get unique point costs and sort them
-                const uniquePoints = [...new Set(unit.variants.map(v => v.points))].sort((a, b) => a - b);
-                pointCosts = ` (${uniquePoints.join(', ')} pts)`;
+                // Get unique point costs for the selected version and sort them
+                const pointsKey = `mfm_${version.replace('.', '_')}_points`;
+                const uniquePoints = [...new Set(unit.variants.map(v => v[pointsKey]).filter(p => p !== undefined))].sort((a, b) => a - b);
+                if (uniquePoints.length > 0) {
+                    pointCosts = ` (${uniquePoints.join(', ')} pts)`;
+                }
             }
             
             option.textContent = unitName + pointCosts;
@@ -227,7 +222,7 @@ class UnitFormUtilities {
 
         // Add change listener to handle data sheet selection
         dataSheetField.addEventListener('change', (e) => {
-            this.handleDataSheetSelection(e.target.value, faction);
+            this.handleDataSheetSelection(e.target.value, faction, version);
         });
 
         // Setup searchable dropdown functionality
@@ -305,7 +300,7 @@ class UnitFormUtilities {
     /**
      * Handle data sheet selection and show variants if available
      */
-    static handleDataSheetSelection(unitName, faction) {
+    static handleDataSheetSelection(unitName, faction, version = '3.2') {
         if (!this.mfmData || !faction || !unitName) {
             this.hideVariantDropdown();
             return;
@@ -323,12 +318,12 @@ class UnitFormUtilities {
         
         // Show variant dropdown if unit has multiple variants
         if (unit.variants.length > 1) {
-            this.showVariantDropdown(unit.variants);
+            this.showVariantDropdown(unit.variants, version);
         } else {
             this.hideVariantDropdown();
             // Auto-populate points for single variant
             if (unit.variants.length === 1) {
-                this.updatePointsFromVariant(unit.variants[0]);
+                this.updatePointsFromVariant(unit.variants[0], version);
             }
         }
     }
@@ -336,7 +331,7 @@ class UnitFormUtilities {
     /**
      * Show variant dropdown with options
      */
-    static showVariantDropdown(variants) {
+    static showVariantDropdown(variants, version = '3.2') {
         const variantGroup = CoreUtils.dom.getElement('variant-group');
         const variantSelect = CoreUtils.dom.getElement('unit-variant');
         
@@ -347,11 +342,13 @@ class UnitFormUtilities {
         // Clear existing options
         variantSelect.innerHTML = '<option value="">-- Select Variant --</option>';
         
-        // Populate with variants
+        // Populate with variants using version-specific points
+        const pointsKey = `mfm_${version.replace('.', '_')}_points`;
         variants.forEach((variant, index) => {
             const option = document.createElement('option');
             option.value = index;
-            option.textContent = `${variant.modelCount} models - ${variant.points} pts`;
+            const points = variant[pointsKey] || 'N/A';
+            option.textContent = `${variant.modelCount} models - ${points} pts`;
             variantSelect.appendChild(option);
         });
 
@@ -363,7 +360,7 @@ class UnitFormUtilities {
         variantSelect.addEventListener('change', (e) => {
             const variantIndex = parseInt(e.target.value);
             if (variantIndex >= 0 && variantIndex < variants.length) {
-                this.updatePointsFromVariant(variants[variantIndex]);
+                this.updatePointsFromVariant(variants[variantIndex], version);
             }
         });
     }
@@ -388,10 +385,11 @@ class UnitFormUtilities {
     /**
      * Update points field from variant data
      */
-    static updatePointsFromVariant(variant) {
+    static updatePointsFromVariant(variant, version = '3.2') {
         const pointsField = CoreUtils.dom.getElement('points');
         if (pointsField && variant) {
-            pointsField.value = variant.points;
+            const pointsKey = `mfm_${version.replace('.', '_')}_points`;
+            pointsField.value = variant[pointsKey] || '';
         }
     }
 
