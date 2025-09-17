@@ -29,6 +29,9 @@ class UnitForm extends BaseForm {
         // Setup battlefield role specific fields
         UnitFormUtilities.setupBattlefieldRoleFields();
 
+        // Load shared components
+        UnitFormUtilities.createUnitTypeGroupComponent('unit-type-container');
+
         // Setup MFM integration
         await UnitFormUtilities.setupMFMIntegration(this.form, this.forceContext.faction);
         

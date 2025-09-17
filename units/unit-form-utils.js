@@ -394,6 +394,46 @@ class UnitFormUtilities {
     }
 
     /**
+     * Create and insert the unit type group component
+     */
+    static createUnitTypeGroupComponent(containerId) {
+        const container = CoreUtils.dom.getElement(containerId);
+        if (!container) {
+            console.warn(`Container with id '${containerId}' not found`);
+            return;
+        }
+
+        // Define the unit types
+        const unitTypes = [
+            { value: '', text: '-- Select Type --' },
+            { value: 'Epic Hero', text: 'Epic Hero' },
+            { value: 'Character', text: 'Character' },
+            { value: 'Battleline', text: 'Battleline' },            
+            { value: 'Vehicle', text: 'Vehicle' },
+            { value: 'Monster', text: 'Monster' },
+            { value: 'Infantry', text: 'Infantry' },
+            { value: 'Mounted', text: 'Mounted' },
+            { value: 'Titanic', text: 'Titanic' },
+            { value: 'Fortification', text: 'Fortification' },
+            { value: 'Other', text: 'Other' }
+        ];
+
+        // Create the HTML structure
+        const html = `
+            <div class="form-group" id="unit-type-group" style="display: none;">
+                <label for="unit-type">Unit Type</label>
+                <select id="unit-type" name="type">
+                    ${unitTypes.map(type => `<option value="${type.value}">${type.text}</option>`).join('')}
+                </select>
+                <small class="help-text">Select the unit type for custom units</small>
+            </div>
+        `;
+
+        // Insert the HTML
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
+    /**
      * Show unit type field
      */
     static showUnitTypeField() {
