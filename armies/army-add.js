@@ -415,39 +415,53 @@ class ArmyListForm extends BaseForm {
             throw new Error('Submit URL not configured');
         }
 
-        const response = await fetch(this.config.submitUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams(data).toString()
-        });
+        try {
+            // Show a more prominent loading message
+            this.showLoadingMessage('Creating army list...');
+            
+            const response = await fetch(this.config.submitUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(data).toString()
+            });
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        const result = await response.json();
-
-        if (!result.success) {
-            throw new Error(result.error || this.config.errorMessage);
-        }
-
-        // Debug: Log the result structure to understand the response format
-        console.log('Army creation result:', result);
-
-        // If in picker mode, save the unit relationships
-        if (this.entryMode === 'picker' && this.selectedUnits.length > 0) {
-            // The army key is returned as result.key from the Google Apps Script
-            const armyKey = result.key;
-            if (armyKey) {
-                await this.saveUnitRelationships(armyKey);
-            } else {
-                console.warn('Could not find army key in response:', result);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        }
 
-        return result;
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.error || this.config.errorMessage);
+            }
+
+
+            // If in picker mode, save the unit relationships (non-blocking)
+            if (this.entryMode === 'picker' && this.selectedUnits.length > 0) {
+                // The army key is returned as result.key from the Google Apps Script
+                const armyKey = result.key;
+                if (armyKey) {
+                    // Save relationships in background - don't block the success flow
+                    this.saveUnitRelationships(armyKey).catch(error => {
+                        console.warn('Unit relationships could not be saved (army was still created successfully):', error);
+                    });
+                } else {
+                    console.warn('Could not find army key in response:', result);
+                }
+            }
+
+            // Hide loading message on success
+            this.hideLoadingMessage();
+            
+            return result;
+        } catch (error) {
+            // Hide loading message on error
+            this.hideLoadingMessage();
+            // Re-throw the error so the base class can handle it properly
+            throw error;
+        }
     }
 
     async saveUnitRelationships(armyKey) {
@@ -457,21 +471,18 @@ class ArmyListForm extends BaseForm {
 
         try {
             const xrefUrl = CrusadeConfig.getSheetUrl('xref_army_units');
-            const relationships = this.selectedUnits.map(unit => ({
-                army_key: armyKey,
-                unit_key: unit.unit_key,
-                timestamp: new Date().toISOString()
-            }));
+            const unitKeys = this.selectedUnits.map(unit => unit.unit_key);
 
+            // Use the same approach as the working army script - URL-encoded data
             const response = await fetch(xrefUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify({
-                    action: 'create',
-                    data: relationships
-                })
+                body: new URLSearchParams({
+                    armyKey: armyKey,
+                    unitKeys: JSON.stringify(unitKeys)
+                }).toString()
             });
 
             if (!response.ok) {
@@ -489,6 +500,36 @@ class ArmyListForm extends BaseForm {
             console.error('Error saving unit relationships:', error);
             // Don't throw here - the army was already saved successfully
             // Just log the error for debugging
+        }
+    }
+
+    showLoadingMessage(message = 'Processing...') {
+        // Create or show loading overlay
+        let loadingOverlay = document.getElementById('loading-overlay');
+        if (!loadingOverlay) {
+            loadingOverlay = document.createElement('div');
+            loadingOverlay.id = 'loading-overlay';
+            loadingOverlay.className = 'loading-overlay';
+            loadingOverlay.innerHTML = `
+                <div class="loading-content">
+                    <div class="loading-spinner-large"></div>
+                    <p class="loading-message">${message}</p>
+                </div>
+            `;
+            document.body.appendChild(loadingOverlay);
+        } else {
+            const messageEl = loadingOverlay.querySelector('.loading-message');
+            if (messageEl) {
+                messageEl.textContent = message;
+            }
+            loadingOverlay.style.display = 'flex';
+        }
+    }
+
+    hideLoadingMessage() {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
         }
     }
 

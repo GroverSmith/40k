@@ -57,18 +57,26 @@ function cascadeDeleteByParent(parentTable, parentKey) {
 
 function doPost(e) {
   try {
+    console.log('doPost called - raw data:', e.postData ? e.postData.contents : 'No postData');
+    console.log('Parameters:', e.parameter);
+    
     let data;
-
+    
+    // The form submission comes as URL-encoded parameters
     if (e.parameter) {
       data = e.parameter;
+      console.log('Using form parameters:', data);
     } else if (e.postData && e.postData.contents) {
       try {
+        // Try to parse as JSON (fallback)
         data = JSON.parse(e.postData.contents);
+        console.log('Parsed JSON data:', data);
       } catch (jsonError) {
-        throw new Error('Invalid data format');
+        console.error('Not JSON data:', jsonError.message);
+        throw new Error('No valid data received');
       }
     } else {
-      throw new Error('No data received');
+      throw new Error('No data received in request');
     }
 
     // Handle cascade delete operation
@@ -80,11 +88,27 @@ function doPost(e) {
     }
 
     // Default operation is create army-unit relationships
-    const { armyKey, unitKeys } = data;
+    console.log('Processing army-unit relationships with data:', data);
+    
+    let { armyKey, unitKeys } = data;
+    
+    // If unitKeys is a string (from URL parameters), parse it as JSON
+    if (typeof unitKeys === 'string') {
+      try {
+        unitKeys = JSON.parse(unitKeys);
+        console.log('Parsed unitKeys from string:', unitKeys);
+      } catch (parseError) {
+        console.error('Failed to parse unitKeys JSON:', parseError);
+        throw new Error('Invalid unitKeys format');
+      }
+    }
     
     if (!armyKey || !unitKeys || !Array.isArray(unitKeys)) {
+      console.error('Validation failed - armyKey:', armyKey, 'unitKeys:', unitKeys, 'isArray:', Array.isArray(unitKeys));
       throw new Error('armyKey and unitKeys array are required');
     }
+    
+    console.log('Validation passed, processing relationships for army:', armyKey, 'with', unitKeys.length, 'units');
 
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
     let sheet = spreadsheet.getSheetByName(SHEET_NAME);
@@ -115,8 +139,13 @@ function doPost(e) {
 
       const lastRow = sheet.getLastRow();
       sheet.getRange(lastRow + 1, 1, rows.length, 4).setValues(rows);
+      
+      console.log('Successfully created', unitKeys.length, 'army-unit relationships');
     }
 
+    // Log success
+    console.log('Successfully processed army-unit relationships for army:', armyKey);
+    
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
