@@ -6,7 +6,7 @@
 class UnifiedCacheFacade {
     constructor() {
         this.dbName = 'CrusadeTrackerCache';
-        this.dbVersion = 1;
+        this.dbVersion = 2; // Incremented to add requisitions table
         this.db = null;
         
         // Extract URLs from TableDefs (if available) or use fallback

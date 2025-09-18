@@ -30,7 +30,8 @@ class ForceDetails {
                this.loadArmyLists(),
                this.loadBattleHistory(),
                this.loadUnits(),
-               this.loadStories()
+               this.loadStories(),
+               this.loadRequisitions()
            ]);
            
        } catch (error) {
@@ -46,8 +47,16 @@ class ForceDetails {
            
            // Ensure UserManager is initialized before checking permissions
            if (typeof UserManager === 'undefined' || !UserManager.getCurrentUser) {
-               console.warn('UserManager not available, retrying in 100ms...');
-               setTimeout(() => this.loadForceData(), 100);
+               console.warn('UserManager not available, retrying in 500ms...');
+               setTimeout(() => this.loadForceData(), 500);
+               return;
+           }
+           
+           // Also check if UserManager has actually loaded user data
+           const currentUser = UserManager.getCurrentUser();
+           if (!currentUser) {
+               console.warn('UserManager available but no current user, retrying in 500ms...');
+               setTimeout(() => this.loadForceData(), 500);
                return;
            }
            
@@ -181,6 +190,15 @@ class ForceDetails {
            // Use UnitTable to load and display units for this force
            if (window.UnitTable) {
                await UnitTable.loadForForce(this.forceKey, 'characters-units-sheet');
+               
+               // Also load units data for supply calculation
+               try {
+                   this.unitsData = await UnifiedCache.getRowsByField('units', 'force_key', this.forceKey);
+                   console.log('Loaded units data for supply calculation:', this.unitsData);
+               } catch (error) {
+                   console.warn('Could not load units data for supply calculation:', error);
+                   this.unitsData = [];
+               }
            } else {
                console.error('UnitTable module not loaded');
                CoreUtils.dom.setLoading('characters-units-sheet', 'Unit table module not loaded');
@@ -206,6 +224,37 @@ class ForceDetails {
        } catch (error) {
            console.error('Error loading stories:', error);
            CoreUtils.dom.setLoading('stories-sheet', 'Failed to load stories');
+       }
+   }
+
+   async loadRequisitions() {
+       try {
+           // Load requisitions for this force to calculate stats
+           if (window.RequisitionTable) {
+               // Try to load requisitions data directly from cache
+               try {
+                   this.requisitionsData = await UnifiedCache.getRowsByField('requisitions', 'force_key', this.forceKey);
+                   console.log('Loaded requisitions for force:', this.requisitionsData);
+               } catch (cacheError) {
+                   console.warn('Requisitions cache not initialized yet, initializing...', cacheError);
+                   
+                   // Try to initialize the cache by fetching from the server
+                   try {
+                       await UnifiedCache.getAllRows('requisitions', true); // Force refresh
+                       this.requisitionsData = await UnifiedCache.getRowsByField('requisitions', 'force_key', this.forceKey);
+                       console.log('Loaded requisitions for force after cache init:', this.requisitionsData);
+                   } catch (initError) {
+                       console.warn('Could not initialize requisitions cache:', initError);
+                       this.requisitionsData = [];
+                   }
+               }
+           } else {
+               console.warn('RequisitionTable module not loaded');
+               this.requisitionsData = [];
+           }
+       } catch (error) {
+           console.error('Error loading requisitions:', error);
+           this.requisitionsData = [];
        }
    }
    
@@ -612,14 +661,20 @@ class ForceDetails {
        // Use BattleTable's comprehensive stats calculation
        const stats = BattleTable.calculateBattleStats(battles, forceKey);
 
+       // Calculate supply and requisition stats
+       const supplyStats = this.calculateSupplyStats();
+       const requisitionStats = this.calculateRequisitionStats();
+
        // Update DOM with all stats
        const elements = {
            'battles-fought': stats.totalBattles,
            'victories': stats.victories,
            'battle-losses': stats.defeats,
            'battle-ties': stats.draws,
-           'win-rate': stats.winRate + '%',
-           'avg-points-scored': stats.averagePointsScored
+           'supply-limit': supplyStats.limit,
+           'supply-used': supplyStats.used,
+           'requisition-points': requisitionStats.total,
+           'mfm-version': this.forceData?.mfm_version || '3.3'
        };
 
        // Use utility for setting multiple element texts
@@ -627,6 +682,46 @@ class ForceDetails {
 
        // Show stats section
        CoreUtils.dom.show('force-stats', 'grid');
+   }
+
+   /**
+    * Calculate supply stats for the force
+    */
+   calculateSupplyStats() {
+       const supplyLimit = this.forceData?.supply_limit || 1000;
+       
+       // Calculate supply used from units (if available)
+       let supplyUsed = 0;
+       if (this.unitsData && Array.isArray(this.unitsData)) {
+           supplyUsed = this.unitsData.reduce((total, unit) => {
+               return total + (parseInt(unit.power_level) || 0);
+           }, 0);
+       }
+       
+       return {
+           limit: supplyLimit,
+           used: supplyUsed
+       };
+   }
+
+   /**
+    * Calculate requisition point stats for the force
+    */
+   calculateRequisitionStats() {
+       let totalRP = 0;
+       
+       if (this.requisitionsData && Array.isArray(this.requisitionsData)) {
+           totalRP = this.requisitionsData.reduce((total, req) => {
+               return total + (parseInt(req.rp_change) || 0);
+           }, 0);
+       } else {
+           // If no requisitions data available, show 0 but log for debugging
+           console.log('No requisitions data available for RP calculation');
+       }
+       
+       return {
+           total: totalRP
+       };
    }
 
    // ===== ADDITIONAL DATA METHODS =====
