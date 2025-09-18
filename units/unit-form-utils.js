@@ -6,6 +6,9 @@ class UnitFormUtilities {
      * Setup MFM integration for unit forms
      */
     static async setupMFMIntegration(form, faction) {
+        // Set the current faction for the form
+        this.setCurrentFaction(faction);
+        
         const presetRadio = CoreUtils.dom.getElement('mfm-preset');
         const customRadio = CoreUtils.dom.getElement('mfm-custom');
         const presetContainer = CoreUtils.dom.getElement('mfm-preset-container');
@@ -45,6 +48,11 @@ class UnitFormUtilities {
                     this.switchToTextInputMode();
                     this.showUnitTypeField();
                     this.showPointsField();
+                    // Clear unit type when switching to custom mode
+                    const unitTypeField = CoreUtils.dom.getElement('unit-type');
+                    if (unitTypeField) {
+                        unitTypeField.value = '';
+                    }
                 }
             });
         }
@@ -91,6 +99,7 @@ class UnitFormUtilities {
         }).sort((a, b) => a.value.localeCompare(b.value, undefined, { numeric: true }));
         
         console.log('Available versions from MFM_BASE:', versions);
+        console.log('Defaulting to highest version:', versions.length > 0 ? versions[versions.length - 1].value : 'none');
         
         versions.forEach(version => {
             const option = document.createElement('option');
@@ -99,9 +108,9 @@ class UnitFormUtilities {
             versionSelect.appendChild(option);
         });
         
-        // Set default selection to the first available version
+        // Set default selection to the highest available version
         if (versions.length > 0) {
-            versionSelect.value = versions[0].value;
+            versionSelect.value = versions[versions.length - 1].value;
         }
 
         // Add change listener
@@ -123,22 +132,34 @@ class UnitFormUtilities {
      */
     static getSelectedVersion() {
         const versionSelect = CoreUtils.dom.getElement('mfm-version-preset');
-        return versionSelect ? versionSelect.value : '3.2';
+        if (versionSelect && versionSelect.value) {
+            return versionSelect.value;
+        }
+        
+        // Fallback: try to get the highest available version from MFM_BASE
+        if (typeof window.MFM_BASE !== 'undefined' && window.MFM_BASE['mfm-versions']) {
+            const versions = Object.keys(window.MFM_BASE['mfm-versions'])
+                .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+            return versions.length > 0 ? versions[versions.length - 1] : '3.2';
+        }
+        
+        return '3.2'; // Ultimate fallback
     }
 
     /**
      * Get current faction (helper method)
      */
     static getCurrentFaction() {
-        // This would need to be passed from the calling context
-        // For now, we'll try to get it from the form context
-        const forceKeyField = CoreUtils.dom.getElement('force-key');
-        if (forceKeyField && forceKeyField.value) {
-            // We'd need to look up the faction from the force data
-            // This is a simplified approach - in practice, you'd want to pass faction explicitly
-            return null; // Will be handled by the calling code
-        }
-        return null;
+        // Try to get faction from the current form context
+        // This is a simplified approach - the faction should be passed explicitly in most cases
+        return this.currentFaction || null;
+    }
+
+    /**
+     * Set current faction for the form
+     */
+    static setCurrentFaction(faction) {
+        this.currentFaction = faction;
     }
 
     /**
@@ -223,6 +244,7 @@ class UnitFormUtilities {
         // Add change listener to handle data sheet selection
         dataSheetField.addEventListener('change', (e) => {
             this.handleDataSheetSelection(e.target.value, faction, version);
+            this.updateUnitTypeFromMFM(e.target.value, faction);
         });
 
         // Setup searchable dropdown functionality
@@ -287,6 +309,12 @@ class UnitFormUtilities {
                     selectElement.appendChild(noResultsOption);
                 }
             }
+            
+            // Re-add the change listener to the new options
+            selectElement.addEventListener('change', (e) => {
+                this.handleDataSheetSelection(e.target.value, this.getCurrentFaction(), this.getSelectedVersion());
+                this.updateUnitTypeFromMFM(e.target.value, this.getCurrentFaction());
+            });
         });
 
         // Focus search input when container is clicked
@@ -390,6 +418,29 @@ class UnitFormUtilities {
         if (pointsField && variant) {
             const pointsKey = `mfm_${version.replace('.', '_')}_points`;
             pointsField.value = variant[pointsKey] || '';
+        }
+    }
+
+    /**
+     * Update unit type field from MFM data when a data sheet is selected
+     */
+    static updateUnitTypeFromMFM(unitName, faction) {
+        if (!this.mfmData || !faction || !unitName) {
+            return;
+        }
+
+        const factionKey = faction.toUpperCase();
+        const factionData = this.mfmData.factions[factionKey];
+        
+        if (!factionData || !factionData.units[unitName]) {
+            return;
+        }
+
+        const unit = factionData.units[unitName];
+        const unitTypeField = CoreUtils.dom.getElement('unit-type');
+        
+        if (unitTypeField && unit.unitType) {
+            unitTypeField.value = unit.unitType;
         }
     }
 

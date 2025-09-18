@@ -8722,7 +8722,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Big Mek": {
           "name": "Big Mek",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8733,7 +8733,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Big Mek in Mega Armour": {
           "name": "Big Mek in Mega Armour",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8755,7 +8755,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Big’ed Bossbunka": {
           "name": "Big’ed Bossbunka",
-          "unitType": "Infantry",
+          "unitType": "Fortification",
           "variants": [
             {
               "modelCount": 1,
@@ -8766,7 +8766,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Blitza-bommer": {
           "name": "Blitza-bommer",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8777,7 +8777,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Boomdakka Snazzwagon": {
           "name": "Boomdakka Snazzwagon",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8788,7 +8788,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Boss Snikrot": {
           "name": "Boss Snikrot",
-          "unitType": "Infantry",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -8815,7 +8815,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Breaka Boyz": {
           "name": "Breaka Boyz",
-          "unitType": "Battleline",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 6,
@@ -8826,7 +8826,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Burna-bommer": {
           "name": "Burna-bommer",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8837,7 +8837,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Dakkajet": {
           "name": "Dakkajet",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8848,7 +8848,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deff Dread": {
           "name": "Deff Dread",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8859,7 +8859,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deffkilla Wartrike": {
           "name": "Deffkilla Wartrike",
-          "unitType": "Infantry",
+          "unitType": "Mounted",
           "variants": [
             {
               "modelCount": 1,
@@ -8870,7 +8870,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deffkoptas": {
           "name": "Deffkoptas",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 3,
@@ -8913,7 +8913,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gorkanaut": {
           "name": "Gorkanaut",
-          "unitType": "Infantry",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -8940,7 +8940,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hunta Rig": {
           "name": "Hunta Rig",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8951,7 +8951,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kill Rig": {
           "name": "Kill Rig",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8962,7 +8962,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Killa Kans": {
           "name": "Killa Kans",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 3,
@@ -8989,7 +8989,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kustom Boosta-blasta": {
           "name": "Kustom Boosta-blasta",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9000,7 +9000,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Meganobz": {
           "name": "Meganobz",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 2,
@@ -9026,7 +9026,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Megatrakk Scrapjet": {
           "name": "Megatrakk Scrapjet",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9048,7 +9048,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Mek Gunz": {
           "name": "Mek Gunz",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9069,7 +9069,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Morkanaut": {
           "name": "Morkanaut",
-          "unitType": "Infantry",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -9080,7 +9080,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Mozrog Skragbad": {
           "name": "Mozrog Skragbad",
-          "unitType": "Infantry",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -9107,7 +9107,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Painboss": {
           "name": "Painboss",
-          "unitType": "Infantry",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9118,7 +9118,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Painboy": {
           "name": "Painboy",
-          "unitType": "Infantry",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9129,7 +9129,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rukkatrukk Squigbuggy": {
           "name": "Rukkatrukk Squigbuggy",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9140,7 +9140,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Shokkjump Dragsta": {
           "name": "Shokkjump Dragsta",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9151,7 +9151,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Squighog Boyz": {
           "name": "Squighog Boyz",
-          "unitType": "Battleline",
+          "unitType": "Mounted",
           "variants": [
             {
               "modelCount": 4,
@@ -9178,7 +9178,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stormboyz": {
           "name": "Stormboyz",
-          "unitType": "Battleline",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -9194,7 +9194,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tankbustas": {
           "name": "Tankbustas",
-          "unitType": "Vehicle",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 6,
@@ -9205,7 +9205,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Trukk": {
           "name": "Trukk",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9216,7 +9216,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warbikers": {
           "name": "Warbikers",
-          "unitType": "Vehicle",
+          "unitType": "Mounted",
           "variants": [
             {
               "modelCount": 3,
@@ -9232,7 +9232,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warboss": {
           "name": "Warboss",
-          "unitType": "Infantry",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9243,7 +9243,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warboss in Mega Armour": {
           "name": "Warboss in Mega Armour",
-          "unitType": "Infantry",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9254,7 +9254,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wazbom Blastajet": {
           "name": "Wazbom Blastajet",
-          "unitType": "Infantry",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9265,7 +9265,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Weirdboy": {
           "name": "Weirdboy",
-          "unitType": "Infantry",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9276,7 +9276,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wurrboy": {
           "name": "Wurrboy",
-          "unitType": "Infantry",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9287,7 +9287,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Zodgrod Wortsnagga": {
           "name": "Zodgrod Wortsnagga",
-          "unitType": "Infantry",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -9298,7 +9298,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gargantuan Squiggoth": {
           "name": "Gargantuan Squiggoth",
-          "unitType": "Infantry",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -9318,7 +9318,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Adrax Agatone": {
           "name": "Adrax Agatone",
-          "unitType": "Infantry",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -9367,7 +9367,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Apothecary": {
           "name": "Apothecary",
-          "unitType": "Infantry",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9378,7 +9378,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Apothecary Biologis": {
           "name": "Apothecary Biologis",
-          "unitType": "Infantry",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9432,7 +9432,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bladeguard Ancient": {
           "name": "Bladeguard Ancient",
-          "unitType": "Battleline",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9443,7 +9443,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bladeguard Veteran Squad": {
           "name": "Bladeguard Veteran Squad",
-          "unitType": "Battleline",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -9514,7 +9514,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Captain Sicarius": {
           "name": "Captain Sicarius",
-          "unitType": "Character",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -9536,7 +9536,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Centurion Assault Squad": {
           "name": "Centurion Assault Squad",
-          "unitType": "Battleline",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -9552,7 +9552,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Centurion Devastator Squad": {
           "name": "Centurion Devastator Squad",
-          "unitType": "Battleline",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -9634,7 +9634,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Darnath Lysander": {
           "name": "Darnath Lysander",
-          "unitType": "Infantry",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -9645,7 +9645,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Desolation Squad": {
           "name": "Desolation Squad",
-          "unitType": "Battleline",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -9656,7 +9656,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Devastator Squad": {
           "name": "Devastator Squad",
-          "unitType": "Battleline",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -9683,7 +9683,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Drop Pod": {
           "name": "Drop Pod",
-          "unitType": "Infantry",
+          "unitType": "Fortification",
           "variants": [
             {
               "modelCount": 1,
@@ -9694,7 +9694,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Eliminator Squad": {
           "name": "Eliminator Squad",
-          "unitType": "Battleline",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -9705,7 +9705,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Eradicator Squad": {
           "name": "Eradicator Squad",
-          "unitType": "Battleline",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -9721,7 +9721,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Firestrike Servo-turrets": {
           "name": "Firestrike Servo-turrets",
-          "unitType": "Infantry",
+          "unitType": "Fortification",
           "variants": [
             {
               "modelCount": 1,
