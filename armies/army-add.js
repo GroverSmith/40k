@@ -39,6 +39,9 @@ class ArmyListForm extends BaseForm {
 
         // Load units for picker mode
         this.loadUnitsForPicker();
+
+        // Setup custom form submission handler
+        this.setupFormSubmission();
     }
 
     loadForceContext() {
@@ -156,8 +159,8 @@ class ArmyListForm extends BaseForm {
             armyListText.required = true;
         }
         
-        // Clear selected units when switching to text mode
-        this.selectedUnits = [];
+        // Note: We preserve selectedUnits when switching to text mode
+        // so users can switch back and forth between modes
     }
 
     switchToPickerMode() {
@@ -172,8 +175,22 @@ class ArmyListForm extends BaseForm {
             armyListText.required = false;
         }
         
-        // Populate available units
-        this.populateAvailableUnits();
+        // Populate selected units (this doesn't depend on async loading)
+        this.populateSelectedUnits();
+        
+        // Only populate available units if we have data loaded
+        if (this.availableUnits && this.availableUnits.length > 0) {
+            this.populateAvailableUnits();
+        } else {
+            // If no units loaded yet, show loading message
+            const availableList = CoreUtils.dom.getElement('available-units-list');
+            if (availableList) {
+                availableList.innerHTML = '<div class="unit-item">Loading units...</div>';
+            }
+        }
+        
+        this.updateSummary();
+        this.updateNavigationButtons();
     }
 
     async loadUnitsForPicker() {
@@ -190,12 +207,17 @@ class ArmyListForm extends BaseForm {
         }
 
         try {
-            // Load units from the force - force refresh to ensure we get latest data
-            const allUnits = await UnifiedCache.getAllRows('units', true);
+            // Load units from the force - use cache to avoid rate limiting
+            const allUnits = await UnifiedCache.getAllRows('units', false);
             const units = allUnits.filter(unit => unit.force_key === this.forceContext.forceKey);
 
             this.availableUnits = units || [];
             console.log('Loaded units for picker:', this.availableUnits.length);
+            
+            // If we're currently in picker mode, populate the available units
+            if (this.entryMode === 'picker') {
+                this.populateAvailableUnits();
+            }
         } catch (error) {
             console.error('Error loading units for picker:', error);
             this.availableUnits = [];
@@ -213,13 +235,39 @@ class ArmyListForm extends BaseForm {
             return;
         }
 
-        this.availableUnits.forEach(unit => {
+        // Filter out units that are already selected
+        const selectedUnitKeys = new Set(this.selectedUnits.map(unit => unit.unit_key));
+        const availableUnits = this.availableUnits.filter(unit => !selectedUnitKeys.has(unit.unit_key));
+
+        if (availableUnits.length === 0) {
+            availableList.innerHTML = '<div class="unit-item">All units have been selected</div>';
+            return;
+        }
+
+        availableUnits.forEach(unit => {
             const unitItem = this.createUnitItem(unit, 'available');
             availableList.appendChild(unitItem);
         });
 
         // Setup search functionality
         this.setupUnitSearch();
+    }
+
+    populateSelectedUnits() {
+        const selectedList = CoreUtils.dom.getElement('selected-units-list');
+        if (!selectedList) return;
+
+        selectedList.innerHTML = '';
+
+        if (this.selectedUnits.length === 0) {
+            selectedList.innerHTML = '<div class="unit-item">No units selected</div>';
+            return;
+        }
+
+        this.selectedUnits.forEach(unit => {
+            const unitItem = this.createUnitItem(unit, 'selected');
+            selectedList.appendChild(unitItem);
+        });
     }
 
     createUnitItem(unit, type) {
@@ -262,6 +310,10 @@ class ArmyListForm extends BaseForm {
         this.selectedUnits.push(unit);
         const selectedList = CoreUtils.dom.getElement('selected-units-list');
         if (selectedList) {
+            // If this is the first unit, clear the "No units selected" text
+            if (this.selectedUnits.length === 1) {
+                selectedList.innerHTML = '';
+            }
             const selectedItem = this.createUnitItem(unit, 'selected');
             selectedList.appendChild(selectedItem);
         }
@@ -279,6 +331,13 @@ class ArmyListForm extends BaseForm {
 
         // Add back to available
         this.selectedUnits = this.selectedUnits.filter(u => u.unit_key !== unit.unit_key);
+        
+        // If no units are selected, show "No units selected" message
+        const selectedList = CoreUtils.dom.getElement('selected-units-list');
+        if (selectedList && this.selectedUnits.length === 0) {
+            selectedList.innerHTML = '<div class="unit-item">No units selected</div>';
+        }
+        
         const availableList = CoreUtils.dom.getElement('available-units-list');
         if (availableList) {
             const availableItem = this.createUnitItem(unit, 'available');
@@ -349,6 +408,111 @@ class ArmyListForm extends BaseForm {
             faction: this.forceContext.faction,
             detachment: this.forceContext.detachment
         };
+    }
+
+    async handleSubmit(event) {
+        event.preventDefault();
+        
+        if (!this.validateForm()) {
+            return;
+        }
+
+        try {
+            // Show loading state
+            this.setLoadingState(true);
+            
+            // Gather form data
+            const formData = this.gatherFormData();
+            
+            // Submit the army first
+            const response = await fetch(this.config.submitUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'create',
+                    data: formData
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            if (result.success) {
+                // If in picker mode, save the unit relationships
+                if (this.entryMode === 'picker' && this.selectedUnits.length > 0) {
+                    await this.saveUnitRelationships(result.data.army_key);
+                }
+                
+                // Show success message
+                FormUtilities.showSuccess(this.config.successMessage);
+                
+                // Clear cache if configured
+                if (this.config.clearCacheOnSuccess) {
+                    this.config.clearCacheOnSuccess.forEach(table => {
+                        if (window.UnifiedCache) {
+                            window.UnifiedCache.clearCache(table);
+                        }
+                    });
+                }
+                
+                // Reset form
+                this.resetForm();
+            } else {
+                throw new Error(result.error || 'Unknown error occurred');
+            }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            FormUtilities.showError(this.config.errorMessage + ': ' + error.message);
+        } finally {
+            this.setLoadingState(false);
+        }
+    }
+
+    async saveUnitRelationships(armyKey) {
+        if (!armyKey || this.selectedUnits.length === 0) {
+            return;
+        }
+
+        try {
+            const xrefUrl = CrusadeConfig.getSheetUrl('xref_army_units');
+            const relationships = this.selectedUnits.map(unit => ({
+                army_key: armyKey,
+                unit_key: unit.unit_key,
+                timestamp: new Date().toISOString()
+            }));
+
+            const response = await fetch(xrefUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'create',
+                    data: relationships
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to save unit relationships');
+            }
+            
+            console.log('Unit relationships saved successfully');
+        } catch (error) {
+            console.error('Error saving unit relationships:', error);
+            // Don't throw here - the army was already saved successfully
+            // Just log the error for debugging
+        }
     }
 
     generateArmyListText() {
