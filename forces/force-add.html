@@ -110,6 +110,7 @@
         <div id="success-message" class="message success" style="display: none;">
             <h3>✅ Crusade Force Created Successfully!</h3>
             <p>Your new Crusade Force has been registered and is ready for battle!</p>
+            <p><strong>Initial Requisition:</strong> +5 RP has been automatically added for force creation.</p>
             <div class="message-actions">
                 <button onclick="resetForm()" class="btn-secondary">Create Another Force</button>
                 <a href="../index.html" class="btn-primary">Back to Campaign Tracker</a>
@@ -151,6 +152,10 @@
 
     <!-- Form modules -->
     <script src="../js/core/form-base.js"></script>
+    
+    <!-- Requisition modules (needed for initial requisition creation) -->
+    <script src="../requisitions/requisition-add.js"></script>
+    
     <script src="force-add.js"></script>
 </body>
 </html>

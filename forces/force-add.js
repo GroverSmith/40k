@@ -361,9 +361,95 @@ class ForceForm extends BaseForm {
         // Call the base form's method first
         await super.clearCachesOnSuccess();
         
-        // Also manually clear forces cache using UnifiedCache
+        // Also manually clear forces and requisitions cache using UnifiedCache
         if (typeof UnifiedCache !== 'undefined') {
             await UnifiedCache.clearCache('forces');
+            await UnifiedCache.clearCache('requisitions');
+        }
+    }
+
+    /**
+     * Override handleSubmit to create initial requisition after force creation
+     */
+    async handleSubmit(event) {
+        event.preventDefault();
+
+        if (this.isSubmitting) {
+            console.log('Already submitting, please wait');
+            return;
+        }
+
+        this.setLoadingState(true);
+
+        try {
+            // Validate form
+            if (this.config.validateOnSubmit && !this.validateForm()) {
+                throw new Error('Please fix the form errors and try again.');
+            }
+
+            // Gather form data
+            const formData = this.gatherFormData();
+
+            // Submit to Google Sheets
+            const result = await this.submitToGoogleSheets(formData);
+
+            // Create initial requisition if force was created successfully
+            if (result.success && result.key) {
+                await this.createInitialRequisition(result.key);
+            }
+
+            // Clear specified caches
+            await this.clearCachesOnSuccess();
+
+            // Show success
+            this.showSuccess();
+
+            // Handle redirect or reset
+            if (this.config.redirectUrl) {
+                setTimeout(() => {
+                    window.location.href = this.config.redirectUrl;
+                }, this.config.redirectDelay);
+            } else {
+                this.form.style.display = 'none';
+            }
+
+        } catch (error) {
+            console.error('Form submission error:', error);
+            this.showError(error.message);
+        } finally {
+            this.setLoadingState(false);
+        }
+    }
+
+    /**
+     * Create initial requisition for the newly created force
+     */
+    async createInitialRequisition(forceKey) {
+        try {
+            // Check if RequisitionForm is available
+            if (typeof RequisitionForm === 'undefined') {
+                console.warn('RequisitionForm not available, skipping initial requisition creation');
+                return;
+            }
+
+            // Check if requisitions table is configured
+            if (!TableDefs.requisitions || !TableDefs.requisitions.url) {
+                console.warn('Requisitions table not configured, skipping initial requisition creation');
+                return;
+            }
+
+            console.log('Creating initial requisition for force:', forceKey);
+            
+            // Create the initial force creation requisition
+            await RequisitionForm.createInitialForceCreationRequisition(forceKey);
+            
+            console.log('Initial requisition created successfully');
+            
+        } catch (error) {
+            console.error('Error creating initial requisition:', error);
+            // Don't fail the force creation if requisition creation fails
+            // Just log the error and continue
+            // The force creation was successful, so we don't want to rollback
         }
     }
 }
