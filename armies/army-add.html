@@ -17,6 +17,7 @@
 	<link rel="stylesheet" href="../css/user-dropdown.css">
 	<link rel="stylesheet" href="../css/modal.css">
 	<link rel="stylesheet" href="../css/user-field.css">
+	<link rel="stylesheet" href="../css/army-page.css">
 </head>
 <body>
     <div class="container">
@@ -58,6 +59,22 @@
             <input type="hidden" id="faction" name="faction">
             <input type="hidden" id="detachment" name="detachment">
             
+            <!-- Army List Entry Mode Toggle -->
+            <div class="form-group">
+                <label>Army List Entry Mode</label>
+                <div class="toggle-group">
+                    <label class="toggle-option">
+                        <input type="radio" name="entry-mode" value="text" id="entry-mode-text" checked>
+                        <span class="toggle-label">Text Entry</span>
+                    </label>
+                    <label class="toggle-option">
+                        <input type="radio" name="entry-mode" value="picker" id="entry-mode-picker">
+                        <span class="toggle-label">Unit Picker</span>
+                    </label>
+                </div>
+                <small class="help-text">Choose how to create your army list: paste text or select units individually.</small>
+            </div>
+
             <!-- Army List Name -->
             <div class="form-group">
                 <label for="army-name">Army List Name <span class="required">*</span></label>
@@ -75,7 +92,7 @@
             </div>
             
             <!-- Points Value -->
-            <div class="form-group">
+            <div class="form-group" id="points-value-section">
                 <label for="points-value">Points Value</label>
                 <input type="number" id="points-value" name="pointsValue" min="0" max="5000" step="5"
                        placeholder="e.g., 1000">
@@ -91,7 +108,7 @@
             </div>
             
             <!-- Army List Text -->
-            <div class="form-group">
+            <div class="form-group" id="army-list-text-section">
                 <label for="army-list-text">Army List Text <span class="required">*</span></label>
                 <textarea id="army-list-text" name="armyListText" required 
                           placeholder="Paste your army list text here from BattleScribe, Army Builder, or other apps...
@@ -107,6 +124,54 @@ The entire text will be stored for reference and display."></textarea>
                     <small class="help-text">Paste the complete army list output from your army builder app.</small>
                     <small class="char-counter"><span id="char-count">0</span> characters</small>
                 </div>
+            </div>
+
+            <!-- Unit Picker Section -->
+            <div class="form-group" id="unit-picker-section" style="display: none;">
+                <label>Select Units for Army List</label>
+                <div class="unit-picker-container">
+                    <div class="unit-picker-panes">
+                        <!-- Available Units Pane -->
+                        <div class="unit-pane available-units">
+                            <h4>Available Units</h4>
+                            <div class="unit-search">
+                                <input type="text" id="unit-search" placeholder="Search units...">
+                            </div>
+                            <div class="unit-list" id="available-units-list">
+                                <!-- Units will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <!-- Navigation Buttons -->
+                        <div class="unit-picker-nav">
+                            <button type="button" class="btn-nav" id="add-unit-btn" disabled>
+                                <span>→</span>
+                            </button>
+                            <button type="button" class="btn-nav" id="remove-unit-btn" disabled>
+                                <span>←</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Selected Units Pane -->
+                        <div class="unit-pane selected-units">
+                            <h4>Selected Units</h4>
+                            <div class="unit-list" id="selected-units-list">
+                                <!-- Selected units will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="unit-picker-summary">
+                        <div class="summary-item">
+                            <span>Total Units:</span>
+                            <span id="total-units-count">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Total Points:</span>
+                            <span id="total-points-count">0</span>
+                        </div>
+                    </div>
+                </div>
+                <small class="help-text">Select units from your force to build this army list. Use the search to find specific units.</small>
             </div>
             
             <!-- Submit Buttons -->
