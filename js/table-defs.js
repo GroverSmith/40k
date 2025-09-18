@@ -133,6 +133,17 @@ const TableDefs = {
         columns: [
             'story_key', 'unit_key', 'timestamp', 'deleted_timestamp'
         ]
+    },
+
+    xref_army_units: {
+        url: 'https://script.google.com/macros/s/AKfycbyNXDgzcjDL0Y3HW9e0GH3OF6762aGI7FyatweS6ssXDPwwyiSENusgYhMFCXFazBuBGA/exec',
+        sheetId: '1PAINakiIbzCyB34AN06lOeBe5vLdFpKo9YWSlyq-wlg',
+        sheetName: 'xref_army_units',
+        primaryKey: 'army_key', // Single field for simple lookups
+        compositeKey: ['army_key', 'unit_key'], // Composite key for uniqueness
+        columns: [
+            'army_key', 'unit_key', 'timestamp', 'deleted_timestamp'
+        ]
     }
 };
 
