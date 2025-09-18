@@ -23,19 +23,20 @@ function filterActiveRows(data) {
   return activeRows;
 }
 
-// Clean function to remove non-alphanumeric characters and truncate
-function clean(text, maxLength = 30) {
-  if (!text) return '';
-  return String(text).replace(/[^a-zA-Z0-9]/g, '').substring(0, maxLength);
-}
 
 // Key generation function
-function generateRequisitionKey(force_key, event_name, timestamp) {
-  // Create a unique key based on force, event, and timestamp
-  const forcePart = clean(force_key, 15);
-  const eventPart = clean(event_name, 10);
-  const timePart = clean(timestamp.toString(), 8);
-  return `${forcePart}_${eventPart}_${timePart}`;
+// Generate UUID v4
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+// Generate unique requisition key using UUID
+function generateRequisitionKey() {
+  return generateUUID();
 }
 
 // Edit function - updates an existing requisition record
@@ -213,7 +214,7 @@ function doPost(e) {
     console.log('Using timestamp:', timestamp);
     
     // Generate the requisition key
-    const requisitionKey = generateRequisitionKey(data.force_key, data.event_name, timestamp);
+    const requisitionKey = generateRequisitionKey();
     console.log('Generated requisition key:', requisitionKey);
     
     // Check if requisition key already exists (and is not deleted)

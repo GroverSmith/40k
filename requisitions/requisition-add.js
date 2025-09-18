@@ -81,7 +81,7 @@ class RequisitionForm extends BaseForm {
             force_key: forceKey,
             rp_change: initialEvent.rp_change,
             event_name: initialEvent.event_name,
-            notes: initialEvent.description,
+            notes: initialEvent.description || '',
             timestamp: new Date().toISOString()
         };
 
