@@ -67,6 +67,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Canoness with Jump Pack": {
           "name": "Canoness with Jump Pack",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -88,6 +89,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Celestian Sacresants": {
           "name": "Celestian Sacresants",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -103,6 +105,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemonifuge": {
           "name": "Daemonifuge",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 2,
@@ -113,6 +116,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Dialogus": {
           "name": "Dialogus",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -123,6 +127,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Dogmata": {
           "name": "Dogmata",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -133,6 +138,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Dominion Squad": {
           "name": "Dominion Squad",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -143,6 +149,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Exorcist": {
           "name": "Exorcist",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -153,6 +160,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hospitaller": {
           "name": "Hospitaller",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -163,6 +171,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Imagifier": {
           "name": "Imagifier",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -173,6 +182,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Immolator": {
           "name": "Immolator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -183,6 +193,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Junith Eruita": {
           "name": "Junith Eruita",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -193,6 +204,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ministorum Priest": {
           "name": "Ministorum Priest",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -203,6 +215,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Mortifiers": {
           "name": "Mortifiers",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -218,6 +231,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Morvenn Vahl": {
           "name": "Morvenn Vahl",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -228,6 +242,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Palatine": {
           "name": "Palatine",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -238,6 +253,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Paragon Warsuits": {
           "name": "Paragon Warsuits",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 3,
@@ -248,6 +264,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Penitent Engines": {
           "name": "Penitent Engines",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -263,6 +280,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Repentia Squad": {
           "name": "Repentia Squad",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -278,6 +296,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Retributor Squad": {
           "name": "Retributor Squad",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -288,6 +307,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Saint Celestine": {
           "name": "Saint Celestine",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 3,
@@ -298,6 +318,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sanctifiers": {
           "name": "Sanctifiers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 9,
@@ -308,6 +329,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Seraphim Squad": {
           "name": "Seraphim Squad",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -323,6 +345,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sisters Novitiate Squad": {
           "name": "Sisters Novitiate Squad",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -333,6 +356,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sororitas Rhino": {
           "name": "Sororitas Rhino",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -343,6 +367,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Triumph of Saint Katherine": {
           "name": "Triumph of Saint Katherine",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -353,6 +378,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Zephyrim Squad": {
           "name": "Zephyrim Squad",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -376,6 +402,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Aleya": {
           "name": "Aleya",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -386,6 +413,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Allarus Custodians": {
           "name": "Allarus Custodians",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -411,6 +439,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Anathema Psykana Rhino": {
           "name": "Anathema Psykana Rhino",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -421,6 +450,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Blade Champion": {
           "name": "Blade Champion",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -431,6 +461,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Custodian Guard": {
           "name": "Custodian Guard",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 4,
@@ -446,6 +477,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Custodian Wardens": {
           "name": "Custodian Wardens",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 4,
@@ -461,6 +493,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight-Centura": {
           "name": "Knight-Centura",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -471,6 +504,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Prosecutors": {
           "name": "Prosecutors",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 4,
@@ -496,6 +530,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Shield-Captain": {
           "name": "Shield-Captain",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -506,6 +541,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Allarus Terminator Armour": {
           "name": "Allarus Terminator Armour",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -516,6 +552,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Shield-Captain on Dawneagle Jetbike": {
           "name": "Shield-Captain on Dawneagle Jetbike",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -526,6 +563,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Trajann Valoris": {
           "name": "Trajann Valoris",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -536,6 +574,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Valerian": {
           "name": "Valerian",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -546,6 +585,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Venerable Contemptor Dreadnought": {
           "name": "Venerable Contemptor Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -556,6 +596,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Venerable Land Raider": {
           "name": "Venerable Land Raider",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -566,6 +607,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vertus Praetors": {
           "name": "Vertus Praetors",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -581,6 +623,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vigilators": {
           "name": "Vigilators",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 4,
@@ -606,6 +649,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Witchseekers": {
           "name": "Witchseekers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 4,
@@ -631,6 +675,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Agamatus Custodians": {
           "name": "Agamatus Custodians",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -648,6 +693,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Aquilon Custodians": {
           "name": "Aquilon Custodians",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -665,6 +711,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ares Gunship": {
           "name": "Ares Gunship",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -676,6 +723,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Caladius Grav-tank": {
           "name": "Caladius Grav-tank",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -687,6 +735,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Contemptor-Achillus Dreadnought": {
           "name": "Contemptor-Achillus Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -698,6 +747,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Contemptor-Galatus Dreadnought": {
           "name": "Contemptor-Galatus Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -709,6 +759,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Coronus Grav-carrier": {
           "name": "Coronus Grav-carrier",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -720,6 +771,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "and Pyrithite Spears": {
           "name": "and Pyrithite Spears",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -731,6 +783,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Orion Assault Dropship": {
           "name": "Orion Assault Dropship",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -742,6 +795,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Pallas Grav-attack": {
           "name": "Pallas Grav-attack",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -753,6 +807,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sagittarum Custodians": {
           "name": "Sagittarum Custodians",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -764,6 +819,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Telemon Heavy Dreadnought": {
           "name": "Telemon Heavy Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -775,6 +831,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Venatari Custodians": {
           "name": "Venatari Custodians",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -800,6 +857,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Archaeopter Fusilave": {
           "name": "Archaeopter Fusilave",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -810,6 +868,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Archaeopter Stratoraptor": {
           "name": "Archaeopter Stratoraptor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -820,6 +879,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Archaeopter Transvector": {
           "name": "Archaeopter Transvector",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -830,6 +890,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Belisarius Cawl": {
           "name": "Belisarius Cawl",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -840,6 +901,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Corpuscarii Electro-Priests": {
           "name": "Corpuscarii Electro-Priests",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 5,
@@ -855,6 +917,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cybernetica Datasmith": {
           "name": "Cybernetica Datasmith",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -865,6 +928,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fulgurite Electro-Priests": {
           "name": "Fulgurite Electro-Priests",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 5,
@@ -880,6 +944,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ironstrider Ballistarii": {
           "name": "Ironstrider Ballistarii",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -900,6 +965,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kastelan Robots": {
           "name": "Kastelan Robots",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -915,6 +981,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kataphron Breachers": {
           "name": "Kataphron Breachers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -930,6 +997,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kataphron Destroyers": {
           "name": "Kataphron Destroyers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -945,6 +1013,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Onager Dunecrawler": {
           "name": "Onager Dunecrawler",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -955,6 +1024,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Pteraxii Skystalkers": {
           "name": "Pteraxii Skystalkers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -970,6 +1040,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Pteraxii Sterylizors": {
           "name": "Pteraxii Sterylizors",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -985,6 +1056,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Serberys Raiders": {
           "name": "Serberys Raiders",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -1000,6 +1072,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Serberys Sulphurhounds": {
           "name": "Serberys Sulphurhounds",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -1015,6 +1088,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sicarian Infiltrators": {
           "name": "Sicarian Infiltrators",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1030,6 +1104,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sicarian Ruststalkers": {
           "name": "Sicarian Ruststalkers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1045,6 +1120,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skitarii Marshal": {
           "name": "Skitarii Marshal",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1055,6 +1131,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skitarii Rangers": {
           "name": "Skitarii Rangers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -1065,6 +1142,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skitarii Vanguard": {
           "name": "Skitarii Vanguard",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -1075,6 +1153,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skorpius Disintegrator": {
           "name": "Skorpius Disintegrator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1085,6 +1164,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skorpius Dunerider": {
           "name": "Skorpius Dunerider",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1095,6 +1175,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sydonian Dragoons with Radium Jezzails": {
           "name": "Sydonian Dragoons with Radium Jezzails",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1115,6 +1196,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sydonian Dragoons with Taser Lances": {
           "name": "Sydonian Dragoons with Taser Lances",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1135,6 +1217,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sydonian Skatros": {
           "name": "Sydonian Skatros",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1145,6 +1228,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tech-Priest Dominus": {
           "name": "Tech-Priest Dominus",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -1155,6 +1239,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tech-Priest Enginseer": {
           "name": "Tech-Priest Enginseer",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -1165,6 +1250,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tech-Priest Manipulus": {
           "name": "Tech-Priest Manipulus",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -1175,6 +1261,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Technoarcheologist": {
           "name": "Technoarcheologist",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1193,6 +1280,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Reaver Titan": {
           "name": "Reaver Titan",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 1,
@@ -1204,6 +1292,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warbringer Nemesis Titan": {
           "name": "Warbringer Nemesis Titan",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 1,
@@ -1215,6 +1304,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warhound Titan": {
           "name": "Warhound Titan",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 1,
@@ -1226,6 +1316,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warlord Titan": {
           "name": "Warlord Titan",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 1,
@@ -1245,6 +1336,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Asurmen": {
           "name": "Asurmen",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -1255,6 +1347,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Autarch": {
           "name": "Autarch",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -1265,6 +1358,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Autarch Wayleaper": {
           "name": "Autarch Wayleaper",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -1275,6 +1369,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Avatar of Khaine": {
           "name": "Avatar of Khaine",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1285,6 +1380,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Baharroth": {
           "name": "Baharroth",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -1295,6 +1391,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Corsair Voidreavers": {
           "name": "Corsair Voidreavers",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 5,
@@ -1310,6 +1407,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Corsair Voidscarred": {
           "name": "Corsair Voidscarred",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1325,6 +1423,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Crimson Hunter": {
           "name": "Crimson Hunter",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1335,6 +1434,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "D-cannon Platform": {
           "name": "D-cannon Platform",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1345,6 +1445,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Dark Reapers": {
           "name": "Dark Reapers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1360,6 +1461,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Death Jester": {
           "name": "Death Jester",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1370,6 +1472,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Dire Avengers": {
           "name": "Dire Avengers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1385,6 +1488,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Eldrad Ulthran": {
           "name": "Eldrad Ulthran",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1395,6 +1499,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Falcon": {
           "name": "Falcon",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1405,6 +1510,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Farseer": {
           "name": "Farseer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1415,6 +1521,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Farseer Skyrunner": {
           "name": "Farseer Skyrunner",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1425,6 +1532,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fire Dragons": {
           "name": "Fire Dragons",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 5,
@@ -1440,6 +1548,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fire Prism": {
           "name": "Fire Prism",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1450,6 +1559,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fuegan": {
           "name": "Fuegan",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1460,6 +1570,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Guardian Defenders": {
           "name": "Guardian Defenders",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 11,
@@ -1470,6 +1581,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hemlock Wraithfighter": {
           "name": "Hemlock Wraithfighter",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1480,6 +1592,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Howling Banshees": {
           "name": "Howling Banshees",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1495,6 +1608,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Jain Zar": {
           "name": "Jain Zar",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1505,6 +1619,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lhykhis": {
           "name": "Lhykhis",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1515,6 +1630,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Maugan Ra": {
           "name": "Maugan Ra",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1525,6 +1641,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Night Spinner": {
           "name": "Night Spinner",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1535,6 +1652,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rangers": {
           "name": "Rangers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1550,6 +1668,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Shadow Weaver Platform": {
           "name": "Shadow Weaver Platform",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1560,6 +1679,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Shadowseer": {
           "name": "Shadowseer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1570,6 +1690,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Shining Spears": {
           "name": "Shining Spears",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -1585,6 +1706,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Shroud Runners": {
           "name": "Shroud Runners",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -1600,6 +1722,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skyweavers": {
           "name": "Skyweavers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -1615,6 +1738,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Solitaire": {
           "name": "Solitaire",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1625,6 +1749,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Spiritseer": {
           "name": "Spiritseer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1635,6 +1760,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Starweaver": {
           "name": "Starweaver",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1645,6 +1771,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Storm Guardians": {
           "name": "Storm Guardians",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 11,
@@ -1655,6 +1782,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Striking Scorpions": {
           "name": "Striking Scorpions",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1670,6 +1798,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Swooping Hawks": {
           "name": "Swooping Hawks",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1685,6 +1814,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Troupe": {
           "name": "Troupe",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1710,6 +1840,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Troupe Master": {
           "name": "Troupe Master",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1720,6 +1851,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vibro Cannon Platform": {
           "name": "Vibro Cannon Platform",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1730,6 +1862,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Voidweaver": {
           "name": "Voidweaver",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1740,6 +1873,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vyper": {
           "name": "Vyper",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1755,6 +1889,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "War Walker": {
           "name": "War Walker",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1770,6 +1905,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warlock": {
           "name": "Warlock",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1780,6 +1916,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warlock Conclave": {
           "name": "Warlock Conclave",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -1795,6 +1932,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warlock Skyrunners": {
           "name": "Warlock Skyrunners",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1810,6 +1948,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warp Spiders": {
           "name": "Warp Spiders",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1825,6 +1964,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wave Serpent": {
           "name": "Wave Serpent",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -1835,6 +1975,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Windriders": {
           "name": "Windriders",
+          "unitType": "Mounted",
           "variants": [
             {
               "modelCount": 3,
@@ -1850,6 +1991,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wraithblades": {
           "name": "Wraithblades",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1860,6 +2002,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wraithguard": {
           "name": "Wraithguard",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -1870,6 +2013,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wraithknight": {
           "name": "Wraithknight",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1880,6 +2024,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wraithknight with Ghostglaive": {
           "name": "Wraithknight with Ghostglaive",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1890,6 +2035,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wraithlord": {
           "name": "Wraithlord",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1900,6 +2046,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "The Visarch": {
           "name": "The Visarch",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1910,6 +2057,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "The Yncarne": {
           "name": "The Yncarne",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1920,6 +2068,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ynnari Archon": {
           "name": "Ynnari Archon",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -1930,6 +2079,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ynnari Incubi": {
           "name": "Ynnari Incubi",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -1945,6 +2095,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ynnari Kabalite Warriors": {
           "name": "Ynnari Kabalite Warriors",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -1955,6 +2106,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ynnari Raider": {
           "name": "Ynnari Raider",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1965,6 +2117,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ynnari Reavers": {
           "name": "Ynnari Reavers",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 3,
@@ -1980,6 +2133,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ynnari Succubus": {
           "name": "Ynnari Succubus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -1990,6 +2144,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ynnari Venom": {
           "name": "Ynnari Venom",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2000,6 +2155,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ynnari Wyches": {
           "name": "Ynnari Wyches",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -2010,6 +2166,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Yvraine": {
           "name": "Yvraine",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2020,6 +2177,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Phantom Titan": {
           "name": "Phantom Titan",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 1,
@@ -2031,6 +2189,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Revenant Titan": {
           "name": "Revenant Titan",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 1,
@@ -2050,6 +2209,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Aegis Defence Line": {
           "name": "Aegis Defence Line",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2060,6 +2220,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Armoured Sentinels": {
           "name": "Armoured Sentinels",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2075,6 +2236,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Artillery Team": {
           "name": "Artillery Team",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2085,6 +2247,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Attilan Rough Riders": {
           "name": "Attilan Rough Riders",
+          "unitType": "Mounted",
           "variants": [
             {
               "modelCount": 5,
@@ -2100,6 +2263,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Baneblade": {
           "name": "Baneblade",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2110,6 +2274,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Banehammer": {
           "name": "Banehammer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2120,6 +2285,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Banesword": {
           "name": "Banesword",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2130,6 +2296,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Basilisk": {
           "name": "Basilisk",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2140,6 +2307,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bullgryn Squad": {
           "name": "Bullgryn Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -2155,6 +2323,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cadian Castellan": {
           "name": "Cadian Castellan",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2165,6 +2334,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cadian Command Squad": {
           "name": "Cadian Command Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -2175,6 +2345,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cadian Heavy Weapons Squad": {
           "name": "Cadian Heavy Weapons Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -2185,6 +2356,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cadian Shock Troops": {
           "name": "Cadian Shock Troops",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -2200,6 +2372,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Catachan Command Squad": {
           "name": "Catachan Command Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -2210,6 +2383,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Catachan Heavy Weapons Squad": {
           "name": "Catachan Heavy Weapons Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -2220,6 +2394,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Catachan Jungle Fighters": {
           "name": "Catachan Jungle Fighters",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -2235,6 +2410,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chimera": {
           "name": "Chimera",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2245,6 +2421,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Commissar": {
           "name": "Commissar",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2255,6 +2432,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Death Korps of Krieg": {
           "name": "Death Korps of Krieg",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -2270,6 +2448,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Death Riders": {
           "name": "Death Riders",
+          "unitType": "Mounted",
           "variants": [
             {
               "modelCount": 5,
@@ -2285,6 +2464,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deathstrike": {
           "name": "Deathstrike",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2295,6 +2475,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Doomhammer": {
           "name": "Doomhammer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2305,6 +2486,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Field Ordnance Battery": {
           "name": "Field Ordnance Battery",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -2315,6 +2497,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gaunt’s Ghosts": {
           "name": "Gaunt’s Ghosts",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 6,
@@ -2325,6 +2508,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hellhammer": {
           "name": "Hellhammer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2335,6 +2519,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hellhound": {
           "name": "Hellhound",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2345,6 +2530,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hydra": {
           "name": "Hydra",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2355,6 +2541,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kasrkin": {
           "name": "Kasrkin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -2365,6 +2552,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Krieg Combat Engineers": {
           "name": "Krieg Combat Engineers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -2380,6 +2568,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Krieg Command Squad": {
           "name": "Krieg Command Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 6,
@@ -2390,6 +2579,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Krieg Heavy Weapons Squad": {
           "name": "Krieg Heavy Weapons Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 4,
@@ -2400,6 +2590,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Leman Russ Battle Tank": {
           "name": "Leman Russ Battle Tank",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -2410,6 +2601,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Leman Russ Commander": {
           "name": "Leman Russ Commander",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2420,6 +2612,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Leman Russ Demolisher": {
           "name": "Leman Russ Demolisher",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2430,6 +2623,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Leman Russ Eradicator": {
           "name": "Leman Russ Eradicator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2440,6 +2634,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Leman Russ Executioner": {
           "name": "Leman Russ Executioner",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2450,6 +2645,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Leman Russ Exterminator": {
           "name": "Leman Russ Exterminator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2460,6 +2656,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Leman Russ Punisher": {
           "name": "Leman Russ Punisher",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2470,6 +2667,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Leman Russ Vanquisher": {
           "name": "Leman Russ Vanquisher",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2480,6 +2678,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord Marshal Dreir": {
           "name": "Lord Marshal Dreir",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2490,6 +2689,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord Solar Leontus": {
           "name": "Lord Solar Leontus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2500,6 +2700,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Manticore": {
           "name": "Manticore",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2510,6 +2711,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Militarum Tempestus Command Squad": {
           "name": "Militarum Tempestus Command Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -2520,6 +2722,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ministorum Priest": {
           "name": "Ministorum Priest",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -2530,6 +2733,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Nork Deddog": {
           "name": "Nork Deddog",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2540,6 +2744,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ogryn Bodyguard": {
           "name": "Ogryn Bodyguard",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 1,
@@ -2550,6 +2755,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ogryn Squad": {
           "name": "Ogryn Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -2565,6 +2771,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Primaris Psyker": {
           "name": "Primaris Psyker",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2575,6 +2782,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ratlings": {
           "name": "Ratlings",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -2590,6 +2798,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rogal Dorn Battle Tank": {
           "name": "Rogal Dorn Battle Tank",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -2600,6 +2809,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rogal Dorn Commander": {
           "name": "Rogal Dorn Commander",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2610,6 +2820,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Scout Sentinels": {
           "name": "Scout Sentinels",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2625,6 +2836,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Shadowsword": {
           "name": "Shadowsword",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2635,6 +2847,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sly Marbo": {
           "name": "Sly Marbo",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2645,6 +2858,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stormlord": {
           "name": "Stormlord",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2655,6 +2869,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stormsword": {
           "name": "Stormsword",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2665,6 +2880,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Taurox": {
           "name": "Taurox",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2675,6 +2891,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Taurox Prime": {
           "name": "Taurox Prime",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2685,6 +2902,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tech-priest Enginseer": {
           "name": "Tech-priest Enginseer",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -2695,6 +2913,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tempestus Aquilons": {
           "name": "Tempestus Aquilons",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -2705,6 +2924,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tempestus Scions": {
           "name": "Tempestus Scions",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -2720,6 +2940,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ursula Creed": {
           "name": "Ursula Creed",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2730,6 +2951,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Valkyrie": {
           "name": "Valkyrie",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2740,6 +2962,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wyvern": {
           "name": "Wyvern",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -2750,6 +2973,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Avenger Strike Fighter": {
           "name": "Avenger Strike Fighter",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2761,6 +2985,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cyclops Demolition Vehicle": {
           "name": "Cyclops Demolition Vehicle",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2780,6 +3005,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Castellan": {
           "name": "Castellan",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2790,6 +3016,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaplain Grimaldus": {
           "name": "Chaplain Grimaldus",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 4,
@@ -2800,6 +3027,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Crusade Ancient": {
           "name": "Crusade Ancient",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2810,6 +3038,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Emperor’s Champion": {
           "name": "Emperor’s Champion",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2820,6 +3049,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Execrator": {
           "name": "Execrator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2830,6 +3060,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gladiator Lancer": {
           "name": "Gladiator Lancer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2840,6 +3071,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gladiator Reaper": {
           "name": "Gladiator Reaper",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2850,6 +3082,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gladiator Valiant": {
           "name": "Gladiator Valiant",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2860,6 +3093,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "High Marshal Helbrecht": {
           "name": "High Marshal Helbrecht",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2870,6 +3104,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Impulsor": {
           "name": "Impulsor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2880,6 +3115,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Land Raider Crusader": {
           "name": "Land Raider Crusader",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -2890,6 +3126,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Marshal": {
           "name": "Marshal",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2900,6 +3137,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sternguard Veteran Squad": {
           "name": "Sternguard Veteran Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -2915,6 +3153,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sword Brethren": {
           "name": "Sword Brethren",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 4,
@@ -2940,6 +3179,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Terminator Squad": {
           "name": "Terminator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -2955,6 +3195,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Repulsor": {
           "name": "Repulsor",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -2965,6 +3206,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Repulsor Executioner": {
           "name": "Repulsor Executioner",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -2983,6 +3225,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Astorath": {
           "name": "Astorath",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -2993,6 +3236,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Baal Predator": {
           "name": "Baal Predator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -3003,6 +3247,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Blood Angels Captain": {
           "name": "Blood Angels Captain",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -3013,6 +3258,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chief Librarian Mephiston": {
           "name": "Chief Librarian Mephiston",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -3023,6 +3269,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Commander Dante": {
           "name": "Commander Dante",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3033,6 +3280,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Death Company Captain": {
           "name": "Death Company Captain",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -3043,6 +3291,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Death Company Captain with Jump Pack": {
           "name": "Death Company Captain with Jump Pack",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -3053,6 +3302,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Death Company Dreadnought": {
           "name": "Death Company Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -3063,6 +3313,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Death Company Marines": {
           "name": "Death Company Marines",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -3078,6 +3329,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Death Company Marines with Bolt Rifles": {
           "name": "Death Company Marines with Bolt Rifles",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -3093,6 +3345,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Death Company Marines with Jump Packs": {
           "name": "Death Company Marines with Jump Packs",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -3108,6 +3361,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lemartes": {
           "name": "Lemartes",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3118,6 +3372,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sanguinary Guard": {
           "name": "Sanguinary Guard",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -3133,6 +3388,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sanguinary Priest": {
           "name": "Sanguinary Priest",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -3143,6 +3399,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "The Sanguinor": {
           "name": "The Sanguinor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3161,6 +3418,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Beasts of Nurgle": {
           "name": "Beasts of Nurgle",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -3176,6 +3434,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Be’lakor": {
           "name": "Be’lakor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3186,6 +3445,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bloodcrushers": {
           "name": "Bloodcrushers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -3201,6 +3461,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bloodletters": {
           "name": "Bloodletters",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -3211,6 +3472,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bloodmaster": {
           "name": "Bloodmaster",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3221,6 +3483,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bloodthirster": {
           "name": "Bloodthirster",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3231,6 +3494,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Blue Horrors": {
           "name": "Blue Horrors",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -3241,6 +3505,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Burning Chariot": {
           "name": "Burning Chariot",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3251,6 +3516,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Changecaster": {
           "name": "Changecaster",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3261,6 +3527,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Contorted Epitome": {
           "name": "Contorted Epitome",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3271,6 +3538,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemon Prince of Chaos": {
           "name": "Daemon Prince of Chaos",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3281,6 +3549,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemon Prince of Chaos with Wings": {
           "name": "Daemon Prince of Chaos with Wings",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3291,6 +3560,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemonettes": {
           "name": "Daemonettes",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -3301,6 +3571,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Epidemius": {
           "name": "Epidemius",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3311,6 +3582,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Exalted Flamer": {
           "name": "Exalted Flamer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3321,6 +3593,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fateskimmer": {
           "name": "Fateskimmer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3331,6 +3604,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Feculent Gnarlmaw": {
           "name": "Feculent Gnarlmaw",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3341,6 +3615,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fiends": {
           "name": "Fiends",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -3356,6 +3631,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Flamers": {
           "name": "Flamers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -3371,6 +3647,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Flesh Hounds": {
           "name": "Flesh Hounds",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -3386,6 +3663,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fluxmaster": {
           "name": "Fluxmaster",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3396,6 +3674,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Great Unclean One": {
           "name": "Great Unclean One",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3406,6 +3685,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hellflayers": {
           "name": "Hellflayers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3421,6 +3701,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Horticulous Slimux": {
           "name": "Horticulous Slimux",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3431,6 +3712,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Infernal Enrapturess": {
           "name": "Infernal Enrapturess",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3441,6 +3723,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kairos Fateweaver": {
           "name": "Kairos Fateweaver",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3451,6 +3734,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Karanak": {
           "name": "Karanak",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3461,6 +3745,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Keeper of Secrets": {
           "name": "Keeper of Secrets",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3471,6 +3756,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord of Change": {
           "name": "Lord of Change",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3481,6 +3767,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Nurglings": {
           "name": "Nurglings",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -3496,6 +3783,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Pink Horrors": {
           "name": "Pink Horrors",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -3506,6 +3794,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Plague Drones": {
           "name": "Plague Drones",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -3521,6 +3810,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Plaguebearers": {
           "name": "Plaguebearers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -3531,6 +3821,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Poxbringer": {
           "name": "Poxbringer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3541,6 +3832,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rendmaster on Blood Throne": {
           "name": "Rendmaster on Blood Throne",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3551,6 +3843,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rotigus": {
           "name": "Rotigus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3561,6 +3854,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Screamers": {
           "name": "Screamers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -3576,6 +3870,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Seekers": {
           "name": "Seekers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -3591,6 +3886,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Shalaxi Helbane": {
           "name": "Shalaxi Helbane",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3601,6 +3897,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skarbrand": {
           "name": "Skarbrand",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3611,6 +3908,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skull Altar": {
           "name": "Skull Altar",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3621,6 +3919,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skull Cannon": {
           "name": "Skull Cannon",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3631,6 +3930,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skullmaster": {
           "name": "Skullmaster",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3641,6 +3941,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skulltaker": {
           "name": "Skulltaker",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3651,6 +3952,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sloppity Bilepiper": {
           "name": "Sloppity Bilepiper",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3661,6 +3963,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Soul Grinder": {
           "name": "Soul Grinder",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3671,6 +3974,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Spoilpox Scrivener": {
           "name": "Spoilpox Scrivener",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3681,6 +3985,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Syll’esske": {
           "name": "Syll’esske",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3691,6 +3996,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "The Blue Scribes": {
           "name": "The Blue Scribes",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3701,6 +4007,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "The Changeling": {
           "name": "The Changeling",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3711,6 +4018,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "The Masque of Slaanesh": {
           "name": "The Masque of Slaanesh",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3721,6 +4029,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tormentbringer": {
           "name": "Tormentbringer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3731,6 +4040,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tranceweaver": {
           "name": "Tranceweaver",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3749,6 +4059,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Knight Abominant": {
           "name": "Knight Abominant",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3759,6 +4070,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Desecrator": {
           "name": "Knight Desecrator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3769,6 +4081,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Despoiler": {
           "name": "Knight Despoiler",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3779,6 +4092,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Rampager": {
           "name": "Knight Rampager",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3789,6 +4103,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Ruinator": {
           "name": "Knight Ruinator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3799,6 +4114,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Tyrant": {
           "name": "Knight Tyrant",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -3809,6 +4125,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "War Dog Brigand": {
           "name": "War Dog Brigand",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3819,6 +4136,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "War Dog Executioner": {
           "name": "War Dog Executioner",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3829,6 +4147,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "War Dog Huntsman": {
           "name": "War Dog Huntsman",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3839,6 +4158,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "War Dog Karnivore": {
           "name": "War Dog Karnivore",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3849,6 +4169,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "War Dog Stalker": {
           "name": "War Dog Stalker",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3859,6 +4180,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Acastus Knight Asterius": {
           "name": "Chaos Acastus Knight Asterius",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3870,6 +4192,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Acastus Knight Porphyrion": {
           "name": "Chaos Acastus Knight Porphyrion",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3881,6 +4204,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Cerastus Knight Acheron": {
           "name": "Chaos Cerastus Knight Acheron",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3892,6 +4216,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Cerastus Knight Atrapos": {
           "name": "Chaos Cerastus Knight Atrapos",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3903,6 +4228,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Cerastus Knight Castigator": {
           "name": "Chaos Cerastus Knight Castigator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -3914,6 +4240,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Cerastus Knight Lancer": {
           "name": "Chaos Cerastus Knight Lancer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3925,6 +4252,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Questoris Knight Magaera": {
           "name": "Chaos Questoris Knight Magaera",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3936,6 +4264,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Questoris Knight Styrix": {
           "name": "Chaos Questoris Knight Styrix",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3947,6 +4276,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "War Dog Moirax": {
           "name": "War Dog Moirax",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3966,6 +4296,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Abaddon the Despoiler": {
           "name": "Abaddon the Despoiler",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -3976,6 +4307,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Accursed Cultists": {
           "name": "Accursed Cultists",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 8,
@@ -3991,6 +4323,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Bikers": {
           "name": "Chaos Bikers",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 3,
@@ -4006,6 +4339,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Land Raider": {
           "name": "Chaos Land Raider",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -4016,6 +4350,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Lord": {
           "name": "Chaos Lord",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4026,6 +4361,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Lord in Terminator Armour": {
           "name": "Chaos Lord in Terminator Armour",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4036,6 +4372,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Lord with Jump Pack": {
           "name": "Chaos Lord with Jump Pack",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4046,6 +4383,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Predator Annihilator": {
           "name": "Chaos Predator Annihilator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -4056,6 +4394,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Predator Destructor": {
           "name": "Chaos Predator Destructor",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -4066,6 +4405,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Rhino": {
           "name": "Chaos Rhino",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -4076,6 +4416,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Spawn": {
           "name": "Chaos Spawn",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -4086,6 +4427,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Terminator Squad": {
           "name": "Chaos Terminator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -4101,6 +4443,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Vindicator": {
           "name": "Chaos Vindicator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4111,6 +4454,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chosen": {
           "name": "Chosen",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -4126,6 +4470,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cultist Firebrand": {
           "name": "Cultist Firebrand",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4136,6 +4481,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cultist Mob": {
           "name": "Cultist Mob",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -4151,6 +4497,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cypher": {
           "name": "Cypher",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4161,6 +4508,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Dark Apostle": {
           "name": "Dark Apostle",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -4171,6 +4519,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Dark Commune": {
           "name": "Dark Commune",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -4181,6 +4530,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Defiler": {
           "name": "Defiler",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4191,6 +4541,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fabius Bile": {
           "name": "Fabius Bile",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -4201,6 +4552,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fellgor Beastmen": {
           "name": "Fellgor Beastmen",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 10,
@@ -4211,6 +4563,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Forgefiend": {
           "name": "Forgefiend",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4221,6 +4574,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Haarken Worldclaimer": {
           "name": "Haarken Worldclaimer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4231,6 +4585,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Havocs": {
           "name": "Havocs",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -4241,6 +4596,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Helbrute": {
           "name": "Helbrute",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4251,6 +4607,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Heldrake": {
           "name": "Heldrake",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4261,6 +4618,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Heretic Astartes Daemon Prince": {
           "name": "Heretic Astartes Daemon Prince",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4271,6 +4629,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "with Wings": {
           "name": "with Wings",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4281,6 +4640,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Huron Blackheart": {
           "name": "Huron Blackheart",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4291,6 +4651,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Khorne Lord of Skulls": {
           "name": "Khorne Lord of Skulls",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4301,6 +4662,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Legionaries": {
           "name": "Legionaries",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -4316,6 +4678,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord Discordant on Helstalker": {
           "name": "Lord Discordant on Helstalker",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4326,6 +4689,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Master of Executions": {
           "name": "Master of Executions",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4336,6 +4700,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Master of Possession": {
           "name": "Master of Possession",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4346,6 +4711,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Maulerfiend": {
           "name": "Maulerfiend",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4356,6 +4722,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Nemesis Claw": {
           "name": "Nemesis Claw",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 5,
@@ -4371,6 +4738,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Noctilith Crown": {
           "name": "Noctilith Crown",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4381,6 +4749,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Obliterators": {
           "name": "Obliterators",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -4391,6 +4760,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Possessed": {
           "name": "Possessed",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -4406,6 +4776,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Raptors": {
           "name": "Raptors",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -4421,6 +4792,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sorcerer": {
           "name": "Sorcerer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4431,6 +4803,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sorcerer in Terminator Armour": {
           "name": "Sorcerer in Terminator Armour",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4441,6 +4814,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Traitor Enforcer": {
           "name": "Traitor Enforcer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -4451,6 +4825,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Traitor Guardsmen Squad": {
           "name": "Traitor Guardsmen Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -4461,6 +4836,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vashtorr the Arkifane": {
           "name": "Vashtorr the Arkifane",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4471,6 +4847,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Venomcrawler": {
           "name": "Venomcrawler",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4481,6 +4858,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warp Talons": {
           "name": "Warp Talons",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -4496,6 +4874,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warpsmith": {
           "name": "Warpsmith",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4514,6 +4893,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Asmodai": {
           "name": "Asmodai",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4524,6 +4904,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Azrael": {
           "name": "Azrael",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 1,
@@ -4534,6 +4915,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Belial": {
           "name": "Belial",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4544,6 +4926,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deathwing Knights": {
           "name": "Deathwing Knights",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -4554,6 +4937,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deathwing Terminator Squad": {
           "name": "Deathwing Terminator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -4569,6 +4953,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ezekiel": {
           "name": "Ezekiel",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4579,6 +4964,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inner Circle Companions": {
           "name": "Inner Circle Companions",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -4594,6 +4980,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Land Speeder Vengeance": {
           "name": "Land Speeder Vengeance",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4604,6 +4991,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lazarus": {
           "name": "Lazarus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4614,6 +5002,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lion El’Jonson": {
           "name": "Lion El’Jonson",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4624,6 +5013,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Nephilim Jetfighter": {
           "name": "Nephilim Jetfighter",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4634,6 +5024,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ravenwing Black Knights": {
           "name": "Ravenwing Black Knights",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -4649,6 +5040,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ravenwing Command Squad": {
           "name": "Ravenwing Command Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -4659,6 +5051,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ravenwing Dark Talon": {
           "name": "Ravenwing Dark Talon",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4669,6 +5062,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ravenwing Darkshroud": {
           "name": "Ravenwing Darkshroud",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4679,6 +5073,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sammael": {
           "name": "Sammael",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4697,6 +5092,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Biologus Putrifier": {
           "name": "Biologus Putrifier",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4707,6 +5103,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Blightlord Terminators": {
           "name": "Blightlord Terminators",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -4727,6 +5124,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Land Raider": {
           "name": "Chaos Land Raider",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -4737,6 +5135,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Predator Annihilator": {
           "name": "Chaos Predator Annihilator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -4747,6 +5146,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Predator Destructor": {
           "name": "Chaos Predator Destructor",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -4757,6 +5157,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Rhino": {
           "name": "Chaos Rhino",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -4767,6 +5168,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Spawn of Nurgle": {
           "name": "Chaos Spawn of Nurgle",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -4777,6 +5179,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemon Prince of Nurgle": {
           "name": "Daemon Prince of Nurgle",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4787,6 +5190,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemon Prince of Nurgle with Wings": {
           "name": "Daemon Prince of Nurgle with Wings",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4797,6 +5201,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deathshroud Terminators": {
           "name": "Deathshroud Terminators",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -4812,6 +5217,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Defiler": {
           "name": "Defiler",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4822,6 +5228,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Foetid Bloat-drone": {
           "name": "Foetid Bloat-drone",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4832,6 +5239,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Heavy Blight Launcher": {
           "name": "Heavy Blight Launcher",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4842,6 +5250,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Foul Blightspawn": {
           "name": "Foul Blightspawn",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4852,6 +5261,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Helbrute": {
           "name": "Helbrute",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4862,6 +5272,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Icon Bearer": {
           "name": "Icon Bearer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4872,6 +5283,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord of Contagion": {
           "name": "Lord of Contagion",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4882,6 +5294,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord of Poxes": {
           "name": "Lord of Poxes",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4892,6 +5305,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord of Virulence": {
           "name": "Lord of Virulence",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4902,6 +5316,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Malignant Plaguecaster": {
           "name": "Malignant Plaguecaster",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4912,6 +5327,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Miasmic Malignifier": {
           "name": "Miasmic Malignifier",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4922,6 +5338,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Mortarion": {
           "name": "Mortarion",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4932,6 +5349,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Myphitic Blight-haulers": {
           "name": "Myphitic Blight-haulers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4947,6 +5365,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Noxious Blightbringer": {
           "name": "Noxious Blightbringer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4957,6 +5376,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Plague Marines": {
           "name": "Plague Marines",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -4977,6 +5397,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Plague Surgeon": {
           "name": "Plague Surgeon",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4987,6 +5408,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Plagueburst Crawler": {
           "name": "Plagueburst Crawler",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -4997,6 +5419,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Poxwalkers": {
           "name": "Poxwalkers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -5012,6 +5435,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tallyman": {
           "name": "Tallyman",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5022,6 +5446,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Typhus": {
           "name": "Typhus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5032,6 +5457,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Beasts of Nurgle": {
           "name": "Beasts of Nurgle",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -5047,6 +5473,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Great Unclean One": {
           "name": "Great Unclean One",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5057,6 +5484,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Nurglings": {
           "name": "Nurglings",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -5072,6 +5500,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Plague Drones": {
           "name": "Plague Drones",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -5087,6 +5516,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Plaguebearers": {
           "name": "Plaguebearers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -5097,6 +5527,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rotigus": {
           "name": "Rotigus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5115,6 +5546,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Corvus Blackstar": {
           "name": "Corvus Blackstar",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5125,6 +5557,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deathwatch Terminator Squad": {
           "name": "Deathwatch Terminator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -5140,6 +5573,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deathwatch Veterans": {
           "name": "Deathwatch Veterans",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5155,6 +5589,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fortis Kill Team": {
           "name": "Fortis Kill Team",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -5165,6 +5600,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Indomitor Kill Team": {
           "name": "Indomitor Kill Team",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -5175,6 +5611,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Spectrus Kill Team": {
           "name": "Spectrus Kill Team",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -5185,6 +5622,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Talonstrike Kill Team": {
           "name": "Talonstrike Kill Team",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -5195,6 +5633,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Watch Captain Artemis": {
           "name": "Watch Captain Artemis",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -5205,6 +5644,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Watch Master": {
           "name": "Watch Master",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5223,6 +5663,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Archon": {
           "name": "Archon",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -5233,6 +5674,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Beastmaster": {
           "name": "Beastmaster",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 7,
@@ -5243,6 +5685,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Court of the Archon": {
           "name": "Court of the Archon",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 4,
@@ -5253,6 +5696,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cronos": {
           "name": "Cronos",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5268,6 +5712,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Drazhar": {
           "name": "Drazhar",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5278,6 +5723,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Grotesques": {
           "name": "Grotesques",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -5293,6 +5739,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Haemonculus": {
           "name": "Haemonculus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5303,6 +5750,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hellions": {
           "name": "Hellions",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5318,6 +5766,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Incubi": {
           "name": "Incubi",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5333,6 +5782,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kabalite Warriors": {
           "name": "Kabalite Warriors",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -5343,6 +5793,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lelith Hesperax": {
           "name": "Lelith Hesperax",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5353,6 +5804,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Mandrakes": {
           "name": "Mandrakes",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5368,6 +5820,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Raider": {
           "name": "Raider",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5378,6 +5831,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ravager": {
           "name": "Ravager",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5388,6 +5842,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Razorwing Jetfighter": {
           "name": "Razorwing Jetfighter",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5398,6 +5853,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Reavers": {
           "name": "Reavers",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 3,
@@ -5413,6 +5869,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Scourges": {
           "name": "Scourges",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5428,6 +5885,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Succubus": {
           "name": "Succubus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5438,6 +5896,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Talos": {
           "name": "Talos",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5453,6 +5912,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Urien Rakarth": {
           "name": "Urien Rakarth",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5463,6 +5923,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Venom": {
           "name": "Venom",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5473,6 +5934,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Voidraven Bomber": {
           "name": "Voidraven Bomber",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5483,6 +5945,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wracks": {
           "name": "Wracks",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5498,6 +5961,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wyches": {
           "name": "Wyches",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -5516,6 +5980,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Chaos Land Raider": {
           "name": "Chaos Land Raider",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -5526,6 +5991,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Rhino": {
           "name": "Chaos Rhino",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -5536,6 +6002,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Spawn": {
           "name": "Chaos Spawn",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -5546,6 +6013,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Terminators": {
           "name": "Chaos Terminators",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5556,6 +6024,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemon Prince of Slaanesh": {
           "name": "Daemon Prince of Slaanesh",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5566,6 +6035,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemon Prince of Slaanesh with Wings": {
           "name": "Daemon Prince of Slaanesh with Wings",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5576,6 +6046,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Flawless Blades": {
           "name": "Flawless Blades",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -5591,6 +6062,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fulgrim": {
           "name": "Fulgrim",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5601,6 +6073,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Heldrake": {
           "name": "Heldrake",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5611,6 +6084,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Infractors": {
           "name": "Infractors",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5626,6 +6100,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord Exultant": {
           "name": "Lord Exultant",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5636,6 +6111,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord Kakophonist": {
           "name": "Lord Kakophonist",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5646,6 +6122,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lucius the Eternal": {
           "name": "Lucius the Eternal",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5656,6 +6133,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Maulerfiend": {
           "name": "Maulerfiend",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5666,6 +6144,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Noise Marines": {
           "name": "Noise Marines",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 6,
@@ -5676,6 +6155,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sorcerer": {
           "name": "Sorcerer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5686,6 +6166,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tormentors": {
           "name": "Tormentors",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5701,6 +6182,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemonettes": {
           "name": "Daemonettes",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -5711,6 +6193,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fiends": {
           "name": "Fiends",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -5726,6 +6209,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Keeper of Secrets": {
           "name": "Keeper of Secrets",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5736,6 +6220,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Seekers": {
           "name": "Seekers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5751,6 +6236,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Shalaxi Helbane": {
           "name": "Shalaxi Helbane",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5769,6 +6255,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Aberrants": {
           "name": "Aberrants",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5784,6 +6271,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Abominant": {
           "name": "Abominant",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5794,6 +6282,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Achilles Ridgerunners": {
           "name": "Achilles Ridgerunners",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5809,6 +6298,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Acolyte Hybrids with Autopistols": {
           "name": "Acolyte Hybrids with Autopistols",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5824,6 +6314,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Acolyte Hybrids with Hand Flamers": {
           "name": "Acolyte Hybrids with Hand Flamers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5839,6 +6330,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Acolyte Iconward": {
           "name": "Acolyte Iconward",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5849,6 +6341,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Atalan Jackals": {
           "name": "Atalan Jackals",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5864,6 +6357,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Benefictus": {
           "name": "Benefictus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5874,6 +6368,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Biophagus": {
           "name": "Biophagus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5884,6 +6379,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Clamavus": {
           "name": "Clamavus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5894,6 +6390,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Goliath Rockgrinder": {
           "name": "Goliath Rockgrinder",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5904,6 +6401,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Goliath Truck": {
           "name": "Goliath Truck",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5914,6 +6412,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hybrid Metamorphs": {
           "name": "Hybrid Metamorphs",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -5929,6 +6428,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Jackal Alphus": {
           "name": "Jackal Alphus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5939,6 +6439,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kelermorph": {
           "name": "Kelermorph",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5949,6 +6450,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Locus": {
           "name": "Locus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5959,6 +6461,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Magus": {
           "name": "Magus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5969,6 +6472,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Neophyte Hybrids": {
           "name": "Neophyte Hybrids",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -5984,6 +6488,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Nexos": {
           "name": "Nexos",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -5994,6 +6499,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Patriarch": {
           "name": "Patriarch",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6004,6 +6510,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Primus": {
           "name": "Primus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6014,6 +6521,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Purestrain Genestealers": {
           "name": "Purestrain Genestealers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -6029,6 +6537,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Reductus Saboteur": {
           "name": "Reductus Saboteur",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6039,6 +6548,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sanctus": {
           "name": "Sanctus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6057,6 +6567,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Brother-Captain": {
           "name": "Brother-Captain",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -6067,6 +6578,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Brotherhood Champion": {
           "name": "Brotherhood Champion",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6077,6 +6589,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Brotherhood Chaplain": {
           "name": "Brotherhood Chaplain",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -6087,6 +6600,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Brotherhood Librarian": {
           "name": "Brotherhood Librarian",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -6097,6 +6611,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Brotherhood Techmarine": {
           "name": "Brotherhood Techmarine",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6107,6 +6622,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Brotherhood Terminator Squad": {
           "name": "Brotherhood Terminator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 4,
@@ -6132,6 +6648,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Castellan Crowe": {
           "name": "Castellan Crowe",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6142,6 +6659,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Grand Master": {
           "name": "Grand Master",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6152,6 +6670,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Grand Master in Nemesis Dreadknight": {
           "name": "Grand Master in Nemesis Dreadknight",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 1,
@@ -6162,6 +6681,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Grand Master Voldus": {
           "name": "Grand Master Voldus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6172,6 +6692,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Interceptor Squad": {
           "name": "Interceptor Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -6187,6 +6708,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Land Raider": {
           "name": "Land Raider",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -6197,6 +6719,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Land Raider Crusader": {
           "name": "Land Raider Crusader",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -6207,6 +6730,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Land Raider Redeemer": {
           "name": "Land Raider Redeemer",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -6217,6 +6741,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Nemesis Dreadknight": {
           "name": "Nemesis Dreadknight",
+          "unitType": "Titanic",
           "variants": [
             {
               "modelCount": 1,
@@ -6227,6 +6752,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Paladin Squad": {
           "name": "Paladin Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 4,
@@ -6252,6 +6778,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Purgation Squad": {
           "name": "Purgation Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -6267,6 +6794,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Purifier Squad": {
           "name": "Purifier Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -6282,6 +6810,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Razorback": {
           "name": "Razorback",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6292,6 +6821,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rhino": {
           "name": "Rhino",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -6302,6 +6832,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stormhawk Interceptor": {
           "name": "Stormhawk Interceptor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6312,6 +6843,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stormraven Gunship": {
           "name": "Stormraven Gunship",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6322,6 +6854,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stormtalon Gunship": {
           "name": "Stormtalon Gunship",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6332,6 +6865,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Strike Squad": {
           "name": "Strike Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -6347,6 +6881,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Venerable Dreadnought": {
           "name": "Venerable Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -6357,6 +6892,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Grey Knights Thunderhawk Gunship": {
           "name": "Grey Knights Thunderhawk Gunship",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6376,6 +6912,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Callidus Assassin": {
           "name": "Callidus Assassin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6386,6 +6923,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Corvus Blackstar": {
           "name": "Corvus Blackstar",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6396,6 +6934,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Culexus Assassin": {
           "name": "Culexus Assassin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6406,6 +6945,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deathwatch Kill Team": {
           "name": "Deathwatch Kill Team",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -6421,6 +6961,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Eversor Assassin": {
           "name": "Eversor Assassin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6431,6 +6972,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Exaction Squad": {
           "name": "Exaction Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 11,
@@ -6441,6 +6983,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Grey Knights Terminator Squad": {
           "name": "Grey Knights Terminator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -6451,6 +6994,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Imperial Navy Breachers": {
           "name": "Imperial Navy Breachers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -6461,6 +7005,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Imperial Rhino": {
           "name": "Imperial Rhino",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -6471,6 +7016,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inquisitor": {
           "name": "Inquisitor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6481,6 +7027,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inquisitor Coteaz": {
           "name": "Inquisitor Coteaz",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6491,6 +7038,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inquisitor Draxus": {
           "name": "Inquisitor Draxus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6501,6 +7049,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inquisitor Greyfax": {
           "name": "Inquisitor Greyfax",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6511,6 +7060,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inquisitorial Agents": {
           "name": "Inquisitorial Agents",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 6,
@@ -6526,6 +7076,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inquisitorial Chimera": {
           "name": "Inquisitorial Chimera",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6536,6 +7087,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ministorum Priest": {
           "name": "Ministorum Priest",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -6546,6 +7098,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Navigator": {
           "name": "Navigator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6556,6 +7109,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rogue Trader Entourage": {
           "name": "Rogue Trader Entourage",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 4,
@@ -6566,6 +7120,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sanctifiers": {
           "name": "Sanctifiers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 9,
@@ -6576,6 +7131,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sisters of Battle Immolator": {
           "name": "Sisters of Battle Immolator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -6586,6 +7142,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sisters of Battle Squad": {
           "name": "Sisters of Battle Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -6596,6 +7153,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Subductor Squad": {
           "name": "Subductor Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 11,
@@ -6606,6 +7164,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vigilant Squad": {
           "name": "Vigilant Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 11,
@@ -6616,6 +7175,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vindicare Assassin": {
           "name": "Vindicare Assassin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6626,6 +7186,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Voidsmen-at-Arms": {
           "name": "Voidsmen-at-Arms",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 6,
@@ -6636,6 +7197,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Watch Captain Artemis": {
           "name": "Watch Captain Artemis",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -6646,6 +7208,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Watch Master": {
           "name": "Watch Master",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6664,6 +7227,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Callidus Assassin": {
           "name": "Callidus Assassin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6674,6 +7238,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Corvus Blackstar": {
           "name": "Corvus Blackstar",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6684,6 +7249,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Culexus Assassin": {
           "name": "Culexus Assassin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6694,6 +7260,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deathwatch Kill Team": {
           "name": "Deathwatch Kill Team",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -6709,6 +7276,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Eversor Assassin": {
           "name": "Eversor Assassin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6719,6 +7287,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Exaction Squad": {
           "name": "Exaction Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 11,
@@ -6729,6 +7298,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Grey Knights Terminator Squad": {
           "name": "Grey Knights Terminator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -6739,6 +7309,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Imperial Rhino": {
           "name": "Imperial Rhino",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -6749,6 +7320,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inquisitor": {
           "name": "Inquisitor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6759,6 +7331,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inquisitor Coteaz": {
           "name": "Inquisitor Coteaz",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6769,6 +7342,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inquisitor Draxus": {
           "name": "Inquisitor Draxus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6779,6 +7353,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inquisitor Greyfax": {
           "name": "Inquisitor Greyfax",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6789,6 +7364,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rogue Trader Entourage": {
           "name": "Rogue Trader Entourage",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 4,
@@ -6799,6 +7375,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sanctifiers": {
           "name": "Sanctifiers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 9,
@@ -6809,6 +7386,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sisters of Battle Immolator": {
           "name": "Sisters of Battle Immolator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -6819,6 +7397,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sisters of Battle Squad": {
           "name": "Sisters of Battle Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 1,
@@ -6829,6 +7408,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Subductor Squad": {
           "name": "Subductor Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 6,
@@ -6849,6 +7429,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inquisitorial Chimera": {
           "name": "Inquisitorial Chimera",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6859,6 +7440,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ministorum Priest": {
           "name": "Ministorum Priest",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -6869,6 +7451,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Navigator": {
           "name": "Navigator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6884,6 +7467,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vigilant Squad": {
           "name": "Vigilant Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 11,
@@ -6894,6 +7478,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vindicare Assassin": {
           "name": "Vindicare Assassin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6904,6 +7489,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Voidsmen-at-Arms": {
           "name": "Voidsmen-at-Arms",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 6,
@@ -6914,6 +7500,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Watch Captain Artemis": {
           "name": "Watch Captain Artemis",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -6924,6 +7511,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Watch Master": {
           "name": "Watch Master",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6942,6 +7530,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Armiger Helverin": {
           "name": "Armiger Helverin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6952,6 +7541,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Armiger Warglaive": {
           "name": "Armiger Warglaive",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6962,6 +7552,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Canis Rex": {
           "name": "Canis Rex",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6972,6 +7563,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Castellan": {
           "name": "Knight Castellan",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6982,6 +7574,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Crusader": {
           "name": "Knight Crusader",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -6992,6 +7585,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Errant": {
           "name": "Knight Errant",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7002,6 +7596,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Gallant": {
           "name": "Knight Gallant",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7012,6 +7607,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Paladin": {
           "name": "Knight Paladin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7022,6 +7618,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Preceptor": {
           "name": "Knight Preceptor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7032,6 +7629,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Valiant": {
           "name": "Knight Valiant",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7042,6 +7640,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Knight Warden": {
           "name": "Knight Warden",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7052,6 +7651,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Acastus Knight Asterius": {
           "name": "Acastus Knight Asterius",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7063,6 +7663,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Acastus Knight Porphyrion": {
           "name": "Acastus Knight Porphyrion",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7074,6 +7675,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Armiger Moirax": {
           "name": "Armiger Moirax",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7085,6 +7687,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cerastus Knight Acheron": {
           "name": "Cerastus Knight Acheron",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7096,6 +7699,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cerastus Knight Atrapos": {
           "name": "Cerastus Knight Atrapos",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7107,6 +7711,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cerastus Knight Castigator": {
           "name": "Cerastus Knight Castigator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -7118,6 +7723,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cerastus Knight Lancer": {
           "name": "Cerastus Knight Lancer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7129,6 +7735,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Questoris Knight Magaera": {
           "name": "Questoris Knight Magaera",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7140,6 +7747,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Questoris Knight Styrix": {
           "name": "Questoris Knight Styrix",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7159,6 +7767,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Arkanyst Evaluator": {
           "name": "Arkanyst Evaluator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7169,6 +7778,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Brôkhyr Iron-master": {
           "name": "Brôkhyr Iron-master",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -7179,6 +7789,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Brôkhyr Thunderkyn": {
           "name": "Brôkhyr Thunderkyn",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -7194,6 +7805,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Buri Aegnirssen": {
           "name": "Buri Aegnirssen",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7204,6 +7816,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cthonian Beserks": {
           "name": "Cthonian Beserks",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -7219,6 +7832,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cthonian Earthshakers": {
           "name": "Cthonian Earthshakers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -7229,6 +7843,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Einhyr Champion": {
           "name": "Einhyr Champion",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7239,6 +7854,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Einhyr Hearthguard": {
           "name": "Einhyr Hearthguard",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -7254,6 +7870,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Grimnyr": {
           "name": "Grimnyr",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -7264,6 +7881,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hearthkyn Warriors": {
           "name": "Hearthkyn Warriors",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -7274,6 +7892,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hekaton Land Fortress": {
           "name": "Hekaton Land Fortress",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7284,6 +7903,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hernkyn Pioneers": {
           "name": "Hernkyn Pioneers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -7299,6 +7919,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hernkyn Yaegirs": {
           "name": "Hernkyn Yaegirs",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -7309,6 +7930,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Heavy Volkanite Disintegrators": {
           "name": "Heavy Volkanite Disintegrators",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -7324,6 +7946,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ironkin Steeljacks with Melee Weapons": {
           "name": "Ironkin Steeljacks with Melee Weapons",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -7339,6 +7962,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kâhl": {
           "name": "Kâhl",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7349,6 +7973,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kapricus Carrier": {
           "name": "Kapricus Carrier",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7359,6 +7984,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kapricus Defenders": {
           "name": "Kapricus Defenders",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7374,6 +8000,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Memnyr Strategist": {
           "name": "Memnyr Strategist",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7384,6 +8011,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sagitaur": {
           "name": "Sagitaur",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7394,6 +8022,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ûthar the Destined": {
           "name": "Ûthar the Destined",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7412,6 +8041,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Annihilation Barge": {
           "name": "Annihilation Barge",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7422,6 +8052,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "C’tan Shard of the Deceiver": {
           "name": "C’tan Shard of the Deceiver",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7432,6 +8063,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "C’tan Shard of the Nightbringer": {
           "name": "C’tan Shard of the Nightbringer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7442,6 +8074,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "C’tan Shard of the Void Dragon": {
           "name": "C’tan Shard of the Void Dragon",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -7452,6 +8085,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Canoptek Doomstalker": {
           "name": "Canoptek Doomstalker",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7462,6 +8096,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Canoptek Reanimator": {
           "name": "Canoptek Reanimator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7472,6 +8107,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Canoptek Scarab Swarms": {
           "name": "Canoptek Scarab Swarms",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -7487,6 +8123,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Canoptek Spyders": {
           "name": "Canoptek Spyders",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7502,6 +8139,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Canoptek Wraiths": {
           "name": "Canoptek Wraiths",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -7517,6 +8155,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Catacomb Command Barge": {
           "name": "Catacomb Command Barge",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7527,6 +8166,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chronomancer": {
           "name": "Chronomancer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7537,6 +8177,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Convergence of Dominion": {
           "name": "Convergence of Dominion",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7557,6 +8198,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cryptothralls": {
           "name": "Cryptothralls",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -7567,6 +8209,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deathmarks": {
           "name": "Deathmarks",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -7582,6 +8225,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Doom Scythe": {
           "name": "Doom Scythe",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7592,6 +8236,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Doomsday Ark": {
           "name": "Doomsday Ark",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7602,6 +8247,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Flayed Ones": {
           "name": "Flayed Ones",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -7617,6 +8263,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ghost Ark": {
           "name": "Ghost Ark",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7627,6 +8274,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hexmark Destroyer": {
           "name": "Hexmark Destroyer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7637,6 +8285,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Illuminor Szeras": {
           "name": "Illuminor Szeras",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7647,6 +8296,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Immortals": {
           "name": "Immortals",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -7662,6 +8312,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Imotekh the Stormlord": {
           "name": "Imotekh the Stormlord",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7672,6 +8323,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lokhust Destroyers": {
           "name": "Lokhust Destroyers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7697,6 +8349,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lokhust Heavy Destroyers": {
           "name": "Lokhust Heavy Destroyers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7717,6 +8370,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lokhust Lord": {
           "name": "Lokhust Lord",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7727,6 +8381,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lychguard": {
           "name": "Lychguard",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -7742,6 +8397,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Monolith": {
           "name": "Monolith",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7752,6 +8408,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Necron Warriors": {
           "name": "Necron Warriors",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -7767,6 +8424,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Night Scythe": {
           "name": "Night Scythe",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7777,6 +8435,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Obelisk": {
           "name": "Obelisk",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7787,6 +8446,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ophydian Destroyers": {
           "name": "Ophydian Destroyers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -7802,6 +8462,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Orikan the Diviner": {
           "name": "Orikan the Diviner",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7812,6 +8473,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Overlord": {
           "name": "Overlord",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7822,6 +8484,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Overlord with Translocation Shroud": {
           "name": "Overlord with Translocation Shroud",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7832,6 +8495,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Plasmancer": {
           "name": "Plasmancer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7842,6 +8506,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Psychomancer": {
           "name": "Psychomancer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7852,6 +8517,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Royal Warden": {
           "name": "Royal Warden",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7862,6 +8528,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skorpekh Destroyers": {
           "name": "Skorpekh Destroyers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -7877,6 +8544,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skorpekh Lord": {
           "name": "Skorpekh Lord",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7887,6 +8555,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Technomancer": {
           "name": "Technomancer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7897,6 +8566,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tesseract Vault": {
           "name": "Tesseract Vault",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7907,6 +8577,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "The Silent King": {
           "name": "The Silent King",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -7917,6 +8588,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tomb Blades": {
           "name": "Tomb Blades",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -7932,6 +8604,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Transcendent C’tan": {
           "name": "Transcendent C’tan",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7942,6 +8615,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Trazyn the Infinite": {
           "name": "Trazyn the Infinite",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7952,6 +8626,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Triarch Praetorians": {
           "name": "Triarch Praetorians",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -7967,6 +8642,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Triarch Stalker": {
           "name": "Triarch Stalker",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7977,6 +8653,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Seraptek Heavy Construct": {
           "name": "Seraptek Heavy Construct",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -7996,6 +8673,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Battlewagon": {
           "name": "Battlewagon",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8006,6 +8684,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Beast Snagga Boyz": {
           "name": "Beast Snagga Boyz",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 10,
@@ -8021,6 +8700,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Beastboss": {
           "name": "Beastboss",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -8031,6 +8711,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Beastboss on Squigosaur": {
           "name": "Beastboss on Squigosaur",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -8041,6 +8722,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Big Mek": {
           "name": "Big Mek",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8051,6 +8733,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Big Mek in Mega Armour": {
           "name": "Big Mek in Mega Armour",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8061,6 +8744,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Big Mek with Shokk Attack Gun": {
           "name": "Big Mek with Shokk Attack Gun",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8071,6 +8755,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Big’ed Bossbunka": {
           "name": "Big’ed Bossbunka",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8081,6 +8766,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Blitza-bommer": {
           "name": "Blitza-bommer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8091,6 +8777,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Boomdakka Snazzwagon": {
           "name": "Boomdakka Snazzwagon",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8101,6 +8788,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Boss Snikrot": {
           "name": "Boss Snikrot",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8111,6 +8799,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Boyz": {
           "name": "Boyz",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -8126,6 +8815,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Breaka Boyz": {
           "name": "Breaka Boyz",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 6,
@@ -8136,6 +8826,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Burna-bommer": {
           "name": "Burna-bommer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8146,6 +8837,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Dakkajet": {
           "name": "Dakkajet",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8156,6 +8848,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deff Dread": {
           "name": "Deff Dread",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8166,6 +8859,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deffkilla Wartrike": {
           "name": "Deffkilla Wartrike",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8176,6 +8870,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deffkoptas": {
           "name": "Deffkoptas",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -8191,6 +8886,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Flash Gitz": {
           "name": "Flash Gitz",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -8206,6 +8902,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ghazghkull Thraka": {
           "name": "Ghazghkull Thraka",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 2,
@@ -8216,6 +8913,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gorkanaut": {
           "name": "Gorkanaut",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8226,6 +8924,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gretchin": {
           "name": "Gretchin",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 11,
@@ -8241,6 +8940,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hunta Rig": {
           "name": "Hunta Rig",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8251,6 +8951,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kill Rig": {
           "name": "Kill Rig",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8261,6 +8962,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Killa Kans": {
           "name": "Killa Kans",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -8276,6 +8978,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kommandos": {
           "name": "Kommandos",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -8286,6 +8989,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kustom Boosta-blasta": {
           "name": "Kustom Boosta-blasta",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8296,6 +9000,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Meganobz": {
           "name": "Meganobz",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -8321,6 +9026,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Megatrakk Scrapjet": {
           "name": "Megatrakk Scrapjet",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8331,6 +9037,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Mek": {
           "name": "Mek",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8341,6 +9048,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Mek Gunz": {
           "name": "Mek Gunz",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8361,6 +9069,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Morkanaut": {
           "name": "Morkanaut",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8371,6 +9080,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Mozrog Skragbad": {
           "name": "Mozrog Skragbad",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8381,6 +9091,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Nobz": {
           "name": "Nobz",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -8396,6 +9107,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Painboss": {
           "name": "Painboss",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8406,6 +9118,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Painboy": {
           "name": "Painboy",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8416,6 +9129,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rukkatrukk Squigbuggy": {
           "name": "Rukkatrukk Squigbuggy",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8426,6 +9140,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Shokkjump Dragsta": {
           "name": "Shokkjump Dragsta",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8436,6 +9151,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Squighog Boyz": {
           "name": "Squighog Boyz",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 4,
@@ -8451,6 +9167,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stompa": {
           "name": "Stompa",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8461,6 +9178,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stormboyz": {
           "name": "Stormboyz",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -8476,6 +9194,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tankbustas": {
           "name": "Tankbustas",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 6,
@@ -8486,6 +9205,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Trukk": {
           "name": "Trukk",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8496,6 +9216,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warbikers": {
           "name": "Warbikers",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 3,
@@ -8511,6 +9232,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warboss": {
           "name": "Warboss",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8521,6 +9243,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Warboss in Mega Armour": {
           "name": "Warboss in Mega Armour",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8531,6 +9254,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wazbom Blastajet": {
           "name": "Wazbom Blastajet",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8541,6 +9265,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Weirdboy": {
           "name": "Weirdboy",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8551,6 +9276,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wurrboy": {
           "name": "Wurrboy",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8561,6 +9287,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Zodgrod Wortsnagga": {
           "name": "Zodgrod Wortsnagga",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8571,6 +9298,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gargantuan Squiggoth": {
           "name": "Gargantuan Squiggoth",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8590,6 +9318,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Adrax Agatone": {
           "name": "Adrax Agatone",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8600,6 +9329,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Aggressor Squad": {
           "name": "Aggressor Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -8615,6 +9345,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ancient": {
           "name": "Ancient",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8625,6 +9356,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ancient in Terminator Armour": {
           "name": "Ancient in Terminator Armour",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8635,6 +9367,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Apothecary": {
           "name": "Apothecary",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8645,6 +9378,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Apothecary Biologis": {
           "name": "Apothecary Biologis",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8655,6 +9389,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Assault Intercessor Squad": {
           "name": "Assault Intercessor Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -8670,6 +9405,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Assault Intercessors with Jump Packs": {
           "name": "Assault Intercessors with Jump Packs",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -8685,6 +9421,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ballistus Dreadnought": {
           "name": "Ballistus Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8695,6 +9432,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bladeguard Ancient": {
           "name": "Bladeguard Ancient",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 1,
@@ -8705,6 +9443,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bladeguard Veteran Squad": {
           "name": "Bladeguard Veteran Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -8720,6 +9459,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Brutalis Dreadnought": {
           "name": "Brutalis Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8730,6 +9470,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Captain": {
           "name": "Captain",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -8740,6 +9481,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Captain in Gravis Armour": {
           "name": "Captain in Gravis Armour",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -8750,6 +9492,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Captain in Phobos Armour": {
           "name": "Captain in Phobos Armour",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -8760,6 +9503,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Captain in Terminator Armour": {
           "name": "Captain in Terminator Armour",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -8770,6 +9514,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Captain Sicarius": {
           "name": "Captain Sicarius",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -8780,6 +9525,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Captain with Jump Pack": {
           "name": "Captain with Jump Pack",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -8790,6 +9536,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Centurion Assault Squad": {
           "name": "Centurion Assault Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -8805,6 +9552,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Centurion Devastator Squad": {
           "name": "Centurion Devastator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -8820,6 +9568,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaplain": {
           "name": "Chaplain",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -8830,6 +9579,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaplain in Terminator Armour": {
           "name": "Chaplain in Terminator Armour",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -8840,6 +9590,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaplain on Bike": {
           "name": "Chaplain on Bike",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -8850,6 +9601,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaplain with Jump Pack": {
           "name": "Chaplain with Jump Pack",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -8860,6 +9612,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chief Librarian Tigurius": {
           "name": "Chief Librarian Tigurius",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -8870,6 +9623,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Company Heroes": {
           "name": "Company Heroes",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 4,
@@ -8880,6 +9634,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Darnath Lysander": {
           "name": "Darnath Lysander",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8890,6 +9645,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Desolation Squad": {
           "name": "Desolation Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -8900,6 +9656,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Devastator Squad": {
           "name": "Devastator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -8915,6 +9672,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Dreadnought": {
           "name": "Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -8925,6 +9683,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Drop Pod": {
           "name": "Drop Pod",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8935,6 +9694,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Eliminator Squad": {
           "name": "Eliminator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -8945,6 +9705,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Eradicator Squad": {
           "name": "Eradicator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -8960,6 +9721,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Firestrike Servo-turrets": {
           "name": "Firestrike Servo-turrets",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8975,6 +9737,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gladiator Lancer": {
           "name": "Gladiator Lancer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8985,6 +9748,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gladiator Reaper": {
           "name": "Gladiator Reaper",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -8995,6 +9759,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gladiator Valiant": {
           "name": "Gladiator Valiant",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9005,6 +9770,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hammerfall Bunker": {
           "name": "Hammerfall Bunker",
+          "unitType": "Fortification",
           "variants": [
             {
               "modelCount": 1,
@@ -9015,6 +9781,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Heavy Intercessor Squad": {
           "name": "Heavy Intercessor Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9030,6 +9797,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hellblaster Squad": {
           "name": "Hellblaster Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9045,6 +9813,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Impulsor": {
           "name": "Impulsor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9055,6 +9824,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Inceptor Squad": {
           "name": "Inceptor Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -9070,6 +9840,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Incursor Squad": {
           "name": "Incursor Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9085,6 +9856,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Infernus Squad": {
           "name": "Infernus Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9100,6 +9872,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Infiltrator Squad": {
           "name": "Infiltrator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9115,6 +9888,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Intercessor Squad": {
           "name": "Intercessor Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9130,6 +9904,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Invader ATV": {
           "name": "Invader ATV",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9140,6 +9915,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Invictor Tactical Warsuit": {
           "name": "Invictor Tactical Warsuit",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9150,6 +9926,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Iron Father Feirros": {
           "name": "Iron Father Feirros",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9160,6 +9937,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Judiciar": {
           "name": "Judiciar",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9170,6 +9948,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kayvaan Shrike": {
           "name": "Kayvaan Shrike",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9180,6 +9959,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kor’sarro Khan": {
           "name": "Kor’sarro Khan",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9190,6 +9970,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Land Raider": {
           "name": "Land Raider",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9200,6 +9981,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Land Raider Crusader": {
           "name": "Land Raider Crusader",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9210,6 +9992,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Land Raider Redeemer": {
           "name": "Land Raider Redeemer",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9220,6 +10003,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Librarian": {
           "name": "Librarian",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9230,6 +10014,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Librarian in Phobos Armour": {
           "name": "Librarian in Phobos Armour",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9240,6 +10025,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Librarian in Terminator Armour": {
           "name": "Librarian in Terminator Armour",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9250,6 +10036,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lieutenant": {
           "name": "Lieutenant",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9260,6 +10047,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lieutenant in Phobos Armour": {
           "name": "Lieutenant in Phobos Armour",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9270,6 +10058,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lieutenant in Reiver Armour": {
           "name": "Lieutenant in Reiver Armour",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9280,6 +10069,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lieutenant with Combi-weapon": {
           "name": "Lieutenant with Combi-weapon",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9290,6 +10080,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lieutenant Titus": {
           "name": "Lieutenant Titus",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9300,6 +10091,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Marneus Calgar": {
           "name": "Marneus Calgar",
+          "unitType": "Epic Hero",
           "variants": [
             {
               "modelCount": 3,
@@ -9310,6 +10102,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Outrider Squad": {
           "name": "Outrider Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -9325,6 +10118,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Pedro Kantor": {
           "name": "Pedro Kantor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9335,6 +10129,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Predator Annihilator": {
           "name": "Predator Annihilator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9345,6 +10140,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Predator Destructor": {
           "name": "Predator Destructor",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9355,6 +10151,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Razorback": {
           "name": "Razorback",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9365,6 +10162,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Redemptor Dreadnought": {
           "name": "Redemptor Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9375,6 +10173,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Reiver Squad": {
           "name": "Reiver Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9390,6 +10189,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Repulsor": {
           "name": "Repulsor",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9400,6 +10200,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Repulsor Executioner": {
           "name": "Repulsor Executioner",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9410,6 +10211,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rhino": {
           "name": "Rhino",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9420,6 +10222,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Roboute Guilliman": {
           "name": "Roboute Guilliman",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9430,6 +10233,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Scout Squad": {
           "name": "Scout Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9445,6 +10249,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sternguard Veteran Squad": {
           "name": "Sternguard Veteran Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9460,6 +10265,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Storm Speeder Hailstrike": {
           "name": "Storm Speeder Hailstrike",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9470,6 +10276,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Storm Speeder Hammerstrike": {
           "name": "Storm Speeder Hammerstrike",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9480,6 +10287,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Storm Speeder Thunderstrike": {
           "name": "Storm Speeder Thunderstrike",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9490,6 +10298,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stormhawk Interceptor": {
           "name": "Stormhawk Interceptor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9500,6 +10309,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stormraven Gunship": {
           "name": "Stormraven Gunship",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9510,6 +10320,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stormtalon Gunship": {
           "name": "Stormtalon Gunship",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9520,6 +10331,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Suppressor Squad": {
           "name": "Suppressor Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -9530,6 +10342,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tactical Squad": {
           "name": "Tactical Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -9540,6 +10353,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Techmarine": {
           "name": "Techmarine",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9550,6 +10364,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Terminator Assault Squad": {
           "name": "Terminator Assault Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9565,6 +10380,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Terminator Squad": {
           "name": "Terminator Squad",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9580,6 +10396,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tor Garadon": {
           "name": "Tor Garadon",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9590,6 +10407,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Uriel Ventris": {
           "name": "Uriel Ventris",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9600,6 +10418,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vanguard Veteran Squad with Jump Packs": {
           "name": "Vanguard Veteran Squad with Jump Packs",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9615,6 +10434,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vindicator": {
           "name": "Vindicator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9625,6 +10445,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vulkan He’stan": {
           "name": "Vulkan He’stan",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9635,6 +10456,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Whirlwind": {
           "name": "Whirlwind",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9645,6 +10467,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Astraeus": {
           "name": "Astraeus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9656,6 +10479,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Thunderhawk Gunship": {
           "name": "Thunderhawk Gunship",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9675,6 +10499,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Arjac Rockfist": {
           "name": "Arjac Rockfist",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9685,6 +10510,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bjorn the Fell-Handed": {
           "name": "Bjorn the Fell-Handed",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9695,6 +10521,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Blood Claws": {
           "name": "Blood Claws",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -9710,6 +10537,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fenrisian Wolves": {
           "name": "Fenrisian Wolves",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -9725,6 +10553,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Grey Hunters": {
           "name": "Grey Hunters",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -9735,6 +10564,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Iron Priest": {
           "name": "Iron Priest",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9745,6 +10575,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Logan Grimnar": {
           "name": "Logan Grimnar",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9755,6 +10586,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Murderfang": {
           "name": "Murderfang",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9765,6 +10597,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Njal Stormcaller": {
           "name": "Njal Stormcaller",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9775,6 +10608,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ragnar Blackmane": {
           "name": "Ragnar Blackmane",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9785,6 +10619,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Thunderwolf Cavalry": {
           "name": "Thunderwolf Cavalry",
+          "unitType": "Mounted",
           "variants": [
             {
               "modelCount": 3,
@@ -9800,6 +10635,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ulrik the Slayer": {
           "name": "Ulrik the Slayer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9810,6 +10646,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Venerable Dreadnought": {
           "name": "Venerable Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9820,6 +10657,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wolf Guard Battle Leader": {
           "name": "Wolf Guard Battle Leader",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 1,
@@ -9830,6 +10668,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wolf Guard Terminators": {
           "name": "Wolf Guard Terminators",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -9845,6 +10684,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wolf Priest": {
           "name": "Wolf Priest",
+          "unitType": "Character",
           "variants": [
             {
               "modelCount": 1,
@@ -9855,6 +10695,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wulfen": {
           "name": "Wulfen",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -9870,6 +10711,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wulfen Dreadnought": {
           "name": "Wulfen Dreadnought",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -9880,6 +10722,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Wulfen with Storm Shields": {
           "name": "Wulfen with Storm Shields",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -9903,6 +10746,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Breacher Team": {
           "name": "Breacher Team",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -9913,6 +10757,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Broadside Battlesuits": {
           "name": "Broadside Battlesuits",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9933,6 +10778,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Cadre Fireblade": {
           "name": "Cadre Fireblade",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9943,6 +10789,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Commander Farsight": {
           "name": "Commander Farsight",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9953,6 +10800,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Commander in Coldstar Battlesuit": {
           "name": "Commander in Coldstar Battlesuit",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9963,6 +10811,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Commander in Enforcer Battlesuit": {
           "name": "Commander in Enforcer Battlesuit",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9973,6 +10822,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Commander Shadowsun": {
           "name": "Commander Shadowsun",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -9983,6 +10833,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Crisis Fireknife Battlesuits": {
           "name": "Crisis Fireknife Battlesuits",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -9993,6 +10844,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Crisis Starscythe Battlesuits": {
           "name": "Crisis Starscythe Battlesuits",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -10003,6 +10855,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Crisis Sunforge Battlesuits": {
           "name": "Crisis Sunforge Battlesuits",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -10013,6 +10866,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Darkstrider": {
           "name": "Darkstrider",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10023,6 +10877,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Devilfish": {
           "name": "Devilfish",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -10033,6 +10888,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ethereal": {
           "name": "Ethereal",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10043,6 +10899,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Firesight Team": {
           "name": "Firesight Team",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10053,6 +10910,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ghostkeel Battlesuit": {
           "name": "Ghostkeel Battlesuit",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10063,6 +10921,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hammerhead Gunship": {
           "name": "Hammerhead Gunship",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -10073,6 +10932,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kroot Carnivores": {
           "name": "Kroot Carnivores",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -10088,6 +10948,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kroot Farstalkers": {
           "name": "Kroot Farstalkers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 12,
@@ -10098,6 +10959,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kroot Flesh Shaper": {
           "name": "Kroot Flesh Shaper",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10108,6 +10970,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kroot Hounds": {
           "name": "Kroot Hounds",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -10123,6 +10986,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kroot Lone-spear": {
           "name": "Kroot Lone-spear",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10133,6 +10997,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kroot Trail Shaper": {
           "name": "Kroot Trail Shaper",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10143,6 +11008,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kroot War Shaper": {
           "name": "Kroot War Shaper",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10153,6 +11019,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Krootox Rampagers": {
           "name": "Krootox Rampagers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -10168,6 +11035,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Krootox Riders": {
           "name": "Krootox Riders",
+          "unitType": "Mounted",
           "variants": [
             {
               "modelCount": 1,
@@ -10188,6 +11056,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Pathfinder Team": {
           "name": "Pathfinder Team",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -10198,6 +11067,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Piranhas": {
           "name": "Piranhas",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10218,6 +11088,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Razorshark Strike Fighter": {
           "name": "Razorshark Strike Fighter",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10228,6 +11099,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Riptide Battlesuit": {
           "name": "Riptide Battlesuit",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10238,6 +11110,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sky Ray Gunship": {
           "name": "Sky Ray Gunship",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10248,6 +11121,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stealth Battlesuits": {
           "name": "Stealth Battlesuits",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -10263,6 +11137,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Stormsurge": {
           "name": "Stormsurge",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10273,6 +11148,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Strike Team": {
           "name": "Strike Team",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -10283,6 +11159,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sun Shark Bomber": {
           "name": "Sun Shark Bomber",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10293,6 +11170,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tidewall Droneport": {
           "name": "Tidewall Droneport",
+          "unitType": "Fortification",
           "variants": [
             {
               "modelCount": 1,
@@ -10303,6 +11181,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tidewall Gunrig": {
           "name": "Tidewall Gunrig",
+          "unitType": "Fortification",
           "variants": [
             {
               "modelCount": 1,
@@ -10313,6 +11192,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tidewall Shieldline": {
           "name": "Tidewall Shieldline",
+          "unitType": "Fortification",
           "variants": [
             {
               "modelCount": 1,
@@ -10323,6 +11203,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Vespid Stingwings": {
           "name": "Vespid Stingwings",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10344,6 +11225,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Manta": {
           "name": "Manta",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10355,6 +11237,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ta’unar Supremacy Armour": {
           "name": "Ta’unar Supremacy Armour",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10366,6 +11249,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tiger Shark": {
           "name": "Tiger Shark",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10385,6 +11269,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Ahriman": {
           "name": "Ahriman",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10395,6 +11280,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Land Raider": {
           "name": "Chaos Land Raider",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -10405,6 +11291,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Predator Annihilator": {
           "name": "Chaos Predator Annihilator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -10415,6 +11302,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Predator Destructor": {
           "name": "Chaos Predator Destructor",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -10425,6 +11313,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Rhino": {
           "name": "Chaos Rhino",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -10435,6 +11324,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Spawn": {
           "name": "Chaos Spawn",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -10445,6 +11335,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Vindicator": {
           "name": "Chaos Vindicator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10455,6 +11346,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemon Prince of Tzeentch": {
           "name": "Daemon Prince of Tzeentch",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10465,6 +11357,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemon Prince of Tzeentch with Wings": {
           "name": "Daemon Prince of Tzeentch with Wings",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10475,6 +11368,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Defiler": {
           "name": "Defiler",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10485,6 +11379,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Exalted Sorcerer": {
           "name": "Exalted Sorcerer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10495,6 +11390,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Exalted Sorcerer on Disc of Tzeentch": {
           "name": "Exalted Sorcerer on Disc of Tzeentch",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10505,6 +11401,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Forgefiend": {
           "name": "Forgefiend",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10515,6 +11412,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Heldrake": {
           "name": "Heldrake",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10525,6 +11423,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Helbrute": {
           "name": "Helbrute",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10535,6 +11434,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Infernal Master": {
           "name": "Infernal Master",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10545,6 +11445,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Magnus the Red": {
           "name": "Magnus the Red",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10555,6 +11456,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Maulerfiend": {
           "name": "Maulerfiend",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10565,6 +11467,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Mutalith Vortex Beast": {
           "name": "Mutalith Vortex Beast",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -10575,6 +11478,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Rubric Marines": {
           "name": "Rubric Marines",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -10590,6 +11494,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Scarab Occult Terminators": {
           "name": "Scarab Occult Terminators",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -10605,6 +11510,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sekhetar Robots": {
           "name": "Sekhetar Robots",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -10620,6 +11526,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sorcerer": {
           "name": "Sorcerer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10630,6 +11537,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sorcerer in Terminator Armour": {
           "name": "Sorcerer in Terminator Armour",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10640,6 +11548,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tzaangor Enlightened": {
           "name": "Tzaangor Enlightened",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -10655,6 +11564,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Fatecaster Greatbows": {
           "name": "Fatecaster Greatbows",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -10670,6 +11580,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tzaangor Shaman": {
           "name": "Tzaangor Shaman",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10680,6 +11591,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tzaangors": {
           "name": "Tzaangors",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -10695,6 +11607,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Blue Horrors": {
           "name": "Blue Horrors",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -10705,6 +11618,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Flamers": {
           "name": "Flamers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -10720,6 +11634,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Kairos Fateweaver": {
           "name": "Kairos Fateweaver",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10730,6 +11645,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord of Change": {
           "name": "Lord of Change",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10740,6 +11656,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Pink Horrors": {
           "name": "Pink Horrors",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -10750,6 +11667,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Screamers": {
           "name": "Screamers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -10773,6 +11691,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Barbgaunts": {
           "name": "Barbgaunts",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 5,
@@ -10788,6 +11707,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Biovores": {
           "name": "Biovores",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10808,6 +11728,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Broodlord": {
           "name": "Broodlord",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10818,6 +11739,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Carnifexes": {
           "name": "Carnifexes",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -10833,6 +11755,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Deathleaper": {
           "name": "Deathleaper",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10843,6 +11766,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Exocrine": {
           "name": "Exocrine",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10853,6 +11777,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Gargoyles": {
           "name": "Gargoyles",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -10868,6 +11793,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Genestealers": {
           "name": "Genestealers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -10883,6 +11809,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Harpy": {
           "name": "Harpy",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10893,6 +11820,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Haruspex": {
           "name": "Haruspex",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10903,6 +11831,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hive Crone": {
           "name": "Hive Crone",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -10913,6 +11842,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hive Guard": {
           "name": "Hive Guard",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 3,
@@ -10928,6 +11858,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hive Tyrant": {
           "name": "Hive Tyrant",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -10938,6 +11869,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hormagaunts": {
           "name": "Hormagaunts",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -10953,6 +11885,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lictor": {
           "name": "Lictor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10963,6 +11896,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Maleceptor": {
           "name": "Maleceptor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10973,6 +11907,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Mawloc": {
           "name": "Mawloc",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10983,6 +11918,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Mucolid Spores": {
           "name": "Mucolid Spores",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -10998,6 +11934,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Neurogaunts": {
           "name": "Neurogaunts",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 11,
@@ -11013,6 +11950,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Neurolictor": {
           "name": "Neurolictor",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11023,6 +11961,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Neurotyrant": {
           "name": "Neurotyrant",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -11033,6 +11972,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Norn Assimilator": {
           "name": "Norn Assimilator",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11043,6 +11983,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Norn Emissary": {
           "name": "Norn Emissary",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11053,6 +11994,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Old One Eye": {
           "name": "Old One Eye",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11063,6 +12005,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Parasite of Mortrex": {
           "name": "Parasite of Mortrex",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11073,6 +12016,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Psychophage": {
           "name": "Psychophage",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11083,6 +12027,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Pyrovores": {
           "name": "Pyrovores",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11103,6 +12048,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Raveners": {
           "name": "Raveners",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -11118,6 +12064,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Ripper Swarms": {
           "name": "Ripper Swarms",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11138,6 +12085,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Screamer-Killer": {
           "name": "Screamer-Killer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11148,6 +12096,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Spore MInes": {
           "name": "Spore MInes",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -11163,6 +12112,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Sporocyst": {
           "name": "Sporocyst",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11173,6 +12123,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Termagants": {
           "name": "Termagants",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 10,
@@ -11188,6 +12139,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tervigon": {
           "name": "Tervigon",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11198,6 +12150,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "The Swarmlord": {
           "name": "The Swarmlord",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11208,6 +12161,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Toxicrene": {
           "name": "Toxicrene",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11218,6 +12172,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Trygon": {
           "name": "Trygon",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11228,6 +12183,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tyranid Warriors with Melee Bio-weapons": {
           "name": "Tyranid Warriors with Melee Bio-weapons",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -11243,6 +12199,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tyranid Warriors with Ranged Bio-weapons": {
           "name": "Tyranid Warriors with Ranged Bio-weapons",
+          "unitType": "Battleline",
           "variants": [
             {
               "modelCount": 3,
@@ -11258,6 +12215,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tyrannocyte": {
           "name": "Tyrannocyte",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11268,6 +12226,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tyrannofex": {
           "name": "Tyrannofex",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11278,6 +12237,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Tyrant Guard": {
           "name": "Tyrant Guard",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 3,
@@ -11293,6 +12253,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Venomthropes": {
           "name": "Venomthropes",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -11308,6 +12269,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Von Ryan’s Leapers": {
           "name": "Von Ryan’s Leapers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -11323,6 +12285,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Winged Hive Tyrant": {
           "name": "Winged Hive Tyrant",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -11333,6 +12296,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Winged Tyranid Prime": {
           "name": "Winged Tyranid Prime",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11343,6 +12307,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Zoanthropes": {
           "name": "Zoanthropes",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -11358,6 +12323,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Harridan": {
           "name": "Harridan",
+          "unitType": "Monster",
           "variants": [
             {
               "modelCount": 1,
@@ -11369,6 +12335,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Hierophant": {
           "name": "Hierophant",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11388,6 +12355,7 @@ window.MFM_UNITS_UPDATED = {
       "units": {
         "Angron": {
           "name": "Angron",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11398,6 +12366,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Land Raider": {
           "name": "Chaos Land Raider",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -11408,6 +12377,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Predator Annihilator": {
           "name": "Chaos Predator Annihilator",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -11418,6 +12388,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Predator Destructor": {
           "name": "Chaos Predator Destructor",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -11428,6 +12399,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Rhino": {
           "name": "Chaos Rhino",
+          "unitType": "Vehicle",
           "variants": [
             {
               "modelCount": 1,
@@ -11438,6 +12410,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Spawn": {
           "name": "Chaos Spawn",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 2,
@@ -11448,6 +12421,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Chaos Terminators": {
           "name": "Chaos Terminators",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -11463,6 +12437,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemon Prince of Khorne": {
           "name": "Daemon Prince of Khorne",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11473,6 +12448,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Daemon Prince of Khorne with Wings": {
           "name": "Daemon Prince of Khorne with Wings",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11483,6 +12459,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Defiler": {
           "name": "Defiler",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11493,6 +12470,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Eightbound": {
           "name": "Eightbound",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -11508,6 +12486,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Exalted Eightbound": {
           "name": "Exalted Eightbound",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -11523,6 +12502,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Forgefiend": {
           "name": "Forgefiend",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11533,6 +12513,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Goremongers": {
           "name": "Goremongers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 8,
@@ -11543,6 +12524,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Helbrute": {
           "name": "Helbrute",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11553,6 +12535,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Heldrake": {
           "name": "Heldrake",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11563,6 +12546,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Jakhals": {
           "name": "Jakhals",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -11578,6 +12562,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Khârn the Betrayer": {
           "name": "Khârn the Betrayer",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11588,6 +12573,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Khorne Berzerkers": {
           "name": "Khorne Berzerkers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -11603,6 +12589,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Khorne Lord of Skulls": {
           "name": "Khorne Lord of Skulls",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11613,6 +12600,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord Invocatus": {
           "name": "Lord Invocatus",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11623,6 +12611,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Lord on Juggernaut": {
           "name": "Lord on Juggernaut",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11633,6 +12622,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Master of Executions": {
           "name": "Master of Executions",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11643,6 +12633,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Maulerfiend": {
           "name": "Maulerfiend",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11653,6 +12644,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Slaughterbound": {
           "name": "Slaughterbound",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11663,6 +12655,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bloodcrushers": {
           "name": "Bloodcrushers",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 3,
@@ -11678,6 +12671,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bloodletters": {
           "name": "Bloodletters",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 10,
@@ -11688,6 +12682,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Bloodthirster": {
           "name": "Bloodthirster",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
@@ -11698,6 +12693,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Flesh Hounds": {
           "name": "Flesh Hounds",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 5,
@@ -11713,6 +12709,7 @@ window.MFM_UNITS_UPDATED = {
         },
         "Skarbrand": {
           "name": "Skarbrand",
+          "unitType": "Infantry",
           "variants": [
             {
               "modelCount": 1,
