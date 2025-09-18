@@ -188,17 +188,11 @@ class ArmyListForm extends BaseForm {
             this.availableUnits = units || [];
             console.log(`Reloaded ${this.availableUnits.length} units with MFM version ${mfmVersion}`);
             
-            // Debug: log the points of the first few units
-            this.availableUnits.slice(0, 3).forEach(unit => {
-                console.log(`Available unit ${unit.unit_name}: ${unit.points} points (MFM version: ${unit.mfm_version})`);
-            });
-            
-            // Update selected units with new MFM version points
-            this.updateSelectedUnitsWithMFMVersion(mfmVersion);
-            
             // Update the UI if we're in picker mode
             if (this.entryMode === 'picker') {
-                this.updateAvailableUnitsDOM(); // Update existing DOM elements with new points
+                // Since we calculate points on-demand, we just need to refresh the UI
+                this.populateAvailableUnits(); // Recreate DOM elements with new points
+                this.populateSelectedUnits(); // Recreate selected units with new points
                 this.updateSummary(); // Update points totals with new MFM version
             }
         } catch (error) {
@@ -206,98 +200,8 @@ class ArmyListForm extends BaseForm {
         }
     }
 
-    async updateSelectedUnitsWithMFMVersion(mfmVersion) {
-        if (this.selectedUnits.length === 0) return;
 
-        try {
-            // Get all units with the new MFM version context
-            const allUnitsWithMFM = await UnifiedCache.getUnitsWithMFMVersion(mfmVersion, {
-                force_key: this.forceContext.forceKey
-            });
 
-            // Update selected units with new points from MFM version
-            this.selectedUnits = this.selectedUnits.map(selectedUnit => {
-                const updatedUnit = allUnitsWithMFM.find(unit => 
-                    unit.unit_key === selectedUnit.unit_key
-                );
-                if (updatedUnit) {
-                    console.log(`Selected unit ${selectedUnit.unit_name}: points changed from ${selectedUnit.points} to ${updatedUnit.points}`);
-                }
-                return updatedUnit || selectedUnit; // Keep original if not found
-            });
-
-            // Update the DOM elements to reflect the new points
-            this.updateSelectedUnitsDOM();
-
-            console.log(`Updated ${this.selectedUnits.length} selected units with MFM version ${mfmVersion}`);
-        } catch (error) {
-            console.error('Error updating selected units with MFM version:', error);
-        }
-    }
-
-    updateSelectedUnitsDOM() {
-        const selectedList = CoreUtils.dom.getElement('selected-units-list');
-        if (!selectedList) {
-            console.warn('Selected units list not found');
-            return;
-        }
-
-        console.log('Updating selected units DOM for', this.selectedUnits.length, 'units');
-        
-        // Update each selected unit's DOM element with new points
-        this.selectedUnits.forEach(unit => {
-            const unitElement = selectedList.querySelector(`[data-unit-key="${unit.unit_key}"]`);
-            if (unitElement) {
-                console.log(`Updating unit ${unit.unit_name} points from ${unitElement.dataset.unitPoints} to ${unit.points}`);
-                
-                // Update the points display
-                const pointsElement = unitElement.querySelector('.unit-points');
-                if (pointsElement) {
-                    pointsElement.textContent = `${unit.points || 0}pts`;
-                    console.log(`Updated points display to: ${pointsElement.textContent}`);
-                } else {
-                    console.warn(`Points element not found for unit ${unit.unit_name}`);
-                }
-                
-                // Update the data attribute
-                unitElement.dataset.unitPoints = unit.points || 0;
-            } else {
-                console.warn(`Unit element not found for unit ${unit.unit_name} (key: ${unit.unit_key})`);
-            }
-        });
-    }
-
-    updateAvailableUnitsDOM() {
-        const availableList = CoreUtils.dom.getElement('available-units-list');
-        if (!availableList) {
-            console.warn('Available units list not found');
-            return;
-        }
-
-        console.log('Updating available units DOM for', this.availableUnits.length, 'units');
-
-        // Update each available unit's DOM element with new points
-        this.availableUnits.forEach(unit => {
-            const unitElement = availableList.querySelector(`[data-unit-key="${unit.unit_key}"]`);
-            if (unitElement) {
-                console.log(`Updating available unit ${unit.unit_name} points from ${unitElement.dataset.unitPoints} to ${unit.points}`);
-                
-                // Update the points display
-                const pointsElement = unitElement.querySelector('.unit-points');
-                if (pointsElement) {
-                    pointsElement.textContent = `${unit.points || 0}pts`;
-                    console.log(`Updated available unit points display to: ${pointsElement.textContent}`);
-                } else {
-                    console.warn(`Points element not found for available unit ${unit.unit_name}`);
-                }
-                
-                // Update the data attribute
-                unitElement.dataset.unitPoints = unit.points || 0;
-            } else {
-                console.warn(`Available unit element not found for unit ${unit.unit_name} (key: ${unit.unit_key})`);
-            }
-        });
-    }
 
     switchToTextMode() {
         this.entryMode = 'text';
@@ -431,7 +335,10 @@ class ArmyListForm extends BaseForm {
         item.className = 'unit-item';
         item.dataset.unitKey = unit.unit_key;
         item.dataset.unitName = unit.unit_name;
-        item.dataset.unitPoints = unit.points || 0;
+        
+        // Calculate points dynamically based on current MFM version
+        const points = this.calculateUnitPoints(unit);
+        item.dataset.unitPoints = points;
         
         item.innerHTML = `
             <div class="unit-info">
@@ -440,7 +347,7 @@ class ArmyListForm extends BaseForm {
                     ${unit.unit_type || 'Unknown Type'} • ${unit.data_sheet || 'Custom Unit'}
                 </div>
             </div>
-            <div class="unit-points">${unit.points || 0}pts</div>
+            <div class="unit-points">${points}pts</div>
         `;
 
         // Add click handler
@@ -525,9 +432,56 @@ class ArmyListForm extends BaseForm {
         });
     }
 
+    /**
+     * Calculate points for a unit based on current MFM version
+     * @param {Object} unit - The unit object
+     * @returns {number} Points value for the unit
+     */
+    calculateUnitPoints(unit) {
+        if (!unit) return 0;
+        
+        // Get current MFM version
+        const mfmVersion = window.MFMVersionSelector.getSelectedVersion('army-mfm-version');
+        
+        // If no MFM version selected, use the unit's stored points
+        if (!mfmVersion || mfmVersion === '') {
+            return parseInt(unit.points) || 0;
+        }
+        
+        // Try to get points from MFM data for this version
+        try {
+            if (typeof window.MFM_UNITS_UPDATED !== 'undefined' && unit.data_sheet) {
+                const factionKey = this.forceContext.faction.toUpperCase();
+                const factionData = window.MFM_UNITS_UPDATED.factions[factionKey];
+                
+                if (factionData && factionData.units[unit.data_sheet]) {
+                    const mfmUnit = factionData.units[unit.data_sheet];
+                    const pointsKey = `mfm_${mfmVersion.replace('.', '_')}_points`;
+                    
+                    // Find matching variant based on model count
+                    const modelCount = parseInt(unit.model_count) || 1;
+                    const matchingVariant = mfmUnit.variants.find(variant => 
+                        parseInt(variant.modelCount) === modelCount
+                    );
+                    
+                    if (matchingVariant && matchingVariant[pointsKey] !== undefined) {
+                        return parseInt(matchingVariant[pointsKey]) || 0;
+                    }
+                }
+            }
+        } catch (error) {
+            console.warn('Error calculating MFM points for unit:', unit.unit_name, error);
+        }
+        
+        // Fallback to stored points
+        return parseInt(unit.points) || 0;
+    }
+
     updateSummary() {
         const totalUnits = this.selectedUnits.length;
-        const totalPoints = this.selectedUnits.reduce((sum, unit) => sum + (parseInt(unit.points) || 0), 0);
+        const totalPoints = this.selectedUnits.reduce((sum, unit) => {
+            return sum + this.calculateUnitPoints(unit);
+        }, 0);
 
         const unitsCountElement = CoreUtils.dom.getElement('total-units-count');
         const pointsCountElement = CoreUtils.dom.getElement('total-points-count');
@@ -552,7 +506,9 @@ class ArmyListForm extends BaseForm {
         // If in picker mode, generate army list text from selected units
         if (this.entryMode === 'picker') {
             formData.armyListText = this.generateArmyListText();
-            formData.pointsValue = this.selectedUnits.reduce((sum, unit) => sum + (parseInt(unit.points) || 0), 0);
+            formData.pointsValue = this.selectedUnits.reduce((sum, unit) => {
+                return sum + this.calculateUnitPoints(unit);
+            }, 0);
         }
 
         // Get MFM version from the selector
@@ -700,11 +656,14 @@ class ArmyListForm extends BaseForm {
         let armyText = `Army List: ${CoreUtils.dom.getElement('army-name')?.value || 'Unnamed Army'}\n`;
         armyText += `Faction: ${this.forceContext.faction}\n`;
         armyText += `Detachment: ${this.forceContext.detachment || 'Not specified'}\n`;
-        armyText += `Total Points: ${this.selectedUnits.reduce((sum, unit) => sum + (parseInt(unit.points) || 0), 0)}\n\n`;
+        armyText += `Total Points: ${this.selectedUnits.reduce((sum, unit) => {
+            return sum + this.calculateUnitPoints(unit);
+        }, 0)}\n\n`;
         armyText += 'Units:\n';
 
         this.selectedUnits.forEach((unit, index) => {
-            armyText += `${index + 1}. ${unit.unit_name} (${unit.points || 0}pts)\n`;
+            const points = this.calculateUnitPoints(unit);
+            armyText += `${index + 1}. ${unit.unit_name} (${points}pts)\n`;
             if (unit.unit_type) {
                 armyText += `   Type: ${unit.unit_type}\n`;
             }
