@@ -14,7 +14,10 @@ class RequisitionForm extends BaseForm {
             redirectDelay: 2000
         });
 
-        this.init();
+        // Only initialize if the form exists
+        if (this.form) {
+            this.init();
+        }
     }
 
     // Standard requisition events with RP changes
@@ -381,7 +384,10 @@ function hideMessages() {
     FormUtilities.hideAllMessages();
 }
 
-// Initialize
+// Initialize only if the requisition form exists on this page
 document.addEventListener('DOMContentLoaded', () => {
-    window.requisitionForm = new RequisitionForm();
+    const requisitionForm = document.getElementById('add-requisition-form');
+    if (requisitionForm) {
+        window.requisitionForm = new RequisitionForm();
+    }
 });

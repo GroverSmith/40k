@@ -358,8 +358,12 @@ class BaseForm {
         if (this.config.clearCacheOnSuccess && Array.isArray(this.config.clearCacheOnSuccess)) {
             for (const cacheType of this.config.clearCacheOnSuccess) {
                 if (typeof UnifiedCache !== 'undefined') {
-                    await UnifiedCache.clearCache(cacheType);
-                    console.log(`Cleared ${cacheType} cache`);
+                    try {
+                        await UnifiedCache.clearCache(cacheType);
+                        console.log(`Cleared ${cacheType} cache`);
+                    } catch (error) {
+                        console.warn(`Failed to clear ${cacheType} cache:`, error);
+                    }
                 }
             }
         }

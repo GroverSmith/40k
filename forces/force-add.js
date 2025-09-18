@@ -24,8 +24,6 @@ class ForceForm extends BaseForm {
         // Setup MFM data handling
         this.setupMFMDataHandling();
         
-        // Setup MFM version handling
-        this.setupMFMVersionHandling();
 
         // Override loading state for force-specific messaging
         this.setupForceLoadingState();
@@ -204,84 +202,20 @@ class ForceForm extends BaseForm {
         });
     }
 
-    setupMFMVersionHandling() {
-        const mfmVersionSelect = document.getElementById('mfm-version');
-        if (!mfmVersionSelect) return;
-
-        // Check if MFM data is available
-        if (typeof window.MFM_BASE === 'undefined' || !window.MFM_BASE['mfm-versions']) {
-            console.warn('MFM versions data not available. Using fallback version list.');
-            this.populateFallbackMFMVersions();
-            return;
-        }
-
-        // Populate MFM versions from MFM data
-        this.populateMFMVersions();
-    }
-
-    populateMFMVersions() {
-        const mfmVersionSelect = document.getElementById('mfm-version');
-        if (!mfmVersionSelect) return;
-
-        const mfmVersions = window.MFM_BASE['mfm-versions'];
-        if (!mfmVersions) return;
-
-        // Clear existing options except the first one
-        mfmVersionSelect.innerHTML = '<option value="">Select MFM version...</option>';
-
-        // Sort versions and create options
-        const versions = Object.keys(mfmVersions).map(versionKey => {
-            const versionData = mfmVersions[versionKey];
-            return {
-                value: versionKey,
-                displayName: `MFM ${versionKey} (${versionData.date})`
-            };
-        }).sort((a, b) => a.value.localeCompare(b.value, undefined, { numeric: true }));
-
-        versions.forEach(version => {
-            const option = document.createElement('option');
-            option.value = version.value;
-            option.textContent = version.displayName;
-            mfmVersionSelect.appendChild(option);
-        });
-
-        // Set default to highest version
-        if (versions.length > 0) {
-            mfmVersionSelect.value = versions[versions.length - 1].value;
-        }
-    }
-
-    populateFallbackMFMVersions() {
-        const mfmVersionSelect = document.getElementById('mfm-version');
-        if (!mfmVersionSelect) return;
-
-        // Fallback MFM versions if MFM data is not available
-        const fallbackVersions = [
-            { value: '3.2', text: 'MFM 3.2 (Aug 25)' },
-            { value: '3.3', text: 'MFM 3.3 (Sep 25)' }
-        ];
-
-        fallbackVersions.forEach(version => {
-            const option = document.createElement('option');
-            option.value = version.value;
-            option.textContent = version.text;
-            mfmVersionSelect.appendChild(option);
-        });
-
-        // Set default to highest version
-        mfmVersionSelect.value = '3.3';
-    }
 
     getHighestMFMVersion() {
         // Check if MFM data is available
         if (typeof window.MFM_BASE === 'undefined' || !window.MFM_BASE['mfm-versions']) {
+            console.log('MFM data not available, using fallback version 3.3');
             return '3.3'; // Fallback to latest known version
         }
 
         const mfmVersions = window.MFM_BASE['mfm-versions'];
         const versions = Object.keys(mfmVersions).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
         
-        return versions.length > 0 ? versions[versions.length - 1] : '3.3';
+        const highestVersion = versions.length > 0 ? versions[versions.length - 1] : '3.3';
+        console.log('Using highest MFM version:', highestVersion);
+        return highestVersion;
     }
 
 
@@ -302,16 +236,6 @@ class ForceForm extends BaseForm {
             }
         }
 
-        // Supply limit validation
-        if (field.id === 'supply-limit' && value) {
-            const supply = parseInt(value);
-            if (supply < 0 || supply > 10000) {
-                return {
-                    isValid: false,
-                    errorMessage: 'Supply limit must be between 0 and 10,000.'
-                };
-            }
-        }
 
         return { isValid: true };
     }
@@ -350,8 +274,8 @@ class ForceForm extends BaseForm {
             force_name: formData.forceName,      // Map forceName to force_name
             faction: formData.faction,
             detachment: detachmentValue,
-            supply_limit: formData.supplyLimit || 1000,  // Default to 1000 if not provided
-            mfm_version: formData.mfmVersion || this.getHighestMFMVersion(),  // Default to highest version
+            supply_limit: 1000,  // Fixed default value
+            mfm_version: this.getHighestMFMVersion(),  // Default to highest version
             notes: formData.notes || '',
             timestamp: formData.timestamp
         };
@@ -363,8 +287,17 @@ class ForceForm extends BaseForm {
         
         // Also manually clear forces and requisitions cache using UnifiedCache
         if (typeof UnifiedCache !== 'undefined') {
-            await UnifiedCache.clearCache('forces');
-            await UnifiedCache.clearCache('requisitions');
+            try {
+                await UnifiedCache.clearCache('forces');
+            } catch (error) {
+                console.warn('Failed to clear forces cache:', error);
+            }
+            
+            try {
+                await UnifiedCache.clearCache('requisitions');
+            } catch (error) {
+                console.warn('Failed to clear requisitions cache (may not exist yet):', error);
+            }
         }
     }
 
@@ -429,6 +362,12 @@ class ForceForm extends BaseForm {
             // Check if RequisitionForm is available
             if (typeof RequisitionForm === 'undefined') {
                 console.warn('RequisitionForm not available, skipping initial requisition creation');
+                return;
+            }
+
+            // Check if the static method is available
+            if (typeof RequisitionForm.createInitialForceCreationRequisition !== 'function') {
+                console.warn('RequisitionForm.createInitialForceCreationRequisition not available, skipping initial requisition creation');
                 return;
             }
 
