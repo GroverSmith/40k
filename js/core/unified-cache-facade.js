@@ -40,6 +40,7 @@ class UnifiedCacheFacade {
             users: 24 * 60 * 60 * 1000, // 24 hours
             crusades: 24 * 60 * 60 * 1000, // 24 hours
             forces: 24 * 60 * 60 * 1000, // 24 hours
+            requisitions: 30 * 60 * 1000, // 30 minutes
             armies: 60 * 60 * 1000, // 1 hour
             xref_crusade_participants: 24 * 60 * 60 * 1000, // 24 hours
             battle_history: 30 * 60 * 1000, // 30 minutes

@@ -67,6 +67,24 @@
                 <small class="help-text">Enter a custom detachment name if not found in the list above.</small>
             </div>
             
+            <!-- Supply Limit -->
+            <div class="form-group">
+                <label for="supply-limit">Supply Limit</label>
+                <input type="number" id="supply-limit" name="supplyLimit" value="1000" min="0" max="10000"
+                       placeholder="1000">
+                <small class="help-text">Starting supply limit for this force (default: 1000).</small>
+            </div>
+            
+            <!-- MFM Version -->
+            <div class="form-group">
+                <label for="mfm-version">MFM Version</label>
+                <select id="mfm-version" name="mfmVersion" required>
+                    <option value="">Select MFM version...</option>
+                    <!-- MFM versions will be populated dynamically -->
+                </select>
+                <small class="help-text">The MFM (Matched Play Format) version for this force.</small>
+            </div>
+            
             <!-- Notes -->
             <div class="form-group">
                 <label for="notes">Notes</label>

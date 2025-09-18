@@ -1,0 +1,124 @@
+<!-- filename: requisitions/requisition-add.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Requisition - 40k Crusade Campaign Tracker</title>
+    <meta name="description" content="Record a new requisition for your Crusade Force.">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../css/variables.css">
+	<link rel="stylesheet" href="../css/base.css">
+	<link rel="stylesheet" href="../css/buttons-unified.css">
+	<link rel="stylesheet" href="../css/components-unified.css">
+    <link rel="stylesheet" href="../css/forms-unified.css">
+	<link rel="stylesheet" href="../css/force-page.css">
+	<link rel="stylesheet" href="../css/responsive.css">
+	<link rel="stylesheet" href="../css/user-dropdown.css">
+	<link rel="stylesheet" href="../css/modal.css">
+	<link rel="stylesheet" href="../css/user-field.css">
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-button">← Back to Campaign Tracker</a>
+        
+        <header class="form-header">
+            <h1>📋 Record New Requisition</h1>
+            <p>Record a requisition point change for your Crusade Force.</p>
+        </header>
+        
+        <form id="add-requisition-form" class="army-form">
+            
+            <!-- Force Selection -->
+            <div class="form-group">
+                <label for="force-key">Force <span class="required">*</span></label>
+                <select id="force-key" name="forceKey" required>
+                    <option value="">Select force...</option>
+                    <!-- Forces will be populated dynamically -->
+                </select>
+                <small class="help-text">The force this requisition applies to.</small>
+            </div>
+            
+            <!-- Event Name -->
+            <div class="form-group">
+                <label for="event-name">Event Name <span class="required">*</span></label>
+                <input type="text" id="event-name" name="eventName" required 
+                       placeholder="e.g., Battle Victory, Campaign Event, etc.">
+                <small class="help-text">The name of the event that triggered this requisition.</small>
+            </div>
+            
+            <!-- RP Change -->
+            <div class="form-group">
+                <label for="rp-change">Requisition Points Change <span class="required">*</span></label>
+                <input type="number" id="rp-change" name="rpChange" required 
+                       placeholder="e.g., +5, -2, +10" min="-100" max="100">
+                <small class="help-text">Positive for gains, negative for losses.</small>
+            </div>
+            
+            <!-- Notes -->
+            <div class="form-group">
+                <label for="notes">Notes</label>
+                <textarea id="notes" name="notes" rows="4"
+                          placeholder="Additional details about this requisition..."></textarea>
+                <small class="help-text">Any additional information about this requisition (optional).</small>
+            </div>
+            
+            <!-- Submit Buttons -->
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="history.back()">Cancel</button>
+                <button type="submit" class="btn-primary" id="submit-btn">
+                    <span class="btn-text">Record Requisition</span>
+                    <span class="btn-loading" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        Recording...
+                    </span>
+                </button>
+            </div>
+        </form>
+        
+        <!-- Success Message -->
+        <div id="success-message" class="message success" style="display: none;">
+            <h3>✅ Requisition Recorded Successfully!</h3>
+            <p>Your requisition has been recorded and is ready for tracking!</p>
+            <div class="message-actions">
+                <button onclick="resetForm()" class="btn-secondary">Record Another Requisition</button>
+                <a href="../index.html" class="btn-primary">Back to Campaign Tracker</a>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="error-message" class="message error" style="display: none;">
+            <h3>❌ Recording Failed</h3>
+            <p id="error-text">There was an error recording your requisition. Please try again.</p>
+            <div class="message-actions">
+                <button onclick="hideMessages()" class="btn-primary">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="../js/core/utils.js"></script>
+    <script src="../js/core/config.js"></script>
+    <script src="../js/core/key-utils.js"></script>
+
+    <!-- NEW consolidated utilities -->
+    <script src="../js/core/form-utilities.js"></script>
+    <script src="../js/core/ui-helpers.js"></script>
+
+    <!-- UnifiedCache dependencies -->
+    <script src="../js/table-defs.js"></script>
+    <script src="../js/core/unified-cache-facade.js"></script>
+    
+    <!-- User modules -->
+    <script src="../js/users/user-storage.js"></script>
+    <script src="../js/users/user-api.js"></script>
+    <script src="../js/users/user-ui.js"></script>
+    <script src="../js/users/user-modal.js"></script>
+    <script src="../js/users/user-manager.js"></script>
+
+    <!-- Form modules -->
+    <script src="../js/core/form-base.js"></script>
+    <script src="requisition-add.js"></script>
+</body>
+</html>

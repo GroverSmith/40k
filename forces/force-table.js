@@ -27,8 +27,8 @@ const ForceTable = {
                 responsiveColumns: this.getResponsiveColumns()
             },
             'user': {
-                columns: ['force', 'faction', 'detachment', 'battles', 'joined'],
-                headers: ['Force Name', 'Faction', 'Detachment', 'Battles', 'Created'],
+                columns: ['force', 'faction', 'detachment', 'supply_limit', 'mfm_version', 'joined'],
+                headers: ['Force Name', 'Faction', 'Detachment', 'Supply Limit', 'MFM Version', 'Created'],
                 tableId: 'user-forces-table',
                 buildRow: this.buildForceRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('timestamp'),
@@ -36,12 +36,12 @@ const ForceTable = {
                 errorMessage: 'Failed to load user forces.',
                 responsiveColumns: {
                     mobile: {
-                        columns: ['force', 'faction', 'battles'],
-                        headers: ['Force Name', 'Faction', 'Battles']
+                        columns: ['force', 'faction'],
+                        headers: ['Force Name', 'Faction']
                     },
                     tablet: {
-                        columns: ['force', 'faction', 'battles'],
-                        headers: ['Force Name', 'Faction', 'Battles']
+                        columns: ['force', 'faction', 'mfm_version'],
+                        headers: ['Force Name', 'Faction', 'MFM Version']
                     }
                     // desktop uses default columns
                 }
@@ -78,8 +78,10 @@ const ForceTable = {
             commander: userName,
             faction: faction,
             detachment: detachment,
+            supply_limit: force.supply_limit || '1000',
+            mfm_version: force.mfm_version || '3.3',
             joined: TableBase.formatters.date(timestamp),
-            supply: force.supply_limit || '-',
+            supply: force.supply_limit || '1000',
             battles: force.battle_count || '0',
             points: force.total_points || '0'
         };

@@ -83,6 +83,8 @@ class ForceDetails {
                <p><strong>Force Name:</strong> ${this.forceData.force_name}</p>
                <p><strong>Faction:</strong> ${this.forceData.faction}</p>
                <p><strong>Detachment:</strong> ${this.forceData.detachment || 'Not specified'}</p>
+               <p><strong>Supply Limit:</strong> ${this.forceData.supply_limit || '1000'}</p>
+               <p><strong>MFM Version:</strong> ${this.forceData.mfm_version || '3.3'}</p>
                <p><strong>Commander:</strong> ${this.forceData.user_name}</p>
                ${this.forceData.timestamp ? `<p><strong>Created:</strong> ${new Date(this.forceData.timestamp).toLocaleDateString()}</p>` : ''}
            </div>
@@ -493,6 +495,8 @@ class ForceDetails {
                force_name: this.forceData.force_name,
                faction: this.forceData.faction,
                detachment: this.forceData.detachment || '',
+               supply_limit: this.forceData.supply_limit || 1000,
+               mfm_version: this.forceData.mfm_version || '3.3',
                notes: newNotes
            };
 

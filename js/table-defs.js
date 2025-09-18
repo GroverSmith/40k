@@ -35,7 +35,17 @@ const TableDefs = {
         primaryKey: 'force_key',
         columns: [
             'force_key', 'user_key', 'user_name', 'force_name', 'faction', 
-            'detachment', 'notes', 'timestamp', 'deleted_timestamp'
+            'detachment', 'supply_limit', 'mfm_version', 'notes', 'timestamp', 'deleted_timestamp'
+        ]
+    },  
+    
+    requisitions: {
+        url: 'https://script.google.com/macros/s/AKfycbx97L12YSOydCbBKvG3LBTFF2waomMlfBfL2y3FOxzm3YlNG1dhHdw-sIvId3TQ8uNgpw/exec', // TODO: Replace with actual deployed script URL
+        sheetId: '1nBxgMlp1MZo5Ia9C53vmTmHKsStHVrJxZS-AtcRdjMc',
+        sheetName: 'requisitions',
+        primaryKey: 'requisition_key',
+        columns: [
+            'requisition_key', 'force_key', 'rp_change', 'event_name', 'notes', 'timestamp', 'deleted_timestamp'
         ]
     },  
     
