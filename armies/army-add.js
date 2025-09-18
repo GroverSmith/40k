@@ -40,8 +40,8 @@ class ArmyListForm extends BaseForm {
         // Load units for picker mode
         this.loadUnitsForPicker();
 
-        // Setup custom form submission handler
-        this.setupFormSubmission();
+        // Note: We override handleSubmit method instead of adding event listener
+        // to avoid conflicts with the base form class
     }
 
     loadForceContext() {
@@ -410,67 +410,44 @@ class ArmyListForm extends BaseForm {
         };
     }
 
-    async handleSubmit(event) {
-        event.preventDefault();
-        
-        if (!this.validateForm()) {
-            return;
+    async submitToGoogleSheets(data) {
+        if (!this.config.submitUrl) {
+            throw new Error('Submit URL not configured');
         }
 
-        try {
-            // Show loading state
-            this.setLoadingState(true);
-            
-            // Gather form data
-            const formData = this.gatherFormData();
-            
-            // Submit the army first
-            const response = await fetch(this.config.submitUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'create',
-                    data: formData
-                })
-            });
+        const response = await fetch(this.config.submitUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(data).toString()
+        });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
 
-            const result = await response.json();
-            
-            if (result.success) {
-                // If in picker mode, save the unit relationships
-                if (this.entryMode === 'picker' && this.selectedUnits.length > 0) {
-                    await this.saveUnitRelationships(result.data.army_key);
-                }
-                
-                // Show success message
-                FormUtilities.showSuccess(this.config.successMessage);
-                
-                // Clear cache if configured
-                if (this.config.clearCacheOnSuccess) {
-                    this.config.clearCacheOnSuccess.forEach(table => {
-                        if (window.UnifiedCache) {
-                            window.UnifiedCache.clearCache(table);
-                        }
-                    });
-                }
-                
-                // Reset form
-                this.resetForm();
+        const result = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.error || this.config.errorMessage);
+        }
+
+        // Debug: Log the result structure to understand the response format
+        console.log('Army creation result:', result);
+
+        // If in picker mode, save the unit relationships
+        if (this.entryMode === 'picker' && this.selectedUnits.length > 0) {
+            // The army key is returned as result.key from the Google Apps Script
+            const armyKey = result.key;
+            if (armyKey) {
+                await this.saveUnitRelationships(armyKey);
             } else {
-                throw new Error(result.error || 'Unknown error occurred');
+                console.warn('Could not find army key in response:', result);
             }
-        } catch (error) {
-            console.error('Form submission error:', error);
-            FormUtilities.showError(this.config.errorMessage + ': ' + error.message);
-        } finally {
-            this.setLoadingState(false);
         }
+
+        return result;
     }
 
     async saveUnitRelationships(armyKey) {
