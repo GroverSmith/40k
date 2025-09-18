@@ -588,6 +588,98 @@ class UnifiedCacheFacade {
     }
 
     /**
+     * Get units with MFM version context - overrides MFM version and points based on selected version
+     * @param {string} mfmVersion - The MFM version to use for points override
+     * @param {object} criteria - Optional criteria to filter units (e.g., {force_key: 'some-key'})
+     * @returns {Array} Units with MFM version and points overridden
+     */
+    async getUnitsWithMFMVersion(mfmVersion, criteria = {}) {
+        // Get all units from cache
+        const allUnits = await this.getAllRows('units');
+        
+        // Filter by criteria if provided
+        let filteredUnits = allUnits;
+        if (Object.keys(criteria).length > 0) {
+            filteredUnits = allUnits.filter(unit => {
+                return Object.entries(criteria).every(([field, value]) => unit[field] === value);
+            });
+        }
+
+        // Get all forces to map force_key to faction
+        const allForces = await this.getAllRows('forces');
+        const forceFactionMap = {};
+        allForces.forEach(force => {
+            if (force.force_key && force.faction) {
+                forceFactionMap[force.force_key] = force.faction;
+            }
+        });
+
+        console.log('Force faction mapping:', forceFactionMap);
+
+        // Override MFM version and points for each unit
+        return filteredUnits.map(unit => {
+            const overriddenUnit = { ...unit };
+            
+            // Override MFM version
+            overriddenUnit.mfm_version = mfmVersion;
+            
+            // Override points based on MFM version
+            if (typeof window.MFM_UNITS_UPDATED !== 'undefined' && unit.data_sheet && unit.force_key) {
+                // Get faction from force
+                const faction = forceFactionMap[unit.force_key];
+                const factionKey = faction?.toUpperCase();
+                const unitName = unit.data_sheet;
+                
+                console.log(`Checking MFM override for unit: ${unit.unit_name}`);
+                console.log(`Unit force_key: ${unit.force_key}`);
+                console.log(`Force faction: ${faction}`);
+                console.log(`Data sheet: ${unitName}`);
+                console.log(`Available MFM factions:`, Object.keys(window.MFM_UNITS_UPDATED.factions));
+                
+                if (factionKey && window.MFM_UNITS_UPDATED.factions[factionKey]) {
+                    const factionData = window.MFM_UNITS_UPDATED.factions[factionKey];
+                    const mfmUnit = factionData.units[unitName];
+                    
+                    console.log(`Found faction data for ${factionKey}, looking for unit: ${unitName}`);
+                    
+                    if (mfmUnit && mfmUnit.variants && mfmUnit.variants.length > 0) {
+                        console.log(`Found MFM unit ${unitName} with ${mfmUnit.variants.length} variants`);
+                        
+                        // Find the variant that matches the unit's model count
+                        const modelCount = parseInt(unit.model_count) || 1;
+                        const matchingVariant = mfmUnit.variants.find(variant => 
+                            variant.modelCount === modelCount
+                        ) || mfmUnit.variants[0]; // Fallback to first variant
+                        
+                        console.log(`Using variant with modelCount: ${matchingVariant.modelCount}`);
+                        
+                        // Get points for the specified MFM version
+                        const pointsKey = `mfm_${mfmVersion.replace('.', '_')}_points`;
+                        const mfmPoints = matchingVariant[pointsKey];
+                        
+                        console.log(`Looking for points key: ${pointsKey}, found: ${mfmPoints}`);
+                        
+                        if (mfmPoints !== undefined) {
+                            console.log(`Overriding points for ${unit.unit_name} from ${unit.points} to ${mfmPoints}`);
+                            overriddenUnit.points = mfmPoints.toString();
+                        } else {
+                            console.log(`No points found for ${pointsKey} in variant`);
+                        }
+                    } else {
+                        console.log(`No MFM unit found for ${unitName} in faction ${factionKey}`);
+                    }
+                } else {
+                    console.log(`No faction data found for ${factionKey} or faction key is missing`);
+                }
+            } else {
+                console.log(`MFM_UNITS_UPDATED not available, unit has no data_sheet (${unit.data_sheet}), or unit has no force_key (${unit.force_key})`);
+            }
+            
+            return overriddenUnit;
+        });
+    }
+
+    /**
      * Clear cache for a specific sheet
      */
     async clearCache(sheetName) {

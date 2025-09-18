@@ -334,5 +334,20 @@ window.MFMVersionSelector = {
             CoreUtils.dom.hide(document.getElementById(`mfm-preset-container-${containerId}`));
             CoreUtils.dom.show(document.getElementById(`mfm-custom-container-${containerId}`));
         }
+    },
+
+    /**
+     * Get units with MFM version context - utility method that calls UnifiedCache
+     * @param {string} mfmVersion - The MFM version to use for points override
+     * @param {object} criteria - Optional criteria to filter units
+     * @returns {Promise<Array>} Units with MFM version and points overridden
+     */
+    async getUnitsWithMFMVersion(mfmVersion, criteria = {}) {
+        if (typeof window.UnifiedCache === 'undefined') {
+            console.warn('UnifiedCache not available');
+            return [];
+        }
+        
+        return await window.UnifiedCache.getUnitsWithMFMVersion(mfmVersion, criteria);
     }
 };

@@ -168,7 +168,134 @@ class ArmyListForm extends BaseForm {
         // Initialize the component
         window.MFMVersionSelector.initialize('army-mfm-version', (version) => {
             console.log('MFM version changed to:', version);
-            // You can add any additional logic here if needed
+            // Reload units with the new MFM version context
+            this.reloadUnitsWithMFMVersion(version);
+        });
+    }
+
+    async reloadUnitsWithMFMVersion(mfmVersion) {
+        if (!this.forceContext.forceKey) {
+            console.warn('No force key available for reloading units');
+            return;
+        }
+
+        try {
+            // Reload units with the new MFM version context
+            const units = await UnifiedCache.getUnitsWithMFMVersion(mfmVersion, {
+                force_key: this.forceContext.forceKey
+            });
+
+            this.availableUnits = units || [];
+            console.log(`Reloaded ${this.availableUnits.length} units with MFM version ${mfmVersion}`);
+            
+            // Debug: log the points of the first few units
+            this.availableUnits.slice(0, 3).forEach(unit => {
+                console.log(`Available unit ${unit.unit_name}: ${unit.points} points (MFM version: ${unit.mfm_version})`);
+            });
+            
+            // Update selected units with new MFM version points
+            this.updateSelectedUnitsWithMFMVersion(mfmVersion);
+            
+            // Update the UI if we're in picker mode
+            if (this.entryMode === 'picker') {
+                this.updateAvailableUnitsDOM(); // Update existing DOM elements with new points
+                this.updateSummary(); // Update points totals with new MFM version
+            }
+        } catch (error) {
+            console.error('Error reloading units with MFM version:', error);
+        }
+    }
+
+    async updateSelectedUnitsWithMFMVersion(mfmVersion) {
+        if (this.selectedUnits.length === 0) return;
+
+        try {
+            // Get all units with the new MFM version context
+            const allUnitsWithMFM = await UnifiedCache.getUnitsWithMFMVersion(mfmVersion, {
+                force_key: this.forceContext.forceKey
+            });
+
+            // Update selected units with new points from MFM version
+            this.selectedUnits = this.selectedUnits.map(selectedUnit => {
+                const updatedUnit = allUnitsWithMFM.find(unit => 
+                    unit.unit_key === selectedUnit.unit_key
+                );
+                if (updatedUnit) {
+                    console.log(`Selected unit ${selectedUnit.unit_name}: points changed from ${selectedUnit.points} to ${updatedUnit.points}`);
+                }
+                return updatedUnit || selectedUnit; // Keep original if not found
+            });
+
+            // Update the DOM elements to reflect the new points
+            this.updateSelectedUnitsDOM();
+
+            console.log(`Updated ${this.selectedUnits.length} selected units with MFM version ${mfmVersion}`);
+        } catch (error) {
+            console.error('Error updating selected units with MFM version:', error);
+        }
+    }
+
+    updateSelectedUnitsDOM() {
+        const selectedList = CoreUtils.dom.getElement('selected-units-list');
+        if (!selectedList) {
+            console.warn('Selected units list not found');
+            return;
+        }
+
+        console.log('Updating selected units DOM for', this.selectedUnits.length, 'units');
+        
+        // Update each selected unit's DOM element with new points
+        this.selectedUnits.forEach(unit => {
+            const unitElement = selectedList.querySelector(`[data-unit-key="${unit.unit_key}"]`);
+            if (unitElement) {
+                console.log(`Updating unit ${unit.unit_name} points from ${unitElement.dataset.unitPoints} to ${unit.points}`);
+                
+                // Update the points display
+                const pointsElement = unitElement.querySelector('.unit-points');
+                if (pointsElement) {
+                    pointsElement.textContent = `${unit.points || 0}pts`;
+                    console.log(`Updated points display to: ${pointsElement.textContent}`);
+                } else {
+                    console.warn(`Points element not found for unit ${unit.unit_name}`);
+                }
+                
+                // Update the data attribute
+                unitElement.dataset.unitPoints = unit.points || 0;
+            } else {
+                console.warn(`Unit element not found for unit ${unit.unit_name} (key: ${unit.unit_key})`);
+            }
+        });
+    }
+
+    updateAvailableUnitsDOM() {
+        const availableList = CoreUtils.dom.getElement('available-units-list');
+        if (!availableList) {
+            console.warn('Available units list not found');
+            return;
+        }
+
+        console.log('Updating available units DOM for', this.availableUnits.length, 'units');
+
+        // Update each available unit's DOM element with new points
+        this.availableUnits.forEach(unit => {
+            const unitElement = availableList.querySelector(`[data-unit-key="${unit.unit_key}"]`);
+            if (unitElement) {
+                console.log(`Updating available unit ${unit.unit_name} points from ${unitElement.dataset.unitPoints} to ${unit.points}`);
+                
+                // Update the points display
+                const pointsElement = unitElement.querySelector('.unit-points');
+                if (pointsElement) {
+                    pointsElement.textContent = `${unit.points || 0}pts`;
+                    console.log(`Updated available unit points display to: ${pointsElement.textContent}`);
+                } else {
+                    console.warn(`Points element not found for available unit ${unit.unit_name}`);
+                }
+                
+                // Update the data attribute
+                unitElement.dataset.unitPoints = unit.points || 0;
+            } else {
+                console.warn(`Available unit element not found for unit ${unit.unit_name} (key: ${unit.unit_key})`);
+            }
         });
     }
 
@@ -232,12 +359,16 @@ class ArmyListForm extends BaseForm {
         }
 
         try {
-            // Load units from the force - use cache to avoid rate limiting
-            const allUnits = await UnifiedCache.getAllRows('units', false);
-            const units = allUnits.filter(unit => unit.force_key === this.forceContext.forceKey);
+            // Get the current MFM version from the selector
+            const mfmVersion = window.MFMVersionSelector.getSelectedVersion('army-mfm-version');
+            
+            // Load units with MFM version context - this will override points based on the selected MFM version
+            const units = await UnifiedCache.getUnitsWithMFMVersion(mfmVersion, {
+                force_key: this.forceContext.forceKey
+            });
 
             this.availableUnits = units || [];
-            console.log('Loaded units for picker:', this.availableUnits.length);
+            console.log(`Loaded ${this.availableUnits.length} units for picker with MFM version ${mfmVersion}`);
             
             // If we're currently in picker mode, populate the available units
             if (this.entryMode === 'picker') {

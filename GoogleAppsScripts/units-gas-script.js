@@ -80,31 +80,32 @@ function editUnit(unitKey, userKey, data) {
     userKey,                       // user_key - Column 1
     data.force_key || '',          // force_key - Column 2
     data.data_sheet || '',         // data_sheet - Column 3
-    data.unit_name || '',          // unit_name - Column 4
-    data.unit_type || '',          // unit_type - Column 5
-    data.mfm_version || '',        // mfm_version - Column 6
-    data.points || '',             // points - Column 7
-    data.crusade_points || '',     // crusade_points - Column 8
-    data.wargear || '',            // wargear - Column 9
-    data.enhancements || '',       // enhancements - Column 10
-    data.relics || '',             // relics - Column 11
-    data.battle_traits || '',      // battle_traits - Column 12
-    data.battle_scars || '',       // battle_scars - Column 13
-    data.battle_count || '',       // battle_count - Column 14
-    data.xp || '',                 // xp - Column 15
-    data.rank || '',               // rank - Column 16
-    data.kill_count || '',         // kill_count - Column 17
-    data.times_killed || '',       // times_killed - Column 18
-    data.description || '',        // description - Column 19
-    data.notable_history || '',    // notable_history - Column 20
-    data.notes || '',              // notes - Column 21
-    timestamp,                     // timestamp - Column 22
-    ''                             // deleted_timestamp - Column 23 (keep empty)
+    data.model_count || 1,         // model_count - Column 4
+    data.unit_name || '',          // unit_name - Column 5
+    data.unit_type || '',          // unit_type - Column 6
+    data.mfm_version || '',        // mfm_version - Column 7
+    data.points || '',             // points - Column 8
+    data.crusade_points || '',     // crusade_points - Column 9
+    data.wargear || '',            // wargear - Column 10
+    data.enhancements || '',       // enhancements - Column 11
+    data.relics || '',             // relics - Column 12
+    data.battle_traits || '',      // battle_traits - Column 13
+    data.battle_scars || '',       // battle_scars - Column 14
+    data.battle_count || '',       // battle_count - Column 15
+    data.xp || '',                 // xp - Column 16
+    data.rank || '',               // rank - Column 17
+    data.kill_count || '',         // kill_count - Column 18
+    data.times_killed || '',       // times_killed - Column 19
+    data.description || '',        // description - Column 20
+    data.notable_history || '',    // notable_history - Column 21
+    data.notes || '',              // notes - Column 22
+    timestamp,                     // timestamp - Column 23
+    ''                             // deleted_timestamp - Column 24 (keep empty)
   ];
   
   // Update the row
   sheet.getRange(rowIndex, 1, 1, updatedRowData.length).setValues([updatedRowData]);
-  sheet.getRange(rowIndex, 23).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  sheet.getRange(rowIndex, 24).setNumberFormat('yyyy-mm-dd hh:mm:ss');
   
   return { success: true, message: 'Unit updated successfully' };
 }
@@ -244,6 +245,7 @@ function doPost(e) {
         'user_key',
         'force_key',
         'data_sheet',
+        'model_count',
         'unit_name',
         'unit_type',
         'mfm_version',
@@ -278,8 +280,8 @@ function doPost(e) {
       sheet.setColumnWidth(1, 200); // Key
       sheet.setColumnWidth(2, 150); // User Key
       sheet.setColumnWidth(3, 150); // Force Key
-      sheet.setColumnWidth(4, 150); // Name Xref Key
-      sheet.setColumnWidth(5, 150); // Data Sheet
+      sheet.setColumnWidth(4, 150); // Data Sheet
+      sheet.setColumnWidth(5, 80);  // Model Count
       sheet.setColumnWidth(6, 200); // Name
       sheet.setColumnWidth(7, 100); // Type
       sheet.setColumnWidth(8, 100); // MFM Version
@@ -323,6 +325,7 @@ function doPost(e) {
       userKey || '',                  // user_key
       data.forceKey || '',            // force_key
       data.dataSheet || '',           // data_sheet
+      data.modelCount || 1,           // model_count
       data.name || '',                // unit_name
       data.type || '',                // unit_type
       data.mfmVersion || '',          // mfm_version
@@ -351,16 +354,17 @@ function doPost(e) {
     sheet.getRange(newRowNumber, 1, 1, rowData.length).setValues([rowData]);
     
     // Format numeric columns
+    sheet.getRange(newRowNumber, 5).setNumberFormat('#,##0'); // Model Count
     sheet.getRange(newRowNumber, 9).setNumberFormat('#,##0'); // Points
     sheet.getRange(newRowNumber, 10).setNumberFormat('#,##0'); // Crusade Points
-    sheet.getRange(newRowNumber, 16).setNumberFormat('#,##0'); // Battle Count
-    sheet.getRange(newRowNumber, 17).setNumberFormat('#,##0'); // XP
-    sheet.getRange(newRowNumber, 19).setNumberFormat('#,##0'); // Kill Count
-    sheet.getRange(newRowNumber, 20).setNumberFormat('#,##0'); // Times Killed
+    sheet.getRange(newRowNumber, 17).setNumberFormat('#,##0'); // Battle Count
+    sheet.getRange(newRowNumber, 18).setNumberFormat('#,##0'); // XP
+    sheet.getRange(newRowNumber, 20).setNumberFormat('#,##0'); // Kill Count
+    sheet.getRange(newRowNumber, 21).setNumberFormat('#,##0'); // Times Killed
     
     // Set text wrapping for long text fields
     sheet.getRange(newRowNumber, 11, 1, 5).setWrap(true); // Wargear through Battle Scars
-    sheet.getRange(newRowNumber, 21, 1, 3).setWrap(true); // Description through Notes
+    sheet.getRange(newRowNumber, 22, 1, 3).setWrap(true); // Description through Notes
     
     console.log('Unit saved successfully');
     

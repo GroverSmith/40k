@@ -83,7 +83,7 @@ const TableDefs = {
         sheetName: 'units',
         primaryKey: 'unit_key',
         columns: [
-            'unit_key', 'user_key', 'force_key', 'data_sheet', 'unit_name', 'unit_type',
+            'unit_key', 'user_key', 'force_key', 'data_sheet', 'model_count', 'unit_name', 'unit_type',
             'mfm_version', 'points', 'crusade_points', 'wargear', 'enhancements', 'relics',
             'battle_traits', 'battle_scars', 'battle_count', 'xp', 'rank', 'kill_count',
             'times_killed', 'description', 'notable_history', 'notes', 'timestamp', 'deleted_timestamp'
