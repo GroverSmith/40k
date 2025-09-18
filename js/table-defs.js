@@ -40,7 +40,7 @@ const TableDefs = {
     },  
     
     requisitions: {
-        url: 'https://script.google.com/macros/s/AKfycbx97L12YSOydCbBKvG3LBTFF2waomMlfBfL2y3FOxzm3YlNG1dhHdw-sIvId3TQ8uNgpw/exec', // TODO: Replace with actual deployed script URL
+        url: 'https://script.google.com/macros/s/AKfycbx97L12YSOydCbBKvG3LBTFF2waomMlfBfL2y3FOxzm3YlNG1dhHdw-sIvId3TQ8uNgpw/exec', 
         sheetId: '1nBxgMlp1MZo5Ia9C53vmTmHKsStHVrJxZS-AtcRdjMc',
         sheetName: 'requisitions',
         primaryKey: 'requisition_key',
