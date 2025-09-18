@@ -83,13 +83,8 @@
                 <small class="help-text">Give your army list a descriptive name.</small>
             </div>
             
-            <!-- MFM Version -->
-            <div class="form-group">
-                <label for="mfm-version">MFM Version</label>
-                <input type="text" id="mfm-version" name="mfmVersion" 
-                       placeholder="e.g., 2024.1, 2024.2, etc.">
-                <small class="help-text">Munitorum Field Manual version used (optional).</small>
-            </div>
+            <!-- MFM Version Selector -->
+            <div id="mfm-version-selector-container"></div>
             
             <!-- Points Value -->
             <div class="form-group" id="points-value-section">
@@ -228,6 +223,10 @@ The entire text will be stored for reference and display."></textarea>
     <script src="../js/users/user-manager.js"></script>
 
     <!-- Other dependencies -->
+    
+    <!-- MFM Data Files -->
+    <script src="../mfm/mfm-base.js"></script>
+    <script src="../mfm/mfm-units.js"></script>
 
     <!-- Form modules -->
     <script src="../js/core/form-base.js"></script>

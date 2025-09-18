@@ -40,6 +40,9 @@ class ArmyListForm extends BaseForm {
         // Load units for picker mode
         this.loadUnitsForPicker();
 
+        // Initialize MFM version selector
+        this.initializeMFMVersionSelector();
+
         // Note: We override handleSubmit method instead of adding event listener
         // to avoid conflicts with the base form class
     }
@@ -145,6 +148,28 @@ class ArmyListForm extends BaseForm {
                 }
             });
         }
+    }
+
+    initializeMFMVersionSelector() {
+        const container = CoreUtils.dom.getElement('mfm-version-selector-container');
+        if (!container) {
+            console.warn('MFM version selector container not found');
+            return;
+        }
+
+        // Generate and insert the HTML
+        const html = window.MFMVersionSelector.generateHTML(
+            'army-mfm-version', 
+            false, 
+            'Munitorum Field Manual version used (optional)'
+        );
+        container.innerHTML = html;
+
+        // Initialize the component
+        window.MFMVersionSelector.initialize('army-mfm-version', (version) => {
+            console.log('MFM version changed to:', version);
+            // You can add any additional logic here if needed
+        });
     }
 
     switchToTextMode() {
@@ -398,6 +423,9 @@ class ArmyListForm extends BaseForm {
             formData.armyListText = this.generateArmyListText();
             formData.pointsValue = this.selectedUnits.reduce((sum, unit) => sum + (parseInt(unit.points) || 0), 0);
         }
+
+        // Get MFM version from the selector
+        formData.mfmVersion = window.MFMVersionSelector.getSelectedVersion('army-mfm-version');
 
         // Ensure force context is included
         return {

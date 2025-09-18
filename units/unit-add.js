@@ -32,17 +32,35 @@ class UnitForm extends BaseForm {
         // Load shared components
         UnitFormUtilities.createUnitTypeGroupComponent('unit-type-container');
 
+        // Initialize MFM version selector
+        this.initializeMFMVersionSelector();
+        
         // Setup MFM integration
         await UnitFormUtilities.setupMFMIntegration(this.form, this.forceContext.faction);
         
-        // Ensure version selector is set up (additional safety check)
-        UnitFormUtilities.setupVersionSelector();
-        
-        // Listen for MFM version changes
-        document.addEventListener('mfmVersionChanged', (event) => {
-            this.handleMFMVersionChange(event.detail.version);
+    }
+
+    initializeMFMVersionSelector() {
+        const container = CoreUtils.dom.getElement('mfm-version-selector-container');
+        if (!container) {
+            console.warn('MFM version selector container not found');
+            return;
+        }
+
+        // Generate and insert the HTML
+        const html = window.MFMVersionSelector.generateHTML(
+            'unit-mfm-version', 
+            true, 
+            'Choose between official MFM data or custom entry'
+        );
+        container.innerHTML = html;
+
+        // Initialize the component
+        window.MFMVersionSelector.initialize('unit-mfm-version', (version) => {
+            console.log('MFM version changed to:', version);
+            // Trigger the MFM version change handler in unit-form-utils
+            UnitFormUtilities.handleMFMVersionChange(version);
         });
-        
     }
 
     async loadForceContext() {

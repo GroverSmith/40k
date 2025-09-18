@@ -40,38 +40,8 @@
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label>MFM Version <span class="required">*</span></label>
-                        <div class="mfm-version-container">
-                            <div class="mfm-toggle-group">
-                                <div class="mfm-toggle-option">
-                                    <input type="radio" id="mfm-preset" name="mfmMode" value="preset" checked>
-                                    <label for="mfm-preset">
-                                        <span class="toggle-label">MFM</span>
-                                        <span class="toggle-description">Use official points data</span>
-                                    </label>
-                                </div>
-                                <div class="mfm-toggle-option">
-                                    <input type="radio" id="mfm-custom" name="mfmMode" value="custom">
-                                    <label for="mfm-custom">
-                                        <span class="toggle-label">Custom Version</span>
-                                        <span class="toggle-description">Enter custom data sheet</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div id="mfm-preset-container" class="mfm-input-container">
-                                <select id="mfm-version-preset" name="mfmVersion">
-                                    <option value="3.2" selected>MFM 3.2 (Aug 2025)</option>
-                                    <option value="3.3">MFM 3.3 (Sep 2025)</option>
-                                </select>
-                            </div>
-                            <div id="mfm-custom-container" class="mfm-input-container" style="display: none;">
-                                <input type="text" id="mfm-version-custom" name="mfmVersionCustom" 
-                                       placeholder="e.g., 2025.08 or enter custom">
-                            </div>
-                        </div>
-                        <small class="help-text">Choose between official MFM data or custom entry</small>
-                    </div>
+                    <!-- MFM Version Selector -->
+                    <div id="mfm-version-selector-container"></div>
                     
                     <div class="form-group">
                         <label for="data-sheet">Data Sheet <span class="required">*</span></label>

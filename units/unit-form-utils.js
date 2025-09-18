@@ -9,131 +9,56 @@ class UnitFormUtilities {
         // Set the current faction for the form
         this.setCurrentFaction(faction);
         
-        const presetRadio = CoreUtils.dom.getElement('mfm-preset');
-        const customRadio = CoreUtils.dom.getElement('mfm-custom');
-        const presetContainer = CoreUtils.dom.getElement('mfm-preset-container');
-        const customContainer = CoreUtils.dom.getElement('mfm-custom-container');
-
-        // Setup version selector if available (with retry mechanism)
-        this.setupVersionSelector();
+        // Note: Version selector is now handled by the common MFMVersionSelector component
+        // The toggle logic is now handled by the component's initialization callback
         
-        // Retry setup if MFM data wasn't ready initially
-        if (typeof window.MFM_BASE === 'undefined' || typeof window.MFM_UNITS_UPDATED === 'undefined') {
-            setTimeout(() => {
-                this.setupVersionSelector();
-            }, 100);
-            
-            // Additional retry after a longer delay
-            setTimeout(() => {
-                this.setupVersionSelector();
-            }, 500);
-        }
-
-        if (presetRadio && customRadio && presetContainer && customContainer) {
-            presetRadio.addEventListener('change', () => {
-                if (presetRadio.checked) {
-                    CoreUtils.dom.show(presetContainer);
-                    CoreUtils.dom.hide(customContainer);
-                    this.switchToDropdownMode();
-                    this.hideUnitTypeField();
-                    this.hidePointsField();
-                    this.loadMFMData(faction, this.getSelectedVersion());
-                }
-            });
-
-            customRadio.addEventListener('change', () => {
-                if (customRadio.checked) {
-                    CoreUtils.dom.hide(presetContainer);
-                    CoreUtils.dom.show(customContainer);
-                    this.switchToTextInputMode();
-                    this.showUnitTypeField();
-                    this.showPointsField();
-                    // Clear unit type when switching to custom mode
-                    const unitTypeField = CoreUtils.dom.getElement('unit-type');
-                    if (unitTypeField) {
-                        unitTypeField.value = '';
-                    }
-                }
-            });
-        }
-
-        // Load MFM data on page load if preset is selected
-        if (presetRadio && presetRadio.checked) {
+        // Initial setup - load MFM data if in preset mode
+        const currentVersion = this.getSelectedVersion();
+        if (currentVersion && currentVersion !== '') {
+            this.switchToDropdownMode();
             this.hideUnitTypeField();
             this.hidePointsField();
-            this.loadMFMData(faction, this.getSelectedVersion());
+            this.loadMFMData(faction, currentVersion);
         } else {
             this.showUnitTypeField();
             this.showPointsField();
         }
     }
 
+
     /**
-     * Setup version selector dropdown
+     * Handle MFM version change from the common component
      */
-    static setupVersionSelector() {
-        const versionSelect = CoreUtils.dom.getElement('mfm-version-preset');
-        if (!versionSelect) {
-            console.warn('Version selector element not found');
-            return;
-        }
-        
-        if (typeof window.MFM_BASE === 'undefined' || typeof window.MFM_UNITS_UPDATED === 'undefined') {
-            console.warn('MFM_BASE or MFM_UNITS_UPDATED not available, keeping static options');
-            return;
-        }
+    static handleMFMVersionChange(version) {
+        const faction = this.getCurrentFaction();
+        if (!faction) return;
 
-        console.log('Setting up dynamic version selector');
-        
-        // Clear existing options
-        versionSelect.innerHTML = '';
-
-        // Populate with available versions from MFM_BASE
-        const mfmVersions = window.MFM_BASE['mfm-versions'];
-        const versions = Object.keys(mfmVersions).map(versionKey => {
-            const versionData = mfmVersions[versionKey];
-            return {
-                value: versionKey,
-                displayName: `MFM ${versionKey} (${versionData.date})`
-            };
-        }).sort((a, b) => a.value.localeCompare(b.value, undefined, { numeric: true }));
-        
-        console.log('Available versions from MFM_BASE:', versions);
-        console.log('Defaulting to highest version:', versions.length > 0 ? versions[versions.length - 1].value : 'none');
-        
-        versions.forEach(version => {
-            const option = document.createElement('option');
-            option.value = version.value;
-            option.textContent = version.displayName;
-            versionSelect.appendChild(option);
-        });
-        
-        // Set default selection to the highest available version
-        if (versions.length > 0) {
-            versionSelect.value = versions[versions.length - 1].value;
-        }
-
-        // Add change listener
-        versionSelect.addEventListener('change', () => {
-            const presetRadio = CoreUtils.dom.getElement('mfm-preset');
-            if (presetRadio && presetRadio.checked) {
-                // Reload data with new version - faction will be passed from the calling context
-                // We'll trigger a custom event that the calling code can listen to
-                const event = new CustomEvent('mfmVersionChanged', {
-                    detail: { version: this.getSelectedVersion() }
-                });
-                document.dispatchEvent(event);
+        if (version && version !== '') {
+            // Preset mode - load MFM data
+            this.switchToDropdownMode();
+            this.hideUnitTypeField();
+            this.hidePointsField();
+            this.loadMFMData(faction, version);
+        } else {
+            // Custom mode - show manual fields
+            this.switchToTextInputMode();
+            this.showUnitTypeField();
+            this.showPointsField();
+            // Clear unit type when switching to custom mode
+            const unitTypeField = CoreUtils.dom.getElement('unit-type');
+            if (unitTypeField) {
+                unitTypeField.value = '';
             }
-        });
+        }
     }
 
     /**
      * Get currently selected version
      */
     static getSelectedVersion() {
-        const versionSelect = CoreUtils.dom.getElement('mfm-version-preset');
-        if (versionSelect && versionSelect.value) {
-            return versionSelect.value;
+        // Use the common MFM version selector if available
+        if (typeof window.MFMVersionSelector !== 'undefined') {
+            return window.MFMVersionSelector.getSelectedVersion('unit-mfm-version');
         }
         
         // Fallback: try to get the highest available version from MFM_BASE
