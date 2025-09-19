@@ -498,10 +498,7 @@ function getArmyByKey(armyKey) {
     armyList[header] = armyListRow[index];
   });
   
-  console.log('getArmyListByKey - Headers:', headers);
-  console.log('getArmyListByKey - Row data:', armyListRow);
   console.log('getArmyListByKey - Found army list:', armyList);
-  console.log('getArmyListByKey - user_key value:', armyList.user_key);
   
   return ContentService
     .createTextOutput(JSON.stringify({

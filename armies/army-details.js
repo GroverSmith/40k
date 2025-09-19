@@ -30,9 +30,6 @@ class ArmyDetails {
     
     async loadArmyData() {
         try {
-            // Clear cache first to ensure fresh data
-            await UnifiedCache.clearCache('armies');
-            
             // Use UnifiedCache to get the specific army
             const army = await UnifiedCache.getRowByKey('armies', this.armyKey);
             
