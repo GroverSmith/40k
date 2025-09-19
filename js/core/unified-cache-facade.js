@@ -595,6 +595,9 @@ class UnifiedCacheFacade {
      * @returns {Array} Units with MFM version and points overridden
      */
     async getUnitsWithMFMVersion(mfmVersion, criteria = {}) {
+        // Ensure mfmVersion is a string
+        const mfmVersionStr = String(mfmVersion);
+        
         // Get all units from cache
         const allUnits = await this.getAllRows('units');
         
@@ -622,7 +625,7 @@ class UnifiedCacheFacade {
             const overriddenUnit = { ...unit };
             
             // Override MFM version
-            overriddenUnit.mfm_version = mfmVersion;
+            overriddenUnit.mfm_version = mfmVersionStr;
             
             // Override points based on MFM version
             if (typeof window.MFM_UNITS_UPDATED !== 'undefined' && unit.data_sheet && unit.force_key) {
@@ -655,7 +658,7 @@ class UnifiedCacheFacade {
                         console.log(`Using variant with modelCount: ${matchingVariant.modelCount}`);
                         
                         // Get points for the specified MFM version
-                        const pointsKey = `mfm_${mfmVersion.replace('.', '_')}_points`;
+                        const pointsKey = `mfm_${mfmVersionStr.replace('.', '_')}_points`;
                         const mfmPoints = matchingVariant[pointsKey];
                         
                         console.log(`Looking for points key: ${pointsKey}, found: ${mfmPoints}`);

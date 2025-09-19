@@ -41,18 +41,11 @@ const UnitTable = {
         const rank = unit.rank || this.calculateRank(unit.xp);
         const rankClass = `rank-${rank.toLowerCase().replace(/[^a-z]/g, '')}`;
 
-        // Use MFM version-aware points if available in context
-        let pointsValue = unit.points || '0';
-        if (context.mfmVersion && context.forceKey && unit.force_key === context.forceKey) {
-            // If we have MFM context and this unit belongs to the force, use the MFM-aware points
-            pointsValue = unit.points || '0'; // This should already be calculated with MFM context
-        }
-
         const columnData = {
             name: this.createUnitLink(unit.unit_name || 'Unnamed', unit.unit_key),
             datasheet: unit.data_sheet || '-',
             role: unit.unit_type || '-',
-            points: pointsValue,
+            points: `<span class="unit-points" data-unit-key="${unit.unit_key}" data-original-points="${unit.points || '0'}">${unit.points || '0'}</span>`,
             power: unit.power_level || '-',
             cp: unit.crusade_points || '0',
             xp: unit.xp || '0',
@@ -80,37 +73,61 @@ const UnitTable = {
 
     // Convenience methods
     async loadForForce(forceKey, containerId, mfmVersion = null) {
+        console.log(`Unit table - loadForForce called with forceKey: ${forceKey}, mfmVersion: ${mfmVersion}`);
         const displayConfig = this.getDisplayConfig('force');
         
-        // If we have an MFM version, use MFM-aware units
-        if (mfmVersion && typeof UnifiedCache !== 'undefined') {
-            try {
-                // Create a complex filter function that gets MFM-aware units
-                const complexFilterFn = async () => {
-                    const unitsWithMFMContext = await UnifiedCache.getUnitsWithMFMVersion(
-                        mfmVersion, 
-                        { force_key: forceKey }
-                    );
-                    
-                    console.log(`Loading units for force ${forceKey} with MFM version ${mfmVersion}:`, unitsWithMFMContext);
-                    return unitsWithMFMContext;
-                };
-                
-                await TableBase.loadAndDisplayWithComplexFilter('units', displayConfig, containerId, complexFilterFn);
-                return;
-                
-            } catch (error) {
-                console.warn('Failed to load units with MFM context, falling back to standard load:', error);
-            }
-        }
-        
-        // Fallback to standard loading
+        // Always load the table normally first
         const filterFn = (unit) => {
             const unitForceKey = unit.force_key || '';
             return unitForceKey === forceKey;
         };
         
         await TableBase.loadAndDisplay('units', displayConfig, containerId, filterFn);
+        
+        // Then update points with MFM version if available
+        if (mfmVersion && typeof UnifiedCache !== 'undefined') {
+            console.log(`Unit table - Updating points with MFM version: ${mfmVersion}`);
+            await this.updatePointsWithMFMVersion(forceKey, mfmVersion);
+        }
+    },
+
+    /**
+     * Update unit points in the table with MFM version-aware values
+     */
+    async updatePointsWithMFMVersion(forceKey, mfmVersion) {
+        try {
+            const mfmVersionStr = String(mfmVersion);
+            const unitsWithMFMContext = await UnifiedCache.getUnitsWithMFMVersion(
+                mfmVersionStr, 
+                { force_key: forceKey }
+            );
+            
+            console.log(`Unit table - Updating points for ${unitsWithMFMContext.length} units with MFM version ${mfmVersionStr}`);
+            
+            // Update each unit's points in the table
+            unitsWithMFMContext.forEach(unit => {
+                const pointsElement = document.querySelector(`.unit-points[data-unit-key="${unit.unit_key}"]`);
+                if (pointsElement) {
+                    const originalPoints = pointsElement.getAttribute('data-original-points');
+                    const newPoints = unit.points || '0';
+                    
+                    if (originalPoints !== newPoints) {
+                        console.log(`Unit table - Updating ${unit.unit_name} points from ${originalPoints} to ${newPoints}`);
+                        pointsElement.textContent = newPoints;
+                        pointsElement.setAttribute('data-original-points', newPoints);
+                        
+                        // Add visual indicator that points were updated
+                        pointsElement.style.color = '#4CAF50';
+                        pointsElement.style.fontWeight = 'bold';
+                    }
+                } else {
+                    console.warn(`Unit table - Could not find points element for unit ${unit.unit_name} (${unit.unit_key})`);
+                }
+            });
+            
+        } catch (error) {
+            console.error('Unit table - Error updating points with MFM version:', error);
+        }
     },
 
     // Simplified link creators using base

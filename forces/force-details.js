@@ -189,6 +189,7 @@ class ForceDetails {
            
            // Use UnitTable to load and display units for this force with MFM version context
            if (window.UnitTable) {
+               console.log(`Force details - Loading units with forceKey: ${this.forceKey}, mfmVersion: ${this.forceData?.mfm_version}`);
                await UnitTable.loadForForce(this.forceKey, 'characters-units-sheet', this.forceData?.mfm_version);
                
                // Also load units data for supply calculation
@@ -700,12 +701,13 @@ class ForceDetails {
        try {
            if (this.forceData?.mfm_version && typeof UnifiedCache !== 'undefined') {
                // Get units with points calculated for the force's MFM version
+               const mfmVersion = String(this.forceData.mfm_version);
                const unitsWithMFMContext = await UnifiedCache.getUnitsWithMFMVersion(
-                   this.forceData.mfm_version, 
+                   mfmVersion, 
                    { force_key: this.forceKey }
                );
                
-               console.log(`Calculating supply used for force ${this.forceKey} with MFM version ${this.forceData.mfm_version}:`, unitsWithMFMContext);
+               console.log(`Calculating supply used for force ${this.forceKey} with MFM version ${mfmVersion}:`, unitsWithMFMContext);
                
                supplyUsed = unitsWithMFMContext.reduce((total, unit) => {
                    const points = parseInt(unit.points) || 0;
@@ -897,9 +899,30 @@ class ForceDetails {
                // Refresh the MFM version display
                this.updateMFMVersionDisplay();
 
+               // Update unit points with new MFM version
+               if (window.UnitTable && typeof window.UnitTable.updatePointsWithMFMVersion === 'function') {
+                   console.log(`Force details - Updating unit points with new MFM version: ${newVersion}`);
+                   await window.UnitTable.updatePointsWithMFMVersion(this.forceKey, newVersion);
+               }
+
+               // Update supply calculation with new MFM version
+               const supplyStats = await this.calculateSupplyStats();
+               const supplyUsedElement = document.getElementById('supply-used');
+               if (supplyUsedElement) {
+                   supplyUsedElement.textContent = supplyStats.used;
+               }
+
                // Clear cache to ensure fresh data
                if (typeof UnifiedCache !== 'undefined') {
                    await UnifiedCache.clearCache('forces');
+               }
+
+               // Refresh force data from server to get updated values
+               try {
+                   this.forceData = await this.loadForceDataByKey(this.forceKey);
+                   console.log('Force details - Refreshed force data after MFM update:', this.forceData);
+               } catch (error) {
+                   console.warn('Force details - Could not refresh force data after MFM update:', error);
                }
 
                // Show success message

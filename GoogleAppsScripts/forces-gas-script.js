@@ -75,6 +75,10 @@ function editForce(forceKey, userKey, data) {
   
   console.log('editForce - Existing data:', existingData);
   console.log('editForce - Update data:', data);
+  console.log('editForce - Data keys:', Object.keys(data));
+  console.log('editForce - Has user_name?', data.hasOwnProperty('user_name'));
+  console.log('editForce - Has force_name?', data.hasOwnProperty('force_name'));
+  console.log('editForce - Has faction?', data.hasOwnProperty('faction'));
   
   // Prepare updated row data, preserving existing values for fields not provided
   const timestamp = new Date();
