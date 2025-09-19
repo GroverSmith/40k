@@ -681,6 +681,9 @@ class ForceDetails {
        // Use utility for setting multiple element texts
        setElementTexts(elements);
 
+       // Update supply used styling
+       this.updateSupplyUsedStyling(supplyStats.used, supplyStats.limit);
+
        // Handle MFM version display with update option (with delay to ensure MFM data is loaded)
        setTimeout(() => {
            this.updateMFMVersionDisplay();
@@ -737,6 +740,32 @@ class ForceDetails {
            limit: supplyLimit,
            used: supplyUsed
        };
+   }
+
+   /**
+    * Update supply used styling based on whether it exceeds the limit
+    */
+   updateSupplyUsedStyling(supplyUsed, supplyLimit) {
+       const supplyUsedElement = document.getElementById('supply-used');
+       if (!supplyUsedElement) return;
+
+       const used = parseInt(supplyUsed) || 0;
+       const limit = parseInt(supplyLimit) || 1000;
+
+       // Reset any existing styling
+       supplyUsedElement.style.color = '';
+       supplyUsedElement.style.fontWeight = '';
+
+       // Apply color based on whether supply used exceeds limit
+       if (used <= limit) {
+           // Within limit - green
+           supplyUsedElement.style.color = '#4CAF50';
+           supplyUsedElement.style.fontWeight = 'bold';
+       } else {
+           // Over limit - red
+           supplyUsedElement.style.color = '#f44336';
+           supplyUsedElement.style.fontWeight = 'bold';
+       }
    }
 
    /**
@@ -910,6 +939,7 @@ class ForceDetails {
                const supplyUsedElement = document.getElementById('supply-used');
                if (supplyUsedElement) {
                    supplyUsedElement.textContent = supplyStats.used;
+                   this.updateSupplyUsedStyling(supplyStats.used, supplyStats.limit);
                }
 
                // Clear cache to ensure fresh data
