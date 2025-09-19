@@ -15,7 +15,29 @@
 	<link rel="stylesheet" href="../css/responsive.css">
 	<link rel="stylesheet" href="../css/army-list-viewer.css">
 	<link rel="stylesheet" href="../css/army-list-print.css">
-	<link rel="stylesheet" href="../css/modal.css">       
+	<link rel="stylesheet" href="../css/modal.css">
+	<link rel="stylesheet" href="../css/user-dropdown.css">
+	
+	<style>
+		.btn-danger {
+			background-color: var(--color-error);
+			color: white !important;
+			border: none;
+			padding: 12px 24px;
+			border-radius: var(--radius-lg);
+			cursor: pointer;
+			font-size: 16px;
+			font-weight: bold;
+			box-shadow: var(--shadow-sm);
+			transition: all var(--transition-normal);
+		}
+		
+		.btn-danger:hover:not(:disabled) {
+			background-color: #d32f2f;
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-md);
+		}
+	</style>       
 </head>
 <body>
     <div class="container army-list-viewer">
@@ -68,6 +90,8 @@
                 <button onclick="window.print()" class="btn btn-secondary">
                     🖨️ Print
                 </button>
+                <button id="edit-army-btn" class="btn-primary" style="display: none;">Edit Army</button>
+                <button id="delete-army-btn" class="btn-danger" style="display: none;">Delete Army</button>
                 <a href="#" id="back-to-force-btn" class="btn btn-primary">
                     ← Back to Force
                 </a>
@@ -81,6 +105,11 @@
     <script src="../js/core/ui-helpers.js"></script>
     <script src="../js/table-defs.js"></script>
     <script src="../js/core/unified-cache-facade.js"></script>
+    <script src="../js/users/user-storage.js"></script>
+    <script src="../js/users/user-api.js"></script>
+    <script src="../js/users/user-ui.js"></script>
+    <script src="../js/users/user-modal.js"></script>
+    <script src="../js/users/user-manager.js"></script>
     <script src="army-details.js"></script>
 </body>
 </html>

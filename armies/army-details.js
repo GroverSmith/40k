@@ -30,6 +30,9 @@ class ArmyDetails {
     
     async loadArmyData() {
         try {
+            // Clear cache first to ensure fresh data
+            await UnifiedCache.clearCache('armies');
+            
             // Use UnifiedCache to get the specific army
             const army = await UnifiedCache.getRowByKey('armies', this.armyKey);
             
@@ -91,6 +94,17 @@ class ArmyDetails {
             backBtn.href = '../index.html';
             backBtn.textContent = '← Back to Campaign Tracker';
         }
+        
+        // Set up edit and delete buttons with permission checking
+        // Wait a bit longer for UserManager to be ready
+        setTimeout(() => {
+            this.setupActionButtons();
+        }, 2000);
+        
+        // Also listen for user changes to update button visibility
+        window.addEventListener('userChanged', () => {
+            this.setupActionButtons();
+        });
     }
     
     displayMetadata() {
@@ -153,6 +167,153 @@ class ArmyDetails {
         });
         
         metaContainer.innerHTML = html;
+    }
+    
+    setupActionButtons() {
+        // Wait for UserManager to be available
+        this.waitForUserManagerAndSetupButtons();
+    }
+    
+    async waitForUserManagerAndSetupButtons() {
+        let attempts = 0;
+        const maxAttempts = 50; // 5 seconds max wait
+        
+        while (attempts < maxAttempts) {
+            if (typeof UserManager !== 'undefined' && UserManager.getCurrentUser) {
+                const currentUser = UserManager.getCurrentUser();
+                this.configureActionButtons(currentUser);
+                return;
+            }
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        console.warn('UserManager not ready after 5 seconds, action buttons will not be configured');
+        // Even if UserManager isn't ready, let's try to configure buttons with no user
+        this.configureActionButtons(null);
+    }
+    
+    configureActionButtons(currentUser) {
+        const editBtn = CoreUtils.dom.getElement('edit-army-btn');
+        const deleteBtn = CoreUtils.dom.getElement('delete-army-btn');
+        
+        // Check if current user owns this army
+        // Only use the user_key field for security - no fallbacks
+        const armyUserKey = this.armyData.user_key;
+        const canEdit = currentUser && armyUserKey && currentUser.key === armyUserKey;
+        
+        console.log('Button permission check:', {
+            currentUser: currentUser ? currentUser.key : 'none',
+            armyUserKey: armyUserKey,
+            canEdit: canEdit,
+            armyData: this.armyData
+        });
+        
+        if (editBtn) {
+            if (canEdit) {
+                // Show edit button and set up click handler
+                CoreUtils.dom.show(editBtn);
+                editBtn.addEventListener('click', () => {
+                    // For now, navigate to army-add with the army key for editing
+                    // This can be enhanced later to support proper editing
+                    const params = new URLSearchParams({
+                        army_key: this.armyKey,
+                        edit: 'true'
+                    });
+                    window.location.href = `army-add.html?${params.toString()}`;
+                });
+            } else {
+                // Hide edit button if user doesn't have permission
+                CoreUtils.dom.hide(editBtn);
+            }
+        }
+        
+        if (deleteBtn) {
+            if (canEdit) {
+                // Show delete button and set up click handler
+                CoreUtils.dom.show(deleteBtn);
+                deleteBtn.addEventListener('click', () => {
+                    this.confirmDelete();
+                });
+            } else {
+                // Hide delete button if user doesn't have permission
+                CoreUtils.dom.hide(deleteBtn);
+            }
+        }
+    }
+    
+    confirmDelete() {
+        // Check permissions before allowing delete
+        const currentUser = UserManager.getCurrentUser();
+        const canEdit = currentUser && currentUser.key === this.armyData.user_key;
+        
+        if (!canEdit) {
+            alert('You do not have permission to delete this army.');
+            return;
+        }
+        
+        const armyName = this.armyData.army_name || 'this army';
+        if (confirm(`Are you sure you want to delete "${armyName}"? This action cannot be undone.`)) {
+            this.deleteArmy();
+        }
+    }
+    
+    async deleteArmy() {
+        const deleteBtn = CoreUtils.dom.getElement('delete-army-btn');
+        const originalText = deleteBtn ? deleteBtn.textContent : '';
+        
+        try {
+            // Show loading state on button
+            if (deleteBtn) {
+                deleteBtn.textContent = 'Deleting...';
+                deleteBtn.disabled = true;
+            }
+            
+            // Call the delete API
+            const response = await fetch(CrusadeConfig.getSheetUrl('armies'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    operation: 'delete',
+                    army_key: this.armyKey,
+                    user_key: this.armyData.user_key
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Clear cache and redirect to force page
+                await UnifiedCache.clearCache('armies');
+                
+                // Redirect to the force page
+                const forceKey = this.armyData.force_key;
+                if (forceKey) {
+                    const forceUrl = CrusadeConfig.buildForceUrlFromSubdir(forceKey);
+                    window.location.href = forceUrl;
+                } else {
+                    window.location.href = '../index.html';
+                }
+            } else {
+                throw new Error(result.message || 'Delete failed');
+            }
+            
+        } catch (error) {
+            console.error('Error deleting army:', error);
+            alert('Failed to delete army: ' + error.message);
+            
+            // Restore button state
+            if (deleteBtn) {
+                deleteBtn.textContent = originalText;
+                deleteBtn.disabled = false;
+            }
+        }
     }
     
     showError(message) {
