@@ -187,9 +187,9 @@ class ForceDetails {
            // Show the section
            CoreUtils.dom.show('characters-units-section');
            
-           // Use UnitTable to load and display units for this force
+           // Use UnitTable to load and display units for this force with MFM version context
            if (window.UnitTable) {
-               await UnitTable.loadForForce(this.forceKey, 'characters-units-sheet');
+               await UnitTable.loadForForce(this.forceKey, 'characters-units-sheet', this.forceData?.mfm_version);
                
                // Also load units data for supply calculation
                try {
