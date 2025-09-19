@@ -349,5 +349,14 @@ window.MFMVersionSelector = {
         }
         
         return await window.UnifiedCache.getUnitsWithMFMVersion(mfmVersion, criteria);
+    },
+
+    /**
+     * Get the highest available MFM version
+     * @returns {string} The highest MFM version (e.g., "3.3")
+     */
+    getHighestVersion() {
+        const versions = Object.keys(this['mfm-versions']).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+        return versions.length > 0 ? versions[versions.length - 1] : '3.3';
     }
 };

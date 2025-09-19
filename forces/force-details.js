@@ -680,6 +680,11 @@ class ForceDetails {
        // Use utility for setting multiple element texts
        setElementTexts(elements);
 
+       // Handle MFM version display with update option (with delay to ensure MFM data is loaded)
+       setTimeout(() => {
+           this.updateMFMVersionDisplay();
+       }, 1000);
+
        // Show stats section
        CoreUtils.dom.show('force-stats', 'grid');
    }
@@ -722,6 +727,162 @@ class ForceDetails {
        return {
            total: totalRP
        };
+   }
+
+   /**
+    * Update MFM version display with update option if not latest
+    */
+   updateMFMVersionDisplay() {
+       const mfmVersionElement = document.getElementById('mfm-version');
+       if (!mfmVersionElement) return;
+
+       const currentVersion = String(this.forceData?.mfm_version || '3.3');
+       
+       // Get highest version with safety check
+       let highestVersion = '3.3'; // Default fallback
+       if (window.MFM_BASE && typeof window.MFM_BASE.getHighestVersion === 'function') {
+           highestVersion = String(window.MFM_BASE.getHighestVersion());
+       } else {
+           console.warn('MFM_BASE.getHighestVersion not available, using fallback version 3.3');
+       }
+
+       // Debug logging
+       console.log('MFM Version Check:', {
+           currentVersion: currentVersion,
+           highestVersion: highestVersion,
+           currentVersionType: typeof currentVersion,
+           highestVersionType: typeof highestVersion,
+           mfmDataAvailable: typeof window.MFM_BASE !== 'undefined' && !!window.MFM_BASE['mfm-versions'],
+           versionsMatch: currentVersion === highestVersion
+       });
+
+       // Only show update option if we have MFM data and versions don't match
+       const hasMFMData = typeof window.MFM_BASE !== 'undefined' && !!window.MFM_BASE['mfm-versions'];
+       const versionsDontMatch = currentVersion !== highestVersion;
+       
+       if (hasMFMData && versionsDontMatch) {
+           // Make the version text red
+           mfmVersionElement.style.color = '#ff6b6b';
+           mfmVersionElement.style.fontWeight = 'bold';
+
+           // Create update button
+           const updateButton = document.createElement('button');
+           updateButton.textContent = `Update to ${highestVersion}`;
+           updateButton.className = 'btn-secondary btn-small';
+           updateButton.style.cssText = `
+               margin-top: 5px;
+               font-size: 0.8em;
+               padding: 2px 6px;
+               background-color: #4a5568;
+               color: white;
+               border: none;
+               border-radius: 3px;
+               cursor: pointer;
+           `;
+           
+           // Add click handler
+           updateButton.addEventListener('click', () => {
+               this.updateMFMVersion(highestVersion);
+           });
+
+           // Find the stat card container
+           const statCard = mfmVersionElement.closest('.stat-card');
+           if (statCard) {
+               // Remove any existing update button
+               const existingButton = statCard.querySelector('.mfm-update-btn');
+               if (existingButton) {
+                   existingButton.remove();
+               }
+               
+               // Add the new button
+               updateButton.className += ' mfm-update-btn';
+               statCard.appendChild(updateButton);
+           }
+       } else {
+           // Reset styling if version is current
+           mfmVersionElement.style.color = '';
+           mfmVersionElement.style.fontWeight = '';
+           
+           // Remove any existing update button
+           const statCard = mfmVersionElement.closest('.stat-card');
+           if (statCard) {
+               const existingButton = statCard.querySelector('.mfm-update-btn');
+               if (existingButton) {
+                   existingButton.remove();
+               }
+           }
+       }
+   }
+
+
+   /**
+    * Update the force's MFM version
+    */
+   async updateMFMVersion(newVersion) {
+       try {
+           // Show loading state
+           const updateButton = document.querySelector('.mfm-update-btn');
+           if (updateButton) {
+               updateButton.textContent = 'Updating...';
+               updateButton.disabled = true;
+           }
+
+           // Prepare update data
+           const updateData = {
+               operation: 'edit',
+               force_key: this.forceKey,
+               mfm_version: newVersion
+           };
+
+           // Send update to Google Apps Script
+           const response = await fetch(TableDefs.forces.url, {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/x-www-form-urlencoded',
+               },
+               body: new URLSearchParams(updateData)
+           });
+
+           const result = await response.json();
+
+           if (result.success) {
+               // Update local data
+               this.forceData.mfm_version = newVersion;
+               
+               // Update display
+               const mfmVersionElement = document.getElementById('mfm-version');
+               if (mfmVersionElement) {
+                   mfmVersionElement.textContent = newVersion;
+               }
+
+               // Refresh the MFM version display
+               this.updateMFMVersionDisplay();
+
+               // Clear cache to ensure fresh data
+               if (typeof UnifiedCache !== 'undefined') {
+                   await UnifiedCache.clearCache('forces');
+               }
+
+               // Show success message
+               this.showSuccessMessage(`MFM version updated to ${newVersion}`);
+           } else {
+               throw new Error(result.error || 'Failed to update MFM version');
+           }
+
+       } catch (error) {
+           console.error('Error updating MFM version:', error);
+           this.showErrorMessage(`Failed to update MFM version: ${error.message}`);
+           
+           // Reset button
+           const updateButton = document.querySelector('.mfm-update-btn');
+           if (updateButton) {
+               const fallbackVersion = window.MFM_BASE && typeof window.MFM_BASE.getHighestVersion === 'function' 
+                   ? window.MFM_BASE.getHighestVersion() 
+                   : '3.3';
+               updateButton.textContent = `Update to ${fallbackVersion}`;
+               updateButton.disabled = false;
+           }
+       }
    }
 
    // ===== ADDITIONAL DATA METHODS =====

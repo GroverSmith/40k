@@ -203,20 +203,6 @@ class ForceForm extends BaseForm {
     }
 
 
-    getHighestMFMVersion() {
-        // Check if MFM data is available
-        if (typeof window.MFM_BASE === 'undefined' || !window.MFM_BASE['mfm-versions']) {
-            console.log('MFM data not available, using fallback version 3.3');
-            return '3.3'; // Fallback to latest known version
-        }
-
-        const mfmVersions = window.MFM_BASE['mfm-versions'];
-        const versions = Object.keys(mfmVersions).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-        
-        const highestVersion = versions.length > 0 ? versions[versions.length - 1] : '3.3';
-        console.log('Using highest MFM version:', highestVersion);
-        return highestVersion;
-    }
 
 
     validateSpecificField(field, value) {
@@ -275,7 +261,9 @@ class ForceForm extends BaseForm {
             faction: formData.faction,
             detachment: detachmentValue,
             supply_limit: 1000,  // Fixed default value
-            mfm_version: this.getHighestMFMVersion(),  // Default to highest version
+            mfm_version: (window.MFM_BASE && typeof window.MFM_BASE.getHighestVersion === 'function') 
+                ? window.MFM_BASE.getHighestVersion() 
+                : '3.3',  // Default to highest version
             notes: formData.notes || '',
             timestamp: formData.timestamp
         };
