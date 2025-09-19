@@ -66,21 +66,33 @@ function editForce(forceKey, userKey, data) {
     throw new Error('Force not found or access denied');
   }
   
-  // Prepare updated row data
+  // Get the existing row data to preserve fields not being updated
+  const existingRow = allData[rowIndex - 1]; // -1 because allData is 0-indexed but rowIndex is 1-indexed
+  const existingData = {};
+  headers.forEach((header, index) => {
+    existingData[header] = existingRow[index];
+  });
+  
+  console.log('editForce - Existing data:', existingData);
+  console.log('editForce - Update data:', data);
+  
+  // Prepare updated row data, preserving existing values for fields not provided
   const timestamp = new Date();
   const updatedRowData = [
     forceKey,                                // force_key (column A)
     userKey,                                 // user_key (column B)
-    data.user_name,                          // user_name (column C)
-    data.force_name,                         // force_name (column D)
-    data.faction,                            // faction (column E)
-    data.detachment || '',                   // detachment (column F)
-    data.supply_limit || 1000,               // supply_limit (column G)
-    data.mfm_version || '3.3',               // mfm_version (column H)
-    data.notes || '',                        // notes (column I)
+    data.hasOwnProperty('user_name') ? data.user_name : existingData.user_name,                          // user_name (column C)
+    data.hasOwnProperty('force_name') ? data.force_name : existingData.force_name,                         // force_name (column D)
+    data.hasOwnProperty('faction') ? data.faction : existingData.faction,                            // faction (column E)
+    data.hasOwnProperty('detachment') ? (data.detachment || '') : (existingData.detachment || ''),                   // detachment (column F)
+    data.hasOwnProperty('supply_limit') ? (data.supply_limit || 1000) : (existingData.supply_limit || 1000),               // supply_limit (column G)
+    data.hasOwnProperty('mfm_version') ? (data.mfm_version || '3.3') : (existingData.mfm_version || '3.3'),               // mfm_version (column H)
+    data.hasOwnProperty('notes') ? (data.notes || '') : (existingData.notes || ''),                        // notes (column I)
     timestamp,                               // timestamp (column J)
     ''                                       // deleted_timestamp (column K) - keep empty
   ];
+  
+  console.log('editForce - Final updated row data:', updatedRowData);
   
   // Update the row
   sheet.getRange(rowIndex, 1, 1, updatedRowData.length).setValues([updatedRowData]);

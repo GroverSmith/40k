@@ -261,9 +261,15 @@ class ForceForm extends BaseForm {
             faction: formData.faction,
             detachment: detachmentValue,
             supply_limit: 1000,  // Fixed default value
-            mfm_version: (window.MFM_BASE && typeof window.MFM_BASE.getHighestVersion === 'function') 
-                ? window.MFM_BASE.getHighestVersion() 
-                : '3.3',  // Default to highest version
+            mfm_version: (() => {
+                if (window.MFM_BASE && window.MFM_BASE['mfm-versions']) {
+                    const versions = Object.keys(window.MFM_BASE['mfm-versions']).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+                    return versions.length > 0 ? versions[versions.length - 1] : '3.3';
+                } else if (window.MFMVersionSelector && typeof window.MFMVersionSelector.getHighestVersion === 'function') {
+                    return window.MFMVersionSelector.getHighestVersion();
+                }
+                return '3.3'; // Fallback
+            })(),  // Default to highest version
             notes: formData.notes || '',
             timestamp: formData.timestamp
         };

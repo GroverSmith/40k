@@ -270,7 +270,7 @@ class ForceDetails {
                console.log('Fetched battles for force:', forceBattles.length);
                
                // Calculate and display stats
-               this.updateStatsFromBattles(forceBattles, this.forceKey);
+               await this.updateStatsFromBattles(forceBattles, this.forceKey);
                
                // Then display the battles table
                await BattleTable.loadForForce(this.forceKey, 'battle-history-content');
@@ -657,12 +657,12 @@ class ForceDetails {
    /**
     * Update battle stats from battles data
     */
-   updateStatsFromBattles(battles, forceKey) {
+   async updateStatsFromBattles(battles, forceKey) {
        // Use BattleTable's comprehensive stats calculation
        const stats = BattleTable.calculateBattleStats(battles, forceKey);
 
-       // Calculate supply and requisition stats
-       const supplyStats = this.calculateSupplyStats();
+       // Calculate supply and requisition stats (supply is now async)
+       const supplyStats = await this.calculateSupplyStats();
        const requisitionStats = this.calculateRequisitionStats();
 
        // Update DOM with all stats
@@ -692,15 +692,43 @@ class ForceDetails {
    /**
     * Calculate supply stats for the force
     */
-   calculateSupplyStats() {
+   async calculateSupplyStats() {
        const supplyLimit = this.forceData?.supply_limit || 1000;
        
-       // Calculate supply used from units (if available)
+       // Calculate supply used from units with MFM version context
        let supplyUsed = 0;
-       if (this.unitsData && Array.isArray(this.unitsData)) {
-           supplyUsed = this.unitsData.reduce((total, unit) => {
-               return total + (parseInt(unit.power_level) || 0);
-           }, 0);
+       try {
+           if (this.forceData?.mfm_version && typeof UnifiedCache !== 'undefined') {
+               // Get units with points calculated for the force's MFM version
+               const unitsWithMFMContext = await UnifiedCache.getUnitsWithMFMVersion(
+                   this.forceData.mfm_version, 
+                   { force_key: this.forceKey }
+               );
+               
+               console.log(`Calculating supply used for force ${this.forceKey} with MFM version ${this.forceData.mfm_version}:`, unitsWithMFMContext);
+               
+               supplyUsed = unitsWithMFMContext.reduce((total, unit) => {
+                   const points = parseInt(unit.points) || 0;
+                   console.log(`Unit ${unit.unit_name}: ${points} points`);
+                   return total + points;
+               }, 0);
+               
+               console.log(`Total supply used: ${supplyUsed}`);
+           } else if (this.unitsData && Array.isArray(this.unitsData)) {
+               // Fallback to basic calculation if MFM version not available
+               console.warn('MFM version not available, using fallback power level calculation');
+               supplyUsed = this.unitsData.reduce((total, unit) => {
+                   return total + (parseInt(unit.power_level) || 0);
+               }, 0);
+           }
+       } catch (error) {
+           console.error('Error calculating supply used:', error);
+           // Fallback to basic calculation
+           if (this.unitsData && Array.isArray(this.unitsData)) {
+               supplyUsed = this.unitsData.reduce((total, unit) => {
+                   return total + (parseInt(unit.power_level) || 0);
+               }, 0);
+           }
        }
        
        return {
@@ -740,10 +768,14 @@ class ForceDetails {
        
        // Get highest version with safety check
        let highestVersion = '3.3'; // Default fallback
-       if (window.MFM_BASE && typeof window.MFM_BASE.getHighestVersion === 'function') {
-           highestVersion = String(window.MFM_BASE.getHighestVersion());
+       if (window.MFM_BASE && window.MFM_BASE['mfm-versions']) {
+           // Get highest version from available versions
+           const versions = Object.keys(window.MFM_BASE['mfm-versions']).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+           highestVersion = versions.length > 0 ? versions[versions.length - 1] : '3.3';
+       } else if (window.MFMVersionSelector && typeof window.MFMVersionSelector.getHighestVersion === 'function') {
+           highestVersion = String(window.MFMVersionSelector.getHighestVersion());
        } else {
-           console.warn('MFM_BASE.getHighestVersion not available, using fallback version 3.3');
+           console.warn('MFM versions data not available, using fallback version 3.3');
        }
 
        // Debug logging
@@ -827,10 +859,17 @@ class ForceDetails {
                updateButton.disabled = true;
            }
 
+           // Get current user for the update
+           const currentUser = UserManager.getCurrentUser();
+           if (!currentUser || !currentUser.key) {
+               throw new Error('No user selected. Please select a user from the dropdown above.');
+           }
+
            // Prepare update data
            const updateData = {
                operation: 'edit',
                force_key: this.forceKey,
+               user_key: currentUser.key,
                mfm_version: newVersion
            };
 
@@ -876,9 +915,13 @@ class ForceDetails {
            // Reset button
            const updateButton = document.querySelector('.mfm-update-btn');
            if (updateButton) {
-               const fallbackVersion = window.MFM_BASE && typeof window.MFM_BASE.getHighestVersion === 'function' 
-                   ? window.MFM_BASE.getHighestVersion() 
-                   : '3.3';
+               let fallbackVersion = '3.3';
+               if (window.MFM_BASE && window.MFM_BASE['mfm-versions']) {
+                   const versions = Object.keys(window.MFM_BASE['mfm-versions']).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+                   fallbackVersion = versions.length > 0 ? versions[versions.length - 1] : '3.3';
+               } else if (window.MFMVersionSelector && typeof window.MFMVersionSelector.getHighestVersion === 'function') {
+                   fallbackVersion = window.MFMVersionSelector.getHighestVersion();
+               }
                updateButton.textContent = `Update to ${fallbackVersion}`;
                updateButton.disabled = false;
            }
