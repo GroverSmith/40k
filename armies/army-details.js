@@ -266,17 +266,15 @@ class ArmyDetails {
                 deleteBtn.disabled = true;
             }
             
-            // Call the delete API
+            // Call the delete API using form data to avoid CORS preflight
+            const formData = new FormData();
+            formData.append('operation', 'delete');
+            formData.append('army_key', this.armyKey);
+            formData.append('user_key', this.armyData.user_key);
+            
             const response = await fetch(CrusadeConfig.getSheetUrl('armies'), {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    operation: 'delete',
-                    army_key: this.armyKey,
-                    user_key: this.armyData.user_key
-                })
+                body: formData
             });
             
             if (!response.ok) {

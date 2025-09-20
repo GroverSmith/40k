@@ -5,12 +5,15 @@
 const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; 
 const SHEET_NAME = 'armies';
 
-// CORS headers for all responses
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type'
-};
+// Helper function to create CORS-enabled response
+function createCorsResponse(data, mimeType = ContentService.MimeType.JSON) {
+  const response = ContentService.createTextOutput(JSON.stringify(data));
+  response.setMimeType(mimeType);
+  
+  // Note: Google Apps Script doesn't support setHeaders() for CORS
+  // The web app deployment settings handle CORS
+  return response;
+}
 
 // Helper function to filter out deleted rows
 function filterActiveRows(data) {
@@ -153,10 +156,10 @@ function deleteArmy(armyKey, userKey) {
 
 function doOptions(e) {
   // Handle CORS preflight requests
+  // Google Apps Script web apps automatically handle CORS for OPTIONS requests
   return ContentService
     .createTextOutput('')
-    .setMimeType(ContentService.MimeType.TEXT)
-    .setHeaders(CORS_HEADERS);
+    .setMimeType(ContentService.MimeType.TEXT);
 }
 
 function doPost(e) {
@@ -189,10 +192,7 @@ function doPost(e) {
         throw new Error('army_key and user_key are required for edit operation');
       }
       const result = editArmy(data.army_key, data.user_key, data);
-      return ContentService
-        .createTextOutput(JSON.stringify(result))
-        .setMimeType(ContentService.MimeType.JSON)
-        .setHeaders(CORS_HEADERS);
+      return createCorsResponse(result);
     }
     
     if (data.operation === 'delete') {
@@ -200,10 +200,7 @@ function doPost(e) {
         throw new Error('army_key and user_key are required for delete operation');
       }
       const result = deleteArmy(data.army_key, data.user_key);
-      return ContentService
-        .createTextOutput(JSON.stringify(result))
-        .setMimeType(ContentService.MimeType.JSON)
-        .setHeaders(CORS_HEADERS);
+      return createCorsResponse(result);
     }
     
     // Default operation is create
@@ -349,17 +346,14 @@ function doPost(e) {
     console.log('Successfully added army list with key:', armyKey);
     
     // Return success response with the key
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        message: 'Army list submitted successfully',
-        key: armyKey,
-        forceKey: forceKey,
-        rowNumber: newRowNumber,
-        timestamp: timestamp.toISOString()
-      }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(CORS_HEADERS);
+    return createCorsResponse({
+      success: true,
+      message: 'Army list submitted successfully',
+      key: armyKey,
+      forceKey: forceKey,
+      rowNumber: newRowNumber,
+      timestamp: timestamp.toISOString()
+    });
       
   } catch (error) {
     // Log the error with more detail
@@ -367,13 +361,10 @@ function doPost(e) {
     console.error('Error stack:', error.stack);
     
     // Return error response
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: false,
-        error: error.message || 'Unknown error occurred'
-      }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(CORS_HEADERS);
+    return createCorsResponse({
+      success: false,
+      error: error.message || 'Unknown error occurred'
+    });
   }
 }
 
@@ -397,13 +388,10 @@ function doGet(e) {
   } catch (error) {
     console.error('Error handling GET request:', error);
     
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: false,
-        error: error.message
-      }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(CORS_HEADERS);
+    return createCorsResponse({
+      success: false,
+      error: error.message
+    });
   }
 }
 
@@ -463,20 +451,13 @@ function getArmyLists(params = {}) {
     forceKey: list['Force Key'] 
   })));
   
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      count: armyLists.length,
-      totalCount: rows.length,
-      data: armyLists,
-      hasMore: startIndex + maxResults < rows.length
-    }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    });
+  return createCorsResponse({
+    success: true,
+    count: armyLists.length,
+    totalCount: rows.length,
+    data: armyLists,
+    hasMore: startIndex + maxResults < rows.length
+  });
 }
 
 function getArmyByKey(armyKey) {
@@ -525,17 +506,10 @@ function getArmyByKey(armyKey) {
   
   console.log('getArmyListByKey - Found army list:', armyList);
   
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      data: armyList
-    }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    });
+  return createCorsResponse({
+    success: true,
+    data: armyList
+  });
 }
 
 
@@ -571,19 +545,12 @@ function getRecentArmyLists() {
     return obj;
   });
   
-  return ContentService
-    .createTextOutput(JSON.stringify({
-      success: true,
-      count: result.length,
-      data: result,
-      message: 'Recent army lists (test mode)'
-    }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    });
+  return createCorsResponse({
+    success: true,
+    count: result.length,
+    data: result,
+    message: 'Recent army lists (test mode)'
+  });
 }
 
 // Soft delete function
@@ -620,18 +587,11 @@ function softDeleteArmy(armyKey) {
         
         console.log('Soft deleted army list:', armyKey);
         
-        return ContentService
-          .createTextOutput(JSON.stringify({
-            success: true,
-            message: 'Army list soft deleted successfully',
-            key: armyKey
-          }))
-          .setMimeType(ContentService.MimeType.JSON)
-          .setHeaders({
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type'
-          });
+        return createCorsResponse({
+          success: true,
+          message: 'Army list soft deleted successfully',
+          key: armyKey
+        });
       }
     }
     
@@ -639,13 +599,10 @@ function softDeleteArmy(armyKey) {
     
   } catch (error) {
     console.error('Error soft deleting army list:', error);
-    return ContentService
-      .createTextOutput(JSON.stringify({
-        success: false,
-        error: error.message
-      }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(CORS_HEADERS);
+    return createCorsResponse({
+      success: false,
+      error: error.message
+    });
   }
 }
 
