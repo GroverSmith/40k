@@ -718,21 +718,15 @@ class BattleReportForm extends BaseForm {
             return null;
         }
 
-        // Generate unique log entry key
-        const logKey = `Log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
+        // Map to the field names expected by the GAS script
         const logEntry = {
-            log_key: logKey,
             crusade_key: battleData.crusadeKey,
             phase_key: phaseKey,
             force_key: forceKey,
-            user_key: userKey,
-            event_type: outcome.eventType,
-            point_category: matchingScheme.point_category,
             points: matchingScheme.points,
+            event: outcome.eventType,
             notes: `Auto-generated from battle: ${battleData.battle_name || 'Unnamed Battle'}`,
-            timestamp: new Date().toISOString(),
-            deleted_timestamp: ''
+            timestamp: new Date().toISOString()
         };
 
         return logEntry;
@@ -746,9 +740,9 @@ class BattleReportForm extends BaseForm {
             return fetch(CrusadeConfig.getSheetUrl('crusade_points_log'), {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify(entry)
+                body: new URLSearchParams(entry).toString()
             });
         });
 
@@ -757,6 +751,10 @@ class BattleReportForm extends BaseForm {
         results.forEach((result, index) => {
             if (result.status === 'rejected') {
                 console.error(`Failed to submit log entry ${index}:`, result.reason);
+            } else if (result.value && result.value.ok) {
+                console.log(`Successfully submitted log entry ${index}`);
+            } else {
+                console.error(`Failed to submit log entry ${index}:`, result.value);
             }
         });
     }
