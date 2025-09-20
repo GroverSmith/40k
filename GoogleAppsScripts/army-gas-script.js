@@ -111,7 +111,8 @@ function editArmy(armyKey, userKey, data) {
   
   // Update the row
   sheet.getRange(rowIndex, 1, 1, updatedRowData.length).setValues([updatedRowData]);
-  sheet.getRange(rowIndex, 13).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  sheet.getRange(rowIndex, 3).setNumberFormat('@'); // User Key column as text
+  sheet.getRange(rowIndex, 13).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
   
   return { success: true, message: 'Army updated successfully' };
 }
@@ -256,7 +257,7 @@ function doPost(e) {
       // Set column widths
       sheet.setColumnWidth(1, 250); // Key
       sheet.setColumnWidth(2, 200); // Force Key
-      sheet.setColumnWidth(3, 150); // Timestamp
+      sheet.setColumnWidth(3, 150); // User Key
       sheet.setColumnWidth(4, 150); // User Name
       sheet.setColumnWidth(5, 200); // Force Name
       sheet.setColumnWidth(6, 200); // Army Name
@@ -266,7 +267,11 @@ function doPost(e) {
       sheet.setColumnWidth(10, 100); // Points Value
       sheet.setColumnWidth(11, 300); // Notes
       sheet.setColumnWidth(12, 400); // Army List Text
-      sheet.setColumnWidth(13, 150); // Deleted Timestamp
+      sheet.setColumnWidth(13, 150); // Timestamp
+      sheet.setColumnWidth(14, 150); // Deleted Timestamp
+      
+      // Format user_key column as text to prevent auto-increment
+      sheet.getRange(2, 3, sheet.getMaxRows() - 1, 1).setNumberFormat('@');
       
       console.log('Created new sheet with headers including Force Key as second column and Deleted Timestamp');
     }
@@ -328,7 +333,8 @@ function doPost(e) {
     // Format the new row
     sheet.getRange(newRowNumber, 1).setFontWeight('bold'); // Key column
     sheet.getRange(newRowNumber, 2).setFontWeight('bold'); // Force Key column
-    sheet.getRange(newRowNumber, 3).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
+    sheet.getRange(newRowNumber, 3).setNumberFormat('@'); // User Key column as text
+    sheet.getRange(newRowNumber, 13).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
     
     // Format points column as number
     if (data.pointsValue) {
