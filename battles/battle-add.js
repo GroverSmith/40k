@@ -763,7 +763,7 @@ class BattleReportForm extends BaseForm {
             force_key: forceKey,
             points: matchingScheme.points,
             event: outcome.eventType,
-            notes: `Auto-generated from battle: ${battleData.battle_name || 'Unnamed Battle'}`,
+            notes: `Auto-generated from battle: ${battleData.battleName || battleData.battle_name || 'Unnamed Battle'}`,
             timestamp: new Date().toISOString()
         };
 
@@ -775,7 +775,8 @@ class BattleReportForm extends BaseForm {
      * Submit points log entries to the crusade points log
      */
     async submitPointsLogEntries(logEntries) {
-        const submitPromises = logEntries.map(entry => {
+        const submitPromises = logEntries.map((entry, index) => {
+            console.log(`Submitting log entry ${index}:`, entry);
             return fetch(CrusadeConfig.getSheetUrl('crusade_points_log'), {
                 method: 'POST',
                 headers: {
@@ -792,6 +793,12 @@ class BattleReportForm extends BaseForm {
                 console.error(`Failed to submit log entry ${index}:`, result.reason);
             } else if (result.value && result.value.ok) {
                 console.log(`Successfully submitted log entry ${index}`);
+                // Try to get the response body to see what the GAS script returned
+                result.value.text().then(responseText => {
+                    console.log(`GAS response for entry ${index}:`, responseText);
+                }).catch(err => {
+                    console.log(`Could not read response for entry ${index}:`, err);
+                });
             } else {
                 console.error(`Failed to submit log entry ${index}:`, result.value);
             }
