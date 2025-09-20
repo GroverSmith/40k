@@ -1,0 +1,88 @@
+<!-- filename: crusades/points-log.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Points Log - 40k Crusade Campaign Tracker</title>
+    <meta name="description" content="Detailed view of Crusade Points Log - all recorded events and points.">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../css/variables.css">
+	<link rel="stylesheet" href="../css/base.css">
+	<link rel="stylesheet" href="../css/buttons-unified.css">
+	<link rel="stylesheet" href="../css/components-unified.css">
+	<link rel="stylesheet" href="../css/responsive.css">
+	<link rel="stylesheet" href="../css/crusade-page.css">
+	<link rel="stylesheet" href="../css/modal.css">
+	<link rel="stylesheet" href="../css/user-dropdown.css">
+</head>
+<body>
+    <div class="container">
+        <a href="crusade-details.html" class="back-button" id="back-to-crusade">← Back to Crusade Details</a>
+        
+        <!-- Points Log Header -->
+        <div class="crusade-header" id="points-log-header">
+			<div class="loading-spinner"></div>
+			<span>Loading points log...</span>
+		</div>
+	
+        <!-- Points Log Table Section -->
+        <div class="data-section" id="points-log-section" style="display: none;">
+			<div class="section-header">
+				<h3>📊 Points Log</h3>
+				<div class="section-actions">
+					<button id="refresh-points-log-btn" class="section-action-btn">🔄 Refresh</button>
+					<button id="export-points-log-btn" class="section-action-btn">📥 Export</button>
+				</div>
+			</div>
+			<div class="section-content">
+				<div id="points-log-content">
+                    <!-- Will be populated by JavaScript -->
+				</div>
+			</div>
+		</div>
+
+        <!-- Points Summary Section -->
+        <div class="data-section" id="points-summary-section" style="display: none;">
+			<div class="section-header">
+				<h3>📈 Points Summary</h3>
+			</div>
+			<div class="section-content">
+				<div id="points-summary-content">
+                    <!-- Will be populated by JavaScript -->
+				</div>
+			</div>
+		</div>
+        
+        <!-- Error Display -->
+        <div class="error-message" id="error-message" style="display: none;">
+            <strong>Error:</strong> <span id="error-text"></span>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="../js/core/config.js"></script>
+    <script src="../js/core/utils.js"></script>
+    <script src="../js/core/key-utils.js"></script>
+    <script src="../js/core/ui-helpers.js"></script>
+
+    <!-- Core dependencies -->
+    <script src="../js/table-defs.js"></script>
+    <script src="../js/core/unified-cache-facade.js"></script>
+
+    <!-- User Management modules (needed for caching) -->
+    <script src="../js/users/user-storage.js"></script>
+    <script src="../js/users/user-api.js"></script>
+    <script src="../js/users/user-ui.js"></script>
+    <script src="../js/users/user-modal.js"></script>
+    <script src="../js/users/user-manager.js"></script>
+
+    <!-- Table modules -->
+    <script src="../js/table-base.js"></script>
+
+    <!-- Points log page modules -->
+    <script src="points-log.js"></script>
+
+</body>
+</html>

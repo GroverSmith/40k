@@ -641,6 +641,131 @@
     font-style: italic;
 }
 
+/* Points Log Styles */
+.points-log-table-container {
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #3a3a3a;
+    overflow-x: auto;
+}
+
+.points-log-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.points-log-table-container th,
+.points-log-table-container td {
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.points-log-table-container th {
+    background-color: #2a2a2a;
+    color: #4ecdc4;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.points-log-table-container td {
+    color: #ffffff;
+    vertical-align: top;
+}
+
+.date-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.date {
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.time {
+    font-size: 0.85em;
+    color: #aaaaaa;
+}
+
+.points-cell {
+    text-align: right;
+}
+
+.points-value {
+    font-weight: bold;
+    font-size: 1.1em;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    min-width: 40px;
+    text-align: center;
+}
+
+.points-value.positive {
+    background-color: #1e4a3a;
+    color: #4ecdc4;
+    border: 1px solid #4ecdc4;
+}
+
+.points-value.negative {
+    background-color: #4a1e1e;
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+}
+
+.points-value:not(.positive):not(.negative) {
+    background-color: #3a3a3a;
+    color: #ffffff;
+    border: 1px solid #4a4a4a;
+}
+
+.points-summary-container {
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #3a3a3a;
+}
+
+.summary-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    border: 1px solid #3a3a3a;
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #4ecdc4;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #aaaaaa;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.section-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 /* Leaderboard Styles */
 .leaderboard-container {
     background-color: #1a1a1a;
@@ -808,6 +933,35 @@
     
     .total-points {
         font-size: 1.2em;
+    }
+    
+    /* Points log responsive adjustments */
+    .points-log-table-container {
+        padding: 15px;
+    }
+    
+    .points-log-table-container th,
+    .points-log-table-container td {
+        padding: 8px 6px;
+        font-size: 0.9em;
+    }
+    
+    .summary-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .stat-item {
+        padding: 12px;
+    }
+    
+    .stat-value {
+        font-size: 1.5em;
+    }
+    
+    .section-actions {
+        flex-direction: column;
+        gap: 8px;
     }
 }
 

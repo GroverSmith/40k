@@ -173,6 +173,13 @@ class CrusadeDetails {
         const section = CoreUtils.dom.getElement('leaderboard-section');
         if (section) {
             CoreUtils.dom.show(section);
+            
+            // Set the points log button href with crusade key
+            const viewPointsLogBtn = CoreUtils.dom.getElement('view-points-log-btn');
+            if (viewPointsLogBtn) {
+                viewPointsLogBtn.href = `points-log.html?key=${this.crusadeKey}`;
+            }
+            
             try {
                 console.log('Loading leaderboard for crusade:', this.crusadeKey);
                 
