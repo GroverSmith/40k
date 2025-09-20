@@ -136,7 +136,7 @@ class ArmyDetails {
                 value: this.armyData.mfm_version || 'Not specified'
             },
             {
-                label: 'Date Added',
+                label: 'Last Changed',
                 value: this.armyData.timestamp ? 
                        new Date(this.armyData.timestamp).toLocaleDateString() : 
                        'Unknown'

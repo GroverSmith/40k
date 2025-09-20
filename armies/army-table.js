@@ -8,7 +8,7 @@ const ArmyTable = {
         const configs = {
             'force': {
                 columns: ['army', 'detachment', 'mfm', 'points', 'date'],
-                headers: ['Army Name', 'Detachment', 'MFM Version', 'Points', 'Date Added'],
+                headers: ['Army Name', 'Detachment', 'MFM Version', 'Points', 'Last Changed'],
                 tableId: 'army-lists-table',
                 buildRow: this.buildArmyRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('Timestamp'),
@@ -18,7 +18,7 @@ const ArmyTable = {
             },
             'user': {
                 columns: ['army', 'force', 'faction', 'points', 'date'],
-                headers: ['Army Name', 'Force', 'Faction', 'Points', 'Date Added'],
+                headers: ['Army Name', 'Force', 'Faction', 'Points', 'Last Changed'],
                 tableId: 'user-armies-table',
                 buildRow: this.buildArmyRow.bind(this),
                 sortBy: TableBase.sortByDateDesc('Timestamp'),
