@@ -585,6 +585,182 @@ class BattleReportForm extends BaseForm {
         };
         return finalData;
     }
+
+    /**
+     * Override submitToGoogleSheets to add crusade points logging
+     */
+    async submitToGoogleSheets(formData) {
+        // Call the base form's submission first
+        const result = await super.submitToGoogleSheets(formData);
+        
+        // If successful and this is a crusade battle, create crusade points log entries
+        if (result && formData.crusadeKey) {
+            try {
+                await this.createCrusadePointsLogEntries(formData);
+            } catch (error) {
+                console.warn('Failed to create crusade points log entries:', error);
+                // Don't fail the entire form submission if points logging fails
+            }
+        }
+        
+        return result;
+    }
+
+    /**
+     * Create crusade points log entries for both forces in the battle
+     */
+    async createCrusadePointsLogEntries(battleData) {
+        console.log('Creating crusade points log entries for battle:', battleData);
+        
+        // Load required data from cache
+        const [crusadePhases, crusadePointsScheme] = await Promise.all([
+            UnifiedCache.getAllRows('crusade_phases'),
+            UnifiedCache.getAllRows('crusade_points_scheme')
+        ]);
+
+        // Filter phases for this crusade
+        const relevantPhases = crusadePhases.filter(phase => 
+            phase.crusade_key === battleData.crusadeKey && 
+            !phase.deleted_timestamp
+        );
+
+        // Find the phase this battle was played in
+        const battlePhase = this.findBattlePhase(relevantPhases, battleData.datePlayed);
+        if (!battlePhase) {
+            console.log('No matching phase found for battle date:', battleData.datePlayed);
+            return;
+        }
+
+        console.log('Battle played in phase:', battlePhase);
+
+        // Filter points scheme for this phase
+        const relevantScheme = crusadePointsScheme.filter(scheme => 
+            scheme.phase_key === battlePhase.phase_key && 
+            !scheme.deleted_timestamp
+        );
+
+        // Determine battle outcomes for each force
+        const force1Outcome = this.determineBattleOutcome(battleData, battleData.force1Key);
+        const force2Outcome = this.determineBattleOutcome(battleData, battleData.force2Key);
+
+        // Create log entries for both forces
+        const logEntries = [];
+        
+        if (force1Outcome) {
+            const entry1 = await this.createPointsLogEntry(battleData, battleData.force1Key, battleData.user_key_1, force1Outcome, battlePhase.phase_key, relevantScheme);
+            if (entry1) logEntries.push(entry1);
+        }
+        
+        if (force2Outcome) {
+            const entry2 = await this.createPointsLogEntry(battleData, battleData.force2Key, battleData.user_key_2, force2Outcome, battlePhase.phase_key, relevantScheme);
+            if (entry2) logEntries.push(entry2);
+        }
+
+        // Submit all log entries
+        if (logEntries.length > 0) {
+            await this.submitPointsLogEntries(logEntries);
+            console.log(`Created ${logEntries.length} crusade points log entries`);
+        }
+    }
+
+    /**
+     * Find which phase a battle was played in based on the date
+     */
+    findBattlePhase(phases, battleDate) {
+        const battleDateObj = new Date(battleDate);
+        
+        return phases.find(phase => {
+            const startDate = new Date(phase.start_date);
+            const endDate = new Date(phase.end_date);
+            return battleDateObj >= startDate && battleDateObj <= endDate;
+        });
+    }
+
+    /**
+     * Determine the battle outcome for a specific force
+     */
+    determineBattleOutcome(battleData, forceKey) {
+        const battleTypeValue = battleData.battleType || 'Primary Battle';
+        
+        // Determine if this force won, lost, or drew
+        let outcome;
+        if (battleData.victor === battleData.player1 && battleData.force1Key === forceKey) {
+            outcome = 'Won';
+        } else if (battleData.victor === battleData.player2 && battleData.force2Key === forceKey) {
+            outcome = 'Won';
+        } else if (battleData.victor === 'Draw') {
+            outcome = 'Draw';
+        } else {
+            outcome = 'Lost';
+        }
+
+        // Build the event type
+        const eventType = `${battleTypeValue} ${outcome}`;
+        
+        return {
+            eventType,
+            outcome,
+            battleType: battleTypeValue
+        };
+    }
+
+    /**
+     * Create a single points log entry
+     */
+    async createPointsLogEntry(battleData, forceKey, userKey, outcome, phaseKey, pointsScheme) {
+        // Find matching scheme entry
+        const matchingScheme = pointsScheme.find(scheme => 
+            scheme.event_type === outcome.eventType
+        );
+
+        if (!matchingScheme) {
+            console.log(`No points scheme found for event type: ${outcome.eventType}`);
+            return null;
+        }
+
+        // Generate unique log entry key
+        const logKey = `Log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+        const logEntry = {
+            log_key: logKey,
+            crusade_key: battleData.crusadeKey,
+            phase_key: phaseKey,
+            force_key: forceKey,
+            user_key: userKey,
+            event_type: outcome.eventType,
+            point_category: matchingScheme.point_category,
+            points: matchingScheme.points,
+            notes: `Auto-generated from battle: ${battleData.battle_name || 'Unnamed Battle'}`,
+            timestamp: new Date().toISOString(),
+            deleted_timestamp: ''
+        };
+
+        return logEntry;
+    }
+
+    /**
+     * Submit points log entries to the crusade points log
+     */
+    async submitPointsLogEntries(logEntries) {
+        const submitPromises = logEntries.map(entry => {
+            return fetch(CrusadeConfig.getSheetUrl('crusade_points_log'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(entry)
+            });
+        });
+
+        const results = await Promise.allSettled(submitPromises);
+        
+        results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+                console.error(`Failed to submit log entry ${index}:`, result.reason);
+            }
+        });
+    }
+
     async clearCachesOnSuccess() {
         // Call the base form's method first
         await super.clearCachesOnSuccess();
@@ -592,6 +768,8 @@ class BattleReportForm extends BaseForm {
         // Also manually clear battles cache using UnifiedCache
         if (typeof UnifiedCache !== 'undefined') {
             await UnifiedCache.clearCache('battle_history');
+            // Clear crusade points log cache since we added new entries
+            await UnifiedCache.clearCache('crusade_points_log');
         }
     }
 }
