@@ -261,8 +261,8 @@ class CrusadeDetails {
             // Insert the summary into the rules content
             const rulesContent = CoreUtils.dom.getElement('rules-content');
             if (rulesContent && phasesSummaryHTML) {
-                // Add the summary at the beginning of the rules content
-                rulesContent.insertAdjacentHTML('afterbegin', phasesSummaryHTML);
+                // Add the summary at the end of the rules content
+                rulesContent.insertAdjacentHTML('beforeend', phasesSummaryHTML);
             }
 
         } catch (error) {
@@ -334,38 +334,53 @@ class CrusadeDetails {
                 html += `
                     <div class="points-scheme">
                         <h6>Scoring Events:</h6>
-                        <div class="scheme-table">
+                        <div class="compact-scheme-table">
                 `;
                 
-                // Group by event_type for better organization
-                const groupedScheme = {};
-                phaseScheme.forEach(event => {
-                    const eventType = event.event_type || event['Event Type'] || event['event_type'] || 'General';
-                    if (!groupedScheme[eventType]) {
-                        groupedScheme[eventType] = [];
+                // Sort events using sort_order column, fallback to event_type and category
+                const sortedPhaseScheme = phaseScheme.sort((a, b) => {
+                    const aSortOrder = a.sort_order || a['Sort Order'] || a['sort_order'];
+                    const bSortOrder = b.sort_order || b['Sort Order'] || b['sort_order'];
+                    
+                    // If both have sort_order, use that for primary sorting
+                    if (aSortOrder !== undefined && bSortOrder !== undefined) {
+                        const sortOrderDiff = Number(aSortOrder) - Number(bSortOrder);
+                        if (sortOrderDiff !== 0) {
+                            return sortOrderDiff;
+                        }
                     }
-                    groupedScheme[eventType].push(event);
+                    
+                    // Fallback to event_type and category sorting
+                    const aEventType = a.event_type || a['Event Type'] || a['event_type'] || '';
+                    const bEventType = b.event_type || b['Event Type'] || b['event_type'] || '';
+                    const aCategory = a.point_category || a['Point Category'] || a['point_category'] || '';
+                    const bCategory = b.point_category || b['Point Category'] || b['point_category'] || '';
+                    
+                    // Sort by event type first, then by category
+                    if (aEventType !== bEventType) {
+                        return aEventType.localeCompare(bEventType);
+                    }
+                    return aCategory.localeCompare(bCategory);
                 });
-
-                Object.keys(groupedScheme).forEach(eventType => {
-                    html += `<div class="event-type-group">`;
-                    html += `<div class="event-type-header">${eventType}</div>`;
+                
+                // Display all events in a compact format without grouping
+                sortedPhaseScheme.forEach(event => {
+                    const points = event.points || event['Points'] || event['points'] || 0;
+                    const pointCategory = event.point_category || event['Point Category'] || event['point_category'] || 'Unknown';
+                    const eventType = event.event_type || event['Event Type'] || event['event_type'] || '';
+                    const notes = event.notes || event['Notes'] || event['notes'];
                     
-                    groupedScheme[eventType].forEach(event => {
-                        const points = event.points || event['Points'] || event['points'] || 0;
-                        const pointCategory = event.point_category || event['Point Category'] || event['point_category'] || 'Unknown';
-                        const notes = event.notes || event['Notes'] || event['notes'];
-                        const notesDisplay = notes ? ` (${notes})` : '';
-                        html += `
-                            <div class="event-item">
-                                <span class="event-category">${pointCategory}</span>
-                                <span class="event-points">${points} pts</span>
-                                ${notesDisplay ? `<span class="event-notes">${notesDisplay}</span>` : ''}
-                            </div>
-                        `;
-                    });
+                    // Create compact display with event type and category
+                    const eventDisplay = eventType ? `${eventType}: ${pointCategory}` : pointCategory;
+                    const notesDisplay = notes ? ` (${notes})` : '';
                     
-                    html += `</div>`;
+                    html += `
+                        <div class="compact-event-item">
+                            <span class="compact-event-text">${eventDisplay}</span>
+                            <span class="compact-event-points">${points} pts</span>
+                            ${notesDisplay ? `<span class="compact-event-notes">${notesDisplay}</span>` : ''}
+                        </div>
+                    `;
                 });
                 
                 html += `</div></div>`;

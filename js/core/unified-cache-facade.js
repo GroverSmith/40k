@@ -20,11 +20,9 @@ class UnifiedCacheFacade {
         console.log('UnifiedCacheFacade: Found table definitions for:', tableNames.join(', '));
         
         tableNames.forEach(sheetName => {
-            this.scriptUrls[sheetName] = TableDefs[sheetName].url;
-            console.log(`UnifiedCacheFacade: Loaded URL for ${sheetName}: ${TableDefs[sheetName].url}`);
-        });
+            this.scriptUrls[sheetName] = TableDefs[sheetName].url;            
+        });       
         
-        console.log('UnifiedCacheFacade: All loaded URLs:', this.scriptUrls);
         
         // Extract primary keys and composite keys from TableDefs
         this.primaryKeys = {};
@@ -33,7 +31,7 @@ class UnifiedCacheFacade {
             this.primaryKeys[sheetName] = TableDefs[sheetName].primaryKey;
             this.compositeKeys[sheetName] = TableDefs[sheetName].compositeKey;
         });
-        console.log('UnifiedCacheFacade: Loaded primary keys from TableDefs for', Object.keys(this.primaryKeys).length, 'tables');
+        
         
         // Cache TTL settings (in milliseconds)
         this.cacheTTL = {
@@ -459,8 +457,7 @@ class UnifiedCacheFacade {
         await this.ensureDatabaseReady();
         
         // Check if we need to refresh the cache
-        const cacheValid = await this.isCacheValid(sheetName);
-        console.log(`UnifiedCacheFacade: Cache validation for ${sheetName}: valid=${cacheValid}, forceRefresh=${forceRefresh}`);
+        const cacheValid = await this.isCacheValid(sheetName);        
         
         // Check if we have a valid empty result cache (with longer TTL)
         const isEmptyResultCacheValid = await this.isEmptyResultCacheValid(sheetName);

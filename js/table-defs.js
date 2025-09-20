@@ -58,7 +58,7 @@ const TableDefs = {
         primaryKey: 'crusade_key',
         compositeKey: ['crusade_key', 'phase_key', 'event_type'],
         columns: [
-            'crusade_key', 'phase_key', 'event_type', 'point_category', 'points', 'notes', 'deleted_timestamp'
+            'crusade_key', 'phase_key', 'event_type', 'sort_order', 'point_category', 'points', 'notes', 'deleted_timestamp'
         ]
     },
 
