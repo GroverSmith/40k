@@ -31,7 +31,8 @@ class CrusadeDetails {
             await Promise.all([
                 this.loadParticipatingForces(),
                 this.loadBattleHistory(),
-                this.loadCampaignStories()
+                this.loadCampaignStories(),
+                this.loadPhasesAndPoints()
             ]);
         } catch (error) {
             console.error('Error initializing crusade details:', error);
@@ -193,6 +194,190 @@ class CrusadeDetails {
         }
     }
 
+    async loadPhasesAndPoints() {
+        try {
+            console.log('Loading phases and points for crusade:', this.crusadeKey);
+            
+            // Always use UnifiedCache - handle data mapping issues in the cache layer
+            let crusadePhases = [];
+            let crusadeCategories = [];
+            let crusadeScheme = [];
+
+            // Load phases through cache with error handling
+            try {
+                const phases = await UnifiedCache.getAllRows('crusade_phases');
+                
+                // Filter for this crusade and handle different field name formats
+                crusadePhases = phases.filter(phase => {
+                    const phaseCrusadeKey = phase.crusade_key || phase['Crusade Key'] || phase['crusade_key'];
+                    const isDeleted = phase.deleted_timestamp || phase['Deleted Timestamp'] || phase['deleted_timestamp'];
+                    return phaseCrusadeKey === this.crusadeKey && !isDeleted;
+                });
+            } catch (error) {
+                console.warn('Error loading phases from cache:', error);
+            }
+
+            // Load points categories through cache
+            try {
+                const categories = await UnifiedCache.getAllRows('crusade_points_categories');
+                
+                crusadeCategories = categories.filter(cat => {
+                    const catCrusadeKey = cat.crusade_key || cat['Crusade Key'] || cat['crusade_key'];
+                    const isDeleted = cat.deleted_timestamp || cat['Deleted Timestamp'] || cat['deleted_timestamp'];
+                    return catCrusadeKey === this.crusadeKey && !isDeleted;
+                });
+            } catch (error) {
+                console.warn('Error loading points categories from cache:', error);
+            }
+
+            // Load points scheme through cache
+            try {
+                const scheme = await UnifiedCache.getAllRows('crusade_points_scheme');
+                
+                crusadeScheme = scheme.filter(s => {
+                    const schemeCrusadeKey = s.crusade_key || s['Crusade Key'] || s['crusade_key'];
+                    const isDeleted = s.deleted_timestamp || s['Deleted Timestamp'] || s['deleted_timestamp'];
+                    return schemeCrusadeKey === this.crusadeKey && !isDeleted;
+                });
+            } catch (error) {
+                console.warn('Error loading points scheme from cache:', error);
+            }
+
+            if (crusadePhases.length === 0) {
+                console.log('No phases found for crusade:', this.crusadeKey);
+                return;
+            }
+
+            // Sort phases by phase_number
+            crusadePhases.sort((a, b) => {
+                const aNum = a.phase_number || a['Phase Number'] || a['phase_number'] || 0;
+                const bNum = b.phase_number || b['Phase Number'] || b['phase_number'] || 0;
+                return aNum - bNum;
+            });
+
+            // Build the phases summary HTML
+            const phasesSummaryHTML = this.buildPhasesSummaryHTML(crusadePhases, crusadeCategories, crusadeScheme);
+            
+            // Insert the summary into the rules content
+            const rulesContent = CoreUtils.dom.getElement('rules-content');
+            if (rulesContent && phasesSummaryHTML) {
+                // Add the summary at the beginning of the rules content
+                rulesContent.insertAdjacentHTML('afterbegin', phasesSummaryHTML);
+            }
+
+        } catch (error) {
+            console.error('Error loading phases and points data:', error);
+        }
+    }
+
+    buildPhasesSummaryHTML(phases, categories, scheme) {
+        if (phases.length === 0) return '';
+
+        let html = `
+            <div class="phases-summary-block">
+                <h4>🎯 Campaign Phases & Scoring</h4>
+                <div class="phases-overview">
+        `;
+
+        phases.forEach(phase => {
+            // Handle different possible field names
+            const phaseKey = phase.phase_key || phase['Phase Key'] || phase['phase_key'];
+            const phaseNumber = phase.phase_number || phase['Phase Number'] || phase['phase_number'] || 'Unknown';
+            const phaseName = phase.phase_name || phase['Phase Name'] || phase['phase_name'] || 'Unnamed Phase';
+            const startDate = phase.start_date ? new Date(phase.start_date).toLocaleDateString() : 'TBD';
+            const endDate = phase.end_date ? new Date(phase.end_date).toLocaleDateString() : 'Ongoing';
+            
+            // Get categories for this phase
+            const phaseCategories = categories.filter(cat => 
+                (cat.phase_key === phaseKey) || (cat['Phase Key'] === phaseKey)
+            );
+            
+            // Get points scheme for this phase
+            const phaseScheme = scheme.filter(s => 
+                (s.phase_key === phaseKey) || (s['Phase Key'] === phaseKey)
+            );
+
+            html += `
+                <div class="phase-block">
+                    <div class="phase-header">
+                        <h5>Phase ${phaseNumber}: ${phaseName}</h5>
+                        <div class="phase-dates">${startDate} - ${endDate}</div>
+                    </div>
+            `;
+
+            // Handle different possible field names for introduction
+            const introduction = phase.introduction || phase['Introduction'] || phase['introduction'];
+            if (introduction && introduction.trim()) {
+                html += `<div class="phase-intro">${this.formatText(introduction)}</div>`;
+            }
+
+            // Add points categories summary
+            if (phaseCategories.length > 0) {
+                html += `
+                    <div class="points-categories">
+                        <h6>Points Categories:</h6>
+                        <ul class="category-list">
+                `;
+                
+                phaseCategories.forEach(cat => {
+                    const category = cat.category || cat['Category'] || cat['category'];
+                    const maxPoints = cat.max_popints_for_phase || cat.max_points_for_phase || 
+                                     cat['Max Points For Phase'] || cat['max_points_for_phase'] || 'Unlimited';
+                    html += `<li><strong>${category}</strong>: ${maxPoints} points max</li>`;
+                });
+                
+                html += `</ul></div>`;
+            }
+
+            // Add points scheme details
+            if (phaseScheme.length > 0) {
+                html += `
+                    <div class="points-scheme">
+                        <h6>Scoring Events:</h6>
+                        <div class="scheme-table">
+                `;
+                
+                // Group by event_type for better organization
+                const groupedScheme = {};
+                phaseScheme.forEach(event => {
+                    const eventType = event.event_type || event['Event Type'] || event['event_type'] || 'General';
+                    if (!groupedScheme[eventType]) {
+                        groupedScheme[eventType] = [];
+                    }
+                    groupedScheme[eventType].push(event);
+                });
+
+                Object.keys(groupedScheme).forEach(eventType => {
+                    html += `<div class="event-type-group">`;
+                    html += `<div class="event-type-header">${eventType}</div>`;
+                    
+                    groupedScheme[eventType].forEach(event => {
+                        const points = event.points || event['Points'] || event['points'] || 0;
+                        const pointCategory = event.point_category || event['Point Category'] || event['point_category'] || 'Unknown';
+                        const notes = event.notes || event['Notes'] || event['notes'];
+                        const notesDisplay = notes ? ` (${notes})` : '';
+                        html += `
+                            <div class="event-item">
+                                <span class="event-category">${pointCategory}</span>
+                                <span class="event-points">${points} pts</span>
+                                ${notesDisplay ? `<span class="event-notes">${notesDisplay}</span>` : ''}
+                            </div>
+                        `;
+                    });
+                    
+                    html += `</div>`;
+                });
+                
+                html += `</div></div>`;
+            }
+
+            html += `</div>`;
+        });
+
+        html += `</div></div>`;
+        return html;
+    }
+
 
 
     formatText(text) {
@@ -236,6 +421,29 @@ class CrusadeDetails {
         sections.forEach(section => CoreUtils.dom.hide(section));
     }
 
+}
+
+// Toggle collapsible sections
+function toggleCollapsible(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+
+    const header = section.querySelector('.collapsible-header');
+    const content = section.querySelector('.collapsible-content');
+    
+    if (!header || !content) return;
+
+    const isCollapsed = header.classList.contains('collapsed');
+    
+    if (isCollapsed) {
+        // Expand
+        header.classList.remove('collapsed');
+        content.classList.remove('collapsed');
+    } else {
+        // Collapse
+        header.classList.add('collapsed');
+        content.classList.add('collapsed');
+    }
 }
 
 // Initialize when DOM is ready
