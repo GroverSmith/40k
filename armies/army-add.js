@@ -573,49 +573,24 @@ class ArmyListForm extends BaseForm {
     }
 
     selectUnit(unit) {
-        // Remove from available
-        const availableItem = document.querySelector(`#available-units-list [data-unit-key="${unit.unit_key}"]`);
-        if (availableItem) {
-            availableItem.remove();
-        }
-
-        // Add to selected
+        // Add to selected units array
         this.selectedUnits.push(unit);
-        const selectedList = CoreUtils.dom.getElement('selected-units-list');
-        if (selectedList) {
-            // If this is the first unit, clear the "No units selected" text
-            if (this.selectedUnits.length === 1) {
-                selectedList.innerHTML = '';
-            }
-            const selectedItem = this.createUnitItem(unit, 'selected');
-            selectedList.appendChild(selectedItem);
-        }
+        
+        // Update both UI lists properly
+        this.populateSelectedUnits();
+        this.populateAvailableUnits();
 
         this.updateSummary();
         this.updateNavigationButtons();
     }
 
     deselectUnit(unit) {
-        // Remove from selected
-        const selectedItem = document.querySelector(`#selected-units-list [data-unit-key="${unit.unit_key}"]`);
-        if (selectedItem) {
-            selectedItem.remove();
-        }
-
-        // Add back to available
+        // Remove from selected units array
         this.selectedUnits = this.selectedUnits.filter(u => u.unit_key !== unit.unit_key);
         
-        // If no units are selected, show "No units selected" message
-        const selectedList = CoreUtils.dom.getElement('selected-units-list');
-        if (selectedList && this.selectedUnits.length === 0) {
-            selectedList.innerHTML = '<div class="unit-item">No units selected</div>';
-        }
-        
-        const availableList = CoreUtils.dom.getElement('available-units-list');
-        if (availableList) {
-            const availableItem = this.createUnitItem(unit, 'available');
-            availableList.appendChild(availableItem);
-        }
+        // Update both UI lists properly
+        this.populateSelectedUnits();
+        this.populateAvailableUnits();
 
         this.updateSummary();
         this.updateNavigationButtons();
