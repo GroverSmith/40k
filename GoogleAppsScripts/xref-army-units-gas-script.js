@@ -55,6 +55,120 @@ function cascadeDeleteByParent(parentTable, parentKey) {
   return { success: true, message: `Cascade deleted ${deletedCount} xref records` };
 }
 
+// Efficiently update army-unit relationships by comparing existing vs new
+function updateArmyUnitRelationships(armyKey, newUnitKeys) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+  
+  if (!sheet) {
+    throw new Error('Sheet not found');
+  }
+  
+  const allData = sheet.getDataRange().getValues();
+  if (allData.length <= 1) {
+    // No existing relationships, just create new ones
+    return createArmyUnitRelationships(armyKey, newUnitKeys);
+  }
+  
+  const headers = allData[0];
+  const armyKeyIndex = headers.indexOf('army_key');
+  const unitKeyIndex = headers.indexOf('unit_key');
+  const deletedTimestampIndex = headers.indexOf('deleted_timestamp');
+  
+  // Get existing active relationships for this army
+  const existingUnitKeys = new Set();
+  const existingRowIndices = [];
+  
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[armyKeyIndex] === armyKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      existingUnitKeys.add(row[unitKeyIndex]);
+      existingRowIndices.push(i + 1); // +1 because sheet rows are 1-indexed
+    }
+  }
+  
+  const newUnitKeysSet = new Set(newUnitKeys);
+  const timestamp = new Date();
+  
+  let addedCount = 0;
+  let removedCount = 0;
+  
+  // Remove relationships that are no longer needed
+  for (let i = 1; i < allData.length; i++) {
+    const row = allData[i];
+    if (row[armyKeyIndex] === armyKey && 
+        (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
+      const unitKey = row[unitKeyIndex];
+      if (!newUnitKeysSet.has(unitKey)) {
+        // This unit is no longer selected, soft delete it
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setValue(timestamp);
+        sheet.getRange(i + 1, deletedTimestampIndex + 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+        removedCount++;
+      }
+    }
+  }
+  
+  // Add new relationships that don't exist yet
+  for (const unitKey of newUnitKeys) {
+    if (!existingUnitKeys.has(unitKey)) {
+      const lastRow = sheet.getLastRow();
+      const newRow = [
+        armyKey,
+        unitKey.trim(),
+        timestamp,
+        '' // Deleted Timestamp
+      ];
+      sheet.getRange(lastRow + 1, 1, 1, 4).setValues([newRow]);
+      addedCount++;
+    }
+  }
+  
+  console.log(`Updated relationships: +${addedCount} added, -${removedCount} removed`);
+  return { 
+    success: true, 
+    message: `Updated relationships: ${addedCount} added, ${removedCount} removed`,
+    added: addedCount,
+    removed: removedCount
+  };
+}
+
+// Create new army-unit relationships (extracted for reuse)
+function createArmyUnitRelationships(armyKey, unitKeys) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = spreadsheet.getSheetByName(SHEET_NAME);
+
+  // Create sheet if it doesn't exist
+  if (!sheet) {
+    console.log('Creating army units sheet');
+    sheet = spreadsheet.insertSheet(SHEET_NAME);
+    
+    const headers = ['army_key', 'unit_key', 'timestamp', 'deleted_timestamp'];
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    
+    // Format headers
+    const headerRange = sheet.getRange(1, 1, 1, headers.length);
+    headerRange.setFontWeight('bold');
+  }
+
+  const timestamp = new Date();
+  
+  // Create rows for each unit key
+  if (unitKeys.length > 0) {
+    const rows = unitKeys.map(unitKey => [
+      armyKey,
+      unitKey.trim(),
+      timestamp,
+      '' // Deleted Timestamp
+    ]);
+
+    const lastRow = sheet.getLastRow();
+    sheet.getRange(lastRow + 1, 1, rows.length, 4).setValues(rows);
+  }
+
+  return { success: true, message: `Created ${unitKeys.length} army-unit relationships` };
+}
+
 function doPost(e) {
   try {
     console.log('doPost called - raw data:', e.postData ? e.postData.contents : 'No postData');
@@ -87,6 +201,33 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // Handle efficient relationship update operation
+    if (data.operation === 'update_relationships') {
+      console.log('Processing relationship update with data:', data);
+      
+      let { armyKey, unitKeys } = data;
+      
+      // If unitKeys is a string (from URL parameters), parse it as JSON
+      if (typeof unitKeys === 'string') {
+        try {
+          unitKeys = JSON.parse(unitKeys);
+          console.log('Parsed unitKeys:', unitKeys);
+        } catch (parseError) {
+          console.error('Failed to parse unitKeys:', parseError);
+          throw new Error('Invalid unitKeys format');
+        }
+      }
+      
+      if (!armyKey || !Array.isArray(unitKeys)) {
+        throw new Error('armyKey and unitKeys array are required');
+      }
+      
+      const result = updateArmyUnitRelationships(armyKey, unitKeys);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     // Default operation is create army-unit relationships
     console.log('Processing army-unit relationships with data:', data);
     
@@ -108,50 +249,11 @@ function doPost(e) {
       throw new Error('armyKey and unitKeys array are required');
     }
     
-    console.log('Validation passed, processing relationships for army:', armyKey, 'with', unitKeys.length, 'units');
+    console.log('Validation passed, creating relationships for army:', armyKey, 'with', unitKeys.length, 'units');
 
-    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    let sheet = spreadsheet.getSheetByName(SHEET_NAME);
-
-    // Create sheet if it doesn't exist
-    if (!sheet) {
-      console.log('Creating army units sheet');
-      sheet = spreadsheet.insertSheet(SHEET_NAME);
-      
-      const headers = ['army_key', 'unit_key', 'timestamp', 'deleted_timestamp'];
-      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-      
-      // Format headers
-      const headerRange = sheet.getRange(1, 1, 1, headers.length);
-      headerRange.setFontWeight('bold');
-    }
-
-    const timestamp = new Date();
-    
-    // Create rows for each unit key
-    if (unitKeys.length > 0) {
-      const rows = unitKeys.map(unitKey => [
-        armyKey,
-        unitKey.trim(),
-        timestamp,
-        '' // Deleted Timestamp
-      ]);
-
-      const lastRow = sheet.getLastRow();
-      sheet.getRange(lastRow + 1, 1, rows.length, 4).setValues(rows);
-      
-      console.log('Successfully created', unitKeys.length, 'army-unit relationships');
-    }
-
-    // Log success
-    console.log('Successfully processed army-unit relationships for army:', armyKey);
-    
+    const result = createArmyUnitRelationships(armyKey, unitKeys);
     return ContentService
-      .createTextOutput(JSON.stringify({
-        success: true,
-        message: 'Army-Unit relationships created',
-        count: unitKeys.length
-      }))
+      .createTextOutput(JSON.stringify(result))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {

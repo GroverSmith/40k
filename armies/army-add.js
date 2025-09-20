@@ -534,8 +534,9 @@ class ArmyListForm extends BaseForm {
         this.selectedUnits = selectedUnits;
         console.log(`Loaded ${selectedUnits.length} existing units into selected list`);
 
-        // Update the UI
+        // Update the UI - both selected and available units lists
         this.populateSelectedUnits();
+        this.populateAvailableUnits(); // Remove selected units from available list
         this.updateSummary();
     }
 
@@ -866,39 +867,34 @@ class ArmyListForm extends BaseForm {
             const xrefUrl = CrusadeConfig.getSheetUrl('xref_army_units');
             const unitKeys = this.selectedUnits.map(unit => unit.unit_key);
 
+            let operation = 'create';
             if (this.isEditMode) {
-                // For edit mode, we need to update existing relationships
-                // First, delete existing relationships for this army
-                await this.deleteExistingUnitRelationships(armyKey);
+                operation = 'update_relationships';
             }
 
-            // Then create new relationships (or skip if no units selected)
-            if (unitKeys.length > 0) {
-                const response = await fetch(xrefUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        armyKey: armyKey,
-                        unitKeys: JSON.stringify(unitKeys)
-                    }).toString()
-                });
+            const response = await fetch(xrefUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    operation: operation,
+                    armyKey: armyKey,
+                    unitKeys: JSON.stringify(unitKeys)
+                }).toString()
+            });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                
-                if (!result.success) {
-                    throw new Error(result.error || 'Failed to save unit relationships');
-                }
-                
-                console.log('Unit relationships saved successfully');
-            } else {
-                console.log('No units selected, skipping unit relationships save');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+
+            const result = await response.json();
+            
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to save unit relationships');
+            }
+            
+            console.log('Unit relationships saved successfully:', result.message);
             
             // Clear the xref_army_units cache since we've modified the data
             if (typeof UnifiedCache !== 'undefined') {
@@ -916,48 +912,6 @@ class ArmyListForm extends BaseForm {
         }
     }
 
-    async deleteExistingUnitRelationships(armyKey) {
-        try {
-            const xrefUrl = CrusadeConfig.getSheetUrl('xref_army_units');
-            
-            const response = await fetch(xrefUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    operation: 'cascade_delete',
-                    parent_table: 'armies',
-                    parent_key: armyKey
-                }).toString()
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json();
-            
-            if (!result.success) {
-                throw new Error(result.error || 'Failed to delete existing unit relationships');
-            }
-            
-            console.log('Existing unit relationships deleted successfully');
-            
-            // Clear the xref_army_units cache since we've modified the data
-            if (typeof UnifiedCache !== 'undefined') {
-                try {
-                    await UnifiedCache.clearCache('xref_army_units');
-                    console.log('Cleared xref_army_units cache after delete');
-                } catch (cacheError) {
-                    console.warn('Failed to clear xref_army_units cache:', cacheError);
-                }
-            }
-        } catch (error) {
-            console.error('Error deleting existing unit relationships:', error);
-            throw error; // Re-throw this one as it's critical for edit mode
-        }
-    }
 
     showLoadingMessage(message = 'Processing...') {
         // Create or show loading overlay
