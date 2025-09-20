@@ -40,6 +40,17 @@ const TableDefs = {
         ]
     },
 
+    crusade_points_categories: {
+        url: 'https://script.google.com/macros/s/AKfycbwMiyhhren00XgHmz_zct9WhTRSzDgTcXoh2DVu8Nkw45Ytiom520GDUGBRQB93wD5AaQ/exec',
+        sheetId: '1nGDVVUwF4Hg2Ke62JaxJBzIX3Tgxvp40v9VTif1hSw0',
+        sheetName: 'crusade_points_categories',
+        primaryKey: 'crusade_key',
+        compositeKey: ['crusade_key', 'phase_key', 'category'],
+        columns: [
+            'crusade_key', 'phase_key', 'category', 'max_popints_for_phase', 'deleted_timestamp'
+        ]
+    },
+
     crusade_points_scheme: {
         url: 'https://script.google.com/macros/s/AKfycbwnOSGvyxrh1fctTQN_YOlqyikwYaeM8LcCQfokCNufgOrEizStp8YeI8srorY5JApXeQ/exec',
         sheetId: '1BDaX-eM2U-l-YACHnWrm_kuLDrdKEpPX_hoMZjELq_Y',
@@ -47,7 +58,7 @@ const TableDefs = {
         primaryKey: 'crusade_key',
         compositeKey: ['crusade_key', 'phase_key', 'event_type'],
         columns: [
-            'crusade_key', 'phase_key', 'event_type', 'points', 'max_points_allowed', 'notes', 'deleted_timestamp'
+            'crusade_key', 'phase_key', 'event_type', 'point_category', 'points', 'notes', 'deleted_timestamp'
         ]
     },
 

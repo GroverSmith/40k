@@ -6,7 +6,7 @@
 class UnifiedCacheFacade {
     constructor() {
         this.dbName = 'CrusadeTrackerCache';
-        this.dbVersion = 3; // Incremented to add crusade_phases, crusade_points_scheme, crusade_points_log tables
+        this.dbVersion = 4; // Incremented to add crusade_points_categories table
         this.db = null;
         
         // Extract URLs from TableDefs (if available) or use fallback
@@ -40,6 +40,7 @@ class UnifiedCacheFacade {
             users: 24 * 60 * 60 * 1000, // 24 hours
             crusades: 24 * 60 * 60 * 1000, // 24 hours
             crusade_phases: 24 * 60 * 60 * 1000, // 24 hours (read-only, stable data)
+            crusade_points_categories: 24 * 60 * 60 * 1000, // 24 hours (read-only, stable data)
             crusade_points_scheme: 24 * 60 * 60 * 1000, // 24 hours (read-only, stable data)
             crusade_points_log: 30 * 60 * 1000, // 30 minutes (insert-only, may have frequent updates)
             forces: 24 * 60 * 60 * 1000, // 24 hours
