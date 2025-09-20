@@ -842,6 +842,9 @@ class ArmyListForm extends BaseForm {
                 }
             }
 
+            // Clear specified caches (like the base class does)
+            await this.clearCachesOnSuccess();
+            
             // Hide loading message on success
             this.hideLoadingMessage();
             
@@ -896,6 +899,16 @@ class ArmyListForm extends BaseForm {
             } else {
                 console.log('No units selected, skipping unit relationships save');
             }
+            
+            // Clear the xref_army_units cache since we've modified the data
+            if (typeof UnifiedCache !== 'undefined') {
+                try {
+                    await UnifiedCache.clearCache('xref_army_units');
+                    console.log('Cleared xref_army_units cache after update');
+                } catch (cacheError) {
+                    console.warn('Failed to clear xref_army_units cache:', cacheError);
+                }
+            }
         } catch (error) {
             console.error('Error saving unit relationships:', error);
             // Don't throw here - the army was already saved successfully
@@ -930,6 +943,16 @@ class ArmyListForm extends BaseForm {
             }
             
             console.log('Existing unit relationships deleted successfully');
+            
+            // Clear the xref_army_units cache since we've modified the data
+            if (typeof UnifiedCache !== 'undefined') {
+                try {
+                    await UnifiedCache.clearCache('xref_army_units');
+                    console.log('Cleared xref_army_units cache after delete');
+                } catch (cacheError) {
+                    console.warn('Failed to clear xref_army_units cache:', cacheError);
+                }
+            }
         } catch (error) {
             console.error('Error deleting existing unit relationships:', error);
             throw error; // Re-throw this one as it's critical for edit mode
