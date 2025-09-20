@@ -682,20 +682,52 @@ class BattleReportForm extends BaseForm {
     determineBattleOutcome(battleData, forceKey) {
         const battleTypeValue = battleData.battleType || 'Primary Battle';
         
+        console.log('Determining outcome for force:', forceKey);
+        console.log('Battle data:', {
+            victor: battleData.victor,
+            player1: battleData.player1,
+            player2: battleData.player2,
+            force1Key: battleData.force1Key,
+            force2Key: battleData.force2Key,
+            player1Score: battleData.player1Score,
+            player2Score: battleData.player2Score
+        });
+        
+        // Determine victor from scores if victor field is empty
+        let actualVictor = battleData.victor;
+        if (!actualVictor && battleData.player1Score && battleData.player2Score) {
+            const p1Score = parseInt(battleData.player1Score);
+            const p2Score = parseInt(battleData.player2Score);
+            if (p1Score > p2Score) {
+                actualVictor = battleData.player1;
+            } else if (p2Score > p1Score) {
+                actualVictor = battleData.player2;
+            } else {
+                actualVictor = 'Draw';
+            }
+            console.log('Determined victor from scores:', actualVictor);
+        }
+        
         // Determine if this force won, lost, or drew
         let outcome;
-        if (battleData.victor === battleData.player1 && battleData.force1Key === forceKey) {
+        if (actualVictor === battleData.player1 && battleData.force1Key === forceKey) {
             outcome = 'Won';
-        } else if (battleData.victor === battleData.player2 && battleData.force2Key === forceKey) {
+            console.log('Force 1 won');
+        } else if (actualVictor === battleData.player2 && battleData.force2Key === forceKey) {
             outcome = 'Won';
-        } else if (battleData.victor === 'Draw') {
+            console.log('Force 2 won');
+        } else if (actualVictor === 'Draw') {
             outcome = 'Draw';
+            console.log('Battle was a draw');
         } else {
             outcome = 'Lost';
+            console.log('Force lost');
         }
 
         // Build the event type
         const eventType = `${battleTypeValue} ${outcome}`;
+        
+        console.log('Final outcome for force', forceKey, ':', eventType);
         
         return {
             eventType,
@@ -708,6 +740,9 @@ class BattleReportForm extends BaseForm {
      * Create a single points log entry
      */
     async createPointsLogEntry(battleData, forceKey, userKey, outcome, phaseKey, pointsScheme) {
+        console.log(`Looking for points scheme for event type: ${outcome.eventType}`);
+        console.log('Available scheme entries:', pointsScheme.map(s => s.event_type));
+        
         // Find matching scheme entry
         const matchingScheme = pointsScheme.find(scheme => 
             scheme.event_type === outcome.eventType
@@ -715,8 +750,11 @@ class BattleReportForm extends BaseForm {
 
         if (!matchingScheme) {
             console.log(`No points scheme found for event type: ${outcome.eventType}`);
+            console.log('Available event types in scheme:', pointsScheme.map(s => s.event_type));
             return null;
         }
+
+        console.log(`Found matching scheme:`, matchingScheme);
 
         // Map to the field names expected by the GAS script
         const logEntry = {
@@ -729,6 +767,7 @@ class BattleReportForm extends BaseForm {
             timestamp: new Date().toISOString()
         };
 
+        console.log('Creating log entry:', logEntry);
         return logEntry;
     }
 
