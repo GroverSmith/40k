@@ -27,7 +27,40 @@ const TableDefs = {
             'narrative_block_1', 'narrative_block_2', 'deleted_timestamp'
         ]
     },
-    
+
+    crusade_phases: {
+        url: 'https://script.google.com/macros/s/AKfycbyU0rJHaeK_InGl6zOEZP7zJ40cac2X6eB-CmCsMF8L4tzm2yf58WT1icp2y704CNU1bA/exec',
+        sheetId: '1_WI7SgeQriXzLKZqFkH4Voo_t4setUPIGkXBx-XVQCI',
+        sheetName: 'crusade_phases',
+        primaryKey: 'phase_key',
+        columns: [
+            'phase_key', 'crusade_key', 'state', 'phase_number', 'phase_name', 'start_date', 'end_date',
+            'introduction', 'rules_block_1', 'rules_block_2', 'rules_block_3',
+            'narrative_block_1', 'narrative_block_2', 'narrative_block_3', 'deleted_timestamp'
+        ]
+    },
+
+    crusade_points_scheme: {
+        url: 'https://script.google.com/macros/s/AKfycbwnOSGvyxrh1fctTQN_YOlqyikwYaeM8LcCQfokCNufgOrEizStp8YeI8srorY5JApXeQ/exec',
+        sheetId: '1BDaX-eM2U-l-YACHnWrm_kuLDrdKEpPX_hoMZjELq_Y',
+        sheetName: 'crusade_points_scheme',
+        primaryKey: 'crusade_key',
+        compositeKey: ['crusade_key', 'phase_key', 'event_type'],
+        columns: [
+            'crusade_key', 'phase_key', 'event_type', 'points', 'max_points_allowed', 'notes', 'deleted_timestamp'
+        ]
+    },
+
+    crusade_points_log: {
+        url: 'https://script.google.com/macros/s/AKfycbzUBdnxPQDeGIHzE8RmgxuHhXztG4kEhcN8cqFZXz_Hlf1HdUotFFYh4ePcRJ2LcLgNQg/exec',
+        sheetId: '1rDWiFBa-L7iiRGvQ4BUJfOhojtuBehSpgUrV2BJ1h1Q',
+        sheetName: 'crusade_points_log',
+        primaryKey: 'event_key',
+        columns: [
+            'event_key', 'crusade_key', 'phase_key', 'force_key', 'points', 'event', 'notes', 'timestamp', 'deleted_timestamp'
+        ]
+    },
+
     forces: {
         url: 'https://script.google.com/macros/s/AKfycbw9gjWBeUEyKDpyB-TLOMrs5cmjrNV6EoaEV87LXfv-MfdquKVYGHCRLePsdOk9PIsz/exec',
         sheetId: '13n56kfJPSMoeV9VyiTXYajWT1LuBmnpj2oSwcek_osg',
