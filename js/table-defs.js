@@ -124,7 +124,7 @@ const TableDefs = {
         sheetName: 'battles',
         primaryKey: 'battle_key',
         columns: [
-            'battle_key', 'user_key_1', 'user_key_2', 'crusade_key', 'victor_force_key', 'battle_size',
+            'battle_key', 'user_key_1', 'user_key_2', 'crusade_key', 'victor_force_key', 'battle_type', 'battle_size',
             'force_key_1', 'force_key_2', 'date_played', 'player_1', 'force_1', 'army_1',
             'player_2', 'force_2', 'army_2', 'victor', 'player_1_score', 'player_2_score',
             'battle_name', 'summary_notes', 'timestamp', 'deleted_timestamp'

@@ -73,26 +73,30 @@ function editBattle(battleKey, userKey, data) {
   const timestamp = new Date();
   const updatedRowData = [
     battleKey,                     // battle_key (Primary Key) - Column 0
-    userKey,                       // user_key - Column 1
-    data.crusade_key || '',        // crusade_key - Column 2
-    data.victor_force_key || '',   // victor_force_key - Column 3
-    data.battle_size || '',        // battle_size - Column 4
-    data.force_key_1 || '',        // force_key_1 - Column 5
-    data.force_key_2 || '',        // force_key_2 - Column 6
-    data.date_played || '',        // date_played - Column 7
-    data.player_1 || '',           // player_1 - Column 8
-    data.force_1 || '',            // force_1 - Column 9
-    data.army_1 || '',             // army_1 - Column 10
-    data.player_2 || '',           // player_2 - Column 11
-    data.force_2 || '',            // force_2 - Column 12
-    data.army_2 || '',             // army_2 - Column 13
-    data.victor || '',             // victor - Column 14
-    data.player_1_score || '',     // player_1_score - Column 15
-    data.player_2_score || '',     // player_2_score - Column 16
-    data.battle_name || '',        // battle_name - Column 17
-    data.summary_notes || '',      // summary_notes - Column 18
-    timestamp,                     // timestamp - Column 19
-    ''                             // deleted_timestamp - Column 20 (keep empty)
+    userKey,                       // user_key_1 - Column 1
+    data.user_key_2 || '',         // user_key_2 - Column 2
+    data.crusade_key || '',        // crusade_key - Column 3
+    data.victor_force_key || '',   // victor_force_key - Column 4
+    data.battle_type || 'Primary Battle', // battle_type - Column 5
+    data.battle_size || '',        // battle_size - Column 6
+    data.force_key_1 || '',        // force_key_1 - Column 7
+    data.force_key_2 || '',        // force_key_2 - Column 8
+    data.date_played || '',        // date_played - Column 9
+    data.player_1 || '',           // player_1 - Column 10
+    data.force_1 || '',            // force_1 - Column 11
+    data.army_1 || '',             // army_1 - Column 12
+    data.player_2 || '',           // player_2 - Column 13
+    data.force_2 || '',            // force_2 - Column 14
+    data.army_2 || '',             // army_2 - Column 15
+    data.victor || '',             // victor - Column 16
+    data.player_1_score || '',     // player_1_score - Column 17
+    data.player_2_score || '',     // player_2_score - Column 18
+    data.battle_name || '',        // battle_name - Column 19
+    data.summary_notes || '',      // summary_notes - Column 20
+    data.force_1_pov || '',        // force_1_pov - Column 21
+    data.force_2_pov || '',        // force_2_pov - Column 22
+    timestamp,                     // timestamp - Column 23
+    ''                             // deleted_timestamp - Column 24 (keep empty)
   ];
   
   // Update the row
@@ -202,6 +206,7 @@ function doPost(e) {
         'user_key_2',
         'crusade_key',
         'victor_force_key',
+        'battle_type',
         'battle_size',
         'force_key_1',
         'force_key_2',
@@ -237,25 +242,26 @@ function doPost(e) {
       sheet.setColumnWidth(3, 150); // user_key_2
       sheet.setColumnWidth(4, 150); // crusade_key
       sheet.setColumnWidth(5, 150); // victor_force_key
-      sheet.setColumnWidth(6, 100); // battle_size
-      sheet.setColumnWidth(7, 150); // force_key_1
-      sheet.setColumnWidth(8, 150); // force_key_2
-      sheet.setColumnWidth(9, 100); // date_played
-      sheet.setColumnWidth(10, 120); // player_1
-      sheet.setColumnWidth(11, 150); // force_1
-      sheet.setColumnWidth(12, 150); // army_1
-      sheet.setColumnWidth(13, 120); // player_2
-      sheet.setColumnWidth(14, 150); // force_2
-      sheet.setColumnWidth(15, 150); // army_2
-      sheet.setColumnWidth(16, 100); // victor
-      sheet.setColumnWidth(17, 80); // player_1_score
-      sheet.setColumnWidth(18, 80); // player_2_score
-      sheet.setColumnWidth(19, 200); // battle_name
-      sheet.setColumnWidth(20, 300); // summary_notes
-      sheet.setColumnWidth(21, 300); // force_1_pov
-      sheet.setColumnWidth(22, 300); // force_2_pov
-      sheet.setColumnWidth(23, 150); // timestamp
-      sheet.setColumnWidth(24, 150); // deleted_timestamp
+      sheet.setColumnWidth(6, 120); // battle_type
+      sheet.setColumnWidth(7, 100); // battle_size
+      sheet.setColumnWidth(8, 150); // force_key_1
+      sheet.setColumnWidth(9, 150); // force_key_2
+      sheet.setColumnWidth(10, 100); // date_played
+      sheet.setColumnWidth(11, 120); // player_1
+      sheet.setColumnWidth(12, 150); // force_1
+      sheet.setColumnWidth(13, 150); // army_1
+      sheet.setColumnWidth(14, 120); // player_2
+      sheet.setColumnWidth(15, 150); // force_2
+      sheet.setColumnWidth(16, 150); // army_2
+      sheet.setColumnWidth(17, 100); // victor
+      sheet.setColumnWidth(18, 80); // player_1_score
+      sheet.setColumnWidth(19, 80); // player_2_score
+      sheet.setColumnWidth(20, 200); // battle_name
+      sheet.setColumnWidth(21, 300); // summary_notes
+      sheet.setColumnWidth(22, 300); // force_1_pov
+      sheet.setColumnWidth(23, 300); // force_2_pov
+      sheet.setColumnWidth(24, 150); // timestamp
+      sheet.setColumnWidth(25, 150); // deleted_timestamp
     }
 
     // Generate unique key
@@ -298,11 +304,12 @@ function doPost(e) {
       data.user_key_2 || '',        // Column 2: user_key_2
       data.crusadeKey || '',        // Column 3: crusade_key
       victorForceKey,               // Column 4: victor_force_key
-      data.battleSize || '',        // Column 5: battle_size
-      data.force1Key || '',         // Column 6: force_key_1
-      data.force2Key || '',         // Column 7: force_key_2
-      data.datePlayed || '',        // Column 8: date_played
-      data.player1 || '',           // Column 9: player_1
+      data.battleType || 'Primary Battle', // Column 5: battle_type
+      data.battleSize || '',        // Column 6: battle_size
+      data.force1Key || '',         // Column 7: force_key_1
+      data.force2Key || '',         // Column 8: force_key_2
+      data.datePlayed || '',        // Column 9: date_played
+      data.player1 || '',           // Column 10: player_1
       data.force1 || '',            // Column 10: force_1
       data.army1 || '',             // Column 11: army_1
       data.player2 || '',           // Column 12: player_2

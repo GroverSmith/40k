@@ -68,6 +68,21 @@
                     <!-- Custom size input will be added by JavaScript -->
                     <small class="help-text">Point level of the battle.</small>
                 </div>
+                
+                <div class="form-group">
+                    <label for="battle-type">Battle Type <span class="required">*</span></label>
+                    <div class="toggle-group">
+                        <div class="toggle-option">
+                            <input type="radio" id="battle-type-primary" name="battleType" value="Primary Battle" checked>
+                            <label for="battle-type-primary" class="toggle-label">Primary Battle</label>
+                        </div>
+                        <div class="toggle-option">
+                            <input type="radio" id="battle-type-secondary" name="battleType" value="Secondary Battle">
+                            <label for="battle-type-secondary" class="toggle-label">Secondary Battle</label>
+                        </div>
+                    </div>
+                    <small class="help-text">Type of battle - Primary battles are main campaign events, Secondary battles are smaller engagements.</small>
+                </div>
             </div>
             
             <!-- Player 1 Information -->

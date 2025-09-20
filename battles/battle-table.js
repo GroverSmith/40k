@@ -58,9 +58,14 @@ const BattleTable = {
     },
 
     buildBattleRow(battle, columns, context = {}) {
+        // Create battle link with type indicator
+        const battleType = battle.battle_type || 'Primary Battle';
+        const battleDisplay = this.createBattleLink(battle.battle_name, battle.battle_key);
+        const typeIndicator = battleType === 'Secondary Battle' ? ' <span style="color: #888; font-size: 0.8em;">(Secondary)</span>' : '';
+        
         const columnData = {
             date: TableBase.formatters.date(battle.date_played),
-            battle: this.createBattleLink(battle.battle_name, battle.battle_key),
+            battle: battleDisplay + typeIndicator,
             outcome: this.formatOutcome(battle),
             score: this.formatScore(battle, context.forceKey),
             size: TableBase.formatters.points(battle.battle_size)
