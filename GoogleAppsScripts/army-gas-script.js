@@ -5,6 +5,13 @@
 const SPREADSHEET_ID = '1f_tnBT7tNLc4HtJpcOclg829vg0hahYayXcuIBcPrXE'; 
 const SHEET_NAME = 'armies';
 
+// CORS headers for all responses
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type'
+};
+
 // Helper function to filter out deleted rows
 function filterActiveRows(data) {
   if (!data || data.length <= 1) return data;
@@ -144,6 +151,14 @@ function deleteArmy(armyKey, userKey) {
   return { success: true, message: 'Army deleted successfully' };
 }
 
+function doOptions(e) {
+  // Handle CORS preflight requests
+  return ContentService
+    .createTextOutput('')
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeaders(CORS_HEADERS);
+}
+
 function doPost(e) {
   try {
     console.log('doPost called - raw data:', e.postData ? e.postData.contents : 'No postData');
@@ -176,7 +191,8 @@ function doPost(e) {
       const result = editArmy(data.army_key, data.user_key, data);
       return ContentService
         .createTextOutput(JSON.stringify(result))
-        .setMimeType(ContentService.MimeType.JSON);
+        .setMimeType(ContentService.MimeType.JSON)
+        .setHeaders(CORS_HEADERS);
     }
     
     if (data.operation === 'delete') {
@@ -186,7 +202,8 @@ function doPost(e) {
       const result = deleteArmy(data.army_key, data.user_key);
       return ContentService
         .createTextOutput(JSON.stringify(result))
-        .setMimeType(ContentService.MimeType.JSON);
+        .setMimeType(ContentService.MimeType.JSON)
+        .setHeaders(CORS_HEADERS);
     }
     
     // Default operation is create
@@ -341,7 +358,8 @@ function doPost(e) {
         rowNumber: newRowNumber,
         timestamp: timestamp.toISOString()
       }))
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders(CORS_HEADERS);
       
   } catch (error) {
     // Log the error with more detail
@@ -354,7 +372,8 @@ function doPost(e) {
         success: false,
         error: error.message || 'Unknown error occurred'
       }))
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders(CORS_HEADERS);
   }
 }
 
@@ -383,7 +402,8 @@ function doGet(e) {
         success: false,
         error: error.message
       }))
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders(CORS_HEADERS);
   }
 }
 
@@ -451,7 +471,12 @@ function getArmyLists(params = {}) {
       data: armyLists,
       hasMore: startIndex + maxResults < rows.length
     }))
-    .setMimeType(ContentService.MimeType.JSON);
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
 }
 
 function getArmyByKey(armyKey) {
@@ -505,7 +530,12 @@ function getArmyByKey(armyKey) {
       success: true,
       data: armyList
     }))
-    .setMimeType(ContentService.MimeType.JSON);
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
 }
 
 
@@ -548,7 +578,12 @@ function getRecentArmyLists() {
       data: result,
       message: 'Recent army lists (test mode)'
     }))
-    .setMimeType(ContentService.MimeType.JSON);
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
 }
 
 // Soft delete function
@@ -591,7 +626,12 @@ function softDeleteArmy(armyKey) {
             message: 'Army list soft deleted successfully',
             key: armyKey
           }))
-          .setMimeType(ContentService.MimeType.JSON);
+          .setMimeType(ContentService.MimeType.JSON)
+          .setHeaders({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
+          });
       }
     }
     
@@ -604,7 +644,8 @@ function softDeleteArmy(armyKey) {
         success: false,
         error: error.message
       }))
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders(CORS_HEADERS);
   }
 }
 
