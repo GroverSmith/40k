@@ -477,6 +477,7 @@ class UnifiedCacheFacade {
                 const response = await this.fetchFromScript(sheetName, 'list');
                 console.log(`UnifiedCacheFacade: Fetched data for ${sheetName}:`, response);
                 
+                // All GAS scripts now return objects consistently
                 // Store the rows (even if empty) and update metadata
                 await this.storeRows(sheetName, response.data);
                 

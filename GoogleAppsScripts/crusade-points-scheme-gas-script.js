@@ -64,11 +64,29 @@ function getCrusadePointsSchemeList() {
     const data = sheet.getDataRange().getValues();
     const filteredData = filterActiveRows(data);
     
+    // Convert to objects with consistent field names
+    const headers = filteredData[0];
+    const rows = filteredData.slice(1);
+    
+    const schemes = rows.map((row) => {
+      const obj = { 
+        id: row[0], // Use the key as ID
+        key: row[0], // Also include as 'key' for clarity
+        Key: row[0]  // Include uppercase for compatibility
+      };
+      
+      headers.forEach((header, headerIndex) => {
+        obj[header] = row[headerIndex];
+      });
+      
+      return obj;
+    });
+    
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
-        data: filteredData,
-        count: filteredData.length - 1 // Subtract header row
+        data: schemes,
+        count: schemes.length
       }))
       .setMimeType(ContentService.MimeType.JSON);
       
