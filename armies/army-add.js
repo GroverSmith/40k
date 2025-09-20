@@ -18,12 +18,22 @@ class ArmyListForm extends BaseForm {
         this.entryMode = 'text'; // 'text' or 'picker'
         this.availableUnits = [];
         this.selectedUnits = [];
+        this.isEditMode = false;
+        this.existingArmyData = null;
+        this.existingUnitKeys = [];
         this.init();
     }
 
-    init() {
-        // Load force context from URL
-        this.loadForceContext();
+    async init() {
+        // Check if we're in edit mode first
+        this.checkEditMode();
+
+        // Load force context from URL (or existing army data if in edit mode)
+        if (this.isEditMode) {
+            await this.loadExistingArmyData();
+        } else {
+            this.loadForceContext();
+        }
 
         // Initialize base functionality
         this.initBase();
@@ -45,6 +55,157 @@ class ArmyListForm extends BaseForm {
 
         // Note: We override handleSubmit method instead of adding event listener
         // to avoid conflicts with the base form class
+    }
+
+    checkEditMode() {
+        const urlParams = CoreUtils.url.getAllParams();
+        this.isEditMode = urlParams.edit === 'true' && urlParams.army_key;
+        
+        if (this.isEditMode) {
+            console.log('Edit mode detected for army:', urlParams.army_key);
+            this.updatePageTitleForEdit();
+        }
+    }
+
+    updatePageTitleForEdit() {
+        document.title = 'Edit Army List - 40k Crusade Campaign Tracker';
+        
+        // Update page title
+        const pageTitle = CoreUtils.dom.getElement('page-title');
+        if (pageTitle) {
+            pageTitle.textContent = '✏️ Edit Army List';
+        }
+        
+        // Update submit button text
+        const submitBtnText = CoreUtils.dom.getElement('submit-btn-text');
+        const submitBtnLoadingText = CoreUtils.dom.getElement('submit-btn-loading-text');
+        if (submitBtnText) {
+            submitBtnText.textContent = 'Update Army List';
+        }
+        if (submitBtnLoadingText) {
+            submitBtnLoadingText.textContent = 'Updating...';
+        }
+        
+        const header = CoreUtils.dom.getElement('force-context');
+        if (header) {
+            header.textContent = 'Loading army data...';
+        }
+    }
+
+    async loadExistingArmyData() {
+        try {
+            const urlParams = CoreUtils.url.getAllParams();
+            const armyKey = urlParams.army_key;
+            
+            if (!armyKey) {
+                throw new Error('No army key provided for editing');
+            }
+
+            // Use UnifiedCache to get the army data
+            this.existingArmyData = await UnifiedCache.getRowByKey('armies', armyKey);
+            
+            if (!this.existingArmyData) {
+                throw new Error('Army not found or access denied');
+            }
+
+            // Create force context from existing army data
+            this.forceContext = {
+                forceKey: this.existingArmyData.force_key,
+                forceName: this.existingArmyData.force_name,
+                userName: this.existingArmyData.user_name,
+                faction: this.existingArmyData.faction,
+                detachment: this.existingArmyData.detachment || ''
+            };
+
+            this.populateForceContext();
+            this.populateFormWithExistingData();
+            this.updateNavigation();
+            
+            // Load existing unit relationships if this army has any
+            await this.loadExistingUnitRelationships();
+            
+        } catch (error) {
+            console.error('Error loading existing army data:', error);
+            FormUtilities.showError(`Failed to load army data: ${error.message}`);
+            CoreUtils.dom.hide(this.form);
+        }
+    }
+
+    populateFormWithExistingData() {
+        if (!this.existingArmyData) return;
+
+        // Populate form fields with existing data
+        const fields = {
+            'army-name': this.existingArmyData.army_name,
+            'points-value': this.existingArmyData.points_value,
+            'notes': this.existingArmyData.notes,
+            'army-list-text': this.existingArmyData.army_list_text
+        };
+
+        Object.entries(fields).forEach(([id, value]) => {
+            const element = CoreUtils.dom.getElement(id);
+            if (element && value) {
+                element.value = value;
+            }
+        });
+
+        // Set MFM version if available
+        if (this.existingArmyData.mfm_version && window.MFMVersionSelector) {
+            // Set MFM version after a short delay to ensure the selector is initialized
+            setTimeout(() => {
+                window.MFMVersionSelector.setSelectedVersion('army-mfm-version', this.existingArmyData.mfm_version);
+            }, 500);
+        }
+
+        // Update header text
+        const header = CoreUtils.dom.getElement('force-context');
+        if (header) {
+            header.textContent = `Editing army list: ${this.existingArmyData.army_name}`;
+        }
+    }
+
+    async loadExistingUnitRelationships() {
+        try {
+            const armyKey = this.existingArmyData.army_key;
+            console.log('Loading unit relationships for army:', armyKey);
+
+            // Use UnifiedCache to get all xref_army_units data, then filter by army_key
+            const allRelationships = await UnifiedCache.getAllRows('xref_army_units');
+            
+            // Filter to get only relationships for this army
+            const armyRelationships = allRelationships.filter(rel => rel.army_key === armyKey);
+            
+            if (armyRelationships && armyRelationships.length > 0) {
+                console.log('Found existing unit relationships:', armyRelationships);
+                this.existingUnitKeys = armyRelationships.map(rel => rel.unit_key);
+                
+                // If we have existing units, we should detect the entry mode
+                // For now, let's assume if there are unit relationships, it was created in picker mode
+                this.detectEntryModeFromExistingData();
+            } else {
+                console.log('No existing unit relationships found');
+                this.existingUnitKeys = [];
+            }
+            
+        } catch (error) {
+            console.error('Error loading existing unit relationships:', error);
+            this.existingUnitKeys = [];
+        }
+    }
+
+    detectEntryModeFromExistingData() {
+        // If we have existing unit relationships, this army was likely created with picker mode
+        // Switch to picker mode and populate the selected units
+        if (this.existingUnitKeys && this.existingUnitKeys.length > 0) {
+            console.log('Detected picker mode from existing unit relationships');
+            
+            // Switch to picker mode
+            const pickerModeRadio = CoreUtils.dom.getElement('entry-mode-picker');
+            if (pickerModeRadio) {
+                pickerModeRadio.checked = true;
+                this.switchToPickerMode();
+            }
+        }
     }
 
     loadForceContext() {
@@ -231,8 +392,13 @@ class ArmyListForm extends BaseForm {
             armyListText.required = false;
         }
         
-        // Populate selected units (this doesn't depend on async loading)
-        this.populateSelectedUnits();
+        // If we have existing unit keys, populate selected units first
+        if (this.existingUnitKeys && this.existingUnitKeys.length > 0) {
+            this.populateSelectedUnitsFromExisting();
+        } else {
+            // Populate selected units normally
+            this.populateSelectedUnits();
+        }
         
         // Only populate available units if we have data loaded
         if (this.availableUnits && this.availableUnits.length > 0) {
@@ -277,6 +443,10 @@ class ArmyListForm extends BaseForm {
             // If we're currently in picker mode, populate the available units
             if (this.entryMode === 'picker') {
                 this.populateAvailableUnits();
+                // Also try to populate selected units from existing relationships
+                if (this.existingUnitKeys && this.existingUnitKeys.length > 0) {
+                    this.populateSelectedUnitsFromExisting();
+                }
             }
         } catch (error) {
             console.error('Error loading units for picker:', error);
@@ -328,6 +498,45 @@ class ArmyListForm extends BaseForm {
             const unitItem = this.createUnitItem(unit, 'selected');
             selectedList.appendChild(unitItem);
         });
+    }
+
+    async populateSelectedUnitsFromExisting() {
+        if (!this.existingUnitKeys || this.existingUnitKeys.length === 0) {
+            this.populateSelectedUnits();
+            return;
+        }
+
+        console.log('Populating selected units from existing relationships:', this.existingUnitKeys);
+
+        // Clear current selected units
+        this.selectedUnits = [];
+
+        // Wait for available units to be loaded
+        if (!this.availableUnits || this.availableUnits.length === 0) {
+            console.log('Available units not loaded yet, waiting...');
+            // Wait a bit for units to load, then try again
+            setTimeout(() => this.populateSelectedUnitsFromExisting(), 500);
+            return;
+        }
+
+        // Find units that match the existing unit keys
+        const selectedUnits = [];
+        this.existingUnitKeys.forEach(unitKey => {
+            const unit = this.availableUnits.find(u => u.unit_key === unitKey);
+            if (unit) {
+                selectedUnits.push(unit);
+                console.log('Found existing unit:', unit.unit_name);
+            } else {
+                console.warn('Could not find unit with key:', unitKey);
+            }
+        });
+
+        this.selectedUnits = selectedUnits;
+        console.log(`Loaded ${selectedUnits.length} existing units into selected list`);
+
+        // Update the UI
+        this.populateSelectedUnits();
+        this.updateSummary();
     }
 
     createUnitItem(unit, type) {
@@ -511,18 +720,75 @@ class ArmyListForm extends BaseForm {
             }, 0);
         }
 
-        // Get MFM version from the selector
-        formData.mfmVersion = window.MFMVersionSelector.getSelectedVersion('army-mfm-version');
+        // Get MFM version from the selector and convert to snake_case
+        formData.mfm_version = window.MFMVersionSelector.getSelectedVersion('army-mfm-version');
 
-        // Ensure force context is included
-        return {
+        // Convert camelCase field names to snake_case to match GAS script expectations
+        const convertedData = {
             ...formData,
-            forceKey: this.forceContext.forceKey,
-            forceName: this.forceContext.forceName,
-            userName: this.forceContext.userName,
+            // Convert field names to match GAS script expectations
+            force_key: this.forceContext.forceKey,
+            force_name: this.forceContext.forceName,
+            user_name: this.forceContext.userName,
+            army_name: formData.armyName,
+            points_value: formData.pointsValue,
+            army_list_text: formData.armyListText,
             faction: this.forceContext.faction,
             detachment: this.forceContext.detachment
         };
+
+        // Remove the camelCase versions to avoid confusion
+        delete convertedData.forceKey;
+        delete convertedData.forceName;
+        delete convertedData.userName;
+        delete convertedData.armyName;
+        delete convertedData.pointsValue;
+        delete convertedData.armyListText;
+        delete convertedData.mfmVersion;
+
+        return convertedData;
+    }
+
+    showSuccess() {
+        // Override base form success handling for edit vs create mode
+        if (this.isEditMode) {
+            this.showEditSuccessMessage();
+        } else {
+            this.showCreateSuccessMessage();
+        }
+    }
+
+    showEditSuccessMessage() {
+        const successTitle = CoreUtils.dom.getElement('success-title');
+        const successDescription = CoreUtils.dom.getElement('success-description');
+        const addAnotherBtn = CoreUtils.dom.getElement('add-another-btn');
+        
+        if (successTitle) {
+            successTitle.textContent = '✅ Army List Updated Successfully!';
+        }
+        if (successDescription) {
+            successDescription.textContent = 'Your army list has been updated in the database.';
+        }
+        if (addAnotherBtn) {
+            // Hide "Add Another" button for edit mode
+            addAnotherBtn.style.display = 'none';
+        }
+        
+        // Show success message
+        CoreUtils.dom.hide(this.form);
+        CoreUtils.dom.show('success-message');
+    }
+
+    showCreateSuccessMessage() {
+        const addAnotherBtn = CoreUtils.dom.getElement('add-another-btn');
+        if (addAnotherBtn) {
+            // Show "Add Another" button for create mode
+            addAnotherBtn.style.display = 'inline-block';
+        }
+        
+        // Show success message
+        CoreUtils.dom.hide(this.form);
+        CoreUtils.dom.show('success-message');
     }
 
     async submitToGoogleSheets(data) {
@@ -532,7 +798,16 @@ class ArmyListForm extends BaseForm {
 
         try {
             // Show a more prominent loading message
-            this.showLoadingMessage('Creating army list...');
+            const actionText = this.isEditMode ? 'Updating army list...' : 'Creating army list...';
+            this.showLoadingMessage(actionText);
+            
+            // Add operation type and army key for edit mode
+            if (this.isEditMode) {
+                data.operation = 'edit';
+                data.army_key = this.existingArmyData.army_key;
+                data.user_key = this.existingArmyData.user_key;
+                console.log('Edit mode data being sent:', data);
+            }
             
             const response = await fetch(this.config.submitUrl, {
                 method: 'POST',
@@ -552,18 +827,18 @@ class ArmyListForm extends BaseForm {
                 throw new Error(result.error || this.config.errorMessage);
             }
 
-
             // If in picker mode, save the unit relationships (non-blocking)
-            if (this.entryMode === 'picker' && this.selectedUnits.length > 0) {
-                // The army key is returned as result.key from the Google Apps Script
-                const armyKey = result.key;
+            if (this.entryMode === 'picker') {
+                // For edit mode, use existing army key; for create mode, use result.key
+                const armyKey = this.isEditMode ? this.existingArmyData.army_key : result.key;
                 if (armyKey) {
                     // Save relationships in background - don't block the success flow
+                    // This will handle both cases: units selected and no units selected
                     this.saveUnitRelationships(armyKey).catch(error => {
-                        console.warn('Unit relationships could not be saved (army was still created successfully):', error);
+                        console.warn('Unit relationships could not be saved (army was still saved successfully):', error);
                     });
                 } else {
-                    console.warn('Could not find army key in response:', result);
+                    console.warn('Could not find army key for unit relationships:', result);
                 }
             }
 
@@ -580,7 +855,7 @@ class ArmyListForm extends BaseForm {
     }
 
     async saveUnitRelationships(armyKey) {
-        if (!armyKey || this.selectedUnits.length === 0) {
+        if (!armyKey) {
             return;
         }
 
@@ -588,15 +863,59 @@ class ArmyListForm extends BaseForm {
             const xrefUrl = CrusadeConfig.getSheetUrl('xref_army_units');
             const unitKeys = this.selectedUnits.map(unit => unit.unit_key);
 
-            // Use the same approach as the working army script - URL-encoded data
+            if (this.isEditMode) {
+                // For edit mode, we need to update existing relationships
+                // First, delete existing relationships for this army
+                await this.deleteExistingUnitRelationships(armyKey);
+            }
+
+            // Then create new relationships (or skip if no units selected)
+            if (unitKeys.length > 0) {
+                const response = await fetch(xrefUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        armyKey: armyKey,
+                        unitKeys: JSON.stringify(unitKeys)
+                    }).toString()
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to save unit relationships');
+                }
+                
+                console.log('Unit relationships saved successfully');
+            } else {
+                console.log('No units selected, skipping unit relationships save');
+            }
+        } catch (error) {
+            console.error('Error saving unit relationships:', error);
+            // Don't throw here - the army was already saved successfully
+            // Just log the error for debugging
+        }
+    }
+
+    async deleteExistingUnitRelationships(armyKey) {
+        try {
+            const xrefUrl = CrusadeConfig.getSheetUrl('xref_army_units');
+            
             const response = await fetch(xrefUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: new URLSearchParams({
-                    armyKey: armyKey,
-                    unitKeys: JSON.stringify(unitKeys)
+                    operation: 'cascade_delete',
+                    parent_table: 'armies',
+                    parent_key: armyKey
                 }).toString()
             });
 
@@ -607,14 +926,13 @@ class ArmyListForm extends BaseForm {
             const result = await response.json();
             
             if (!result.success) {
-                throw new Error(result.error || 'Failed to save unit relationships');
+                throw new Error(result.error || 'Failed to delete existing unit relationships');
             }
             
-            console.log('Unit relationships saved successfully');
+            console.log('Existing unit relationships deleted successfully');
         } catch (error) {
-            console.error('Error saving unit relationships:', error);
-            // Don't throw here - the army was already saved successfully
-            // Just log the error for debugging
+            console.error('Error deleting existing unit relationships:', error);
+            throw error; // Re-throw this one as it's critical for edit mode
         }
     }
 

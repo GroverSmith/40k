@@ -62,6 +62,7 @@ function generateArmyKey() {
 
 // Edit function - updates an existing army record
 function editArmy(armyKey, userKey, data) {
+  console.log('editArmy called with:', { armyKey, userKey, data });
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME);
   
@@ -77,11 +78,13 @@ function editArmy(armyKey, userKey, data) {
   
   // Find the row to update (must match both army_key and user_key)
   let rowIndex = -1;
+  let existingRow = null;
   for (let i = 1; i < allData.length; i++) {
     const row = allData[i];
     if (row[armyKeyIndex] === armyKey && row[userKeyIndex] === userKey && 
         (!row[deletedTimestampIndex] || row[deletedTimestampIndex] === '')) {
       rowIndex = i + 1; // +1 because sheet rows are 1-indexed
+      existingRow = row;
       break;
     }
   }
@@ -90,21 +93,33 @@ function editArmy(armyKey, userKey, data) {
     throw new Error('Army not found or access denied');
   }
   
-  // Prepare updated row data
+  // Helper function to preserve existing value if new value is not provided or empty
+  function preserveOrUpdate(existingValue, newValue) {
+    // If new value is provided and not empty, use it
+    if (newValue !== undefined && newValue !== null && newValue !== '') {
+      console.log(`Updating field: existing="${existingValue}" -> new="${newValue}"`);
+      return newValue;
+    }
+    // Otherwise, preserve existing value
+    console.log(`Preserving field: keeping existing value="${existingValue}"`);
+    return existingValue;
+  }
+  
+  // Prepare updated row data, preserving existing values for fields not provided
   const timestamp = new Date();
   const updatedRowData = [
     armyKey,                     // army_key (Primary Key) - Column 0
-    data.force_key || '',        // force_key (Foreign Key) - Column 1
+    preserveOrUpdate(existingRow[1], data.force_key),        // force_key (Foreign Key) - Column 1
     userKey,                     // user_key (Foreign Key) - Column 2
-    data.user_name,              // user_name - Column 3
-    data.force_name,             // force_name - Column 4
-    data.army_name,              // army_name - Column 5
-    data.faction || '',          // faction - Column 6
-    data.detachment || '',       // detachment - Column 7
-    data.mfm_version || '',      // mfm_version - Column 8
-    data.points_value || '',     // points_value - Column 9
-    data.notes || '',            // notes - Column 10
-    data.army_list_text,         // army_list_text - Column 11
+    preserveOrUpdate(existingRow[3], data.user_name),        // user_name - Column 3
+    preserveOrUpdate(existingRow[4], data.force_name),       // force_name - Column 4
+    preserveOrUpdate(existingRow[5], data.army_name),        // army_name - Column 5
+    preserveOrUpdate(existingRow[6], data.faction),          // faction - Column 6
+    preserveOrUpdate(existingRow[7], data.detachment),       // detachment - Column 7
+    preserveOrUpdate(existingRow[8], data.mfm_version),      // mfm_version - Column 8
+    preserveOrUpdate(existingRow[9], data.points_value),     // points_value - Column 9
+    preserveOrUpdate(existingRow[10], data.notes),           // notes - Column 10
+    preserveOrUpdate(existingRow[11], data.army_list_text),  // army_list_text - Column 11
     timestamp,                   // timestamp - Column 12
     ''                           // deleted_timestamp - Column 13 (keep empty)
   ];

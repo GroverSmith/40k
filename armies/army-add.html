@@ -24,7 +24,7 @@
         <a href="#" id="back-button" class="back-button">← Back to Force</a>
         
         <header class="form-header">
-            <h1>📋 Add Army List</h1>
+            <h1 id="page-title">📋 Add Army List</h1>
             <p id="force-context">Loading force information...</p>
         </header>
         
@@ -173,10 +173,10 @@ The entire text will be stored for reference and display."></textarea>
             <div class="form-actions">
                 <button type="button" class="btn-secondary" onclick="history.back()">Cancel</button>
                 <button type="submit" class="btn-primary" id="submit-btn">
-                    <span class="btn-text">Add Army List</span>
+                    <span class="btn-text" id="submit-btn-text">Add Army List</span>
                     <span class="btn-loading" style="display: none;">
                         <div class="loading-spinner"></div>
-                        Submitting...
+                        <span id="submit-btn-loading-text">Submitting...</span>
                     </span>
                 </button>
             </div>
@@ -184,10 +184,10 @@ The entire text will be stored for reference and display."></textarea>
         
         <!-- Success Message -->
         <div id="success-message" class="message success" style="display: none;">
-            <h3>✅ Army List Added Successfully!</h3>
-            <p>Your army list has been saved to the database.</p>
+            <h3 id="success-title">✅ Army List Added Successfully!</h3>
+            <p id="success-description">Your army list has been saved to the database.</p>
             <div class="message-actions">
-                <button onclick="resetForm()" class="btn-secondary">Add Another List</button>
+                <button onclick="resetForm()" class="btn-secondary" id="add-another-btn" style="display: none;">Add Another List</button>
                 <a href="#" id="back-to-force-btn" class="btn-primary">Back to Force</a>
             </div>
         </div>
