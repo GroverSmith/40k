@@ -807,7 +807,7 @@ class StoryForm extends BaseForm {
 
             // Find the current phase (use the most recent active phase)
             const currentPhase = relevantPhases
-                .filter(phase => phase.state === 'active')
+                .filter(phase => phase.state && phase.state.toLowerCase() === 'active')
                 .sort((a, b) => new Date(b.start_date) - new Date(a.start_date))[0];
 
             if (!currentPhase) {
