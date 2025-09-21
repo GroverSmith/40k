@@ -18,8 +18,12 @@ class LeaderboardShared {
         try {
             console.log('Loading leaderboard for crusade:', crusadeKey);
             
-            // Get all points log entries for this crusade
-            const pointsLogEntries = await UnifiedCache.getAllRows('crusade_points_log');
+            // Get all required data in parallel
+            const [pointsLogEntries, allForces, pointsCategories] = await Promise.all([
+                UnifiedCache.getAllRows('crusade_points_log'),
+                UnifiedCache.getAllRows('forces'),
+                UnifiedCache.getAllRows('crusade_points_categories')
+            ]);
             
             // Filter for this crusade and active entries
             const crusadePoints = pointsLogEntries.filter(entry => {
@@ -28,27 +32,15 @@ class LeaderboardShared {
                 return entryCrusadeKey === crusadeKey && !isDeleted;
             });
 
-            // Get all forces to get force names
-            const allForces = await UnifiedCache.getAllRows('forces');
-            
-            // Sum points by force
-            const forcePoints = {};
-            crusadePoints.forEach(entry => {
-                const forceKey = entry.force_key || entry['Force Key'] || entry['force_key'];
-                const points = Number(entry.points || entry['Points'] || entry['points'] || 0);
-                
-                if (forceKey) {
-                    if (!forcePoints[forceKey]) {
-                        forcePoints[forceKey] = {
-                            forceKey: forceKey,
-                            totalPoints: 0,
-                            entries: []
-                        };
-                    }
-                    forcePoints[forceKey].totalPoints += points;
-                    forcePoints[forceKey].entries.push(entry);
-                }
+            // Filter categories for this crusade
+            const crusadeCategories = pointsCategories.filter(cat => {
+                const catCrusadeKey = cat.crusade_key || cat['Crusade Key'] || cat['crusade_key'];
+                const isDeleted = cat.deleted_timestamp || cat['Deleted Timestamp'] || cat['deleted_timestamp'];
+                return catCrusadeKey === crusadeKey && !isDeleted;
             });
+
+            // Calculate points with category limits enforced
+            const forcePoints = LeaderboardShared.calculateForcePointsWithLimits(crusadePoints, crusadeCategories);
 
             // Convert to array and sort by total points (descending)
             const leaderboardData = Object.values(forcePoints).sort((a, b) => b.totalPoints - a.totalPoints);
@@ -62,6 +54,150 @@ class LeaderboardShared {
             console.error('Error loading leaderboard:', error);
             container.innerHTML = '<div class="error-message">Failed to load leaderboard data.</div>';
         }
+    }
+
+    /**
+     * Calculate force points with category limits enforced
+     * @param {Array} crusadePoints - Array of points log entries for the crusade
+     * @param {Array} crusadeCategories - Array of category limits for the crusade
+     * @returns {Object} Object with force points data including category tracking
+     */
+    static calculateForcePointsWithLimits(crusadePoints, crusadeCategories) {
+        const forcePoints = {};
+        
+        // Create a map of category limits for quick lookup
+        const categoryLimits = {};
+        crusadeCategories.forEach(cat => {
+            const phaseKey = cat.phase_key || cat['Phase Key'] || cat['phase_key'];
+            const category = cat.category || cat['Category'] || cat['category'];
+            const maxPoints = Number(cat.max_popints_for_phase || cat['Max Points For Phase'] || cat['max_points_for_phase'] || 0);
+            
+            if (phaseKey && category) {
+                const key = `${phaseKey}:${category}`;
+                categoryLimits[key] = maxPoints;
+            }
+        });
+
+        // Process each points entry
+        crusadePoints.forEach(entry => {
+            const forceKey = entry.force_key || entry['Force Key'] || entry['force_key'];
+            const phaseKey = entry.phase_key || entry['Phase Key'] || entry['phase_key'];
+            const points = Number(entry.points || entry['Points'] || entry['points'] || 0);
+            
+            if (forceKey) {
+                if (!forcePoints[forceKey]) {
+                    forcePoints[forceKey] = {
+                        forceKey: forceKey,
+                        totalPoints: 0,
+                        entries: [],
+                        categoryTotals: {} // Track points per category per phase
+                    };
+                }
+                
+                // Determine category from event (this might need to be enhanced based on your data structure)
+                // For now, we'll use a simple approach - you may need to map events to categories
+                const event = entry.event || entry['Event'] || entry['event'] || '';
+                const category = LeaderboardShared.determineCategoryFromEvent(event);
+                
+                if (category) {
+                    const categoryKey = `${phaseKey}:${category}`;
+                    const maxPoints = categoryLimits[categoryKey];
+                    
+                    if (maxPoints > 0) {
+                        // Initialize category tracking if not exists
+                        if (!forcePoints[forceKey].categoryTotals[categoryKey]) {
+                            forcePoints[forceKey].categoryTotals[categoryKey] = {
+                                used: 0,
+                                max: maxPoints,
+                                category: category,
+                                phaseKey: phaseKey
+                            };
+                        }
+                        
+                        const categoryTotal = forcePoints[forceKey].categoryTotals[categoryKey];
+                        const remainingCapacity = categoryTotal.max - categoryTotal.used;
+                        
+                        // Calculate how many points can be applied
+                        let pointsToApply = 0;
+                        if (points > 0) {
+                            // Positive points - apply up to remaining capacity
+                            pointsToApply = Math.min(points, remainingCapacity);
+                        } else {
+                            // Negative points - always apply (penalties)
+                            pointsToApply = points;
+                        }
+                        
+                        // Update category totals
+                        categoryTotal.used += pointsToApply;
+                        
+                        // Add to total points
+                        forcePoints[forceKey].totalPoints += pointsToApply;
+                        
+                        // Store entry with category info
+                        forcePoints[forceKey].entries.push({
+                            ...entry,
+                            category: category,
+                            pointsApplied: pointsToApply,
+                            pointsOriginal: points,
+                            categoryLimit: maxPoints,
+                            categoryUsed: categoryTotal.used
+                        });
+                    } else {
+                        // No limit - apply all points
+                        forcePoints[forceKey].totalPoints += points;
+                        forcePoints[forceKey].entries.push({
+                            ...entry,
+                            category: category,
+                            pointsApplied: points,
+                            pointsOriginal: points,
+                            categoryLimit: null,
+                            categoryUsed: null
+                        });
+                    }
+                } else {
+                    // No category determined - apply all points
+                    forcePoints[forceKey].totalPoints += points;
+                    forcePoints[forceKey].entries.push({
+                        ...entry,
+                        category: null,
+                        pointsApplied: points,
+                        pointsOriginal: points,
+                        categoryLimit: null,
+                        categoryUsed: null
+                    });
+                }
+            }
+        });
+
+        return forcePoints;
+    }
+
+    /**
+     * Determine category from event name (this is a simple implementation)
+     * You may need to enhance this based on your specific event naming conventions
+     * @param {string} event - The event name
+     * @returns {string|null} The category name or null if not determined
+     */
+    static determineCategoryFromEvent(event) {
+        if (!event) return null;
+        
+        const eventLower = event.toLowerCase();
+        
+        // Simple category mapping - you may need to enhance this
+        if (eventLower.includes('battle') || eventLower.includes('combat')) {
+            return 'Battle';
+        } else if (eventLower.includes('objective') || eventLower.includes('mission')) {
+            return 'Objectives';
+        } else if (eventLower.includes('narrative') || eventLower.includes('story')) {
+            return 'Narrative';
+        } else if (eventLower.includes('painting') || eventLower.includes('model')) {
+            return 'Painting';
+        } else if (eventLower.includes('terrain') || eventLower.includes('building')) {
+            return 'Terrain';
+        }
+        
+        // Default category if no match
+        return 'General';
     }
 
     /**

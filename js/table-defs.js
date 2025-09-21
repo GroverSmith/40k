@@ -47,7 +47,7 @@ const TableDefs = {
         primaryKey: 'crusade_key',
         compositeKey: ['crusade_key', 'phase_key', 'category'],
         columns: [
-            'crusade_key', 'phase_key', 'category', 'max_popints_for_phase', 'deleted_timestamp'
+            'crusade_key', 'phase_key', 'category', 'max_points_for_phase', 'deleted_timestamp'
         ]
     },
 
@@ -68,7 +68,7 @@ const TableDefs = {
         sheetName: 'crusade_points_log',
         primaryKey: 'event_key',
         columns: [
-            'event_key', 'crusade_key', 'phase_key', 'force_key', 'points', 'event', 'notes', 'timestamp', 'deleted_timestamp'
+            'event_key', 'crusade_key', 'phase_key', 'force_key', 'points', 'event', 'notes', 'effective_date', 'timestamp', 'deleted_timestamp'
         ]
     },
 

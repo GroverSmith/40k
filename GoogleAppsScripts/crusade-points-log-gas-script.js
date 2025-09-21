@@ -142,7 +142,7 @@ function createCrusadePointsLogEntry(data) {
     
     const headers = [
       'event_key', 'crusade_key', 'phase_key', 'force_key', 'points', 
-      'event', 'notes', 'timestamp', 'deleted_timestamp'
+      'event', 'notes', 'effective_date', 'timestamp', 'deleted_timestamp'
     ];
     sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
     
@@ -163,13 +163,15 @@ function createCrusadePointsLogEntry(data) {
     data.points || 0,                   // points - Column 4
     data.event || '',                   // event - Column 5
     data.notes || '',                   // notes - Column 6
-    timestamp,                          // timestamp - Column 7
-    ''                                  // deleted_timestamp - Column 8 (keep empty)
+    data.effective_date || '',          // effective_date - Column 7
+    timestamp,                          // timestamp - Column 8
+    ''                                  // deleted_timestamp - Column 9 (keep empty)
   ];
 
   const lastRow = sheet.getLastRow();
   sheet.getRange(lastRow + 1, 1, 1, rowData.length).setValues([rowData]);
-  sheet.getRange(lastRow + 1, 8).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
+  sheet.getRange(lastRow + 1, 8).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Effective Date
+  sheet.getRange(lastRow + 1, 9).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // Timestamp
 
   console.log('Successfully created crusade points log entry with key:', eventKey);
   

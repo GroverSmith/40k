@@ -351,6 +351,14 @@ function doPost(e) {
 
     console.log('Battle report saved successfully');
 
+    // Create points log entries for the battle
+    try {
+      createBattlePointsLogEntries(data, battleKey, victorForceKey);
+    } catch (pointsError) {
+      console.warn('Failed to create points log entries:', pointsError);
+      // Don't fail the battle creation if points log creation fails
+    }
+
     return ContentService
       .createTextOutput(JSON.stringify({
         success: true,
@@ -369,6 +377,102 @@ function doPost(e) {
         error: error.message
       }))
       .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Create points log entries for a battle
+function createBattlePointsLogEntries(battleData, battleKey, victorForceKey) {
+  try {
+    console.log('Creating points log entries for battle:', battleKey);
+    
+    // Only create points log entries if this is a crusade battle
+    if (!battleData.crusadeKey) {
+      console.log('No crusade key provided, skipping points log creation');
+      return;
+    }
+    
+    // Determine points based on battle outcome
+    const victorPoints = 3; // Winner gets 3 points
+    const loserPoints = 1;  // Loser gets 1 point
+    const drawPoints = 2;   // Draw gives 2 points each
+    
+    const datePlayed = battleData.datePlayed || new Date();
+    const battleType = battleData.battleType || 'Primary Battle';
+    
+    // Create points log entries for both forces
+    const force1Key = battleData.force1Key;
+    const force2Key = battleData.force2Key;
+    
+    if (force1Key && force2Key) {
+      let force1Points, force2Points;
+      
+      if (victorForceKey === force1Key) {
+        force1Points = victorPoints;
+        force2Points = loserPoints;
+      } else if (victorForceKey === force2Key) {
+        force1Points = loserPoints;
+        force2Points = victorPoints;
+      } else {
+        // Draw
+        force1Points = drawPoints;
+        force2Points = drawPoints;
+      }
+      
+      // Create points log entry for force 1
+      createPointsLogEntry({
+        crusade_key: battleData.crusadeKey,
+        phase_key: '', // Will need to be determined based on crusade phases
+        force_key: force1Key,
+        points: force1Points,
+        event: `${battleType} - ${battleData.battleName || 'Battle'}`,
+        notes: `Battle: ${battleKey}`,
+        effective_date: datePlayed
+      });
+      
+      // Create points log entry for force 2
+      createPointsLogEntry({
+        crusade_key: battleData.crusadeKey,
+        phase_key: '', // Will need to be determined based on crusade phases
+        force_key: force2Key,
+        points: force2Points,
+        event: `${battleType} - ${battleData.battleName || 'Battle'}`,
+        notes: `Battle: ${battleKey}`,
+        effective_date: datePlayed
+      });
+      
+      console.log('Created points log entries for both forces');
+    }
+    
+  } catch (error) {
+    console.error('Error creating battle points log entries:', error);
+    throw error;
+  }
+}
+
+// Helper function to create a single points log entry
+function createPointsLogEntry(data) {
+  try {
+    // Use the crusade points log gas script URL
+    const pointsLogUrl = 'https://script.google.com/macros/s/AKfycbzUBdnxPQDeGIHzE8RmgxuHhXztG4kEhcN8cqFZXz_Hlf1HdUotFFYh4ePcRJ2LcLgNQg/exec';
+    
+    // Make a POST request to create the points log entry
+    const response = UrlFetchApp.fetch(pointsLogUrl, {
+      method: 'POST',
+      payload: data,
+      muteHttpExceptions: true
+    });
+    
+    const result = JSON.parse(response.getContentText());
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to create points log entry');
+    }
+    
+    console.log('Points log entry created successfully:', result.key);
+    return result;
+    
+  } catch (error) {
+    console.error('Error creating points log entry:', error);
+    throw error;
   }
 }
 

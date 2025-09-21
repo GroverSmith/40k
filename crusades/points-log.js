@@ -86,15 +86,30 @@ class PointsLog {
         try {
             console.log('Loading points log for crusade:', this.crusadeKey);
             
-            // Get all points log entries
-            const allPointsLogEntries = await UnifiedCache.getAllRows('crusade_points_log');
+            // Get all required data in parallel
+            const [allPointsLogEntries, allForces, allPhases, pointsCategories] = await Promise.all([
+                UnifiedCache.getAllRows('crusade_points_log'),
+                UnifiedCache.getAllRows('forces'),
+                UnifiedCache.getAllRows('crusade_phases'),
+                UnifiedCache.getAllRows('crusade_points_categories')
+            ]);
             
             // Filter for this crusade and active entries
-            this.pointsLogData = allPointsLogEntries.filter(entry => {
+            const crusadePoints = allPointsLogEntries.filter(entry => {
                 const entryCrusadeKey = entry.crusade_key || entry['Crusade Key'] || entry['crusade_key'];
                 const isDeleted = entry.deleted_timestamp || entry['Deleted Timestamp'] || entry['deleted_timestamp'];
                 return entryCrusadeKey === this.crusadeKey && !isDeleted;
             });
+
+            // Filter categories for this crusade
+            const crusadeCategories = pointsCategories.filter(cat => {
+                const catCrusadeKey = cat.crusade_key || cat['Crusade Key'] || cat['crusade_key'];
+                const isDeleted = cat.deleted_timestamp || cat['Deleted Timestamp'] || cat['deleted_timestamp'];
+                return catCrusadeKey === this.crusadeKey && !isDeleted;
+            });
+
+            // Process points with category limits
+            this.pointsLogData = this.processPointsWithCategoryLimits(crusadePoints, crusadeCategories);
 
             // Sort by timestamp (newest first)
             this.pointsLogData.sort((a, b) => {
@@ -102,12 +117,6 @@ class PointsLog {
                 const timestampB = new Date(b.timestamp || b['Timestamp'] || b['timestamp'] || 0);
                 return timestampB - timestampA;
             });
-
-            // Get additional data for display
-            const [allForces, allPhases] = await Promise.all([
-                UnifiedCache.getAllRows('forces'),
-                UnifiedCache.getAllRows('crusade_phases')
-            ]);
 
             // Display the data
             this.displayPointsLogTable(allForces, allPhases);
@@ -121,6 +130,96 @@ class PointsLog {
             console.error('Error loading points log data:', error);
             this.showError('Failed to load points log data');
         }
+    }
+
+    processPointsWithCategoryLimits(crusadePoints, crusadeCategories) {
+        // Create a map of category limits for quick lookup
+        const categoryLimits = {};
+        crusadeCategories.forEach(cat => {
+            const phaseKey = cat.phase_key || cat['Phase Key'] || cat['phase_key'];
+            const category = cat.category || cat['Category'] || cat['category'];
+            const maxPoints = Number(cat.max_popints_for_phase || cat['Max Points For Phase'] || cat['max_points_for_phase'] || 0);
+            
+            if (phaseKey && category) {
+                const key = `${phaseKey}:${category}`;
+                categoryLimits[key] = maxPoints;
+            }
+        });
+
+        // Track category usage per force
+        const forceCategoryUsage = {};
+
+        // Process each points entry
+        return crusadePoints.map(entry => {
+            const forceKey = entry.force_key || entry['Force Key'] || entry['force_key'];
+            const phaseKey = entry.phase_key || entry['Phase Key'] || entry['phase_key'];
+            const points = Number(entry.points || entry['Points'] || entry['points'] || 0);
+            const event = entry.event || entry['Event'] || entry['event'] || '';
+            
+            // Determine category from event
+            const category = LeaderboardShared.determineCategoryFromEvent(event);
+            
+            if (forceKey && category) {
+                const categoryKey = `${phaseKey}:${category}`;
+                const maxPoints = categoryLimits[categoryKey];
+                
+                // Initialize force category tracking if not exists
+                if (!forceCategoryUsage[forceKey]) {
+                    forceCategoryUsage[forceKey] = {};
+                }
+                if (!forceCategoryUsage[forceKey][categoryKey]) {
+                    forceCategoryUsage[forceKey][categoryKey] = {
+                        used: 0,
+                        max: maxPoints,
+                        category: category,
+                        phaseKey: phaseKey
+                    };
+                }
+                
+                const categoryTotal = forceCategoryUsage[forceKey][categoryKey];
+                const remainingCapacity = categoryTotal.max - categoryTotal.used;
+                
+                // Calculate how many points can be applied
+                let pointsToApply = 0;
+                let pointsExceeded = 0;
+                
+                if (points > 0) {
+                    // Positive points - apply up to remaining capacity
+                    pointsToApply = Math.min(points, remainingCapacity);
+                    pointsExceeded = Math.max(0, points - remainingCapacity);
+                } else {
+                    // Negative points - always apply (penalties)
+                    pointsToApply = points;
+                    pointsExceeded = 0;
+                }
+                
+                // Update category totals
+                categoryTotal.used += pointsToApply;
+                
+                return {
+                    ...entry,
+                    category: category,
+                    pointsApplied: pointsToApply,
+                    pointsOriginal: points,
+                    pointsExceeded: pointsExceeded,
+                    categoryLimit: maxPoints,
+                    categoryUsed: categoryTotal.used,
+                    categoryRemaining: Math.max(0, categoryTotal.max - categoryTotal.used)
+                };
+            } else {
+                // No category determined or no force key - apply all points
+                return {
+                    ...entry,
+                    category: category,
+                    pointsApplied: points,
+                    pointsOriginal: points,
+                    pointsExceeded: 0,
+                    categoryLimit: null,
+                    categoryUsed: null,
+                    categoryRemaining: null
+                };
+            }
+        });
     }
 
     displayPointsLogTable(allForces, allPhases) {
@@ -143,10 +242,13 @@ class PointsLog {
                     <thead>
                         <tr>
                             <th>Date</th>
+                            <th>Effective Date</th>
                             <th>Force</th>
                             <th>Phase</th>
                             <th>Event</th>
+                            <th>Category</th>
                             <th>Points</th>
+                            <th>Category Status</th>
                             <th>Notes</th>
                         </tr>
                     </thead>
@@ -155,11 +257,18 @@ class PointsLog {
 
         this.pointsLogData.forEach(entry => {
             const timestamp = entry.timestamp || entry['Timestamp'] || entry['timestamp'];
+            const effectiveDate = entry.effective_date || entry['Effective Date'] || entry['effective_date'];
             const forceKey = entry.force_key || entry['Force Key'] || entry['force_key'];
             const phaseKey = entry.phase_key || entry['Phase Key'] || entry['phase_key'];
             const event = entry.event || entry['Event'] || entry['event'] || '';
-            const points = entry.points || entry['Points'] || entry['points'] || 0;
+            const points = entry.pointsOriginal || entry.points || entry['Points'] || entry['points'] || 0;
+            const pointsApplied = entry.pointsApplied || points;
+            const pointsExceeded = entry.pointsExceeded || 0;
             const notes = entry.notes || entry['Notes'] || entry['notes'] || '';
+            const category = entry.category || 'Unknown';
+            const categoryLimit = entry.categoryLimit;
+            const categoryUsed = entry.categoryUsed;
+            const categoryRemaining = entry.categoryRemaining;
 
             // Find force name
             const force = allForces.find(f => {
@@ -175,24 +284,67 @@ class PointsLog {
             });
             const phaseName = phase ? (phase.phase_name || phase['Phase Name'] || phase['phase_name'] || 'Unknown Phase') : 'Unknown Phase';
 
-            // Format date
+            // Format dates
             const dateStr = timestamp ? new Date(timestamp).toLocaleDateString() : 'Unknown';
             const timeStr = timestamp ? new Date(timestamp).toLocaleTimeString() : '';
+            const effectiveDateStr = effectiveDate ? new Date(effectiveDate).toLocaleDateString() : 'Same as Date';
+
+            // Build points display
+            let pointsDisplay = '';
+            if (pointsExceeded > 0) {
+                // Points exceeded limit
+                pointsDisplay = `
+                    <div class="points-cell-exceeded">
+                        <span class="points-value positive">${pointsApplied}</span>
+                        <span class="points-exceeded">+${pointsExceeded}</span>
+                    </div>
+                `;
+            } else {
+                // Normal points
+                pointsDisplay = `
+                    <span class="points-value ${points > 0 ? 'positive' : points < 0 ? 'negative' : ''}">${points}</span>
+                `;
+            }
+
+            // Build category status display
+            let categoryStatusDisplay = '';
+            if (categoryLimit && categoryLimit > 0) {
+                const remaining = categoryRemaining || 0;
+                const used = categoryUsed || 0;
+                const isExceeded = pointsExceeded > 0;
+                
+                categoryStatusDisplay = `
+                    <div class="category-status ${isExceeded ? 'exceeded' : ''}">
+                        <span class="category-used">${used}</span>
+                        <span class="category-separator">/</span>
+                        <span class="category-limit">${categoryLimit}</span>
+                        ${remaining > 0 ? `<span class="category-remaining">(${remaining} left)</span>` : ''}
+                    </div>
+                `;
+            } else {
+                categoryStatusDisplay = '<span class="category-unlimited">Unlimited</span>';
+            }
 
             html += `
-                <tr>
+                <tr class="${pointsExceeded > 0 ? 'row-exceeded' : ''}">
                     <td>
                         <div class="date-cell">
                             <div class="date">${dateStr}</div>
                             ${timeStr ? `<div class="time">${timeStr}</div>` : ''}
                         </div>
                     </td>
+                    <td>
+                        <div class="effective-date-cell">
+                            <div class="effective-date">${effectiveDateStr}</div>
+                            ${effectiveDate && effectiveDate !== timestamp ? `<div class="effective-note">Effective</div>` : ''}
+                        </div>
+                    </td>
                     <td>${CoreUtils.strings.escapeHtml(forceName)}</td>
                     <td>${CoreUtils.strings.escapeHtml(phaseName)}</td>
                     <td>${CoreUtils.strings.escapeHtml(event)}</td>
-                    <td class="points-cell">
-                        <span class="points-value ${points > 0 ? 'positive' : points < 0 ? 'negative' : ''}">${points}</span>
-                    </td>
+                    <td>${CoreUtils.strings.escapeHtml(category)}</td>
+                    <td class="points-cell">${pointsDisplay}</td>
+                    <td class="category-status-cell">${categoryStatusDisplay}</td>
                     <td>${CoreUtils.strings.escapeHtml(notes)}</td>
                 </tr>
             `;

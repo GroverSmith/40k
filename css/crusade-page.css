@@ -693,6 +693,23 @@
     color: #aaaaaa;
 }
 
+.effective-date-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.effective-date {
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.effective-note {
+    font-size: 0.75em;
+    color: #4ecdc4;
+    font-style: italic;
+}
+
 .points-cell {
     text-align: right;
 }
@@ -723,6 +740,82 @@
     background-color: #3a3a3a;
     color: #ffffff;
     border: 1px solid #4a4a4a;
+}
+
+.points-cell-exceeded {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.points-exceeded {
+    color: #ff6b6b;
+    font-size: 0.8em;
+    font-weight: bold;
+    background-color: #4a1e1e;
+    padding: 1px 4px;
+    border-radius: 3px;
+    border: 1px solid #ff6b6b;
+}
+
+.category-status-cell {
+    text-align: center;
+    min-width: 120px;
+}
+
+.category-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 0.9em;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: #2a2a2a;
+    border: 1px solid #3a3a3a;
+}
+
+.category-status.exceeded {
+    background-color: #4a1e1e;
+    border-color: #ff6b6b;
+    color: #ff9999;
+}
+
+.category-used {
+    color: #4ecdc4;
+    font-weight: bold;
+}
+
+.category-separator {
+    color: #aaaaaa;
+}
+
+.category-limit {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.category-remaining {
+    color: #aaaaaa;
+    font-size: 0.8em;
+    font-style: italic;
+    margin-left: 4px;
+}
+
+.category-unlimited {
+    color: #aaaaaa;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.row-exceeded {
+    background-color: rgba(255, 107, 107, 0.1);
+    border-left: 3px solid #ff6b6b;
+}
+
+.row-exceeded:hover {
+    background-color: rgba(255, 107, 107, 0.15);
 }
 
 .points-summary-container {
@@ -962,6 +1055,29 @@
     .section-actions {
         flex-direction: column;
         gap: 8px;
+    }
+    
+    /* Category status responsive adjustments */
+    .category-status-cell {
+        min-width: 100px;
+    }
+    
+    .category-status {
+        font-size: 0.8em;
+        padding: 3px 6px;
+    }
+    
+    .category-remaining {
+        display: none; /* Hide on mobile to save space */
+    }
+    
+    .points-cell-exceeded {
+        gap: 1px;
+    }
+    
+    .points-exceeded {
+        font-size: 0.7em;
+        padding: 1px 3px;
     }
 }
 
