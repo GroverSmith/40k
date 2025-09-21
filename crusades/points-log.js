@@ -28,8 +28,11 @@ class PointsLog {
                 backButton.href = `crusade-details.html?key=${this.crusadeKey}`;
             }
 
-            // Load points log data
-            await this.loadPointsLogData();
+            // Load data in parallel
+            await Promise.all([
+                this.loadLeaderboard(),
+                this.loadPointsLogData()
+            ]);
 
         } catch (error) {
             console.error('Error initializing points log:', error);
@@ -66,6 +69,16 @@ class PointsLog {
                 <h1>Points Log</h1>
                 <div class="crusade-subtitle">${crusadeName}</div>
             `;
+        }
+    }
+
+    async loadLeaderboard() {
+        const section = CoreUtils.dom.getElement('leaderboard-section');
+        if (section) {
+            CoreUtils.dom.show(section);
+            
+            // Use shared leaderboard logic
+            await LeaderboardShared.loadLeaderboard(this.crusadeKey, 'leaderboard-content');
         }
     }
 
@@ -249,6 +262,7 @@ class PointsLog {
             averagePointsPerEvent: totalEvents > 0 ? totalPoints / totalEvents : 0
         };
     }
+
 
     showError(message) {
         // Show error in header
