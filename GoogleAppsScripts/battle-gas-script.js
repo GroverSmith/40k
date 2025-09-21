@@ -310,20 +310,18 @@ function doPost(e) {
       data.force2Key || '',         // Column 8: force_key_2
       data.datePlayed || '',        // Column 9: date_played
       data.player1 || '',           // Column 10: player_1
-      data.force1 || '',            // Column 10: force_1
-      data.army1 || '',             // Column 11: army_1
-      data.player2 || '',           // Column 12: player_2
-      data.force2 || '',            // Column 13: force_2
-      data.army2 || '',             // Column 14: army_2
-      victor,                       // Column 15: victor
-      data.player1Score || '',      // Column 16: player_1_score
-      data.player2Score || '',      // Column 17: player_2_score
-      data.battleName || '',        // Column 18: battle_name
-      data.summaryNotes || '',      // Column 19: summary_notes
-      data.force_1_pov || '',       // Column 20: force_1_pov
-      data.force_2_pov || '',       // Column 21: force_2_pov
-      timestamp,                    // Column 22: timestamp
-      ''                            // Column 23: deleted_timestamp
+      data.force1 || '',            // Column 11: force_1
+      data.army1 || '',             // Column 12: army_1
+      data.player2 || '',           // Column 13: player_2
+      data.force2 || '',            // Column 14: force_2
+      data.army2 || '',             // Column 15: army_2
+      victor,                       // Column 16: victor
+      data.player1Score || '',      // Column 17: player_1_score
+      data.player2Score || '',      // Column 18: player_2_score
+      data.battleName || '',        // Column 19: battle_name
+      data.summaryNotes || '',      // Column 20: summary_notes
+      timestamp,                    // Column 21: timestamp
+      ''                            // Column 22: deleted_timestamp
     ];
 
     const lastRow = sheet.getLastRow();
@@ -333,31 +331,24 @@ function doPost(e) {
 
     // Format the new row
     sheet.getRange(newRowNumber, 1).setFontWeight('bold'); // battle_key
-    sheet.getRange(newRowNumber, 9).setNumberFormat('yyyy-mm-dd'); // date_played
-    sheet.getRange(newRowNumber, 23).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // timestamp
+    sheet.getRange(newRowNumber, 10).setNumberFormat('yyyy-mm-dd'); // date_played
+    sheet.getRange(newRowNumber, 22).setNumberFormat('yyyy-mm-dd hh:mm:ss'); // timestamp
 
     // Format score columns as numbers
     if (data.player1Score) {
-      sheet.getRange(newRowNumber, 17).setNumberFormat('#,##0'); // player_1_score
+      sheet.getRange(newRowNumber, 18).setNumberFormat('#,##0'); // player_1_score
     }
     if (data.player2Score) {
-      sheet.getRange(newRowNumber, 18).setNumberFormat('#,##0'); // player_2_score
+      sheet.getRange(newRowNumber, 19).setNumberFormat('#,##0'); // player_2_score
     }
 
-    // Set text wrapping for notes and POV columns
-    sheet.getRange(newRowNumber, 20).setWrap(true); // summary_notes
-    sheet.getRange(newRowNumber, 21).setWrap(true); // force_1_pov
-    sheet.getRange(newRowNumber, 22).setWrap(true); // force_2_pov
+    // Set text wrapping for notes column
+    sheet.getRange(newRowNumber, 21).setWrap(true); // summary_notes
 
     console.log('Battle report saved successfully');
 
-    // Create points log entries for the battle
-    try {
-      createBattlePointsLogEntries(data, battleKey, victorForceKey);
-    } catch (pointsError) {
-      console.warn('Failed to create points log entries:', pointsError);
-      // Don't fail the battle creation if points log creation fails
-    }
+    // Note: Points log entries are now created by the battle form using the proper crusade points scheme
+    // The gas script no longer creates points log entries to avoid duplication
 
     return ContentService
       .createTextOutput(JSON.stringify({
@@ -380,101 +371,8 @@ function doPost(e) {
   }
 }
 
-// Create points log entries for a battle
-function createBattlePointsLogEntries(battleData, battleKey, victorForceKey) {
-  try {
-    console.log('Creating points log entries for battle:', battleKey);
-    
-    // Only create points log entries if this is a crusade battle
-    if (!battleData.crusadeKey) {
-      console.log('No crusade key provided, skipping points log creation');
-      return;
-    }
-    
-    // Determine points based on battle outcome
-    const victorPoints = 3; // Winner gets 3 points
-    const loserPoints = 1;  // Loser gets 1 point
-    const drawPoints = 2;   // Draw gives 2 points each
-    
-    const datePlayed = battleData.datePlayed || new Date();
-    const battleType = battleData.battleType || 'Primary Battle';
-    
-    // Create points log entries for both forces
-    const force1Key = battleData.force1Key;
-    const force2Key = battleData.force2Key;
-    
-    if (force1Key && force2Key) {
-      let force1Points, force2Points;
-      
-      if (victorForceKey === force1Key) {
-        force1Points = victorPoints;
-        force2Points = loserPoints;
-      } else if (victorForceKey === force2Key) {
-        force1Points = loserPoints;
-        force2Points = victorPoints;
-      } else {
-        // Draw
-        force1Points = drawPoints;
-        force2Points = drawPoints;
-      }
-      
-      // Create points log entry for force 1
-      createPointsLogEntry({
-        crusade_key: battleData.crusadeKey,
-        phase_key: '', // Will need to be determined based on crusade phases
-        force_key: force1Key,
-        points: force1Points,
-        event: `${battleType} - ${battleData.battleName || 'Battle'}`,
-        notes: `Battle: ${battleKey}`,
-        effective_date: datePlayed
-      });
-      
-      // Create points log entry for force 2
-      createPointsLogEntry({
-        crusade_key: battleData.crusadeKey,
-        phase_key: '', // Will need to be determined based on crusade phases
-        force_key: force2Key,
-        points: force2Points,
-        event: `${battleType} - ${battleData.battleName || 'Battle'}`,
-        notes: `Battle: ${battleKey}`,
-        effective_date: datePlayed
-      });
-      
-      console.log('Created points log entries for both forces');
-    }
-    
-  } catch (error) {
-    console.error('Error creating battle points log entries:', error);
-    throw error;
-  }
-}
-
-// Helper function to create a single points log entry
-function createPointsLogEntry(data) {
-  try {
-    // Use the crusade points log gas script URL
-    const pointsLogUrl = 'https://script.google.com/macros/s/AKfycbzUBdnxPQDeGIHzE8RmgxuHhXztG4kEhcN8cqFZXz_Hlf1HdUotFFYh4ePcRJ2LcLgNQg/exec';
-    
-    // Make a POST request to create the points log entry
-    const response = UrlFetchApp.fetch(pointsLogUrl, {
-      method: 'POST',
-      payload: data,
-      muteHttpExceptions: true
-    });
-    
-    const result = JSON.parse(response.getContentText());
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to create points log entry');
-    }
-    
-    console.log('Points log entry created successfully:', result.key);
-    return result;
-    
-  } catch (error) {
-    console.error('Error creating points log entry:', error);
-    throw error;
-  }
-}
+// Note: Points log entry creation has been moved to the battle form (battle-add.js)
+// to use the proper crusade points scheme and avoid duplication
 
 function doGet(e) {
   try {

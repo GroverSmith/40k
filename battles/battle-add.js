@@ -632,9 +632,10 @@ class BattleReportForm extends BaseForm {
         console.log('Creating crusade points log entries for battle:', battleData);
         
         // Load required data from cache
-        const [crusadePhases, crusadePointsScheme] = await Promise.all([
+        const [crusadePhases, crusadePointsScheme, crusadeParticipants] = await Promise.all([
             UnifiedCache.getAllRows('crusade_phases'),
-            UnifiedCache.getAllRows('crusade_points_scheme')
+            UnifiedCache.getAllRows('crusade_points_scheme'),
+            UnifiedCache.getAllRows('crusade_participants')
         ]);
 
         // Filter phases for this crusade
@@ -658,21 +659,35 @@ class BattleReportForm extends BaseForm {
             !scheme.deleted_timestamp
         );
 
+        // Filter participants for this crusade
+        const relevantParticipants = crusadeParticipants.filter(participant => 
+            participant.crusade_key === battleData.crusadeKey && 
+            !participant.deleted_timestamp
+        );
+
+        console.log('Crusade participants:', relevantParticipants.map(p => p.force_key));
+
         // Determine battle outcomes for each force
         const force1Outcome = this.determineBattleOutcome(battleData, battleData.force1Key);
         const force2Outcome = this.determineBattleOutcome(battleData, battleData.force2Key);
 
-        // Create log entries for both forces
+        // Create log entries only for forces that are participants in the crusade
         const logEntries = [];
         
-        if (force1Outcome) {
+        if (force1Outcome && this.isForceParticipant(battleData.force1Key, relevantParticipants)) {
+            console.log('Force 1 is a crusade participant, creating log entry');
             const entry1 = await this.createPointsLogEntry(battleData, battleData.force1Key, battleData.user_key_1, force1Outcome, battlePhase.phase_key, relevantScheme);
             if (entry1) logEntries.push(entry1);
+        } else if (force1Outcome) {
+            console.log('Force 1 is not a crusade participant, skipping log entry');
         }
         
-        if (force2Outcome) {
+        if (force2Outcome && this.isForceParticipant(battleData.force2Key, relevantParticipants)) {
+            console.log('Force 2 is a crusade participant, creating log entry');
             const entry2 = await this.createPointsLogEntry(battleData, battleData.force2Key, battleData.user_key_2, force2Outcome, battlePhase.phase_key, relevantScheme);
             if (entry2) logEntries.push(entry2);
+        } else if (force2Outcome) {
+            console.log('Force 2 is not a crusade participant, skipping log entry');
         }
 
         // Submit all log entries
@@ -693,6 +708,15 @@ class BattleReportForm extends BaseForm {
             const endDate = new Date(phase.end_date);
             return battleDateObj >= startDate && battleDateObj <= endDate;
         });
+    }
+
+    /**
+     * Check if a force is a participant in the crusade
+     */
+    isForceParticipant(forceKey, participants) {
+        return participants.some(participant => 
+            participant.force_key === forceKey
+        );
     }
 
     /**
@@ -783,6 +807,7 @@ class BattleReportForm extends BaseForm {
             points: matchingScheme.points,
             event: outcome.eventType,
             notes: `Auto-generated from battle: ${battleData.battleName || battleData.battle_name || 'Unnamed Battle'}`,
+            effective_date: battleData.datePlayed || new Date().toISOString().split('T')[0],
             timestamp: new Date().toISOString()
         };
 

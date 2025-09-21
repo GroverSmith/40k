@@ -242,13 +242,12 @@ class PointsLog {
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Effective Date</th>
                             <th>Force</th>
                             <th>Phase</th>
                             <th>Event</th>
                             <th>Category</th>
                             <th>Points</th>
-                            <th>Category Status</th>
+                            <th>of max</th>
                             <th>Notes</th>
                         </tr>
                     </thead>
@@ -329,17 +328,11 @@ class PointsLog {
                 <tr class="${pointsExceeded > 0 ? 'row-exceeded' : ''}">
                     <td>
                         <div class="date-cell">
-                            <div class="date">${dateStr}</div>
-                            ${timeStr ? `<div class="time">${timeStr}</div>` : ''}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="effective-date-cell">
-                            <div class="effective-date">${effectiveDateStr}</div>
+                            <div class="date">${effectiveDateStr}</div>
                             ${effectiveDate && effectiveDate !== timestamp ? `<div class="effective-note">Effective</div>` : ''}
                         </div>
                     </td>
-                    <td>${CoreUtils.strings.escapeHtml(forceName)}</td>
+                    <td><a href="../forces/force-details.html?key=${forceKey}" class="force-link">${CoreUtils.strings.escapeHtml(forceName)}</a></td>
                     <td>${CoreUtils.strings.escapeHtml(phaseName)}</td>
                     <td>${CoreUtils.strings.escapeHtml(event)}</td>
                     <td>${CoreUtils.strings.escapeHtml(category)}</td>

@@ -710,6 +710,18 @@
     font-style: italic;
 }
 
+.force-link {
+    color: #4ecdc4;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.force-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
 .points-cell {
     text-align: right;
 }
