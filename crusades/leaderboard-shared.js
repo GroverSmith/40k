@@ -39,6 +39,14 @@ class LeaderboardShared {
                 return catCrusadeKey === crusadeKey && !isDeleted;
             });
 
+            // Sort by effective_date (ascending) before processing category limits
+            // This ensures earlier events are counted toward the max category sum first
+            crusadePoints.sort((a, b) => {
+                const effectiveDateA = new Date(a.effective_date || a['Effective Date'] || a['effective_date'] || a.timestamp || a['Timestamp'] || a['timestamp'] || 0);
+                const effectiveDateB = new Date(b.effective_date || b['Effective Date'] || b['effective_date'] || b.timestamp || b['Timestamp'] || b['timestamp'] || 0);
+                return effectiveDateA - effectiveDateB;
+            });
+
             // Calculate points with category limits enforced
             const forcePoints = LeaderboardShared.calculateForcePointsWithLimits(crusadePoints, crusadeCategories);
 

@@ -108,14 +108,22 @@ class PointsLog {
                 return catCrusadeKey === this.crusadeKey && !isDeleted;
             });
 
-            // Process points with category limits
+            // Sort by effective_date (ascending) before processing category limits
+            // This ensures earlier events are counted toward the max category sum first
+            crusadePoints.sort((a, b) => {
+                const effectiveDateA = new Date(a.effective_date || a['Effective Date'] || a['effective_date'] || a.timestamp || a['Timestamp'] || a['timestamp'] || 0);
+                const effectiveDateB = new Date(b.effective_date || b['Effective Date'] || b['effective_date'] || b.timestamp || b['Timestamp'] || b['timestamp'] || 0);
+                return effectiveDateA - effectiveDateB;
+            });
+
+            // Process points with category limits (now in chronological order)
             this.pointsLogData = this.processPointsWithCategoryLimits(crusadePoints, crusadeCategories);
 
-            // Sort by timestamp (newest first)
+            // Sort by effective_date (descending) for display (newest first)
             this.pointsLogData.sort((a, b) => {
-                const timestampA = new Date(a.timestamp || a['Timestamp'] || a['timestamp'] || 0);
-                const timestampB = new Date(b.timestamp || b['Timestamp'] || b['timestamp'] || 0);
-                return timestampB - timestampA;
+                const effectiveDateA = new Date(a.effective_date || a['Effective Date'] || a['effective_date'] || a.timestamp || a['Timestamp'] || a['timestamp'] || 0);
+                const effectiveDateB = new Date(b.effective_date || b['Effective Date'] || b['effective_date'] || b.timestamp || b['Timestamp'] || b['timestamp'] || 0);
+                return effectiveDateB - effectiveDateA;
             });
 
             // Display the data
@@ -291,12 +299,9 @@ class PointsLog {
             // Build points display
             let pointsDisplay = '';
             if (pointsExceeded > 0) {
-                // Points exceeded limit
+                // Points exceeded limit - show as "0/X" in red
                 pointsDisplay = `
-                    <div class="points-cell-exceeded">
-                        <span class="points-value positive">${pointsApplied}</span>
-                        <span class="points-exceeded">+${pointsExceeded}</span>
-                    </div>
+                    <span class="points-value negative">0/${points}</span>
                 `;
             } else {
                 // Normal points
