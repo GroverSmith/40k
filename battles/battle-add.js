@@ -537,6 +537,13 @@ class BattleReportForm extends BaseForm {
             data[key] = value.trim();
         }
 
+        // Handle disabled crusade select - manually add the value if it's disabled
+        const crusadeSelect = document.getElementById('crusade-select');
+        if (crusadeSelect && crusadeSelect.disabled && crusadeSelect.value) {
+            data.crusadeKey = crusadeSelect.value;
+            console.log('Manually added disabled crusade key:', data.crusadeKey);
+        }
+
         // Handle custom battle size - use the custom value instead of "Custom"
         if (data.battleSize === 'Custom') {
             data.battleSize = data.customBattleSize || '';
