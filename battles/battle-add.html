@@ -32,12 +32,31 @@
             <!-- Battle Information -->
             <h3 style="color: #4ecdc4; margin-bottom: 20px;">Battle Information</h3>
             
-            <div class="form-group">
-                <label for="crusade-select">Crusade Campaign</label>
-                <select id="crusade-select" name="crusadeKey">
-                    <option value="">Select crusade (optional)...</option>
-                </select>
-                <small class="help-text">Which crusade campaign is this battle part of?</small>
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label for="crusade-select">Crusade Campaign</label>
+                    <select id="crusade-select" name="crusadeKey">
+                        <option value="">Select crusade (optional)...</option>
+                    </select>
+                    <small class="help-text">Which crusade campaign is this battle part of?</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="battle-type">Battle Type <span class="required">*</span></label>
+                    <div class="battle-type-toggle">
+                        <input type="radio" id="battle-type-primary" name="battleType" value="Primary Battle" checked>
+                        <input type="radio" id="battle-type-secondary" name="battleType" value="Secondary Battle">
+                        <div class="toggle-switch">
+                            <label for="battle-type-primary" class="toggle-option primary">
+                                <span class="toggle-text">Primary</span>
+                            </label>
+                            <label for="battle-type-secondary" class="toggle-option secondary">
+                                <span class="toggle-text">Secondary</span>
+                            </label>
+                        </div>
+                    </div>
+                    <small class="help-text">Type of battle - Primary battles are main campaign events, Secondary battles are smaller engagements.</small>
+                </div>
             </div>
             
             <div class="form-group">
@@ -68,77 +87,64 @@
                     <!-- Custom size input will be added by JavaScript -->
                     <small class="help-text">Point level of the battle.</small>
                 </div>
-                
-                <div class="form-group">
-                    <label for="battle-type">Battle Type <span class="required">*</span></label>
-                    <div class="battle-type-toggle">
-                        <input type="radio" id="battle-type-primary" name="battleType" value="Primary Battle" checked>
-                        <input type="radio" id="battle-type-secondary" name="battleType" value="Secondary Battle">
-                        <div class="toggle-switch">
-                            <label for="battle-type-primary" class="toggle-option primary">
-                                <span class="toggle-text">Primary</span>
-                            </label>
-                            <label for="battle-type-secondary" class="toggle-option secondary">
-                                <span class="toggle-text">Secondary</span>
-                            </label>
-                        </div>
-                    </div>
-                    <small class="help-text">Type of battle - Primary battles are main campaign events, Secondary battles are smaller engagements.</small>
-                </div>
             </div>
             
             <!-- Player 1 Information -->
             <h3 style="color: #4ecdc4; margin-top: 30px; margin-bottom: 20px;">Player 1</h3>
             
-            <div class="form-group">
-                <label for="player1-name">Player 1 Name <span class="required">*</span></label>
-                <!-- This will be converted to a dropdown by JavaScript -->
-                <input type="text" id="player1-name" name="player1" required 
-                       placeholder="Select player...">
-                <small class="help-text">Name of the first player.</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="force1-select">Player 1 Force <span class="required">*</span></label>
-                <select id="force1-select" name="force1Key" required>
-                    <option value="">Select force...</option>
-                </select>
-                <small class="help-text">Select the Crusade Force used by Player 1.</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="army1-select">Player 1 Army List</label>
-                <select id="army1-select" name="army1Key">
-                    <option value="">Select army list...</option>
-                </select>
-                <small class="help-text">Select the army list used by Player 1 (optional).</small>
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label for="player1-name">Player 1 Name <span class="required">*</span></label>
+                    <!-- This will be converted to a dropdown by JavaScript -->
+                    <input type="text" id="player1-name" name="player1" required 
+                           placeholder="Select player...">
+                    <small class="help-text">Name of the first player.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="force1-select">Player 1 Force <span class="required">*</span></label>
+                    <select id="force1-select" name="force1Key" required>
+                        <option value="">Select force...</option>
+                    </select>
+                    <small class="help-text">Select the Crusade Force used by Player 1.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="army1-select">Player 1 Army List</label>
+                    <select id="army1-select" name="army1Key">
+                        <option value="">Select army list...</option>
+                    </select>
+                    <small class="help-text">Select the army list used by Player 1 (optional).</small>
+                </div>
             </div>
             
             <!-- Player 2 Information -->
             <h3 style="color: #4ecdc4; margin-top: 30px; margin-bottom: 20px;">Player 2</h3>
             
-            <div class="form-group">
-                <label for="player2-name">Player 2 Name <span class="required">*</span></label>
-                <!-- This will be converted to a dropdown by JavaScript -->
-                <input type="text" id="player2-name" name="player2" required 
-                       placeholder="Select player...">
-                <small class="help-text">Name of the second player.</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="force2-select">Player 2 Force <span class="required">*</span></label>
-                <select id="force2-select" name="force2Key" required>
-                    <option value="">Select force...</option>
-                </select>
-                <small class="help-text">Select the Crusade Force used by Player 2.</small>
-            </div>
-            
-            <div class="form-group">
-                <label for="army2-select">Player 2 Army List</label>
-                <select id="army2-select" name="army2Key">
-                    <option value="">Select army list...</option>
-                </select>
-                <small class="help-text">Select the army list used by Player 2 (optional).</small>
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label for="player2-name">Player 2 Name <span class="required">*</span></label>
+                    <!-- This will be converted to a dropdown by JavaScript -->
+                    <input type="text" id="player2-name" name="player2" required 
+                           placeholder="Select player...">
+                    <small class="help-text">Name of the second player.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="force2-select">Player 2 Force <span class="required">*</span></label>
+                    <select id="force2-select" name="force2Key" required>
+                        <option value="">Select force...</option>
+                    </select>
+                    <small class="help-text">Select the Crusade Force used by Player 2.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="army2-select">Player 2 Army List</label>
+                    <select id="army2-select" name="army2Key">
+                        <option value="">Select army list...</option>
+                    </select>
+                    <small class="help-text">Select the army list used by Player 2 (optional).</small>
+                </div>
             </div>
             
             <!-- Battle Results -->
