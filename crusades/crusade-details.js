@@ -208,6 +208,13 @@ class CrusadeDetails {
         const section = CoreUtils.dom.getElement('campaign-stories-section');
         if (section) {
             CoreUtils.dom.show(section);
+            
+            // Set the write story button href with crusade key
+            const addStoryBtn = CoreUtils.dom.getElement('add-story-btn');
+            if (addStoryBtn) {
+                addStoryBtn.href = `../stories/story-add.html?crusadeKey=${this.crusadeKey}`;
+            }
+            
             if (window.StoryTable) {
                 console.log('Loading campaign stories for crusade:', this.crusadeKey);
                 await StoryTable.loadForCrusade(this.crusadeKey, 'campaign-stories-content');

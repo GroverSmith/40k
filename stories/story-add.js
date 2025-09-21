@@ -76,6 +76,11 @@ class StoryForm extends BaseForm {
             this.contextData.isEditMode = true;
         }
 
+        // Handle crusade key parameter
+        if (this.contextData.crusadeKey) {
+            this.contextData.crusadeKey = this.contextData.crusadeKey;
+        }
+
         // Detect if we're in battle POV mode (has both battle_key and story_type)
         this.contextData.isBattlePOV = this.contextData.battleKey && this.contextData.storyType;
 
@@ -396,6 +401,18 @@ class StoryForm extends BaseForm {
                     crusadeSelect.value = this.editingStory.crusade_key || '';
                 } else if (this.contextData.crusadeKey) {
                     crusadeSelect.value = this.contextData.crusadeKey;
+                    // Make the dropdown disabled/readonly when crusade is pre-selected from URL
+                    crusadeSelect.disabled = true;
+                    crusadeSelect.style.backgroundColor = '#2a2a2a';
+                    crusadeSelect.style.color = '#aaaaaa';
+                    crusadeSelect.style.cursor = 'not-allowed';
+                    
+                    // Update the help text to indicate it's pre-selected
+                    const helpText = crusadeSelect.parentNode.querySelector('.help-text');
+                    if (helpText) {
+                        helpText.textContent = 'Pre-selected from crusade page (cannot be changed)';
+                        helpText.style.color = '#4ecdc4';
+                    }
                 } else if (this.contextData.battleKey) {
                     // Try to get crusade from battle data
                     this.loadCrusadeFromBattle();
@@ -684,6 +701,11 @@ class StoryForm extends BaseForm {
                 await this.createStoryForceRelationships(response.key, formData.selectedForces);
             }
 
+            // Create crusade points log entries if crusade is associated
+            if (response && response.key && formData.crusade_key && formData.selectedForces && formData.selectedForces.length > 0) {
+                await this.createStoryPointsLogEntries(formData, response.key);
+            }
+
             // Clear specified caches
             this.clearCachesOnSuccess();
 
@@ -739,6 +761,155 @@ class StoryForm extends BaseForm {
         }
     }
 
+    /**
+     * Create crusade points log entries for Story Submitted events
+     */
+    async createStoryPointsLogEntries(storyData, storyKey) {
+        console.log('=== CREATING STORY POINTS LOG ENTRIES ===');
+        console.log('Story data:', storyData);
+        console.log('Story key:', storyKey);
+
+        try {
+            // Get current user
+            const activeUser = UserManager.getCurrentUser();
+            if (!activeUser) {
+                console.log('No active user found, skipping points log creation');
+                return;
+            }
+
+            // Load required data in parallel
+            const [crusadePhases, crusadePointsScheme, crusadeParticipants, forces] = await Promise.all([
+                UnifiedCache.getAllRows('crusade_phases'),
+                UnifiedCache.getAllRows('crusade_points_scheme'),
+                UnifiedCache.getAllRows('xref_crusade_participants'),
+                UnifiedCache.getAllRows('forces')
+            ]);
+
+            // Filter data for the current crusade
+            const relevantPhases = crusadePhases.filter(phase => 
+                phase.crusade_key === storyData.crusade_key && 
+                !phase.deleted_timestamp
+            );
+
+            const relevantScheme = crusadePointsScheme.filter(scheme => 
+                scheme.crusade_key === storyData.crusade_key && 
+                !scheme.deleted_timestamp
+            );
+
+            const relevantParticipants = crusadeParticipants.filter(participant => 
+                participant.crusade_key === storyData.crusade_key && 
+                !participant.deleted_timestamp
+            );
+
+            console.log('Relevant phases:', relevantPhases);
+            console.log('Relevant scheme:', relevantScheme);
+            console.log('Relevant participants:', relevantParticipants);
+
+            // Find the current phase (use the most recent active phase)
+            const currentPhase = relevantPhases
+                .filter(phase => phase.state === 'active')
+                .sort((a, b) => new Date(b.start_date) - new Date(a.start_date))[0];
+
+            if (!currentPhase) {
+                console.log('No active phase found for crusade, skipping points log creation');
+                return;
+            }
+
+            console.log('Current phase:', currentPhase);
+
+            // Find Story Submitted event in the points scheme
+            const storySubmittedScheme = relevantScheme.find(scheme => 
+                scheme.event_type === 'Story Submitted'
+            );
+
+            if (!storySubmittedScheme) {
+                console.log('No "Story Submitted" event type found in points scheme, skipping points log creation');
+                return;
+            }
+
+            console.log('Story Submitted scheme:', storySubmittedScheme);
+
+            // Create points log entries for qualifying forces
+            const logEntries = [];
+            const storyCreationDate = new Date().toISOString().split('T')[0]; // Today's date
+
+            for (const forceKey of storyData.selectedForces) {
+                // Check if force is owned by active user
+                const force = forces.find(f => f.force_key === forceKey && !f.deleted_timestamp);
+                if (!force || force.user_key !== activeUser.user_key) {
+                    console.log(`Force ${forceKey} is not owned by active user, skipping`);
+                    continue;
+                }
+
+                // Check if force is a crusade participant
+                const isParticipant = relevantParticipants.some(participant => 
+                    participant.force_key === forceKey
+                );
+
+                if (!isParticipant) {
+                    console.log(`Force ${forceKey} is not a crusade participant, skipping`);
+                    continue;
+                }
+
+                console.log(`Force ${forceKey} qualifies for Story Submitted points`);
+
+                // Create the log entry
+                const logEntry = {
+                    crusade_key: storyData.crusade_key,
+                    phase_key: currentPhase.phase_key,
+                    force_key: forceKey,
+                    points: storySubmittedScheme.points,
+                    event: 'Story Submitted',
+                    notes: `Auto-generated from story: ${storyData.title || 'Untitled Story'}`,
+                    effective_date: storyCreationDate,
+                    timestamp: new Date().toISOString()
+                };
+
+                logEntries.push(logEntry);
+            }
+
+            // Submit all log entries
+            if (logEntries.length > 0) {
+                await this.submitPointsLogEntries(logEntries);
+                console.log(`Created ${logEntries.length} Story Submitted points log entries`);
+            } else {
+                console.log('No qualifying forces found for Story Submitted points');
+            }
+
+        } catch (error) {
+            console.error('Error creating story points log entries:', error);
+            // Don't throw - this is a non-critical enhancement
+        }
+    }
+
+    /**
+     * Submit points log entries to the server
+     */
+    async submitPointsLogEntries(logEntries) {
+        const submitPromises = logEntries.map((entry, index) => {
+            console.log(`Submitting story log entry ${index}:`, entry);
+            return fetch(TableDefs.crusade_points_log.url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(entry).toString()
+            });
+        });
+
+        const results = await Promise.allSettled(submitPromises);
+        
+        results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+                console.error(`Failed to submit story log entry ${index}:`, result.reason);
+            } else if (result.value && result.value.ok) {
+                console.log(`Successfully submitted story log entry ${index}`);
+            } else {
+                console.error(`Failed to submit story log entry ${index}:`, result.value);
+            }
+        });
+    }
+
     gatherFormData() {
         const baseFormData = super.gatherFormData();
 
@@ -771,7 +942,14 @@ class StoryForm extends BaseForm {
         const image3 = document.getElementById('image-3')?.value || '';
         const audioLink = document.getElementById('audio-link')?.value || '';
         const textLink = document.getElementById('text-link')?.value || '';
-        const crusadeKey = document.getElementById('crusade-select')?.value || '';
+        const crusadeSelect = document.getElementById('crusade-select');
+        let crusadeKey = crusadeSelect?.value || '';
+        
+        // Handle disabled crusade select - manually add the value if it's disabled
+        if (crusadeSelect && crusadeSelect.disabled && crusadeSelect.value) {
+            crusadeKey = crusadeSelect.value;
+            console.log('Manually added disabled crusade key:', crusadeKey);
+        }
 
         const formData = {
             key: storyKey,
