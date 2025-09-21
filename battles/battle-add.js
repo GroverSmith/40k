@@ -487,6 +487,18 @@ class BattleReportForm extends BaseForm {
                 const checkAndSet = () => {
                     if (crusadeSelect.options.length > 1) {
                         crusadeSelect.value = crusadeKey;
+                        // Make the dropdown disabled/readonly when crusade is pre-selected
+                        crusadeSelect.disabled = true;
+                        crusadeSelect.style.backgroundColor = '#2a2a2a';
+                        crusadeSelect.style.color = '#aaaaaa';
+                        crusadeSelect.style.cursor = 'not-allowed';
+                        
+                        // Update the help text to indicate it's pre-selected
+                        const helpText = crusadeSelect.parentNode.querySelector('.help-text');
+                        if (helpText) {
+                            helpText.textContent = 'Pre-selected from crusade page (cannot be changed)';
+                            helpText.style.color = '#4ecdc4';
+                        }
                     } else {
                         setTimeout(checkAndSet, 50);
                     }

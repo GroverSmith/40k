@@ -180,6 +180,12 @@ class CrusadeDetails {
                 viewPointsLogBtn.href = `points-log.html?key=${this.crusadeKey}`;
             }
             
+            // Set the record battle button href with crusade key
+            const recordBattleBtn = CoreUtils.dom.getElement('record-battle-btn');
+            if (recordBattleBtn) {
+                recordBattleBtn.href = `../battles/battle-add.html?crusadeKey=${this.crusadeKey}`;
+            }
+            
             // Use shared leaderboard logic
             await LeaderboardShared.loadLeaderboard(this.crusadeKey, 'leaderboard-content');
         }
